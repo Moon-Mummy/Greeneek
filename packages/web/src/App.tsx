@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { en } from "./locales/en";
 import { es } from "./locales/es";
+import { ApiKeysManager } from "./components/api-keys-settings";
+import { ModelPickerGrouped } from "./components/model-selector";
 
 type Lang = "en" | "es";
 const tDict = { en, es } as const;
@@ -108,7 +110,7 @@ const SpeechCtor: (new () => SpeechRecognitionLike) | undefined =
     .webkitSpeechRecognition ??
   (window as unknown as { SpeechRecognition?: new () => SpeechRecognitionLike }).SpeechRecognition;
 
-type SettingsTab = "providers" | "plugins" | "defaults" | "tracing" | "advanced" | "data" | "diagnostics" | "billing" | "marketplace" | "audit" | "about";
+type SettingsTab = "providers" | "api-keys" | "plugins" | "defaults" | "tracing" | "advanced" | "data" | "diagnostics" | "billing" | "marketplace" | "audit" | "about";
 
 export default function App() {
   const [lang, setLang] = useState<Lang>(() => (localStorage.getItem("gk.lang") as Lang) ?? "en");
@@ -808,37 +810,7 @@ export default function App() {
                     })}
                   </div>
                 )}
-                {/* Grouped by vendor */}
-                {(() => {
-                  const q = search.toLowerCase();
-                  const filtered = models.filter((m) => !q || m.id.toLowerCase().includes(q) || m.name.toLowerCase().includes(q) || m.provider.toLowerCase().includes(q));
-                  if (filtered.length === 0) return <p className="muted">No matches</p>;
-                  const groups: Record<string, ModelInfo[]> = {};
-                  for (const m of filtered) {
-                    const vendor = m.id.includes("/") ? m.id.split("/")[0] : m.provider;
-                    if (!groups[vendor]) groups[vendor] = [];
-                    groups[vendor].push(m);
-                  }
-                  return Object.entries(groups).map(([vendor, list]) => (
-                    <div key={vendor} style={{ marginBottom: 12 }}>
-                      <h4 style={{ fontSize: 12, margin: "8px 0 4px 0", textTransform: "uppercase" }}>{vendor}</h4>
-                      {list.map((m) => (
-                        <div key={m.id} className="row" style={{ padding: "6px 0", borderBottom: "1px solid var(--outlineVariant)", alignItems: "center" }}>
-                          <button className="btn ghost" onClick={() => toggleFavorite(m.id)} title="Favorite">{favorites.includes(m.id) ? "★" : "☆"}</button>
-                          <div style={{ flex: 1, cursor: "pointer" }} onClick={() => { persistModel(m.id, m.provider); setPickerOpen(false); }}>
-                            <strong>{m.id}</strong> <span className="muted" style={{ fontSize: 11 }}>{m.name}</span>
-                            <div className="row" style={{ gap: 6, marginTop: 2 }}>
-                              {m.contextLength ? <span className="chip" style={{ fontSize: 10 }}>{Math.round(m.contextLength / 1000)}k</span> : null}
-                              {m.pricing?.isFree ? <span className="chip" style={{ fontSize: 10, background: "var(--secondaryContainer)" }}>FREE</span> : m.pricing?.promptPer1M !== undefined ? <span className="muted" style={{ fontSize: 10 }}>${m.pricing.promptPer1M}/1M</span> : null}
-                              {m.supportsTools && <span className="muted" style={{ fontSize: 10 }}>tools</span>}
-                            </div>
-                          </div>
-                          <span className="muted" style={{ fontSize: 10 }}>{m.provider}</span>
-                        </div>
-                      ))}
-                    </div>
-                  ));
-                })()}
+                <ModelPickerGrouped models={models} search={search} onPick={(id, prov) => { persistModel(id, prov); setPickerOpen(false); }} favorites={favorites} recents={recents} onToggleFav={toggleFavorite} />
               </div>
             )}
             <div className="row" style={{ marginTop: 12, justifyContent: "space-between" }}>
@@ -969,9 +941,9 @@ export default function App() {
         <div className="panel" onClick={() => setSettingsOpen(false)} role="dialog" aria-modal="true" aria-label="Settings">
           <div className="sheet" onClick={(e) => e.stopPropagation()} tabIndex={-1}>
             <div className="tabs">
-              {(["providers", "plugins", "defaults", "tracing", "advanced", "data", "diagnostics", "billing", "marketplace", "audit", "about"] as const).map((key) => (
+              {(["providers", "api-keys", "plugins", "defaults", "tracing", "advanced", "data", "diagnostics", "billing", "marketplace", "audit", "about"] as const).map((key) => (
                 <button key={key} className={tab === key ? "active" : ""} onClick={() => setTab(key)}>
-                  {t(lang, key as keyof typeof en) ?? key}
+                  {key === "api-keys" ? "API Keys" : (t(lang, key as keyof typeof en) ?? key)}
                 </button>
               ))}
             </div>
@@ -1063,6 +1035,33 @@ export default function App() {
                     </label>
                     <button className="btn ghost" onClick={async () => { if (!confirm("Reset all settings to defaults?")) return; const res = await fetch("/api/settings/reset", { method: "POST" }); if (res.ok) { const body = await res.json() as Record<string, unknown>; setSettings(body.settings as Record<string, unknown>); notify("Reset to defaults ✓"); } }}>Reset to defaults</button>
                   </div>
+                </>
+              )}
+
+              {!settingsLoading && tab === "api-keys" && settings && (
+                <>
+                  <h3>API Keys — Bring Your Own Key</h3>
+                  <p className="muted" style={{ fontSize: 12 }}>Keys stay on this device. Local models run without any key. Cloud providers need a key only when you use them.</p>
+                  <ApiKeysManager
+                    providers={providers as unknown as Record<string, { apiKey?: string; baseUrl?: string; enabled?: boolean }>}
+                    creds={creds}
+                    setCreds={setCreds}
+                    reveal={reveal}
+                    setReveal={setReveal}
+                    fieldSaving={fieldSaving as unknown as Record<string, boolean>}
+                    fieldStatus={fieldStatus as unknown as Record<string, string>}
+                    setFieldStatus={setFieldStatus as unknown as (f: (s: Record<string, string>) => Record<string, string>) => void}
+                    testResult={testResult}
+                    onSave={(pid, raw) => {
+                      void patchSettings({ providers: { [pid]: { apiKey: raw, enabled: true } } } as unknown as Record<string, unknown>, `providers.${pid}.apiKey`).then(() => setCreds((c) => { const n = { ...c }; delete n[`${pid.toUpperCase()}_API_KEY`]; return n; }));
+                    }}
+                    onPatch={(patch, key) => void patchSettings(patch as unknown as Record<string, unknown>, key)}
+                    onTest={(pid) => void testProvider(pid)}
+                    onClear={(pid) => {
+                      setCreds({ ...creds, [`${pid.toUpperCase()}_API_KEY`]: "" });
+                      void patchSettings({ providers: { [pid]: { apiKey: "" } } } as unknown as Record<string, unknown>, `providers.${pid}.apiKey`);
+                    }}
+                  />
                 </>
               )}
 
