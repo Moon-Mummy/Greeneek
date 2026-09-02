@@ -2,23 +2,26 @@
   "name": "@greeneek/web",
   "version": "0.1.0",
   "private": true,
-  "description": "Greeneek Web UI \u2014 chat, settings, plan mode.",
+  "description": "Greeneek Web UI — chat, settings, plan mode.",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit -p tsconfig.json && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@greeneek/adapters": "workspace:^",
     "@greeneek/sdk": "workspace:*",
+    "dexie": "4.0.11",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "zustand": "4.5.5"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^6.0.7",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7"
   },
   "license": "MIT"
 }

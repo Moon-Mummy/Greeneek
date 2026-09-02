@@ -165,6 +165,33 @@ export const SETTINGS_MIGRATIONS: Migration[] = [
       return next;
     },
   },
+  {
+    from: 2,
+    to: 3,
+    description: "enable ollama local-first, add deepseek BYOK, appearance/behavior",
+    migrate(data) {
+      const next = { ...data } as Record<string, unknown>;
+      const providers = (next.providers as Record<string, unknown> | undefined) ?? {};
+      if (!providers.deepseek) providers.deepseek = { apiKey: "", baseUrl: "https://api.deepseek.com/v1", enabled: false };
+      if (providers.ollama && typeof providers.ollama === "object") {
+        const o = providers.ollama as Record<string, unknown>;
+        if (o.enabled === false) o.enabled = true; // local-first default
+      }
+      next.providers = providers;
+      if (!next.appearance) next.appearance = { theme: "system" };
+      if (!next.behavior) next.behavior = { autoTitle: true, sendOnEnter: true, autoScroll: true, showReasoning: true };
+      const plugins = (next.plugins as Record<string, unknown> | undefined) ?? {};
+      if (plugins["greeneek.provider.ollama"] && typeof plugins["greeneek.provider.ollama"] === "object") {
+        const p = plugins["greeneek.provider.ollama"] as Record<string, unknown>;
+        if (p.enabled === false) p.enabled = true;
+      }
+      next.plugins = plugins;
+      // Migrate search deepseek → generic
+      const search = next.search as Record<string, unknown> | undefined;
+      if (search && search.provider === "deepseek") search.provider = "generic";
+      return next;
+    },
+  },
 ];
 
 /** Small helper for credentials file migration (trim). */

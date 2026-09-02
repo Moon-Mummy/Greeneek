@@ -11,7 +11,7 @@ const logger = getLogger("greeneek:settings");
 // No other file should read process.env for a Greeneek key.
 // ---------------------------------------------------------------------------
 
-export const CURRENT_SCHEMA_VERSION = 2;
+export const CURRENT_SCHEMA_VERSION = 3;
 
 export interface Settings {
   schemaVersion: number;
@@ -21,9 +21,10 @@ export interface Settings {
     anthropic: { apiKey: string; baseUrl?: string; enabled: boolean };
     ollama: { baseUrl: string; enabled: boolean };
     openrouter?: { apiKey: string; baseUrl?: string; enabled: boolean };
+    deepseek?: { apiKey: string; baseUrl?: string; enabled: boolean };
   };
   defaults: {
-    provider: string; // echo | openai | anthropic | ollama | openrouter
+    provider: string; // echo | openai | anthropic | ollama | openrouter | deepseek | lmstudio | custom
     modelId?: string;
     mode: string;
     temperature: number;
@@ -52,10 +53,21 @@ export interface Settings {
     plan: string; // free | pro | team | enterprise
   };
   search: {
-    provider: string; // mock | exa | perplexity | deepseek
+    provider: string; // mock | exa | perplexity | generic
   };
   server: {
     port: number;
+  };
+  appearance?: {
+    theme?: "light" | "dark" | "system";
+    accentColor?: string;
+    radius?: number;
+  };
+  behavior?: {
+    autoTitle?: boolean;
+    sendOnEnter?: boolean;
+    autoScroll?: boolean;
+    showReasoning?: boolean;
   };
 }
 
@@ -64,8 +76,9 @@ export const DEFAULT_SETTINGS: Settings = {
   providers: {
     openai: { apiKey: "", enabled: false },
     anthropic: { apiKey: "", enabled: false },
-    ollama: { baseUrl: "http://127.0.0.1:11434/v1", enabled: false },
+    ollama: { baseUrl: "http://127.0.0.1:11434/v1", enabled: true },
     openrouter: { apiKey: "", baseUrl: "https://openrouter.ai/api/v1", enabled: false },
+    deepseek: { apiKey: "", baseUrl: "https://api.deepseek.com/v1", enabled: false },
   },
   defaults: {
     provider: "echo",
@@ -78,7 +91,7 @@ export const DEFAULT_SETTINGS: Settings = {
     "greeneek.provider.openai": { enabled: false },
     "greeneek.provider.openrouter": { enabled: false },
     "greeneek.provider.anthropic": { enabled: false },
-    "greeneek.provider.ollama": { enabled: false },
+    "greeneek.provider.ollama": { enabled: true },
     "greeneek.tool.basic": { enabled: true },
     "greeneek.tracer.local": { enabled: true },
     "greeneek.mode.chat": { enabled: true },
@@ -106,6 +119,8 @@ export const DEFAULT_SETTINGS: Settings = {
   server: {
     port: 3080,
   },
+  appearance: { theme: "system" },
+  behavior: { autoTitle: true, sendOnEnter: true, autoScroll: true, showReasoning: true },
 };
 
 type EnvSeed = Partial<Settings> & Record<string, unknown>;
@@ -250,13 +265,15 @@ export function validateSettings(raw: unknown): Settings {
   // Providers
   const p = obj.providers as Record<string, unknown> | undefined;
   if (p && typeof p === "object") {
-    for (const key of ["openai", "anthropic", "ollama", "openrouter"] as const) {
+    for (const key of ["openai", "anthropic", "ollama", "openrouter", "deepseek"] as const) {
       const v = (p as Record<string, unknown>)[key] as Record<string, unknown> | undefined;
       if (v && typeof v === "object") {
-        const cur = (next.providers as Record<string, unknown>)[key] as Record<string, unknown>;
-        if (typeof v.apiKey === "string") (cur as Record<string, unknown>).apiKey = normaliseKey(v.apiKey as string);
-        if (typeof v.baseUrl === "string") (cur as Record<string, unknown>).baseUrl = (v.baseUrl as string).trim().replace(/\/$/, "");
-        if (typeof v.enabled === "boolean") (cur as Record<string, unknown>).enabled = v.enabled;
+        const cur = (next.providers as Record<string, unknown>)[key] as Record<string, unknown> | undefined;
+        if (!cur) (next.providers as Record<string, unknown>)[key] = { apiKey: "", enabled: false };
+        const target = (next.providers as Record<string, unknown>)[key] as Record<string, unknown>;
+        if (typeof v.apiKey === "string") target.apiKey = normaliseKey(v.apiKey as string);
+        if (typeof v.baseUrl === "string") target.baseUrl = (v.baseUrl as string).trim().replace(/\/$/, "");
+        if (typeof v.enabled === "boolean") target.enabled = v.enabled;
       }
     }
   }
@@ -297,6 +314,22 @@ export function validateSettings(raw: unknown): Settings {
 
   const srv = obj.server as Record<string, unknown> | undefined;
   if (srv && typeof srv.port === "number" && srv.port > 0) next.server.port = srv.port;
+
+  const appearance = obj.appearance as Record<string, unknown> | undefined;
+  if (appearance && typeof appearance === "object") {
+    next.appearance = next.appearance ?? {};
+    if (typeof appearance.theme === "string" && ["light", "dark", "system"].includes(appearance.theme)) (next.appearance as Record<string, unknown>).theme = appearance.theme;
+    if (typeof appearance.accentColor === "string") (next.appearance as Record<string, unknown>).accentColor = appearance.accentColor;
+    if (typeof appearance.radius === "number") (next.appearance as Record<string, unknown>).radius = appearance.radius;
+  }
+  const behavior = obj.behavior as Record<string, unknown> | undefined;
+  if (behavior && typeof behavior === "object") {
+    next.behavior = next.behavior ?? {};
+    if (typeof behavior.autoTitle === "boolean") (next.behavior as Record<string, unknown>).autoTitle = behavior.autoTitle;
+    if (typeof behavior.sendOnEnter === "boolean") (next.behavior as Record<string, unknown>).sendOnEnter = behavior.sendOnEnter;
+    if (typeof behavior.autoScroll === "boolean") (next.behavior as Record<string, unknown>).autoScroll = behavior.autoScroll;
+    if (typeof behavior.showReasoning === "boolean") (next.behavior as Record<string, unknown>).showReasoning = behavior.showReasoning;
+  }
 
   const plugins = obj.plugins as Record<string, unknown> | undefined;
   if (plugins && typeof plugins === "object") {
