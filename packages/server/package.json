@@ -1,0 +1,23 @@
+{
+  "name": "@greeneek/server",
+  "version": "0.1.0",
+  "description": "Greeneek HTTP server — JSON-RPC + REST surface, sessions, SSE streaming.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "dependencies": {
+    "@greeneek/core": "workspace:*",
+    "@greeneek/base": "workspace:*",
+    "@greeneek/tools": "workspace:*",
+    "@greeneek/adapters": "workspace:*",
+    "@greeneek/telemetry": "workspace:*",
+    "@greeneek/audit": "workspace:*",
+    "@greeneek/billing": "workspace:*",
+    "@greeneek/gateway": "workspace:*",
+    "@greeneek/marketplace": "workspace:*",
+    "@greeneek/brand": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "license": "MIT"
+}

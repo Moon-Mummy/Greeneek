@@ -1,0 +1,22 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.turbo/
+.vite/
+coverage/
+.DS_Store
+*.log
+.env
+.env.local
+.env.*.local
+.oxlintcache/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+build/
+
+# Local harness data (never commit user sessions)
+.greeneek/
+*.jsonl

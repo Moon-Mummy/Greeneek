@@ -1,0 +1,14 @@
+{
+  "name": "@greeneek/gateway",
+  "version": "0.1.0",
+  "description": "API gateway \u2014 token-bucket rate limits, API keys, request signing.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@greeneek/core": "workspace:*"
+  }
+}

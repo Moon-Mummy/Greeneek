@@ -1,0 +1,14 @@
+{
+  "name": "@greeneek/billing",
+  "version": "0.1.0",
+  "description": "Billing & usage metering — token meters, plan tiers, Stripe webhooks.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "dependencies": {
+    "@greeneek/core": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "license": "MIT"
+}

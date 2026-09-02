@@ -1,0 +1,14 @@
+{
+  "name": "@greeneek/core",
+  "version": "0.1.0",
+  "description": "Greeneek core \u2014 agent loop, session log, tool registry, prompt assembly.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@greeneek/brand": "workspace:*"
+  }
+}
