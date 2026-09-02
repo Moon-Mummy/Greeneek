@@ -1,0 +1,21 @@
+{
+  "name": "greeneek",
+  "version": "0.1.0",
+  "description": "Greeneek CLI \u2014 web, headless, sdk, acp profiles.",
+  "bin": {
+    "greeneek": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "dependencies": {
+    "@greeneek/server": "workspace:*",
+    "@greeneek/base": "workspace:*",
+    "@greeneek/core": "workspace:*",
+    "@greeneek/adapters": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "start": "node dist/index.js"
+  },
+  "license": "MIT"
+}

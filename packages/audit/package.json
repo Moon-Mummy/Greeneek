@@ -1,0 +1,15 @@
+{
+  "name": "@greeneek/audit",
+  "version": "0.1.0",
+  "description": "Append-only, hash-chained compliance audit trail.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@greeneek/core": "workspace:*",
+    "@greeneek/brand": "workspace:*"
+  }
+}

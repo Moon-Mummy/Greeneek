@@ -1,0 +1,68 @@
+{
+  "name": "greeneek",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Greeneek — the surgeon's toolkit for AI agents. Everything is a plugin.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json && pnpm --filter @greeneek/web run build",
+    "typecheck": "tsc -b tsconfig.build.json && pnpm --filter @greeneek/web exec tsc --noEmit -p tsconfig.json",
+    "lint": "oxlint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dev": "pnpm build && tsx apps/cli/src/index.ts web --port 3080",
+    "start": "node apps/cli/dist/index.js web --port 3080",
+    "greeneek": "node apps/cli/dist/index.js",
+    "smoke": "vitest run --config vitest.smoke.config.ts",
+    "fresh": "rimraf .turbo packages/*/dist apps/*/dist && pnpm build"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "greeneek": {
+    "maintainer": "Greeneek Labs",
+    "license": "MIT",
+    "profile": {
+      "web": [
+        "@greeneek/base",
+        "@greeneek/adapters",
+        "@greeneek/tools",
+        "@greeneek/telemetry",
+        "@greeneek/audit",
+        "@greeneek/billing",
+        "@greeneek/gateway",
+        "@greeneek/marketplace"
+      ],
+      "headless": [
+        "@greeneek/base",
+        "@greeneek/adapters",
+        "@greeneek/tools",
+        "@greeneek/telemetry"
+      ],
+      "sdk": [
+        "@greeneek/base",
+        "@greeneek/adapters",
+        "@greeneek/tools",
+        "@greeneek/telemetry"
+      ],
+      "acp": [
+        "@greeneek/base",
+        "@greeneek/adapters",
+        "@greeneek/tools"
+      ]
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "oxlint": "^0.15.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

@@ -1,0 +1,241 @@
+{
+  "profile": "web",
+  "rows": [
+    {
+      "id": "llm.echo",
+      "type": "llm.adapter",
+      "options": {
+        "provider": "echo",
+        "model": "echo-1"
+      }
+    },
+    {
+      "id": "llm.openai",
+      "type": "llm.adapter",
+      "enabled": false,
+      "options": {
+        "provider": "openai",
+        "model": "gpt-4o-mini"
+      }
+    },
+    {
+      "id": "llm.anthropic",
+      "type": "llm.adapter",
+      "enabled": false,
+      "options": {
+        "provider": "anthropic",
+        "model": "claude-sonnet-4-5"
+      }
+    },
+    {
+      "id": "llm.ollama",
+      "type": "llm.adapter",
+      "enabled": false,
+      "options": {
+        "provider": "ollama",
+        "model": "qwen2.5-coder:7b",
+        "baseUrl": "http://127.0.0.1:11434/v1"
+      }
+    },
+    {
+      "id": "llm.default",
+      "type": "llm.default",
+      "options": {
+        "provider": "$GREENEK_MODEL_PROVIDER",
+        "fallback": "echo"
+      }
+    },
+    {
+      "id": "telemetry.sink.console",
+      "type": "telemetry.sink",
+      "options": {
+        "verbose": false
+      }
+    },
+    {
+      "id": "telemetry.otlp",
+      "type": "telemetry.otlp",
+      "options": {
+        "endpoint": "",
+        "exportPath": ""
+      }
+    },
+    {
+      "id": "telemetry.cost",
+      "type": "telemetry.cost",
+      "enabled": true
+    },
+    {
+      "id": "telemetry.alerts",
+      "type": "telemetry.alerts",
+      "options": {
+        "failureRateThreshold": 0.2,
+        "windowMs": 60000,
+        "minSamples": 5
+      }
+    },
+    {
+      "id": "telemetry.default",
+      "type": "telemetry.default",
+      "options": {
+        "enabled": true
+      }
+    },
+    {
+      "id": "billing.plans",
+      "type": "billing.plan",
+      "options": {
+        "tiers": [
+          "free",
+          "pro",
+          "team",
+          "enterprise"
+        ]
+      }
+    },
+    {
+      "id": "billing.meter",
+      "type": "billing.meter",
+      "enabled": true
+    },
+    {
+      "id": "billing.stripe",
+      "type": "billing.stripe",
+      "options": {
+        "webhookSecretEnv": "STRIPE_WEBHOOK_SECRET",
+        "priceIds": {}
+      },
+      "enabled": false
+    },
+    {
+      "id": "billing.grace",
+      "type": "billing.grace",
+      "options": {
+        "days": 7
+      }
+    },
+    {
+      "id": "audit.store",
+      "type": "audit.store",
+      "enabled": true
+    },
+    {
+      "id": "audit.retention",
+      "type": "audit.retention",
+      "options": {
+        "months": 12
+      }
+    },
+    {
+      "id": "gateway.ratelimit",
+      "type": "gateway.ratelimit",
+      "options": {
+        "chat": {
+          "capacity": 60,
+          "refillPerSecond": 1
+        },
+        "tools": {
+          "capacity": 240,
+          "refillPerSecond": 4
+        },
+        "audit": {
+          "capacity": 10,
+          "refillPerSecond": 0.2
+        }
+      }
+    },
+    {
+      "id": "gateway.keys",
+      "type": "gateway.keys",
+      "enabled": true
+    },
+    {
+      "id": "gateway.signing",
+      "type": "gateway.signing",
+      "options": {
+        "maxSkewMs": 300000
+      },
+      "enabled": true
+    },
+    {
+      "id": "gateway.abuse",
+      "type": "gateway.abuse",
+      "options": {
+        "maxFailuresPerMinute": 30,
+        "blockMs": 600000
+      }
+    },
+    {
+      "id": "marketplace.registry",
+      "type": "marketplace.registry",
+      "options": {
+        "url": ""
+      }
+    },
+    {
+      "id": "marketplace.review",
+      "type": "marketplace.review",
+      "options": {
+        "requireVerifiedPublisher": true
+      }
+    },
+    {
+      "id": "marketplace.install",
+      "type": "marketplace.install",
+      "options": {
+        "flow": "profile-patch"
+      }
+    },
+    {
+      "id": "profile",
+      "type": "profile",
+      "options": {
+        "name": "web"
+      }
+    },
+    {
+      "id": "core.loop",
+      "type": "core.loop",
+      "options": {
+        "maxSteps": 12
+      }
+    },
+    {
+      "id": "core.tools",
+      "type": "core.tools",
+      "options": {
+        "approvalPolicy": "auto"
+      }
+    },
+    {
+      "id": "core.session",
+      "type": "core.session",
+      "options": {
+        "durable": true
+      }
+    },
+    {
+      "id": "core.system-prompt",
+      "type": "core.system-prompt",
+      "options": {
+        "sections": true
+      }
+    },
+    {
+      "id": "plugin.report.styleguide",
+      "type": "system-prompt.section",
+      "enabled": true,
+      "options": {
+        "name": "Report styleguide"
+      }
+    },
+    {
+      "id": "llm.active",
+      "type": "llm.active",
+      "options": {
+        "provider": "echo",
+        "model": "echo-1"
+      }
+    }
+  ]
+}

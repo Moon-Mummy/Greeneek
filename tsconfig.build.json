@@ -1,0 +1,20 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/brand" },
+    { "path": "./packages/core" },
+    { "path": "./packages/adapters" },
+    { "path": "./packages/tools" },
+    { "path": "./packages/telemetry" },
+    { "path": "./packages/audit" },
+    { "path": "./packages/billing" },
+    { "path": "./packages/gateway" },
+    { "path": "./packages/marketplace" },
+    { "path": "./packages/sdk" },
+    { "path": "./packages/base" },
+    { "path": "./packages/server" },
+    { "path": "./apps/headless" },
+    { "path": "./apps/acp" },
+    { "path": "./apps/cli" }
+  ]
+}

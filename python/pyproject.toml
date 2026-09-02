@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "greeneek"
+version = "0.1.0"
+description = "Greeneek Python client — bind to the Greeneek harness SDK profile."
+authors = ["Greeneek Labs <support@greeneek.dev>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

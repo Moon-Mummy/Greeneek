@@ -1,0 +1,40 @@
+services:
+  greeneek:
+    build: .
+    image: ghcr.io/moon-mummy/greeneek:latest
+    ports:
+      - "3080:3080"
+    environment:
+      PORT: "3080"
+      GREENEK_MODEL_PROVIDER: "${GREENEK_MODEL_PROVIDER:-echo}"
+      OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
+      EXA_API_KEY: "${EXA_API_KEY:-}"
+      GREENEK_OTEL_EXPORT_PATH: "${GREENEK_OTEL_EXPORT_PATH:-/data/otel.jsonl}"
+      STRIPE_WEBHOOK_SECRET: "${STRIPE_WEBHOOK_SECRET:-}"
+    volumes:
+      - greeneek-data:/data
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3080/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  # Postgres: durable session/store seat for productized deployments.
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: greeneek
+      POSTGRES_USER: greeneek
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}"
+    volumes:
+      - greeneek-pg:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  greeneek-data:
+  greeneek-pg:
