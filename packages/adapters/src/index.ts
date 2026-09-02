@@ -3,29 +3,30 @@ import { EchoAdapter } from "./echo";
 import { OpenAICompatibleAdapter } from "./openai";
 import { AnthropicAdapter } from "./anthropic";
 import { OllamaAdapter } from "./ollama";
+import { OpenRouterAdapter } from "./openrouter";
 
-export { EchoAdapter, OpenAICompatibleAdapter, AnthropicAdapter, OllamaAdapter };
+export { EchoAdapter, OpenAICompatibleAdapter, AnthropicAdapter, OllamaAdapter, OpenRouterAdapter };
+export { ProviderError, mapProviderError, mapNetworkError } from "./errors";
+export type { ModelInfo, Provider } from "./provider";
 
 /**
- * Registers the provider rows on the ctx.llm adapter seam.
- *
- * Profile patches define which adapter runs first — provider swap changes
- * nothing else in the tree.
+ * @deprecated — provider rows are now registered via plugins/provider-*
+ * Kept as no-op for backward compat; the plugin kernel (packages/base/src/plugin.ts)
+ * is the single way to add a provider. See plugins/provider-openrouter/index.ts.
  */
-export function registerAdapterRows(harness: Harness): void {
-  harness
-    .add({ id: "llm.echo", type: "llm.adapter", options: { provider: "echo", model: "echo-1" } })
-    .add({ id: "llm.openai", type: "llm.adapter", enabled: false, options: { provider: "openai", model: "gpt-4o-mini" } })
-    .add({ id: "llm.anthropic", type: "llm.adapter", enabled: false, options: { provider: "anthropic", model: "claude-sonnet-4-5" } })
-    .add({ id: "llm.ollama", type: "llm.adapter", enabled: false, options: { provider: "ollama", model: "qwen2.5-coder:7b", baseUrl: "http://127.0.0.1:11434/v1" } })
-    .add({ id: "llm.default", type: "llm.default", options: { provider: "$GREENEK_MODEL_PROVIDER", fallback: "echo" } });
+export function registerAdapterRows(_harness: Harness): void {
+  // No-op: providers are registered via the plugin registry (plugins/provider-*)
+  // This shim remains so old code that calls registerAdapterRows does not break,
+  // but it does not add rows — the plugin init does.
 }
 
-/** Instantiate the adapter selected by config rows + env. */
+/** Instantiate the adapter selected by config rows + env — per-request, not frozen at startup. */
 export function createAdapter(harness: Harness, secrets: Record<string, string | undefined>): ModelAdapter {
-  const wanted = secrets["GREENEK_MODEL_PROVIDER"] ?? "echo";
-  const rows = harness.configsByType("llm.adapter");
-  const row = rows.find((r) => r.options?.provider === wanted) ?? rows.find((r) => r.enabled !== false);
+  const wanted = (secrets["GREENEK_MODEL_PROVIDER"] ?? "echo").trim();
+  // Include disabled rows when matching wanted provider so env-driven swap works without a patch.
+  const allRows = harness.dump().filter((r) => r.type === "llm.adapter");
+  const enabledRows = allRows.filter((r) => r.enabled !== false);
+  const row = allRows.find((r) => r.options?.provider === wanted) ?? enabledRows[0];
   const provider = row?.options?.provider ?? "echo";
 
   switch (provider) {
@@ -34,6 +35,12 @@ export function createAdapter(harness: Harness, secrets: Record<string, string |
         model: row?.options?.model as string | undefined,
         baseUrl: row?.options?.baseUrl as string | undefined,
         apiKey: secrets["OPENAI_API_KEY"],
+      });
+    case "openrouter":
+      return new OpenRouterAdapter({
+        model: row?.options?.model as string | undefined,
+        baseUrl: row?.options?.baseUrl as string | undefined,
+        apiKey: secrets["OPENROUTER_API_KEY"] ?? secrets["OPENAI_API_KEY"],
       });
     case "anthropic":
       return new AnthropicAdapter({

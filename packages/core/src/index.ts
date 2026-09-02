@@ -5,3 +5,5 @@ export * from "./telemetry";
 export * from "./tools";
 export * from "./prompt";
 export * from "./agent";
+export * from "./trace";
+export * from "./mode";

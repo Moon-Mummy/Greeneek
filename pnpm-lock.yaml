@@ -47,6 +47,9 @@ importers:
       '@greeneek/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@greeneek/headless':
+        specifier: workspace:*
+        version: link:../headless
       '@greeneek/server':
         specifier: workspace:*
         version: link:../../packages/server

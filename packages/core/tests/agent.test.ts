@@ -41,6 +41,7 @@ describe("agent loop", () => {
       prompt,
       telemetry,
       sessionId: "s2",
+      modeId: "agent",
       onEvent: (e) => events.push({ type: e.type, data: e.data }),
     });
     await loop.run('@execute calc.eval {"expression":"(2+3)*4"}');

@@ -1,0 +1,9 @@
+{
+  "id": "greeneek.mode.chat",
+  "name": "Chat Mode",
+  "version": "0.1.0",
+  "description": "Single model call, no tools",
+  "kinds": ["mode"],
+  "permissions": [],
+  "minAppVersion": "0.1.0"
+}

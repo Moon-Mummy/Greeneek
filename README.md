@@ -22,12 +22,13 @@ instead of a revert.
 
 - **Composition**: `profile bundles → profile patch → home patch → CLI
   overlay`; inspect with `greeneek --profile web --dump-config`.
-- **13 new capabilities** in this release: extra model providers, billing &
-  metering, plugin marketplace, observability, one-command Docker deploy,
-  CI/CD hardening, i18n, enterprise SSO/SCIM, compliance audit log, user
-  theming, eval harness, API gateway & rate limits, voice I/O.
-- **Runs anywhere**: Web UI, headless runner, TypeScript SDK, ACP editor
-  server, and Docker.
+- **Composition**: 7 phases shipped — `Phase 1` typed settings + `Phase 2` OpenRouter + `Phase 3` Settings overhaul + `Phase 4` model/mode picker in chat + `Phase 5` plugin kernel + `Phase 6` every run traceable + `Phase 7` runtime modes.
+- **Providers**: `echo` (offline) + `openai` + `openrouter` (`sk-or-` + `HTTP-Referer`/`X-Title` + `/auth/key` + `/models` cache) + `anthropic` + `ollama` — `GET /api/models` live list, `POST /api/settings/test` per `ProviderError.kind`.
+- **Settings**: single `packages/base/src/settings.ts:16` versioned `schemaVersion:2`, field-level `PATCH /api/settings`, masked `****` + `Reveal`/`Clear`/`Test connection`, live without restart, `GET /api/settings/export|import|reset`.
+- **Chat**: model chip `Ctrl+M` `/model` + mode chip `chat/agent/plan/dry-run/replay` `packages/core/src/mode.ts:41`, per-conversation `modelId/modeId` + `Switched to …` system note, `model · tokens · latency` + **View trace**.
+- **Plugins**: `packages/base/src/plugin.ts:1` 12 built-ins `plugins/provider-*/manifest.json:1`, `GET /api/plugins` + `POST /api/plugins/:id/enable|disable` `packages/server/src/app.ts:215`.
+- **Tracing**: `packages/core/src/trace.ts:70` `Runtime` + `packages/telemetry/src/store.ts:9` `LocalTraceStore` JSONL `~/.greeneek/traces`, `GET /api/traces` table + **View trace** waterfall `packages/web/src/App.tsx:852` + `docs/TRACING.md:1`.
+- **Runs anywhere**: Web UI, headless `greeneek run --mode/--model/--input/--out` `apps/headless/src/index.ts:12`, TypeScript SDK, ACP, Docker.
 
 > **⚠ Developer preview** — the base is pinned to a fixed upstream commit
 > (`4e84901…`). Breaking changes upstream are expected; we rebase monthly,

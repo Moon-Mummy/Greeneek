@@ -18,7 +18,8 @@ export async function serve(options: ServeOptions): Promise<{ server: import("no
   const server = createServer((req: IncomingMessage, res: ServerResponse) => {
     void app.handle(req, res);
   });
-  const port = options.port ?? Number(process.env.PORT ?? 3080);
+  // Port resolved via CLI flag → Settings (PORT env) → 3080, centralised in settings.ts
+  const port = options.port ?? bundle.settings.server.port ?? 3080;
   await new Promise<void>((resolve, reject) => {
     server.once("error", reject);
     server.listen(port, "0.0.0.0", () => resolve());

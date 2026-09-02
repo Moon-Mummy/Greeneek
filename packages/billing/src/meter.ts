@@ -26,8 +26,11 @@ export class UsageMeter {
   private used = { tokens: 0, usd: 0, requests: 0 };
   readonly tier: PlanTier;
 
-  constructor(tierId = process.env.GREENEK_PLAN ?? "free") {
-    this.tier = TIERS[tierId] ?? TIERS.free;
+  constructor(tierId?: string) {
+    // Tier is seeded via Settings (packages/base/src/settings.ts). Fallback allows
+    // direct instantiation in tests without a settings instance.
+    const id = tierId ?? "free";
+    this.tier = TIERS[id] ?? TIERS.free;
   }
 
   record(inputTokens: number, outputTokens: number, costUsd: number): { tokens: number; usd: number; requests: number } {

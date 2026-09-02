@@ -11,7 +11,8 @@
     "@greeneek/server": "workspace:*",
     "@greeneek/base": "workspace:*",
     "@greeneek/core": "workspace:*",
-    "@greeneek/adapters": "workspace:*"
+    "@greeneek/adapters": "workspace:*",
+    "@greeneek/headless": "workspace:*"
   },
   "scripts": {
     "build": "tsc -b",

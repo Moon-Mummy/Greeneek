@@ -6,5 +6,17 @@ export default defineConfig({
     environment: "node",
     testTimeout: 15000,
     pool: "forks",
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "lcov", "html"],
+      include: ["packages/*/src/**/*.ts", "apps/*/src/**/*.ts"],
+      exclude: ["**/dist/**", "**/*.test.ts", "**/plugins/**", "plugins/**"],
+      thresholds: {
+        lines: 70,
+        branches: 70,
+        functions: 70,
+        statements: 70,
+      },
+    },
   },
 });

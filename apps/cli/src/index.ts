@@ -35,6 +35,16 @@ async function main(): Promise<void> {
   }
 
   if (command === "run") {
+    const mode = flag("--mode");
+    const model = flag("--model");
+    const input = flag("--input");
+    const out = flag("--out");
+    if (input && out) {
+      const { runBatch } = await import("@greeneek/headless");
+      await runBatch(input, out, { mode, model });
+      console.log(`Batch done: ${input} → ${out}`);
+      return;
+    }
     const bundle = buildBundle({ profile });
     const { AgentLoop } = await import("@greeneek/core");
     const { createAdapter } = await import("@greeneek/adapters");
@@ -46,6 +56,11 @@ async function main(): Promise<void> {
       telemetry: bundle.telemetry,
       sessionId: bundle.sessionLog.sessionId,
       secrets: bundle.secrets,
+      runtime: bundle.runtime,
+      conversationId: bundle.sessionLog.sessionId,
+      modeId: mode ?? bundle.settings.defaults.mode ?? "chat",
+      modelId: model ?? bundle.settings.defaults.modelId ?? bundle.settings.defaults.provider,
+      providerId: bundle.settings.defaults.provider,
       onEvent: (e) => {
         if (e.type === "assistant/stream") process.stdout.write((e.data as { delta: string }).delta);
         if (e.type === "tool/end") {

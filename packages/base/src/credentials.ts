@@ -7,28 +7,29 @@ import { dirname } from "node:path";
  * Keys are read but never echoed by the server; the settings UI writes only
  * masked/generated credentials.
  */
+/**
+ * File-backed credentials only. Environment overlay is handled exclusively by
+ * `settings.ts:settingsFromEnv()` — this module must not read process.env
+ * so the settings module remains the single source of truth.
+ */
 export function loadCredentials(file: string): Record<string, string | undefined> {
   const values: Record<string, string | undefined> = {};
   if (existsSync(file)) {
     try {
       const parsed = JSON.parse(readFileSync(file, "utf8")) as Record<string, string>;
-      for (const [k, v] of Object.entries(parsed)) values[k] = v;
+      for (const [k, v] of Object.entries(parsed)) {
+        // Defensive: normalise on read (trim, strip Bearer) — migration also does this
+        if (typeof v === "string") {
+          let s = v.trim();
+          if (/api[_-]?key|secret|token/i.test(k) && s.toLowerCase().startsWith("bearer ")) s = s.slice(7).trim();
+          values[k] = s;
+        } else {
+          values[k] = v as unknown as string;
+        }
+      }
     } catch {
       // corrupt credential file: treat as empty, never crash boot
     }
-  }
-  for (const k of [
-    "OPENAI_API_KEY",
-    "ANTHROPIC_API_KEY",
-    "OLLAMA_API_KEY",
-    "EXA_API_KEY",
-    "PERPLEXITY_API_KEY",
-    "DEEPSEEK_API_KEY",
-    "STRIPE_WEBHOOK_SECRET",
-    "GREENEK_AUTO_APPROVE",
-    "GREENEK_MODEL_PROVIDER",
-  ]) {
-    if (process.env[k]) values[k] = process.env[k];
   }
   return values;
 }

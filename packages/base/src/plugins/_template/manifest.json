@@ -1,0 +1,15 @@
+{
+  "id": "greeneek.template.hello",
+  "name": "Hello World Template",
+  "version": "0.1.0",
+  "description": "Working hello-world plugin — registers one tool and one middleware",
+  "kinds": ["tool", "middleware"],
+  "permissions": [],
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "greeting": { "type": "string", "default": "Hello from template" }
+    }
+  },
+  "minAppVersion": "0.1.0"
+}

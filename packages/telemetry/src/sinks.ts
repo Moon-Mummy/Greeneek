@@ -4,11 +4,12 @@ import type { SessionEvent, TelemetrySink } from "@greeneek/core";
 
 /** Quiet console sink — one line per event, prefixed with the brand. */
 export class ConsoleSink implements TelemetrySink {
-  constructor(private silent = process.env.GREENEK_VERBOSE !== "1") {}
+  constructor(private silent = true) {}
 
   emit(event: SessionEvent): void {
     if (this.silent) return;
-    const brief = JSON.stringify(event.data)?.slice(0, 160);
+    // Redact secrets before emitting to stdout
+    const brief = JSON.stringify(event.data)?.slice(0, 160).replace(/sk-or-[a-zA-Z0-9_-]+/g, "sk-or-****").replace(/sk-[a-zA-Z0-9]{20,}/g, "sk-****");
     console.log(`[greeneek:${event.type}] ${brief}`);
   }
 }

@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { Message, ModelAdapter, ToolCall, ToolDefinition, Usage } from "@greeneek/core";
+import { mapNetworkError, mapProviderError } from "./errors";
 
 /**
  * Anthropic adapter — /v1/messages SSE streaming with tool_use blocks.
@@ -11,11 +12,10 @@ export class AnthropicAdapter implements ModelAdapter {
   private apiKey?: string;
   readonly pricing = { inputPerMToken: 3, outputPerMToken: 15 };
 
-  constructor(options: { model?: string; baseUrl?: string; apiKey?: string; apiKeyEnv?: string }) {
+  constructor(options: { model?: string; baseUrl?: string; apiKey?: string }) {
     this.model = options.model ?? "claude-sonnet-4-5";
-    this.baseUrl = options.baseUrl ?? "https://api.anthropic.com/v1";
-    const env = options.apiKeyEnv ?? "ANTHROPIC_API_KEY";
-    this.apiKey = options.apiKey ?? process.env[env];
+    this.baseUrl = (options.baseUrl ?? "https://api.anthropic.com/v1").replace(/\/$/, "");
+    this.apiKey = options.apiKey?.trim().replace(/^Bearer\s+/i, "");
   }
 
   async *stream(messages: Message[], options: { tools?: ToolDefinition[]; signal?: AbortSignal }): AsyncGenerator<any> {
@@ -49,17 +49,25 @@ export class AnthropicAdapter implements ModelAdapter {
       }));
     }
 
-    const res = await fetch(`${this.baseUrl}/messages`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "anthropic-version": "2023-06-01",
-        "x-api-key": this.apiKey ?? "",
-      },
-      body: JSON.stringify(body),
-      signal: options.signal,
-    });
-    if (!res.ok) throw new Error(`Anthropic error ${res.status}: ${await res.text()}`);
+    let res: Response;
+    try {
+      res = await fetch(`${this.baseUrl}/messages`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "anthropic-version": "2023-06-01",
+          "x-api-key": this.apiKey ?? "",
+        },
+        body: JSON.stringify(body),
+        signal: options.signal,
+      });
+    } catch (e) {
+      throw mapNetworkError(e, "anthropic");
+    }
+    if (!res.ok) {
+      const text = await res.text();
+      throw mapProviderError(res.status, text, "anthropic");
+    }
 
     const toolAcc = new Map<string, { id: string; name: string; arguments: string }>();
     let usage: Usage = { inputTokens: 0, outputTokens: 0 };

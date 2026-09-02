@@ -25,7 +25,7 @@ function runCommand(command: string, ctx: ToolContext): Promise<string> {
   return new Promise((resolvePromise, reject) => {
     const child = spawn("/bin/sh", ["-c", command], {
       cwd: ctx.workingDir,
-      env: process.env,
+      env: { ...process.env, ...ctx.secrets } as NodeJS.ProcessEnv,
       stdio: ["ignore", "pipe", "pipe"],
       shell: false,
     });

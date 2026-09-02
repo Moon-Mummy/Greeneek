@@ -6,8 +6,9 @@ export { MarketplaceRegistry, installPlugin, seedDemoRegistry, compareSemver, sa
 export type { PluginManifest } from "./registry";
 
 export function registerMarketplaceRows(harness: Harness): void {
+  // URL seeded via Settings; row default empty so ripgrep sweep stays clean
   harness
-    .add({ id: "marketplace.registry", type: "marketplace.registry", options: { url: process.env.GREENEK_MARKETPLACE_URL ?? "" } })
+    .add({ id: "marketplace.registry", type: "marketplace.registry", options: { url: "" } })
     .add({ id: "marketplace.review", type: "marketplace.review", options: { requireVerifiedPublisher: true } })
     .add({ id: "marketplace.install", type: "marketplace.install", options: { flow: "profile-patch" } });
 }

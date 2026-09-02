@@ -19,6 +19,9 @@
     },
     {
       "path": "../../packages/adapters"
+    },
+    {
+      "path": "../headless"
     }
   ]
 }
