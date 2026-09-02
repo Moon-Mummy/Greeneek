@@ -1,0 +1,9 @@
+M1: audit fix + dead-UI cleanup + E2E smoke (3 workflows)
+
+- vitest 2.1.9->3.2.7, vite 5.4.21->6.4.3 (audit clean)
+- Fixed ollama-native.ts lint (nullish coalescing precedence)
+- Removed dead UI / TODO / mock placeholders
+- Added baseline E2E smoke (chat / tool / offline-first) via pnpm e2e
+- Isolated audit homes per test to avoid chain corruption
+
+All gates: build typecheck lint(0w/0e) test(48/48) e2e(3/3) PASS

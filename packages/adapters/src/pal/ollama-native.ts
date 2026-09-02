@@ -110,7 +110,7 @@ export class OllamaNativePAL extends BaseChatProvider {
       stream: true,
       think: params.reasoning ?? undefined,
     };
-    if (params.temperature !== undefined) body["options"] = { ...(body["options"] as object ?? {}), temperature: params.temperature };
+    if (params.temperature !== undefined) body["options"] = { ...(body["options"] as object), temperature: params.temperature };
     if (params.tools?.length) body["tools"] = params.tools;
 
     let res: Response;

@@ -2,7 +2,7 @@
   "name": "greeneek",
   "version": "0.1.0",
   "private": true,
-  "description": "Greeneek — the surgeon's toolkit for AI agents. Everything is a plugin.",
+  "description": "Greeneek \u2014 the surgeon's toolkit for AI agents. Everything is a plugin.",
   "workspaces": [
     "packages/*",
     "apps/*"
@@ -18,7 +18,8 @@
     "start": "node apps/cli/dist/index.js web --port 3080",
     "greeneek": "node apps/cli/dist/index.js",
     "smoke": "vitest run --config vitest.smoke.config.ts",
-    "fresh": "rimraf .turbo packages/*/dist apps/*/dist && pnpm build"
+    "fresh": "rimraf .turbo packages/*/dist apps/*/dist && pnpm build",
+    "e2e": "vitest run packages/server/tests/e2e.test.ts"
   },
   "engines": {
     "node": ">=20",
@@ -63,6 +64,7 @@
     "oxlint": "^0.15.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "vite": "^6.4.3",
+    "vitest": "^3.2.7"
   }
 }
