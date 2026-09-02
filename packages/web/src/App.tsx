@@ -758,7 +758,7 @@ export default function App() {
               <button className="btn ghost" onClick={() => setPickerOpen(false)} aria-label="close picker">✕</button>
             </div>
             <div className="field">
-              <input placeholder="Search models (fuzzy: id, name, vendor) — try 'deepseek'" value={search} onChange={(e) => setSearch(e.target.value)} style={{ width: "100%" }} autoFocus />
+              <input placeholder="Search models (fuzzy: id, name, vendor) — try 'llama'" value={search} onChange={(e) => setSearch(e.target.value)} style={{ width: "100%" }} autoFocus />
             </div>
             <div className="row" style={{ gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
               <button className="btn ghost" onClick={() => void loadModels(true)} disabled={modelsLoading}>{modelsLoading ? "Loading…" : "Refresh models"}</button>

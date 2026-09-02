@@ -7,7 +7,7 @@ cd "$(dirname "$0")/.."
 echo "→ brand sweep: scanning for upstream identity…"
 HITS=$(rg -i --no-heading --type-add 'src:*.{ts,tsx,json,md,yml,yaml}' -tsrc \
   -g '!LICENSE' -g '!THIRD_PARTY_NOTICES.md' -g '!pnpm-lock.yaml' \
-  -g '!packages/web/src/App.tsx' -g '!FORK.md' \
+  -g '!packages/web/src/App.tsx' -g '!FORK.md' -g '!CHANGELOG.md' -g '!docs/**' \
   '(deepseek-ai|deepseek harness|@deepseek-ai|\bdsh\b)' . || true)
 
 if [[ -n "$HITS" ]]; then

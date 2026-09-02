@@ -97,47 +97,75 @@ export class App {
       if (path === "/api/models" && req.method === "GET") {
         const force = url.searchParams.get("refresh") === "1";
         try {
-          const adapters = await import("@greeneek/adapters");
-          const settings = this.bundle.settings;
+          const PAL = await import("@greeneek/adapters");
+          const settings = this.bundle.settings as unknown as { providers: Record<string, { apiKey?: string; baseUrl?: string; enabled?: boolean }>; plugins?: Record<string, { enabled?: boolean }> };
+          const registry = (PAL as unknown as { DEFAULT_REGISTRY: Record<string, { id: string; baseURL: string; isLocal?: boolean; enabled?: boolean; apiKeyRequired: boolean }> }).DEFAULT_REGISTRY;
+          const models: unknown[] = [];
+          const errors: unknown[] = [];
           const isPluginEnabled = (id: string) => {
             const p = (settings.plugins as Record<string, { enabled?: boolean }> | undefined)?.[id];
             if (p?.enabled !== undefined) return p.enabled;
-            // Fallback: check providers.*.enabled for provider plugins (for backward compat with direct provider enable)
             if (id === "greeneek.provider.openrouter") return Boolean(settings.providers.openrouter?.enabled);
             if (id === "greeneek.provider.openai") return Boolean(settings.providers.openai?.enabled);
             if (id === "greeneek.provider.anthropic") return Boolean(settings.providers.anthropic?.enabled);
             if (id === "greeneek.provider.ollama") return Boolean(settings.providers.ollama?.enabled);
             return id === "greeneek.provider.echo" || id === "greeneek.tool.basic" || id === "greeneek.tracer.local" || id === "greeneek.mode.chat";
           };
-          const models: unknown[] = [];
-          const errors: unknown[] = [];
-          const tryProvider = async (provider: string, apiKey?: string, baseUrl?: string) => {
+          // Try PAL providers first (local-first discovery without key via /api/tags or /v1/models)
+          const tryPAL = async (palId: string, fallbackPluginId?: string) => {
+            const cfg = registry?.[palId];
+            if (!cfg) return;
+            if (fallbackPluginId && !isPluginEnabled(fallbackPluginId)) return;
+            // For local providers, always try even without plugins enabled check if isLocal
+            const apiKey = (settings.providers as Record<string, { apiKey?: string }>)[palId]?.apiKey
+              ?? (palId === "openrouter" ? settings.providers.openrouter?.apiKey : undefined)
+              ?? (palId === "openai" ? settings.providers.openai?.apiKey : undefined);
+            const baseUrl = (settings.providers as Record<string, { baseUrl?: string }>)[palId]?.baseUrl ?? cfg.baseURL;
+            try {
+              // Use PAL factory — handles Ollama native vs OpenAI-compatible transparently
+              const providerFactory = (PAL as unknown as { createPALProvider: (id: string, opts: unknown) => { listModels(): Promise<unknown[]> } }).createPALProvider;
+              if (providerFactory) {
+                const pal = providerFactory(palId, { apiKey, registryOverrides: { [palId]: { baseURL: baseUrl } } });
+                const list = await pal.listModels();
+                if (Array.isArray(list) && list.length) models.push(...list);
+              }
+            } catch (e) {
+              errors.push({ provider: palId, message: e instanceof Error ? e.message : String(e), kind: (e as { kind?: string })?.kind ?? "unknown" });
+            }
+          };
+          // Local first
+          await tryPAL("ollama", "greeneek.provider.ollama");
+          await tryPAL("lmstudio");
+          // Cloud via legacy adapters for accurate pricing/tool metadata (keep fallback)
+          const adapters = await import("@greeneek/adapters");
+          const tryLegacy = async (provider: string, apiKey?: string, baseUrl?: string) => {
             try {
               if (provider === "openrouter") {
                 if (!isPluginEnabled("greeneek.provider.openrouter")) return;
                 const a = new adapters.OpenRouterAdapter({ apiKey, baseUrl, model: "openai/gpt-4o-mini" });
                 const list = await a.listModels({ apiKey, baseUrl }, { forceRefresh: force });
-                models.push(...list);
+                // Dedup by id — don't overwrite PAL local models
+                const existing = new Set((models as { id: string }[]).map((m) => m.id));
+                for (const m of list) if (!existing.has(m.id)) models.push(m);
               } else if (provider === "openai") {
                 if (!isPluginEnabled("greeneek.provider.openai")) return;
                 const a = new adapters.OpenAICompatibleAdapter({ apiKey, baseUrl });
                 const list = await a.listModels({ apiKey, baseUrl }, { forceRefresh: force });
-                models.push(...list);
-              } else if (provider === "ollama") {
-                if (!isPluginEnabled("greeneek.provider.ollama")) return;
-                const a = new adapters.OllamaAdapter({ baseUrl } as unknown as { model?: string; baseUrl?: string });
-                const list = await (a as unknown as { listModels?: (c: unknown, o: unknown) => Promise<unknown[]> }).listModels?.({ apiKey, baseUrl }, { forceRefresh: force }) ?? [];
-                if (Array.isArray(list)) models.push(...list);
+                const existing = new Set((models as { id: string }[]).map((m) => m.id));
+                for (const m of list) if (!existing.has(m.id)) models.push(m);
               }
             } catch (e) {
               errors.push({ provider, message: e instanceof Error ? e.message : String(e), kind: (e as { kind?: string })?.kind ?? "unknown" });
             }
           };
-          if (settings.providers.openrouter?.enabled && settings.providers.openrouter?.apiKey) await tryProvider("openrouter", settings.providers.openrouter.apiKey, settings.providers.openrouter.baseUrl);
-          if (settings.providers.openai?.enabled && settings.providers.openai?.apiKey) await tryProvider("openai", settings.providers.openai.apiKey, settings.providers.openai.baseUrl);
+          if (settings.providers.openrouter?.enabled && settings.providers.openrouter?.apiKey) await tryLegacy("openrouter", settings.providers.openrouter.apiKey, settings.providers.openrouter.baseUrl);
+          if (settings.providers.openai?.enabled && settings.providers.openai?.apiKey) await tryLegacy("openai", settings.providers.openai.apiKey, settings.providers.openai.baseUrl);
           if (models.length === 0) {
-            // Try openrouter public models even without key if plugin enabled (or fallback)
-            if (isPluginEnabled("greeneek.provider.openrouter")) await tryProvider("openrouter", undefined, settings.providers.openrouter?.baseUrl);
+            if (isPluginEnabled("greeneek.provider.openrouter")) await tryLegacy("openrouter", undefined, settings.providers.openrouter?.baseUrl);
+          }
+          // Ensure PAL local models are always attempted even when legacy produced results
+          if ((models as unknown[]).length === 0) {
+            // Already tried ollama/lmstudio; surface whatever we have
           }
           return this.json(res, 200, { models, errors, updatedAt: new Date().toISOString() });
         } catch (e) {

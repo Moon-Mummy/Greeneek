@@ -8,6 +8,15 @@ import { OpenRouterAdapter } from "./openrouter";
 export { EchoAdapter, OpenAICompatibleAdapter, AnthropicAdapter, OllamaAdapter, OpenRouterAdapter };
 export { ProviderError, mapProviderError, mapNetworkError } from "./errors";
 export type { ModelInfo, Provider } from "./provider";
+// PAL — provider-agnostic layer (spec §4)
+export * from "./pal/types";
+export { BaseChatProvider } from "./pal/base";
+export { OpenAICompatiblePAL } from "./pal/openai-compatible";
+export { OllamaNativePAL } from "./pal/ollama-native";
+export { DEFAULT_REGISTRY, mergeRegistry, registryGrouped, LOCAL_FIRST_ORDER } from "./pal/registry";
+export { createPALProvider, listModelsPAL, healthCheckPAL } from "./pal/factory";
+export type { SecureStore } from "./pal/secure-storage";
+export { LocalSecureStore, EncryptedSecureStore } from "./pal/secure-storage";
 
 /**
  * @deprecated — provider rows are now registered via plugins/provider-*
