@@ -5,6 +5,8 @@ import { ApiKeysManager } from "./components/api-keys-settings";
 import { ModelPickerGrouped } from "./components/model-selector";
 import { ReasoningLog } from "./components/reasoning-log";
 import { VisionDropzone, type VisionAttachment } from "./components/vision-dropzone";
+import { ocrDataUrl, isVisionModel } from "./lib/vision-ocr";
+import { ErrorBoundary, OfflineBanner, Skeleton } from "./components/hardening";
 
 type Lang = "en" | "es";
 const tDict = { en, es } as const;
@@ -239,6 +241,10 @@ export default function App() {
       setModelsUpdatedAt(body.updatedAt ?? new Date().toISOString());
       if ((body.models ?? []).length === 0) setModelsError("No models available — enable and test a provider in Settings → Providers");
     } catch (e) {
+      // Retry once on transient failure when online
+      if (!force && navigator.onLine && !models.length) {
+        try { await new Promise((r) => setTimeout(r, 700)); const r2 = await fetch(`/api/models?refresh=1`); const b2 = await r2.json() as { models?: ModelInfo[]; updatedAt?: string }; if (r2.ok && Array.isArray(b2.models) && b2.models.length) { setModels(b2.models as ModelInfo[]); setModelsUpdatedAt(b2.updatedAt ?? new Date().toISOString()); setModelsError(null); return; } } catch { /* fall through */ }
+      }
       // Offline degrade: use cached fallback if any models already loaded, else show error
       if (models.length) {
         // keep cached list, show warning
@@ -382,20 +388,33 @@ export default function App() {
       return;
     }
     setRunning(true);
-    const pendingImages = attachments.length ? attachments.map((a) => ({ dataUrl: a.dataUrl, name: a.name, mimeType: a.mimeType })) : undefined;
-    setItems((prev) => [...prev, { kind: "user", text: task, ...(pendingImages ? { images: pendingImages } : {}) }]);
-    const hadImages = Boolean(pendingImages?.length);
-    if (hadImages) setAttachments([]);
-    const sessionId = await ensureSession();
-    // Determine model/provider for this turn (per-conversation)
     const currentModel = conversationModel || (settings?.defaults as Record<string, unknown>)?.modelId as string || meta?.provider?.model || "echo-1";
     const found = models.find((m) => m.id === currentModel);
     const provHint = found?.provider ?? (currentModel.includes("/") ? "openrouter" : ((settings?.defaults as Record<string, unknown>)?.provider as string | undefined) ?? "echo");
+    let pendingImages = attachments.length ? attachments.map((a) => ({ dataUrl: a.dataUrl, name: a.name, mimeType: a.mimeType })) : undefined;
+    let effectiveTask = task;
+    // OCR fallback for non-vision models: extract text client-side so even Echo can see image content
+    if (pendingImages?.length && !isVisionModel(currentModel)) {
+      try {
+        const ocrTexts: string[] = [];
+        for (const a of attachments) {
+          const txt = await ocrDataUrl(a.dataUrl);
+          if (txt) ocrTexts.push(`[Image ${a.name} OCR]: ${txt.slice(0, 4000)}`);
+        }
+        if (ocrTexts.length) effectiveTask = task + "\n\n" + ocrTexts.join("\n");
+      } catch {
+        // OCR is best-effort; still send images for vision-capable fallback on server
+      }
+    }
+    setItems((prev) => [...prev, { kind: "user", text: effectiveTask, ...(pendingImages ? { images: pendingImages } : {}) }]);
+    const hadImages = Boolean(pendingImages?.length);
+    if (hadImages) setAttachments([]);
+    const sessionId = await ensureSession();
     try {
       const res = await fetch(`/api/sessions/${sessionId}/run`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ task, model: currentModel, provider: provHint, mode: conversationMode, ...(pendingImages ? { images: pendingImages } : {}) }),
+        body: JSON.stringify({ task: effectiveTask, model: currentModel, provider: provHint, mode: conversationMode, ...(pendingImages ? { images: pendingImages } : {}) }),
       });
       if (!res.ok || !res.body) throw new Error(`run failed: ${res.status}`);
       const reader = res.body.getReader();
@@ -621,7 +640,9 @@ export default function App() {
   const dataCfg = (settings?.data as Record<string, unknown> | undefined) ?? {};
 
   return (
+    <ErrorBoundary>
     <div className="app">
+      <OfflineBanner />
       <header className="header">
         <div className="wordmark">
           <img src={LOGO} alt="Greeneek" />
@@ -805,7 +826,7 @@ export default function App() {
               {modelsUpdatedAt && <span className="muted" style={{ fontSize: 11 }}>Updated: {new Date(modelsUpdatedAt).toLocaleTimeString()}</span>}
               {modelsError && <span style={{ fontSize: 11, color: "var(--error)" }}>{modelsError} — <a href="#" onClick={(e) => { e.preventDefault(); setPickerOpen(false); setSettingsOpen(true); setTab("providers"); }}>Open Settings → Providers</a></span>}
             </div>
-            {modelsLoading && <p className="muted">Loading models…</p>}
+            {modelsLoading && <Skeleton lines={4} />}
             {!modelsLoading && models.length === 0 && !modelsError && <p className="muted">No models — enable a provider in Settings → Providers and Test connection.</p>}
             {!modelsLoading && (
               <div style={{ maxHeight: 380, overflowY: "auto" }}>
@@ -1361,5 +1382,6 @@ export default function App() {
 
       {toast && <div style={{ position: "fixed", bottom: 92, left: "50%", transform: "translateX(-50%)", background: "var(--primary)", color: "var(--on-primary)", padding: "8px 14px", borderRadius: 999, fontSize: 12 }}>{toast}</div>}
     </div>
+    </ErrorBoundary>
   );
 }
