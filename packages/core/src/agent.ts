@@ -69,7 +69,9 @@ export class AgentLoop {
     return event;
   }
 
-  async run(task: string, signal?: AbortSignal): Promise<void> {
+  async run(task: string, signalOrOpts?: AbortSignal | { images?: { dataUrl: string; mimeType: string; name?: string }[]; signal?: AbortSignal }, maybeSignal?: AbortSignal): Promise<void> {
+    const images = (signalOrOpts && typeof signalOrOpts === 'object' && 'images' in (signalOrOpts as Record<string, unknown>)) ? (signalOrOpts as { images?: { dataUrl: string; mimeType: string; name?: string }[] }).images : undefined;
+    const signal = (maybeSignal ?? ((signalOrOpts instanceof AbortSignal) ? signalOrOpts : (signalOrOpts as { signal?: AbortSignal } | undefined)?.signal)) as AbortSignal | undefined;
     const maxSteps = this.opts.maxSteps ?? 12;
     const tools = this.opts.registry.list();
     // Build system prompt via Mode if available, otherwise default
@@ -86,7 +88,7 @@ export class AgentLoop {
 
     this.emit("session/start", { agent: this.id, task, tools: tools.map((t) => t.name), mode: modeId });
     this.emit("turn/start", { turn: 1, task });
-    this.conversation.push({ id: randomUUID(), role: "user", content: task });
+    this.conversation.push({ id: randomUUID(), role: "user", content: task, ...(images?.length ? { images } : {}) } as unknown as Message);
 
     let steps = 0;
     let totalUsage: Usage = { inputTokens: 0, outputTokens: 0 };
@@ -94,6 +96,7 @@ export class AgentLoop {
     while (steps < maxSteps) {
       steps += 1;
       let text = "";
+      let reasoning = "";
       let calls: ToolCall[] = [];
       let usage: Usage = { inputTokens: 0, outputTokens: 0 };
 
@@ -116,6 +119,7 @@ export class AgentLoop {
               const s = adapter.stream([systemPrompt, ...conversation], { tools, signal });
               for await (const ev of s) {
                 if (ev.type === "text") yield { type: "assistant.delta", text: ev.delta } as never;
+                else if ((ev as { type: string }).type === "reasoning") yield { type: "assistant.reasoning", text: (ev as unknown as { delta: string }).delta } as never;
                 else if (ev.type === "toolCalls") for (const c of ev.calls) yield { type: "tool.request", name: c.name, arguments: c.arguments } as never;
                 else if (ev.type === "usage") yield { type: "usage", promptTokens: ev.usage.inputTokens, completionTokens: ev.usage.outputTokens } as never;
               }
@@ -127,6 +131,10 @@ export class AgentLoop {
             if (e.type === "assistant.delta" && e.text) {
               text += e.text;
               this.emit("assistant/stream", { turn: steps, delta: e.text });
+            } else if (e.type === "assistant.reasoning" && (e as unknown as { text?: string }).text) {
+              const r = (e as unknown as { text: string }).text;
+              reasoning += r;
+              this.emit("assistant/reasoning", { turn: steps, delta: r });
             } else if (e.type === "tool.request" && e.name) {
               calls = [...calls, { id: `call_${randomUUID().slice(0, 8)}`, name: e.name, arguments: e.arguments ?? {} }];
             } else if (e.type === "usage") {
@@ -146,6 +154,10 @@ export class AgentLoop {
             if (event.type === "text") {
               text += event.delta;
               this.emit("assistant/stream", { turn: steps, delta: event.delta });
+            } else if ((event as unknown as { type: string }).type === "reasoning") {
+              const r = (event as unknown as { delta: string }).delta;
+              reasoning += r;
+              this.emit("assistant/reasoning", { turn: steps, delta: r });
             } else if (event.type === "toolCalls") {
               calls = event.calls;
             } else if (event.type === "usage") {
@@ -160,9 +172,9 @@ export class AgentLoop {
       totalUsage.inputTokens += usage.inputTokens;
       totalUsage.outputTokens += usage.outputTokens;
 
-      const assistantMsg: Message = { id: randomUUID(), role: "assistant", content: text || undefined, toolCalls: calls.length ? calls : undefined };
+      const assistantMsg: Message = { id: randomUUID(), role: "assistant", content: text || undefined, reasoningContent: reasoning || undefined, toolCalls: calls.length ? calls : undefined } as unknown as Message;
       this.conversation.push(assistantMsg);
-      this.emit("assistant/message", { turn: steps, content: text, toolCalls: calls.length ? calls : undefined, usage });
+      this.emit("assistant/message", { turn: steps, content: text, reasoningContent: reasoning || undefined, toolCalls: calls.length ? calls : undefined, usage });
 
       if (!calls.length) break;
       // Chat mode has no tools — ignore any tool calls the model tried to make

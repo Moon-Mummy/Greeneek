@@ -150,13 +150,14 @@ export class OllamaNativePAL extends BaseChatProvider {
         if (!chunk) continue;
         const content = chunk.message?.content ?? chunk.response;
         const reasoning = chunk.message?.thinking ?? chunk.thinking;
-        if (content || reasoning) {
+        if (reasoning) yield { type: "reasoning", delta: reasoning } as never;
+        if (content) {
           yield {
             id: `ollama_${randomUUID().slice(0, 8)}`,
             model: chunk.model ?? params.model,
             delta: {
               content: content || undefined,
-              reasoningContent: reasoning || undefined,
+              reasoningContent: undefined,
             },
             finishReason: chunk.done ? (chunk.done_reason ?? "stop") : null,
             done: !!chunk.done,

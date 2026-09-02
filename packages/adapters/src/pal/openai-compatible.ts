@@ -273,13 +273,14 @@ export class OpenAICompatiblePAL extends BaseChatProvider {
         if (tc.function?.arguments) acc.arguments += tc.function.arguments;
         toolAcc.set(tc.index, acc);
       }
-      if (content || reasoningContent || (d?.tool_calls?.length ?? 0) > 0) {
+      if (reasoningContent) yield { type: "reasoning", delta: reasoningContent } as never;
+      if (content || (d?.tool_calls?.length ?? 0) > 0) {
         yield {
           id: chunk.id ?? `chunk_${randomUUID().slice(0, 8)}`,
           model: chunk.model ?? _params.model,
           delta: {
             content: content || undefined,
-            reasoningContent: reasoningContent || undefined,
+            reasoningContent: undefined,
             toolCalls: d?.tool_calls ? [...toolAcc.values()] : undefined,
           },
           finishReason: choice.finish_reason ?? null,

@@ -15,6 +15,8 @@ export interface Message {
   toolCalls?: ToolCall[];
   toolCallId?: string;
   name?: string;
+  reasoningContent?: string;
+  images?: { dataUrl: string; mimeType: string; name?: string }[];
 }
 
 export interface Usage {
@@ -60,6 +62,7 @@ export interface ModelAdapter {
 
 export type StreamEvent =
   | { type: "text"; delta: string }
+  | { type: "reasoning"; delta: string }
   | { type: "toolCalls"; calls: ToolCall[] }
   | { type: "usage"; usage: Usage };
 
@@ -92,6 +95,7 @@ export type SessionEventType =
   | "session/end"
   | "turn/start"
   | "assistant/stream"
+  | "assistant/reasoning"
   | "assistant/message"
   | "tool/start"
   | "tool/end"

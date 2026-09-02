@@ -3,13 +3,15 @@ import { en } from "./locales/en";
 import { es } from "./locales/es";
 import { ApiKeysManager } from "./components/api-keys-settings";
 import { ModelPickerGrouped } from "./components/model-selector";
+import { ReasoningLog } from "./components/reasoning-log";
+import { VisionDropzone, type VisionAttachment } from "./components/vision-dropzone";
 
 type Lang = "en" | "es";
 const tDict = { en, es } as const;
 
 type Item =
-  | { kind: "user"; text: string }
-  | { kind: "assistant"; text: string; streaming?: boolean; usage?: { inputTokens: number; outputTokens: number }; modelId?: string; providerId?: string; latencyMs?: number }
+  | { kind: "user"; text: string; images?: { dataUrl: string; name: string; mimeType: string }[] }
+  | { kind: "assistant"; text: string; streaming?: boolean; reasoningContent?: string; reasoningStreaming?: boolean; usage?: { inputTokens: number; outputTokens: number }; modelId?: string; providerId?: string; latencyMs?: number }
   | { kind: "tool"; name: string; ok: boolean; output: string; durationMs: number; running?: boolean }
   | { kind: "system"; text: string };
 
@@ -135,11 +137,13 @@ export default function App() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const recRef = useRef<SpeechRecognitionLike | null>(null);
   const itemsRef = useRef(items);
+  const [attachments, setAttachments] = useState<VisionAttachment[]>([]);
 
   const [settings, setSettings] = useState<Record<string, unknown> | null>(null);
   const [settingsLoading, setSettingsLoading] = useState(false);
   const [fieldSaving, setFieldSaving] = useState<Record<string, boolean>>({});
   const [fieldStatus, setFieldStatus] = useState<Record<string, string>>({});
+  const showReasoning = (((settings as unknown as Record<string, unknown> | null)?.behavior as Record<string, unknown> | undefined)?.showReasoning as boolean | undefined) ?? true;
   const [testResult, setTestResult] = useState<Record<string, { ok: boolean; message: string; kind?: string }>>({});
   const [reveal, setReveal] = useState<Record<string, boolean>>({});
 
@@ -340,6 +344,20 @@ export default function App() {
     return body.id;
   };
 
+  const commitReasoning = (delta: string) => {
+    setItems((prev) => {
+      const next = [...prev];
+      const last = next[next.length - 1];
+      if (last?.kind === "assistant" && last.streaming) {
+        next[next.length - 1] = { ...last, reasoningContent: (last.reasoningContent ?? "") + delta, reasoningStreaming: true };
+      } else if (last?.kind === "assistant") {
+        next[next.length - 1] = { ...last, reasoningContent: (last.reasoningContent ?? "") + delta, reasoningStreaming: true };
+      } else {
+        next.push({ kind: "assistant", text: "", reasoningContent: delta, reasoningStreaming: true, streaming: true });
+      }
+      return next;
+    });
+  };
   const commit = (message: string) => {
     setItems((prev) => {
       const next = [...prev];
@@ -364,7 +382,10 @@ export default function App() {
       return;
     }
     setRunning(true);
-    setItems((prev) => [...prev, { kind: "user", text: task }]);
+    const pendingImages = attachments.length ? attachments.map((a) => ({ dataUrl: a.dataUrl, name: a.name, mimeType: a.mimeType })) : undefined;
+    setItems((prev) => [...prev, { kind: "user", text: task, ...(pendingImages ? { images: pendingImages } : {}) }]);
+    const hadImages = Boolean(pendingImages?.length);
+    if (hadImages) setAttachments([]);
     const sessionId = await ensureSession();
     // Determine model/provider for this turn (per-conversation)
     const currentModel = conversationModel || (settings?.defaults as Record<string, unknown>)?.modelId as string || meta?.provider?.model || "echo-1";
@@ -374,14 +395,16 @@ export default function App() {
       const res = await fetch(`/api/sessions/${sessionId}/run`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ task, model: currentModel, provider: provHint, mode: conversationMode }),
+        body: JSON.stringify({ task, model: currentModel, provider: provHint, mode: conversationMode, ...(pendingImages ? { images: pendingImages } : {}) }),
       });
       if (!res.ok || !res.body) throw new Error(`run failed: ${res.status}`);
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
       const push = (payload: { type: string; data: Record<string, unknown> }) => {
-        if (payload.type === "assistant/stream") {
+        if (payload.type === "assistant/reasoning") {
+          commitReasoning(String((payload.data as Record<string, unknown>).delta ?? (payload.data as Record<string, unknown>).reasoning ?? ""));
+        } else if (payload.type === "assistant/stream") {
           commit(String(payload.data.delta ?? ""));
         } else if (payload.type === "assistant/message") {
           setItems((prev) => {
@@ -391,6 +414,8 @@ export default function App() {
               next[next.length - 1] = {
                 ...last,
                 streaming: false,
+                reasoningStreaming: false,
+                reasoningContent: (payload.data.reasoningContent as string | undefined) ?? last.reasoningContent,
                 usage: payload.data.usage as { inputTokens: number; outputTokens: number } | undefined,
                 modelId: (payload.data.modelId as string | undefined) ?? currentModel,
                 providerId: (payload.data.providerId as string | undefined) ?? provHint,
@@ -442,7 +467,7 @@ export default function App() {
       setItems((prev) => {
         const next = [...prev];
         const last = next[next.length - 1];
-        if (last?.kind === "assistant" && last.streaming) next[next.length - 1] = { ...last, streaming: false };
+        if (last?.kind === "assistant" && (last.streaming || last.reasoningStreaming)) next[next.length - 1] = { ...last, streaming: false, reasoningStreaming: false };
         return next;
       });
       setRunning(false);
@@ -452,8 +477,9 @@ export default function App() {
   };
 
   const submit = () => {
-    const task = input.trim();
-    if (!task || running) return;
+    const task = input.trim() || (attachments.length ? "[image attached] Describe what you see and help with this image." : "");
+    if ((!task || !task.trim()) && attachments.length === 0) return;
+    if (running) return;
     setInput("");
     void runTask(task);
   };
@@ -643,6 +669,13 @@ export default function App() {
               return (
                 <div className="turn user" key={i}>
                   <div className="bubble">{item.text}</div>
+                  {item.images?.length ? (
+                    <div style={{ display: "flex", gap: 6, marginTop: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                      {item.images.map((img, idx) => (
+                        <img key={idx} src={img.dataUrl} alt={img.name} style={{ width: 120, height: 120, objectFit: "cover", borderRadius: 8, border: "1px solid var(--outlineVariant)" }} />
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               );
             }
@@ -658,6 +691,9 @@ export default function App() {
                     {!item.streaming && item.modelId && <span className="muted" style={{ marginLeft: 6, cursor: "pointer" }} onClick={() => { setTracesOpen(true); void loadTraces(); }}>· View trace</span>}
                     {!item.streaming && <button className="btn ghost" style={{ marginLeft: 8, fontSize: 11 }} onClick={() => { setPickerOpen(true); void loadModels(); }}>Regenerate with…</button>}
                   </div>
+                  {item.reasoningContent || item.reasoningStreaming ? (
+                    <ReasoningLog content={item.reasoningContent ?? ""} streaming={item.reasoningStreaming} enabled={showReasoning} onToggleEnabled={(v) => void patchSettings({ behavior: { showReasoning: v } } as unknown as Record<string, unknown>, "behavior.showReasoning")} />
+                  ) : null}
                   <div className="bubble">
                     <Markdown text={item.text} />
                     {item.streaming && <span className="spinner" style={{ display: "inline-block", marginLeft: 6, verticalAlign: "middle" }} />}
@@ -710,6 +746,8 @@ export default function App() {
 
       <div className="composer-wrap">
         <div className="composer">
+          <VisionDropzone attachments={attachments} onAttachments={setAttachments} disabled={running} />
+          <div style={{ height: 8 }} />
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -745,7 +783,7 @@ export default function App() {
             </button>
             <span className="spacer" />
             <span className="muted">{t(lang, "usageLabel")}: {usable.toLocaleString()} tok</span>
-            <button className="send" onClick={submit} disabled={running || !input.trim()} title={t(lang, "send")}>
+            <button className="send" onClick={submit} disabled={running || (!input.trim() && attachments.length === 0)} title={t(lang, "send")}> 
               {running ? <span className="spinner" /> : "↑"}
             </button>
           </div>

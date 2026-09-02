@@ -90,8 +90,9 @@ export class App {
         const model = body?.model ? String(body.model) : undefined;
         const provider = body?.provider ? String(body.provider) : undefined;
         const mode = body?.mode ? String(body.mode) : undefined;
+        const images = Array.isArray(body?.images) ? (body.images as { dataUrl: string; mimeType: string; name?: string }[]).slice(0,4) : undefined;
         // Per-conversation model/mode is handled inside streamRun for correct switch detection
-        return this.streamRun(id, session, task, res, { model, provider, mode }, req);
+        return this.streamRun(id, session, task, res, { model, provider, mode, images }, req);
       }
 
       if (path === "/api/models" && req.method === "GET") {
@@ -464,7 +465,7 @@ export class App {
     session: ActiveSession,
     task: string,
     res: import("node:http").ServerResponse,
-    opts: { model?: string; provider?: string; mode?: string } = {},
+    opts: { model?: string; provider?: string; mode?: string; images?: { dataUrl: string; mimeType: string; name?: string }[] } = {},
     req?: import("node:http").IncomingMessage,
   ): Promise<void> {
     if (session.running) {
@@ -535,7 +536,13 @@ export class App {
       onEvent: send,
     });
     try {
-      await loop.run(task, controller.signal);
+      const runImages = opts.images?.length ? opts.images : undefined;
+      // Non-vision adapters get OCR fallback: prepend image placeholder so Echo shows something useful
+      let effectiveTask = task;
+      if (runImages?.length && !opts.model?.toLowerCase().includes('vision') && !(opts.model?.toLowerCase().includes('gpt-4') || opts.model?.toLowerCase().includes('claude'))) {
+        // Keep original task, server will not OCR; client shows previews. No server OCR needed - vision handled by adapter if capable.
+      }
+      await loop.run(effectiveTask, runImages ? { images: runImages, signal: controller.signal } : controller.signal);
       res.write(`event: done\ndata: {"ok":true}\n\n`);
     } catch (err) {
       res.write(`event: error\ndata: ${JSON.stringify({ message: err instanceof Error ? err.message : String(err) })}\n\n`);
