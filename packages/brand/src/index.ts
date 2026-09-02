@@ -107,7 +107,7 @@ export const TOKENS = {
       secondaryContainer: "#005235",
       onSecondaryContainer: "#96f6c4",
       tertiary: "#a1a3a7",
-      onTertiary: "#171c20",
+      onTertiary: "#ffffff",
       tertiaryContainer: "#2a2b2d",
       onTertiaryContainer: "#c2c7cc",
       error: "#ffb4ab",
@@ -159,19 +159,6 @@ export const TOKENS = {
   },
 } as const;
 
-export const LOGO_MARK_SVG = `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="1" y="1" width="62" height="62" rx="14" fill="#0F1115" stroke="#067A52" stroke-width="2"/>
-  <path d="M17 42 L32 16 L47 42" stroke="#96F6C4" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="25.5" cy="33.5" r="3.2" fill="#34D399"/>
-  <circle cx="38.5" cy="33.5" r="3.2" fill="#7AD9A9"/>
-</svg>`;
-
-export const LOGO_WORDMARK_SVG = `<svg width="240" height="40" viewBox="0 0 240 40" xmlns="http://www.w3.org/2000/svg">
-  <rect width="40" height="40" rx="10" fill="#0F1115" stroke="#067A52" stroke-width="1.6"/>
-  <path d="M10.5 27 L20 8 L29.5 27" stroke="#96F6C4" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="15.6" cy="21.8" r="2.4" fill="#34D399"/>
-  <circle cx="24.4" cy="21.8" r="2.4" fill="#7AD9A9"/>
-  <text x="50" y="27.5" font-family="Inter, sans-serif" font-size="21" font-weight="700" fill="#E7E8E9">Greeneek</text>
-</svg>`;
-
-export const FAVICON_SVG = LOGO_MARK_SVG;
+export const LOGO_MARK = "./assets/logo-mark.png";
+export const LOGO_WORDMARK = "./assets/logo-mark.png";
+export const FAVICON = "./assets/logo-mark.png";

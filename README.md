@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="packages/brand/assets/logo-mark.svg" width="88" height="88" alt="Greeneek logo" />
+  <img src="packages/brand/assets/logo-mark.png" width="88" height="88" alt="Greeneek logo" />
 </p>
 
 <h1 align="center">Greeneek</h1>

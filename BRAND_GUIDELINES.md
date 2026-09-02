@@ -27,8 +27,7 @@ component rules live in `docs/design-system.md` and the shipped
 
 ## Assets
 
-- `packages/brand/assets/logo-mark.svg` — primary mark (notched emerald
-  monogram on ink tile).
+- `packages/brand/assets/logo-mark.png` — primary mark
 - Wordmark: logo + Inter 700 wordmark.
 
 ## Don'ts

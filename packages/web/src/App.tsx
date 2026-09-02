@@ -49,9 +49,7 @@ function t(lang: Lang, key: keyof typeof en): string {
   return tDict[lang][key] ?? en[key] ?? key;
 }
 
-const LOGO = `data:image/svg+xml;utf8,${encodeURIComponent(
-  `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="62" height="62" rx="14" fill="#0F1115" stroke="#067A52" stroke-width="2"/><path d="M17 42 L32 16 L47 42" stroke="#96F6C4" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="25.5" cy="33.5" r="3.2" fill="#34D399"/><circle cx="38.5" cy="33.5" r="3.2" fill="#7AD9A9"/></svg>`,
-)}`;
+const LOGO = "/assets/logo-mark.png";
 
 function renderInline(text: string): React.ReactNode[] {
   const out: React.ReactNode[] = [];
