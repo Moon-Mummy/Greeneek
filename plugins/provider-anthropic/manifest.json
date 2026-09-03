@@ -1,9 +1,0 @@
-{
-  "id": "greeneek.provider.anthropic",
-  "name": "Anthropic Provider",
-  "version": "0.1.0",
-  "description": "Anthropic provider — /v1/messages streaming",
-  "kinds": ["provider"],
-  "permissions": ["network", "secrets"],
-  "minAppVersion": "0.1.0"
-}

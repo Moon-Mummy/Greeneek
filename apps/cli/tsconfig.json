@@ -2,26 +2,74 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "lib/types"
   },
   "include": [
-    "src/**/*.ts"
+    "src"
   ],
   "references": [
     {
-      "path": "../../packages/server"
+      "path": "../../vendor/cordis"
     },
     {
-      "path": "../../packages/base"
+      "path": "../../vendor/loader"
     },
     {
-      "path": "../../packages/core"
+      "path": "../../vendor/include"
     },
     {
-      "path": "../../packages/adapters"
+      "path": "../../packages/boot/app-boot"
     },
     {
-      "path": "../headless"
+      "path": "../../packages/boot/cmdline"
+    },
+    {
+      "path": "../../packages/bundle/base"
+    },
+    {
+      "path": "../../packages/bundle/headless"
+    },
+    {
+      "path": "../../packages/bundle/web-app"
+    },
+    {
+      "path": "../../packages/host/webserver"
+    },
+    {
+      "path": "../../packages/host/frontend-static"
+    },
+    {
+      "path": "../../packages/core/session"
+    },
+    {
+      "path": "../../packages/core/system-prompt"
+    },
+    {
+      "path": "../../packages/core/tools"
+    },
+    {
+      "path": "../../packages/util/launch-environment"
+    },
+    {
+      "path": "../../packages/util/home-paths"
+    },
+    {
+      "path": "../../packages/mcp/mcp-client"
+    },
+    {
+      "path": "../../packages/test-support/loader-smoke"
+    },
+    {
+      "path": "../../packages/session-query/session-query-sqlite"
+    },
+    {
+      "path": "../../packages/session-query/session-query"
+    },
+    {
+      "path": "../../packages/shell/shell-env"
+    },
+    {
+      "path": "../../packages/shell/tool-bash"
     }
   ]
 }

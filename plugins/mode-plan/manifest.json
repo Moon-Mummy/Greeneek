@@ -1,9 +1,0 @@
-{
-  "id": "greeneek.mode.plan",
-  "name": "Plan Mode",
-  "version": "0.1.0",
-  "description": "plan mode",
-  "kinds": ["mode"],
-  "permissions": [],
-  "minAppVersion": "0.1.0"
-}

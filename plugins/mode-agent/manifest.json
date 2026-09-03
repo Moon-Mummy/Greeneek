@@ -1,9 +1,0 @@
-{
-  "id": "greeneek.mode.agent",
-  "name": "Agent Mode",
-  "version": "0.1.0",
-  "description": "agent mode",
-  "kinds": ["mode"],
-  "permissions": [],
-  "minAppVersion": "0.1.0"
-}

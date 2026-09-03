@@ -1,9 +1,0 @@
-{
-  "id": "greeneek.tool.basic",
-  "name": "Basic Tools",
-  "version": "0.1.0",
-  "description": "Minimal tool set: current_time, calculator, fetch_url",
-  "kinds": ["tool"],
-  "permissions": ["network"],
-  "minAppVersion": "0.1.0"
-}

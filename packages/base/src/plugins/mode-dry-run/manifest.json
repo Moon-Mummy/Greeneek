@@ -1,9 +1,0 @@
-{
-  "id": "greeneek.mode.dry-run",
-  "name": "Dry Run Mode",
-  "version": "0.1.0",
-  "description": "dry-run mode",
-  "kinds": ["mode"],
-  "permissions": [],
-  "minAppVersion": "0.1.0"
-}
