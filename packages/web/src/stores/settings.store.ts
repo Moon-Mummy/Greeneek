@@ -18,6 +18,8 @@ export interface SettingsState {
   sendOnEnter: boolean;
   autoScroll: boolean;
   showReasoning: boolean;
+  renderMath: boolean;
+  sidebarWidth: number;
   keysEncrypted: boolean;
   encryptionPassphrase: string | null;
 
@@ -36,6 +38,8 @@ export interface SettingsState {
   setSendOnEnter: (v: boolean) => void;
   setAutoScroll: (v: boolean) => void;
   setShowReasoning: (v: boolean) => void;
+  setRenderMath: (v: boolean) => void;
+  setSidebarWidth: (v: number) => void;
   setKeysEncrypted: (v: boolean) => void;
   setEncryptionPassphrase: (passphrase: string | null) => void;
 
@@ -61,12 +65,14 @@ const DEFAULT_PROVIDER_SETTINGS: ProviderSettings = {
 };
 
 const DEFAULT_SETTINGS: SettingsState = {
-  version: 3,
-  theme: "dark",
+  version: 4,
+  theme: "system",
   autoTitle: true,
   sendOnEnter: true,
   autoScroll: true,
   showReasoning: true,
+  renderMath: true,
+  sidebarWidth: 280,
   keysEncrypted: false,
   encryptionPassphrase: null,
   providerSettings: {
@@ -91,6 +97,8 @@ const DEFAULT_SETTINGS: SettingsState = {
   setSendOnEnter: () => {},
   setAutoScroll: () => {},
   setShowReasoning: () => {},
+  setRenderMath: () => {},
+  setSidebarWidth: () => {},
   setKeysEncrypted: () => {},
   setEncryptionPassphrase: () => {},
   setProviderSetting: () => {},
@@ -132,7 +140,13 @@ const migrateState = (persisted: unknown, _version: number): SettingsState => {
     }
   }
 
-  migrated.version = 3;
+  if (!state.version || state.version < 4) {
+    migrated.renderMath = state.renderMath ?? true;
+    migrated.sidebarWidth = typeof state.sidebarWidth === "number" ? Math.min(360, Math.max(240, state.sidebarWidth)) : 280;
+    if (!state.theme) migrated.theme = "system";
+  }
+
+  migrated.version = 4;
   return migrated;
 };
 
@@ -147,6 +161,8 @@ const createState = (set: SetState, get: GetState): SettingsState => ({
   setSendOnEnter: (sendOnEnter) => set((state) => ({ ...state, sendOnEnter })),
   setAutoScroll: (autoScroll) => set((state) => ({ ...state, autoScroll })),
   setShowReasoning: (showReasoning) => set((state) => ({ ...state, showReasoning })),
+  setRenderMath: (renderMath) => set((state) => ({ ...state, renderMath })),
+  setSidebarWidth: (sidebarWidth) => set((state) => ({ ...state, sidebarWidth: Math.min(360, Math.max(240, sidebarWidth)) })),
   setKeysEncrypted: (keysEncrypted) => set((state) => ({ ...state, keysEncrypted })),
   setEncryptionPassphrase: (encryptionPassphrase) => set((state) => ({ ...state, encryptionPassphrase })),
 
@@ -195,9 +211,9 @@ export const useSettingsStore = create<SettingsState>()(
   persist(
     createState,
     {
-      name: "greeneek.settings.v3",
+      name: "greeneek.settings.v4",
       storage: createJSONStorage(() => localStorage),
-      version: 3,
+      version: 4,
       migrate: migrateState,
     }
   )
@@ -209,6 +225,8 @@ export const useAutoTitle = () => useSettingsStore((s: SettingsState) => s.autoT
 export const useSendOnEnter = () => useSettingsStore((s: SettingsState) => s.sendOnEnter);
 export const useAutoScroll = () => useSettingsStore((s: SettingsState) => s.autoScroll);
 export const useShowReasoning = () => useSettingsStore((s: SettingsState) => s.showReasoning);
+export const useRenderMath = () => useSettingsStore((s: SettingsState) => s.renderMath);
+export const useSidebarWidth = () => useSettingsStore((s: SettingsState) => s.sidebarWidth);
 export const useKeysEncrypted = () => useSettingsStore((s: SettingsState) => s.keysEncrypted);
 export const useEncryptionPassphrase = () => useSettingsStore((s: SettingsState) => s.encryptionPassphrase);
 export const useActiveProviderId = () => useSettingsStore((s: SettingsState) => s.activeProviderId);

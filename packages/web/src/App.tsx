@@ -6,7 +6,10 @@ import { ModelPickerGrouped } from "./components/model-selector";
 import { ReasoningLog } from "./components/reasoning-log";
 import { VisionDropzone, type VisionAttachment } from "./components/vision-dropzone";
 import { ocrDataUrl, isVisionModel } from "./lib/vision-ocr";
-import { ErrorBoundary, OfflineBanner, Skeleton } from "./components/hardening";
+import { ErrorBoundary, OfflineBanner, Skeleton, TraceSkeleton } from "./components/hardening";
+import { Sidebar } from "./components/sidebar/Sidebar";
+import { ConnectionStatus } from "./components/connection/ConnectionStatus";
+import { Markdown } from "./components/markdown";
 import { useChatStore } from "./stores/chat.store";
 import { useSettingsStore } from "./stores/settings.store";
 import { useProviderStore } from "./stores/provider.store";
@@ -14,6 +17,7 @@ import { useProviderStore } from "./stores/provider.store";
 type Lang = "en" | "es";
 const tDict = { en, es } as const;
 
+type Thread = import("./stores/chat.store").Thread;
 type Item =
   | { kind: "user"; text: string; images?: { dataUrl: string; name: string; mimeType: string }[] }
   | { kind: "assistant"; text: string; streaming?: boolean; reasoningContent?: string; reasoningStreaming?: boolean; usage?: { inputTokens: number; outputTokens: number }; modelId?: string; providerId?: string; latencyMs?: number }
@@ -65,41 +69,9 @@ function t(lang: Lang, key: keyof typeof en): string {
 
 const LOGO = "/assets/logo-mark.png";
 
-function renderInline(text: string): React.ReactNode[] {
-  const out: React.ReactNode[] = [];
-  const parts = text.split(/(`[^`]+`)/g);
-  parts.forEach((part, i) => {
-    if (part.startsWith("`") && part.endsWith("`")) {
-      out.push(
-        <code key={i} style={{ fontFamily: "var(--font-technical)", fontSize: "12px", background: "var(--surface-container-high)", padding: "1px 5px", borderRadius: "4px" }}>
-          {part.slice(1, -1)}
-        </code>,
-      );
-    } else {
-      out.push(part);
-    }
-  });
-  return out;
-}
 
-function Markdown({ text }: { text: string }): React.ReactNode {
-  const blocks = text.split(/(```[\s\S]*?```)/g);
-  return (
-    <>
-      {blocks.map((block, i) => {
-        if (block.startsWith("```")) {
-          const body = block.replace(/^```[a-z]*\n?/, "").replace(/```$/, "");
-          return (
-            <div className="terminal" key={i} style={{ margin: "8px 0" }}>
-              <pre>{body}</pre>
-            </div>
-          );
-        }
-        return <span key={i}>{renderInline(block)}</span>;
-      })}
-    </>
-  );
-}
+
+
 
 interface SpeechRecognitionLike {
   lang: string;
@@ -149,7 +121,8 @@ export default function App() {
     setGenerating,
     setAbortController: _setAbortController,
   } = useChatStore();
-  void _threads; void _abortController; void _setActiveThread; void _addMessage; void _updateMessage; void _appendToMessage; void _deleteThread; void _renameThread; void _pinThread; void _archiveThread; void _clearActiveThread; void _setAbortController;
+  void _threads; void _abortController; void _setActiveThread; void _addMessage; void _updateMessage; void _appendToMessage; void _deleteThread; void _renameThread; void _pinThread; void _archiveThread; void _clearActiveThread;
+  const setAbortController = _setAbortController;
 
   const {
     version,
@@ -185,6 +158,24 @@ export default function App() {
   } = useSettingsStore();
   void _setTheme; void _setAutoTitle; void _setSendOnEnter; void _setAutoScroll; void _setShowReasoning; void _setKeysEncrypted; void _setEncryptionPassphrase; void _setProviderSetting; void _setActiveProvider; void _setOllamaBaseUrl; void _setLmstudioBaseUrl; void _setVllmBaseUrl; void _migrate;
 
+  // Phase C/D/F preset defaults stored outside server settings
+  const [defaultsTopP, setDefaultsTopP] = useState<number>(() => {
+    try {
+      const v = localStorage.getItem("greeneek.defaults.topP");
+      return v ? parseFloat(v) : 1;
+    } catch {
+      return 1;
+    }
+  });
+  const [defaultsMaxTokens, setDefaultsMaxTokens] = useState<number | undefined>(() => {
+    try {
+      const v = localStorage.getItem("greeneek.defaults.maxTokens");
+      return v ? parseInt(v, 10) : undefined;
+    } catch {
+      return undefined;
+    }
+  });
+
   // Derive settings object for backward compatibility with existing UI code
   const settings = {
     version,
@@ -204,7 +195,8 @@ export default function App() {
       modelId: getActiveModel()?.id,
       mode: "chat",
       temperature: 0.7,
-      maxTokens: undefined,
+      topP: defaultsTopP,
+      maxTokens: defaultsMaxTokens,
       systemPrompt: "",
     },
     behavior: {
@@ -262,10 +254,57 @@ export default function App() {
   const recRef = useRef<SpeechRecognitionLike | null>(null);
   const [attachments, setAttachments] = useState<VisionAttachment[]>([]);
 
+  // Sidebar (Phase D1) — persists width/collapsed, mobile drawer
+  const [sidebarWidth, setSidebarWidth] = useState<number>(() => {
+    try {
+      const raw = localStorage.getItem("gk.sidebar.width");
+      const n = raw ? parseInt(raw, 10) : NaN;
+      if (!Number.isNaN(n)) return Math.max(240, Math.min(360, n));
+      return 280;
+    } catch { return 280; }
+  });
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
+    try { return localStorage.getItem("gk.sidebar.collapsed") === "1"; } catch { return false; }
+  });
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean>(() => typeof window !== "undefined" ? window.innerWidth < 768 : false);
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", onResize);
+    const m = window.matchMedia("(max-width: 768px)");
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    try { m.addEventListener("change", onChange); } catch { /* safari */ }
+    return () => {
+      window.removeEventListener("resize", onResize);
+      try { m.removeEventListener("change", onChange); } catch {}
+    };
+  }, []);
+  useEffect(() => {
+    try { localStorage.setItem("gk.sidebar.width", String(Math.max(240, Math.min(360, Math.round(sidebarWidth))))); } catch {}
+  }, [sidebarWidth]);
+  useEffect(() => {
+    try { localStorage.setItem("gk.sidebar.collapsed", sidebarCollapsed ? "1" : "0"); } catch {}
+  }, [sidebarCollapsed]);
+  // Ctrl+N new chat (global) — also handled in Sidebar but keep here for shell
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "n") {
+        e.preventDefault();
+        const id = createThread();
+        // optionally maybeAutoTitle will trigger on first message
+        void id;
+        if (isMobile) setDrawerOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isMobile]);
+
+
   const [settingsLoading, setSettingsLoading] = useState(false);
   const [fieldSaving, setFieldSaving] = useState<Record<string, boolean>>({});
   const [fieldStatus, setFieldStatus] = useState<Record<string, string>>({});
-  const [testResult, setTestResult] = useState<Record<string, { ok: boolean; message: string; kind?: string }>>({});
+  const [testResult, setTestResult] = useState<Record<string, { ok: boolean; message: string; kind?: string; lastTested?: number }>>({});
   const [reveal, setReveal] = useState<Record<string, boolean>>({});
 
   // Phase 4 — per-conversation model/mode, picker state
@@ -286,6 +325,13 @@ export default function App() {
   const [recents, setRecents] = useState<string[]>(() => {
     try { return JSON.parse(localStorage.getItem("gk.model.recents") ?? "[]"); } catch { return []; }
   });
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editDraft, setEditDraft] = useState("");
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [presets, setPresets] = useState<Record<string, Record<string, unknown>>>(() => {
+    try { return JSON.parse(localStorage.getItem("greeneek.presets") ?? "{}"); } catch { return {}; }
+  });
+  const [presetName, setPresetName] = useState("");
 
   // Derive messages from active thread and convert to UI format
   const activeThread = useChatStore((s) => s.getActiveThread());
@@ -382,16 +428,284 @@ export default function App() {
     const draftKey = creds[`${provider.toUpperCase()}_API_KEY`];
     const rawKey = draftKey ?? (prov?.apiKey ? String(prov.apiKey) : "");
     if (!rawKey || rawKey === "****") {
-      setTestResult((r) => ({ ...r, [provider]: { ok: false, message: "Enter API key first (masked value cannot be tested — re-enter to test)" } }));
+      setTestResult((r) => ({ ...r, [provider]: { ok: false, message: "Enter API key first (masked value cannot be tested — re-enter to test)", lastTested: Date.now() } }));
       return;
     }
-    setTestResult((r) => ({ ...r, [provider]: { ok: false, message: "Testing…" } }));
+    setTestResult((r) => ({ ...r, [provider]: { ok: false, message: "Testing…", lastTested: Date.now() } }));
     try {
       const res = await fetch("/api/settings/test", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ provider, apiKey: rawKey, baseUrl }) });
       const body = await res.json() as { ok: boolean; message: string; kind?: string; details?: unknown };
-      setTestResult((r) => ({ ...r, [provider]: body }));
+      setTestResult((r) => ({ ...r, [provider]: { ...body, lastTested: Date.now() } }));
     } catch (e) {
-      setTestResult((r) => ({ ...r, [provider]: { ok: false, message: e instanceof Error ? e.message : String(e) } }));
+      setTestResult((r) => ({ ...r, [provider]: { ok: false, message: e instanceof Error ? e.message : String(e), lastTested: Date.now() } }));
+    }
+  };
+
+  // Helpers: time, redact, chat controls, presets, export/import
+  const formatHHMM = (ts?: number) => {
+    if (!ts) return "";
+    try {
+      return new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    } catch {
+      return "";
+    }
+  };
+
+  const redactSecrets = (text: string): string => {
+    if (!text) return text;
+    // Redact common secret patterns: sk-..., Bearer, api_key, etc.
+    return text
+      .replace(/sk-[A-Za-z0-9-_]{10,}/g, "sk-***")
+      .replace(/sk-or-[A-Za-z0-9-_]{10,}/g, "sk-or-***")
+      .replace(/Bearer\s+[A-Za-z0-9._-]+/gi, "Bearer ***")
+      .replace(/(api[_-]?key\s*[:=]\s*)["']?[^"'\s,;]+["']?/gi, "$1***");
+  };
+
+  const handleStop = () => {
+    // Abort via Zustand and any fetch abort controller
+    try {
+      useChatStore.getState().abortGeneration();
+    } catch {
+      // ignore
+    }
+    const ctrl = useChatStore.getState().abortController;
+    if (ctrl) {
+      try {
+        ctrl.abort();
+      } catch {
+        // ignore
+      }
+      setAbortController(null);
+    }
+    setGenerating(false);
+    notify("Stopped");
+  };
+
+  const handleRegenerate = () => {
+    if (isGenerating) return;
+    // Find last user message from rawMessages
+    const lastUser = [...rawMessages].reverse().find((m) => m.role === "user");
+    if (!lastUser) {
+      notify("No user message to regenerate");
+      return;
+    }
+    void runTask(lastUser.content);
+  };
+
+  const handleCopyMessage = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      notify("Copied ✓");
+    } catch {
+      // fallback
+      const el = document.createElement("textarea");
+      el.value = text;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand("copy");
+      document.body.removeChild(el);
+      notify("Copied ✓");
+    }
+  };
+
+  const handleDeleteMessage = (messageId: string) => {
+    const tid = activeThreadId ?? useChatStore.getState().activeThreadId;
+    if (!tid) return;
+    const thread = useChatStore.getState().getThread(tid) ?? activeThread;
+    if (!thread) return;
+    const idx = thread.messages.findIndex((m) => m.id === messageId);
+    if (idx === -1) return;
+    const next = thread.messages.filter((m) => m.id !== messageId);
+    setMessages(tid, next as any);
+    setDeleteConfirmId(null);
+    notify("Message deleted");
+  };
+
+  const handleEditSave = (messageId: string) => {
+    const tid = activeThreadId ?? useChatStore.getState().activeThreadId;
+    if (!tid) return;
+    const thread = useChatStore.getState().getThread(tid) ?? activeThread;
+    if (!thread) return;
+    const msg = thread.messages.find((m) => m.id === messageId);
+    if (!msg) return;
+    const trimmed = editDraft.trim();
+    if (!trimmed) {
+      notify("Message cannot be empty");
+      return;
+    }
+    // update content then truncate after this message and resubmit
+    const idx = thread.messages.findIndex((m) => m.id === messageId);
+    const updated = thread.messages.map((m) => (m.id === messageId ? { ...m, content: trimmed } : m));
+    // truncate any messages after edited user message (including old assistant replies)
+    const truncated = updated.slice(0, idx + 1);
+    setMessages(tid, truncated as any);
+    setEditingId(null);
+    setEditDraft("");
+    // resubmit
+    void runTask(trimmed);
+  };
+
+  const savePreset = () => {
+    const name = presetName.trim();
+    if (!name) {
+      notify("Preset name required");
+      return;
+    }
+    const preset = {
+      modelId: conversationModel,
+      mode: conversationMode,
+      temperature: (settings.defaults as Record<string, unknown>).temperature ?? 0.7,
+      topP: defaultsTopP,
+      maxTokens: defaultsMaxTokens,
+      systemPrompt: (settings.defaults as Record<string, unknown>).systemPrompt ?? "",
+    };
+    const next = { ...presets, [name]: preset as unknown as Record<string, unknown> };
+    setPresets(next);
+    try {
+      localStorage.setItem("greeneek.presets", JSON.stringify(next));
+    } catch {
+      // ignore
+    }
+    notify(`Preset saved: ${name}`);
+  };
+
+  const applyPreset = (name: string) => {
+    const p = presets[name];
+    if (!p) return;
+    const typed = p as Record<string, unknown>;
+    if (typeof typed.modelId === "string" && typed.modelId) {
+      setConversationModel(typed.modelId as string);
+      localStorage.setItem("gk.model.current", typed.modelId as string);
+    }
+    if (typeof typed.mode === "string" && typed.mode) {
+      setConversationMode(typed.mode as string);
+      localStorage.setItem("gk.mode.current", typed.mode as string);
+    }
+    if (typed.topP !== undefined) {
+      const v = Number(typed.topP);
+      if (!Number.isNaN(v) && v >= 0 && v <= 1) {
+        setDefaultsTopP(v);
+        try { localStorage.setItem("greeneek.defaults.topP", String(v)); } catch { /* ignore */ }
+      }
+    }
+    if (typed.maxTokens !== undefined) {
+      const v = typed.maxTokens === null || typed.maxTokens === undefined ? undefined : Number(typed.maxTokens);
+      if (v === undefined || (!Number.isNaN(v) && v >= 1)) {
+        setDefaultsMaxTokens(v as number | undefined);
+        try {
+          if (v === undefined) localStorage.removeItem("greeneek.defaults.maxTokens");
+          else localStorage.setItem("greeneek.defaults.maxTokens", String(v));
+        } catch { /* ignore */ }
+      }
+    }
+    if (typed.systemPrompt !== undefined) {
+      void patchSettings({ defaults: { systemPrompt: typed.systemPrompt } } as unknown as Record<string, unknown>, "defaults.systemPrompt");
+    }
+    if (typed.temperature !== undefined) {
+      void patchSettings({ defaults: { temperature: typed.temperature } } as unknown as Record<string, unknown>, "defaults.temperature");
+    }
+    notify(`Preset applied: ${name}`);
+  };
+
+  const deletePreset = (name: string) => {
+    const next = { ...presets };
+    delete next[name];
+    setPresets(next);
+    try { localStorage.setItem("greeneek.presets", JSON.stringify(next)); } catch { /* ignore */ }
+    notify(`Preset deleted: ${name}`);
+  };
+
+  const exportChats = (scope: "current" | "all", format: "json" | "markdown") => {
+    const allThreads = useChatStore.getState().threads as Record<string, Thread>;
+    const threadsToExport: Thread[] = scope === "current"
+      ? activeThread ? [activeThread as unknown as Thread] : []
+      : (Object.values(allThreads) as Thread[]);
+    if (threadsToExport.length === 0) { notify("No chats to export"); return; }
+    let content: string;
+    let mimeType: string;
+    let ext: string;
+    if (format === "json") {
+      // Redact any secret-like strings before export
+      const redactThread = (thr: Thread) => ({
+        ...thr,
+        messages: thr.messages.map((m: Thread["messages"][number]) => ({ ...m, content: redactSecrets(String((m as {content:string}).content)) })),
+      });
+      const redacted = threadsToExport.map(redactThread);
+      content = JSON.stringify(scope === "current" ? redacted[0] : redacted, null, 2);
+      mimeType = "application/json";
+      ext = "json";
+    } else {
+      // Markdown export — one markdown doc per thread concatenated
+      const mdParts: string[] = [];
+      for (const thr of threadsToExport) {
+        mdParts.push(`# ${redactSecrets(thr.title)}`);
+        mdParts.push(`_Created: ${new Date(thr.createdAt).toLocaleString()} · Model: ${thr.modelId ?? ""} · Provider: ${thr.providerId ?? ""}_\n`);
+        for (const m of thr.messages) {
+          const when = formatHHMM((m as unknown as { timestamp?: number }).timestamp ?? (m as unknown as { createdAt?: number }).createdAt);
+          const header = m.role === "user" ? `## User ${when ? `· ${when}` : ""}` : m.role === "assistant" ? `## Assistant ${m.model ? `· ${m.model}` : ""} ${when ? `· ${when}` : ""}` : `## ${m.role}`;
+          mdParts.push(header);
+          mdParts.push(redactSecrets(m.content));
+          if (m.tokenUsage) {
+            const tu = m.tokenUsage as { promptTokens?: number; completionTokens?: number };
+            mdParts.push(`*Tokens — prompt: ${tu.promptTokens ?? 0}, completion: ${tu.completionTokens ?? 0}*\n`);
+          }
+          mdParts.push("");
+        }
+        mdParts.push("---\n");
+      }
+      content = mdParts.join("\n");
+      mimeType = "text/markdown";
+      ext = "md";
+    }
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = scope === "current" ? `greeneek-chat-${threadsToExport[0].id.slice(0, 8)}.${ext}` : `greeneek-chats-all.${ext}`;
+    a.click();
+    URL.revokeObjectURL(url);
+    notify(`Exported ${scope} as ${format.toUpperCase()}`);
+  };
+
+  const importChats = async (file: File) => {
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text) as Thread | Thread[];
+      const threadsArray: Thread[] = Array.isArray(parsed) ? parsed : [parsed];
+      // Basic validation
+      for (const thr of threadsArray) {
+        if (!thr.id || !Array.isArray(thr.messages)) throw new Error("Invalid thread format");
+      }
+      const state = useChatStore.getState();
+      for (const thr of threadsArray) {
+        // Ensure messages have ids and timestamps redacted-safe
+        const safeMessages = thr.messages.map((m: Thread["messages"][number]) => ({
+          ...m,
+          content: redactSecrets(String(m.content ?? "")),
+          id: (m.id as string) ?? `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        }));
+        const safeThread: Thread = {
+          id: thr.id,
+          title: redactSecrets(String(thr.title ?? "Imported")),
+          messages: safeMessages,
+          createdAt: typeof thr.createdAt === "number" ? thr.createdAt : Date.now(),
+          updatedAt: Date.now(),
+          pinned: Boolean(thr.pinned),
+          archived: Boolean(thr.archived),
+          modelId: thr.modelId,
+          providerId: thr.providerId,
+        };
+        // Insert via direct store mutation to preserve ids
+        useChatStore.setState((s) => ({
+          threads: { ...s.threads, [safeThread.id]: safeThread },
+          activeThreadId: safeThread.id,
+        }));
+        // also via add? setState is enough
+        void state; // ensure state used
+      }
+      notify(`Imported ${threadsArray.length} chat(s)`);
+    } catch (e) {
+      notify(`Import failed: ${e instanceof Error ? e.message : String(e)}`);
     }
   };
 
@@ -585,14 +899,23 @@ export default function App() {
       }
     }
     setItems((prev) => [...prev, { kind: "user", text: effectiveTask, ...(pendingImages ? { images: pendingImages } : {}) }]);
+    // Auto-title from first user message (persisted via store)
+    try {
+      const tid = useChatStore.getState().activeThreadId;
+      if (tid) useChatStore.getState().maybeAutoTitle(tid);
+    } catch {}
     const hadImages = Boolean(pendingImages?.length);
     if (hadImages) setAttachments([]);
     const sessionId = await ensureSession();
     try {
+      // Capture full history for multi-turn (thread.messages)
+      const currentThreadId = useChatStore.getState().activeThreadId ?? activeThreadId;
+      const historyMessages = currentThreadId ? (useChatStore.getState().threads[currentThreadId]?.messages ?? []) : rawMessages;
+      // Ensure history includes the just-added user message (store already updated via setItems above, so historyMessages is current)
       const res = await fetch(`/api/sessions/${sessionId}/run`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ task: effectiveTask, model: currentModel, provider: provHint, mode: conversationMode, ...(pendingImages ? { images: pendingImages } : {}) }),
+        body: JSON.stringify({ task: effectiveTask, model: currentModel, provider: provHint, mode: conversationMode, history: historyMessages, ...(pendingImages ? { images: pendingImages } : {}) }),
       });
       if (!res.ok || !res.body) throw new Error(`run failed: ${res.status}`);
       const reader = res.body.getReader();
@@ -803,10 +1126,52 @@ export default function App() {
     setRecording(true);
   };
 
+  // Chat scroll: autoScroll setting, stick-bottom unless user scrolls up
+  const [isAtBottom, setIsAtBottom] = useState(true);
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  const isAtBottomRef = useRef(true);
+  useEffect(() => { isAtBottomRef.current = isAtBottom; }, [isAtBottom]);
+  const scrollToBottom = useCallback((smooth = true) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTo({ top: el.scrollHeight, behavior: smooth ? "smooth" : "auto" });
+  }, []);
   useEffect(() => {
     const el = scrollRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
-  }, [items]);
+    if (!el) return;
+    const onScroll = () => {
+      const threshold = 80;
+      const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < threshold;
+      isAtBottomRef.current = atBottom;
+      setIsAtBottom(atBottom);
+      setShowScrollButton(!atBottom && items.length > 0);
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    // init
+    onScroll();
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [items.length]);
+  // Auto scroll when new items arrive if autoScroll enabled and user is at bottom (or first load)
+  useEffect(() => {
+    if (!autoScroll) return;
+    if (isAtBottomRef.current || items.length <= 1) {
+      scrollToBottom(false);
+      setShowScrollButton(false);
+    } else {
+      // if not at bottom, keep button visible but don't force scroll
+      setShowScrollButton(true);
+    }
+  }, [items, autoScroll, scrollToBottom]);
+  // While streaming, keep sticking if user hasn't detached
+  useEffect(() => {
+    if (!isGenerating) return;
+    if (!autoScroll) return;
+    if (!isAtBottomRef.current) return;
+    const id = window.setInterval(() => {
+      if (isAtBottomRef.current) scrollToBottom(false);
+    }, 120);
+    return () => window.clearInterval(id);
+  }, [isGenerating, autoScroll, scrollToBottom]);
 
   const providerMeta = meta?.provider ? `${meta.provider.provider} · ${meta.provider.model}` : "echo · echo-1";
   const usable = meta?.usage?.tokens ?? 0;
@@ -822,6 +1187,11 @@ export default function App() {
     <div className="app">
       <OfflineBanner />
       <header className="header">
+        {(isMobile || sidebarCollapsed) && (
+          <button className="icon-btn" title={isMobile ? (drawerOpen ? "Close chats" : "Open chats") : "Expand sidebar"} aria-label="Toggle sidebar" onClick={() => (isMobile ? setDrawerOpen((v) => !v) : setSidebarCollapsed(false))} style={{ flexShrink: 0 }}>
+            ☰
+          </button>
+        )}
         <div className="wordmark">
           <img src={LOGO} alt="Greeneek" />
           <span>{t(lang, "appName")}</span>
@@ -837,10 +1207,12 @@ export default function App() {
           {conversationMode}
         </button>
         <div className="header-spacer" />
-        <span className="statusline" title={providerMeta}>
+        <ConnectionStatus running={running} />
+        <span className="statusline" title={providerMeta} style={{ display: "none" }}>
           <span className="dot" style={{ background: running ? "var(--accent)" : "var(--tertiary)" }} />
           {running ? t(lang, "streaming") : providerMeta}
         </span>
+        <span className="muted" style={{ fontSize: 11, maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={providerMeta}>{providerMeta}</span>
         <button className="icon-btn" title="Traces" onClick={() => { setTracesOpen(true); void loadTraces(); }} aria-label="traces">
           ≡
         </button>
@@ -852,7 +1224,18 @@ export default function App() {
         </button>
       </header>
 
-      <div className="scroll" ref={scrollRef}>
+      <div className="app-body">
+        <Sidebar
+          width={sidebarWidth}
+          onWidthChange={setSidebarWidth}
+          collapsed={sidebarCollapsed}
+          onCollapsedChange={setSidebarCollapsed}
+          drawerOpen={drawerOpen}
+          onDrawerOpenChange={setDrawerOpen}
+          isMobile={isMobile}
+        />
+        <div className="app-main">
+          <div className="scroll" ref={scrollRef} style={{ position: "relative" }}>
         <div className="conversation">
           {items.length === 0 && (
             <div className="empty">
@@ -867,7 +1250,25 @@ export default function App() {
             if (item.kind === "user") {
               return (
                 <div className="turn user" key={i}>
-                  <div className="bubble">{item.text}</div>
+                  <div className="bubble">
+                    {editingId === String(i) ? (
+                      <div>
+                        <textarea value={editDraft} onChange={(e) => setEditDraft(e.target.value)} style={{ width: "100%", minHeight: 60 }} />
+                        <div className="row" style={{ gap: 6, marginTop: 6 }}>
+                          <button className="btn" onClick={() => handleEditSave(String(rawMessages[i]?.id ?? String(i)))}>Save & resubmit</button>
+                          <button className="btn ghost" onClick={() => { setEditingId(null); setEditDraft(""); }}>Cancel</button>
+                        </div>
+                      </div>
+                    ) : (
+                      item.text
+                    )}
+                  </div>
+                  <div className="meta-line" style={{ justifyContent: "flex-end", fontSize: 11, gap: 6 }}>
+                    <span className="muted">{formatHHMM(Date.now())}</span>
+                    <button className="btn ghost" style={{ fontSize: 11, padding: "2px 6px" }} onClick={() => void handleCopyMessage(item.text)}>Copy</button>
+                    <button className="btn ghost" style={{ fontSize: 11, padding: "2px 6px" }} onClick={() => { setEditingId(String(i)); setEditDraft(item.text); }}>Edit</button>
+                    <button className="btn ghost" style={{ fontSize: 11, padding: "2px 6px" }} onClick={() => handleDeleteMessage(String(rawMessages[i]?.id ?? String(i)))}>Delete</button>
+                  </div>
                   {item.images?.length ? (
                     <div style={{ display: "flex", gap: 6, marginTop: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
                       {item.images.map((img, idx) => (
@@ -896,6 +1297,16 @@ export default function App() {
                   <div className="bubble">
                     <Markdown text={item.text} />
                     {item.streaming && <span className="spinner" style={{ display: "inline-block", marginLeft: 6, verticalAlign: "middle" }} />}
+                  </div>
+                  <div className="meta-line" style={{ fontSize: 11, gap: 6, marginTop: 4 }}>
+                    <span className="muted">{formatHHMM(Date.now())}</span>
+                    <button className="btn ghost" style={{ fontSize: 11, padding: "2px 6px" }} onClick={() => void handleCopyMessage(item.text)}>Copy</button>
+                    {!item.streaming && <button className="btn ghost" style={{ fontSize: 11, padding: "2px 6px" }} onClick={handleRegenerate}>↻ Regenerate</button>}
+                    {deleteConfirmId === String(i) ? (
+                      <><button className="btn" style={{ fontSize: 11 }} onClick={() => handleDeleteMessage(String(rawMessages[i]?.id ?? String(i)))}>Confirm delete</button><button className="btn ghost" style={{ fontSize: 11 }} onClick={() => setDeleteConfirmId(null)}>Cancel</button></>
+                    ) : (
+                      <button className="btn ghost" style={{ fontSize: 11, padding: "2px 6px" }} onClick={() => setDeleteConfirmId(String(i))}>Delete</button>
+                    )}
                   </div>
                 </div>
               );
@@ -941,9 +1352,14 @@ export default function App() {
             </p>
           )}
         </div>
-      </div>
+            {showScrollButton && (
+              <button className="scroll-to-bottom" onClick={() => scrollToBottom(true)} aria-label="Scroll to bottom" title="Scroll to bottom">
+                ↓ Bottom
+              </button>
+            )}
+          </div>
 
-      <div className="composer-wrap">
+          <div className="composer-wrap">
         <div className="composer">
           <VisionDropzone attachments={attachments} onAttachments={setAttachments} disabled={running} />
           <div style={{ height: 8 }} />
@@ -982,11 +1398,18 @@ export default function App() {
             </button>
             <span className="spacer" />
             <span className="muted">{t(lang, "usageLabel")}: {usable.toLocaleString()} tok</span>
-            <button className="send" onClick={submit} disabled={running || (!input.trim() && attachments.length === 0)} title={t(lang, "send")}> 
-              {running ? <span className="spinner" /> : "↑"}
-            </button>
+            {running ? (
+              <button className="btn" onClick={handleStop} title="Stop generation" style={{ minWidth: 56 }}>Stop</button>
+            ) : (
+              <button className="send" onClick={submit} disabled={!input.trim() && attachments.length === 0} title={t(lang, "send")}>↑</button>
+            )}
+            {!running && (
+              <button className="btn ghost" onClick={handleRegenerate} title="Regenerate last" style={{ fontSize: 12 }}>↻</button>
+            )}
           </div>
         </div>
+      </div>
+          </div>
       </div>
 
       {pickerOpen && (
@@ -1101,7 +1524,7 @@ export default function App() {
                 <button className="btn ghost" onClick={() => setTracesOpen(false)}>✕</button>
               </div>
             </div>
-            {tracesLoading ? <p className="muted">Loading…</p> : traces.length === 0 ? <p className="muted">No traces yet — send a message, cancel one mid-stream, and send one that 401s to see all three statuses.</p> : (
+            {tracesLoading ? <TraceSkeleton rows={6} /> : traces.length === 0 ? <p className="muted">No traces yet — send a message, cancel one mid-stream, and send one that 401s to see all three statuses.</p> : (
               <div style={{ maxHeight: 500, overflowY: "auto" }}>
                 <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse" }}>
                   <thead>
@@ -1388,6 +1811,37 @@ export default function App() {
                     </div>
                   </div>
                   <div className="field">
+                    <label>Top P — {defaultsTopP.toFixed(2)}</label>
+                    <input type="range" min={0} max={1} step={0.05} value={defaultsTopP} onChange={(e) => {
+                      const v = parseFloat(e.target.value);
+                      setDefaultsTopP(v);
+                      void patchSettings({ defaults: { topP: v } } as unknown as Record<string, unknown>, "defaults.topP");
+                    }} />
+                    <span className="muted" style={{ fontSize: 12 }}>{fieldStatus["defaults.topP"]}</span>
+                  </div>
+                  <div className="field">
+                    <label>Presets — save/load current model + params</label>
+                    <div className="row" style={{ gap: 6, flexWrap: "wrap" }}>
+                      <input placeholder="preset name" value={presetName} onChange={(e) => setPresetName(e.target.value)} style={{ flex: 1, minWidth: 120 }} />
+                      <button className="btn" onClick={savePreset}>Save current</button>
+                    </div>
+                    {Object.keys(presets).length > 0 ? (
+                      <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 4 }}>
+                        {Object.keys(presets).map((n) => (
+                          <div key={n} className="row" style={{ justifyContent: "space-between", border: "1px solid var(--outlineVariant)", borderRadius: 6, padding: 6 }}>
+                            <strong style={{ fontSize: 12 }}>{n}</strong>
+                            <span className="row" style={{ gap: 4 }}>
+                              <button className="btn ghost" style={{ fontSize: 11 }} onClick={() => applyPreset(n)}>Apply</button>
+                              <button className="btn ghost" style={{ fontSize: 11 }} onClick={() => deletePreset(n)}>Delete</button>
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="muted" style={{ fontSize: 11, marginTop: 6 }}>No presets yet — save the current model/mode/temperature/topP.</p>
+                    )}
+                  </div>
+                  <div className="field">
                     <label>System prompt</label>
                     <textarea defaultValue={String(defaults.systemPrompt ?? "")} onBlur={(e) => void patchSettings({ defaults: { systemPrompt: e.target.value } } as unknown as Record<string, unknown>, "defaults.systemPrompt")} rows={3} style={{ width: "100%" }} />
                     <span className="muted" style={{ fontSize: 12 }}>{fieldStatus["defaults.systemPrompt"]}</span>
@@ -1460,6 +1914,18 @@ export default function App() {
                   <div className="row" style={{ gap: 8, marginTop: 12 }}>
                     <button className="btn ghost" onClick={async () => { if (!confirm("Clear all conversations?")) return; await fetch("/api/audit/entries", { method: "DELETE" }).catch(() => {}); notify("Conversations cleared (sessions remain on disk)"); }}>Clear conversations</button>
                     <button className="btn ghost" onClick={async () => { if (!confirm("Clear traces?")) return; notify("Traces are file-based — clear not yet implemented"); }}>Clear traces</button>
+                  </div>
+                  <div className="field" style={{ marginTop: 12 }}>
+                    <label>Chats — export / import (secrets redacted)</label>
+                    <div className="row" style={{ gap: 6, flexWrap: "wrap" }}>
+                      <button className="btn ghost" onClick={() => exportChats("current", "json")}>Export current JSON</button>
+                      <button className="btn ghost" onClick={() => exportChats("all", "json")}>Export all JSON</button>
+                      <button className="btn ghost" onClick={() => exportChats("current", "markdown")}>Export current MD</button>
+                      <button className="btn ghost" onClick={() => exportChats("all", "markdown")}>Export all MD</button>
+                      <label className="btn ghost" style={{ cursor: "pointer" }}>
+                        Import JSON<input type="file" accept="application/json" style={{ display: "none" }} onChange={(e) => { const f = (e.target as HTMLInputElement).files?.[0]; if (f) void importChats(f); (e.target as HTMLInputElement).value = ""; }} />
+                      </label>
+                    </div>
                   </div>
                   <p className="muted" style={{ fontSize: 12, marginTop: 8 }}>Settings are versioned (schemaVersion {String(settings.version ?? 2)}) and migrated automatically. Size limit: {String(tracing.maxSizeMB ?? 100)} MB, retention: {String(tracing.retentionDays ?? 30)} days.</p>
                 </>

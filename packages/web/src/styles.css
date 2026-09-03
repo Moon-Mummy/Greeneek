@@ -451,3 +451,47 @@ button, input, textarea, select { font: inherit; color: inherit; }
 
 .statusline { display: flex; align-items: center; gap: 8px; font-family: var(--font-technical); font-size: 11px; color: var(--tertiary); }
 .statusline .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--secondary); }
+
+/* ---------- App shell with sidebar ----------------------------------- */
+
+.app { display: flex; flex-direction: column; height: 100%; }
+.app-body { display: flex; flex: 1; min-height: 0; overflow: hidden; }
+.app-main { display: flex; flex-direction: column; flex: 1; min-width: 0; min-height: 0; }
+.sidebar { flex-shrink: 0; }
+.sidebar-drawer { will-change: transform; }
+.sidebar-backdrop { backdrop-filter: blur(2px); }
+.sidebar-drag-handle:hover { background: color-mix(in srgb, var(--accent) 12%, transparent) !important; }
+.sidebar-drag-handle:active { background: color-mix(in srgb, var(--accent) 20%, transparent) !important; }
+
+/* Scroll stick + to-bottom */
+.scroll { position: relative; }
+.scroll-to-bottom {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--inverse-surface);
+  color: var(--inverse-on-surface);
+  border: 0.5px solid var(--stroke-strong);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.16);
+  z-index: 3;
+  animation: fade 140ms ease;
+}
+.scroll-to-bottom:hover { filter: brightness(1.08); }
+
+/* Skeletons */
+@keyframes skeletonPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+@media (max-width: 768px) {
+  .app-body { flex-direction: column; }
+  .header { padding: 0 var(--sp-3); gap: var(--sp-2); }
+  .header .wordmark span { display: none; }
+}
