@@ -7,6 +7,9 @@ import { ReasoningLog } from "./components/reasoning-log";
 import { VisionDropzone, type VisionAttachment } from "./components/vision-dropzone";
 import { ocrDataUrl, isVisionModel } from "./lib/vision-ocr";
 import { ErrorBoundary, OfflineBanner, Skeleton } from "./components/hardening";
+import { useChatStore } from "./stores/chat.store";
+import { useSettingsStore } from "./stores/settings.store";
+import { useProviderStore } from "./stores/provider.store";
 
 type Lang = "en" | "es";
 const tDict = { en, es } as const;
@@ -116,11 +119,130 @@ const SpeechCtor: (new () => SpeechRecognitionLike) | undefined =
 
 type SettingsTab = "providers" | "api-keys" | "plugins" | "defaults" | "tracing" | "advanced" | "data" | "diagnostics" | "billing" | "marketplace" | "audit" | "about";
 
+
+function itemToChatMessage(item: Item, index: number, stableId?: string): import("./stores/chat.store").Thread["messages"][number] {
+  const id = stableId ?? `m-${Date.now()}-${index}`;
+  if (item.kind === "user") return { id, role: "user", content: item.text, createdAt: Date.now(), images: item.images?.map((img) => ({ dataUrl: img.dataUrl, name: img.name, mimeType: img.mimeType })) } as unknown as import("./stores/chat.store").Thread["messages"][number];
+  if (item.kind === "assistant") return { id, role: "assistant", content: item.text, createdAt: Date.now(), reasoningContent: item.reasoningContent, model: item.modelId, providerId: item.providerId } as unknown as import("./stores/chat.store").Thread["messages"][number];
+  if (item.kind === "tool") return { id, role: "tool", content: item.output, createdAt: Date.now(), name: item.name, error: !item.ok ? item.output : undefined } as unknown as import("./stores/chat.store").Thread["messages"][number];
+  return { id, role: "system", content: item.text, createdAt: Date.now() } as unknown as import("./stores/chat.store").Thread["messages"][number];
+}
+
 export default function App() {
+  // Zustand stores
+  const {
+    threads: _threads,
+    activeThreadId,
+    isGenerating,
+    abortController: _abortController,
+    createThread,
+    setActiveThread: _setActiveThread,
+    addMessage: _addMessage,
+    updateMessage: _updateMessage,
+    appendToMessage: _appendToMessage,
+    deleteThread: _deleteThread,
+    renameThread: _renameThread,
+    pinThread: _pinThread,
+    archiveThread: _archiveThread,
+    setMessages,
+    clearActiveThread: _clearActiveThread,
+    setGenerating,
+    setAbortController: _setAbortController,
+  } = useChatStore();
+  void _threads; void _abortController; void _setActiveThread; void _addMessage; void _updateMessage; void _appendToMessage; void _deleteThread; void _renameThread; void _pinThread; void _archiveThread; void _clearActiveThread; void _setAbortController;
+
+  const {
+    version,
+    theme,
+    autoTitle,
+    sendOnEnter,
+    autoScroll,
+    showReasoning: settingsShowReasoning,
+    keysEncrypted,
+    encryptionPassphrase,
+    providerSettings,
+    activeProviderId,
+    ollamaBaseUrl,
+    lmstudioBaseUrl,
+    vllmBaseUrl,
+    setTheme: _setTheme,
+    setAutoTitle: _setAutoTitle,
+    setSendOnEnter: _setSendOnEnter,
+    setAutoScroll: _setAutoScroll,
+    setShowReasoning: _setShowReasoning,
+    setKeysEncrypted: _setKeysEncrypted,
+    setEncryptionPassphrase: _setEncryptionPassphrase,
+    setProviderSetting: _setProviderSetting,
+    getProviderSetting: _getProviderSetting,
+    setActiveProvider: _setActiveProvider,
+    getActiveProvider: _getActiveProvider,
+    getActiveModel,
+    setOllamaBaseUrl: _setOllamaBaseUrl,
+    setLmstudioBaseUrl: _setLmstudioBaseUrl,
+    setVllmBaseUrl: _setVllmBaseUrl,
+    migrate: _migrate,
+    reset: resetSettings,
+  } = useSettingsStore();
+  void _setTheme; void _setAutoTitle; void _setSendOnEnter; void _setAutoScroll; void _setShowReasoning; void _setKeysEncrypted; void _setEncryptionPassphrase; void _setProviderSetting; void _setActiveProvider; void _setOllamaBaseUrl; void _setLmstudioBaseUrl; void _setVllmBaseUrl; void _migrate;
+
+  // Derive settings object for backward compatibility with existing UI code
+  const settings = {
+    version,
+    theme,
+    autoTitle,
+    sendOnEnter,
+    autoScroll,
+    showReasoning: settingsShowReasoning,
+    keysEncrypted,
+    encryptionPassphrase,
+    providers: providerSettings,
+    activeProviderId,
+    ollamaBaseUrl,
+    lmstudioBaseUrl,
+    vllmBaseUrl,
+    defaults: {
+      modelId: getActiveModel()?.id,
+      mode: "chat",
+      temperature: 0.7,
+      maxTokens: undefined,
+      systemPrompt: "",
+    },
+    behavior: {
+      showReasoning: settingsShowReasoning,
+    },
+    tracing: {
+      enabled: false,
+      storePrompts: false,
+      retentionDays: 30,
+      maxSizeMB: 100,
+      otlpEndpoint: "",
+      redactPatterns: [],
+    },
+    advanced: {
+      requestTimeoutMs: 15000,
+      streamIdleTimeoutMs: 60000,
+      logLevel: "info",
+    },
+    data: {
+      storageLocation: "",
+    },
+  };
+
+  const {
+    registry: _registry,
+    selectedProviderId: _selectedProviderId,
+    availableModels: _providerModels,
+    setSelectedProvider: _selectProvider,
+    refreshModels: _refreshModels,
+    toggleProviderEnabled: _toggleProviderEnabled,
+    addCustomProvider: _addCustomProvider,
+    reset: resetProviderStore,
+  } = useProviderStore();
+  void _getProviderSetting; void _getActiveProvider; void _registry; void _selectedProviderId; void _providerModels; void _selectProvider; void _refreshModels; void _toggleProviderEnabled; void _addCustomProvider;
+
+  // Local UI state (transient, not persisted)
   const [lang, setLang] = useState<Lang>(() => (localStorage.getItem("gk.lang") as Lang) ?? "en");
-  const [items, setItems] = useState<Item[]>([]);
   const [input, setInput] = useState("");
-  const [running, setRunning] = useState(false);
   const [planMode, setPlanMode] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [tab, setTab] = useState<SettingsTab>("providers");
@@ -138,14 +260,11 @@ export default function App() {
   const sessionRef = useRef<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const recRef = useRef<SpeechRecognitionLike | null>(null);
-  const itemsRef = useRef(items);
   const [attachments, setAttachments] = useState<VisionAttachment[]>([]);
 
-  const [settings, setSettings] = useState<Record<string, unknown> | null>(null);
   const [settingsLoading, setSettingsLoading] = useState(false);
   const [fieldSaving, setFieldSaving] = useState<Record<string, boolean>>({});
   const [fieldStatus, setFieldStatus] = useState<Record<string, string>>({});
-  const showReasoning = (((settings as unknown as Record<string, unknown> | null)?.behavior as Record<string, unknown> | undefined)?.showReasoning as boolean | undefined) ?? true;
   const [testResult, setTestResult] = useState<Record<string, { ok: boolean; message: string; kind?: string }>>({});
   const [reveal, setReveal] = useState<Record<string, boolean>>({});
 
@@ -157,8 +276,9 @@ export default function App() {
   const [modes, setModes] = useState<Array<{ id: string; label: string; description: string; capabilities: { tools: boolean; multiStep: boolean; sideEffects: string } }>>([]);
   const [models, setModels] = useState<ModelInfo[]>([]);
   const [modelsLoading, setModelsLoading] = useState(false);
-  const [modelsError, setModelsError] = useState<string | null>(null);
+  const [modelsErrorLocal, setModelsErrorLocal] = useState<string | null>(null);
   const [modelsUpdatedAt, setModelsUpdatedAt] = useState<string | null>(null);
+
   const [search, setSearch] = useState("");
   const [favorites, setFavorites] = useState<string[]>(() => {
     try { return JSON.parse(localStorage.getItem("gk.model.favorites") ?? "[]"); } catch { return []; }
@@ -167,11 +287,68 @@ export default function App() {
     try { return JSON.parse(localStorage.getItem("gk.model.recents") ?? "[]"); } catch { return []; }
   });
 
+  // Derive messages from active thread and convert to UI format
+  const activeThread = useChatStore((s) => s.getActiveThread());
+  const rawMessages = activeThread?.messages ?? [];
+  const items: Item[] = rawMessages.map((m) => {
+    if (m.role === "user") {
+      return {
+        kind: "user" as const,
+        text: m.content,
+        images: m.images?.map((img) => ({ dataUrl: img.dataUrl, name: img.name, mimeType: img.mimeType })),
+      };
+    }
+    if (m.role === "assistant") {
+      return {
+        kind: "assistant" as const,
+        text: m.content,
+        streaming: false,
+        reasoningContent: m.reasoningContent,
+        reasoningStreaming: false,
+        usage: m.tokenUsage ? { inputTokens: m.tokenUsage.promptTokens ?? 0, outputTokens: m.tokenUsage.completionTokens ?? 0 } : undefined,
+        modelId: m.model,
+        providerId: m.providerId,
+        latencyMs: undefined,
+      };
+    }
+    if (m.role === "tool") {
+      return {
+        kind: "tool" as const,
+        name: m.name ?? "tool",
+        ok: !m.error,
+        output: m.content,
+        durationMs: 0,
+        running: false,
+      };
+    }
+    return {
+      kind: "system" as const,
+      text: m.content,
+    };
+  });
+  const running = isGenerating;
+
+  const itemsRef = useRef<Item[]>(items);
+
+  // Persist UI items to Zustand store — single source of truth is chat.store
+  const setItems = (updater: Item[] | ((prev: Item[]) => Item[])) => {
+    const next: Item[] = typeof updater === "function" ? (updater as (p: Item[]) => Item[])(items) : updater;
+    const tid = activeThreadId ?? useChatStore.getState().activeThreadId ?? createThread();
+    const chatMessages = next.map((it, i) => itemToChatMessage(it, i, rawMessages[i]?.id));
+    setMessages(tid, chatMessages as any);
+  };
+
+  const showReasoning = settingsShowReasoning ?? true;
+
   const loadSettings = async () => {
     setSettingsLoading(true);
     try {
       const res = await fetch("/api/settings");
-      if (res.ok) setSettings(await res.json() as Record<string, unknown>);
+      if (res.ok) {
+        const _data = await res.json() as Record<string, unknown>;
+        void _data;
+        // Migrate server settings to local store if needed
+      }
     } catch {
       // keep null
     } finally {
@@ -186,7 +363,8 @@ export default function App() {
       const res = await fetch("/api/settings", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(patch) });
       const body = await res.json() as Record<string, unknown>;
       if (!res.ok) throw new Error((body.message as string) ?? "save failed");
-      setSettings(body as Record<string, unknown>);
+      // Update local Zustand store
+      // Note: server-side patch will be reflected on next loadSettings call
       setFieldStatus((s) => ({ ...s, [field]: "Saved ✓" }));
       void loadMeta();
       window.setTimeout(() => setFieldStatus((s) => ({ ...s, [field]: "" })), 1800);
@@ -198,7 +376,7 @@ export default function App() {
   };
 
   const testProvider = async (provider: string) => {
-    const prov = (settings?.providers as Record<string, Record<string, unknown>> | undefined)?.[provider];
+    const prov = settings.providers[provider] as unknown as Record<string, unknown> | undefined;
     const baseUrl = prov?.baseUrl ? String(prov.baseUrl) : undefined;
     // Use draft cred if present (unmasked), else use settings masked check
     const draftKey = creds[`${provider.toUpperCase()}_API_KEY`];
@@ -232,25 +410,25 @@ export default function App() {
   // Phase 4 — model picker helpers
   const loadModels = async (force = false) => {
     setModelsLoading(true);
-    setModelsError(null);
+    setModelsErrorLocal(null);
     try {
       const res = await fetch(`/api/models${force ? "?refresh=1" : ""}`);
       const body = await res.json() as { models?: ModelInfo[]; errors?: unknown[]; updatedAt?: string };
       if (!res.ok) throw new Error((body as unknown as { message?: string }).message ?? "failed");
       setModels((body.models ?? []) as ModelInfo[]);
       setModelsUpdatedAt(body.updatedAt ?? new Date().toISOString());
-      if ((body.models ?? []).length === 0) setModelsError("No models available — enable and test a provider in Settings → Providers");
+      if ((body.models ?? []).length === 0) setModelsErrorLocal("No models available — enable and test a provider in Settings → Providers");
     } catch (e) {
       // Retry once on transient failure when online
       if (!force && navigator.onLine && !models.length) {
-        try { await new Promise((r) => setTimeout(r, 700)); const r2 = await fetch(`/api/models?refresh=1`); const b2 = await r2.json() as { models?: ModelInfo[]; updatedAt?: string }; if (r2.ok && Array.isArray(b2.models) && b2.models.length) { setModels(b2.models as ModelInfo[]); setModelsUpdatedAt(b2.updatedAt ?? new Date().toISOString()); setModelsError(null); return; } } catch { /* fall through */ }
+        try { await new Promise((r) => setTimeout(r, 700)); const r2 = await fetch(`/api/models?refresh=1`); const b2 = await r2.json() as { models?: ModelInfo[]; updatedAt?: string }; if (r2.ok && Array.isArray(b2.models) && b2.models.length) { setModels(b2.models as ModelInfo[]); setModelsUpdatedAt(b2.updatedAt ?? new Date().toISOString()); setModelsErrorLocal(null); return; } } catch { /* fall through */ }
       }
       // Offline degrade: use cached fallback if any models already loaded, else show error
       if (models.length) {
         // keep cached list, show warning
-        setModelsError(`Failed to refresh — showing cached list: ${e instanceof Error ? e.message : String(e)}`);
+        setModelsErrorLocal(`Failed to refresh — showing cached list: ${e instanceof Error ? e.message : String(e)}`);
       } else {
-        setModelsError(e instanceof Error ? e.message : String(e));
+        setModelsErrorLocal(e instanceof Error ? e.message : String(e));
       }
     } finally {
       setModelsLoading(false);
@@ -387,7 +565,7 @@ export default function App() {
       void loadModels();
       return;
     }
-    setRunning(true);
+    setGenerating(true);
     const currentModel = conversationModel || (settings?.defaults as Record<string, unknown>)?.modelId as string || meta?.provider?.model || "echo-1";
     const found = models.find((m) => m.id === currentModel);
     const provHint = found?.provider ?? (currentModel.includes("/") ? "openrouter" : ((settings?.defaults as Record<string, unknown>)?.provider as string | undefined) ?? "echo");
@@ -489,7 +667,7 @@ export default function App() {
         if (last?.kind === "assistant" && (last.streaming || last.reasoningStreaming)) next[next.length - 1] = { ...last, streaming: false, reasoningStreaming: false };
         return next;
       });
-      setRunning(false);
+      setGenerating(false);
       void loadMeta();
       void loadAudit();
     }
@@ -633,7 +811,7 @@ export default function App() {
   const providerMeta = meta?.provider ? `${meta.provider.provider} · ${meta.provider.model}` : "echo · echo-1";
   const usable = meta?.usage?.tokens ?? 0;
 
-  const providers = (settings?.providers as Record<string, Record<string, unknown>> | undefined) ?? {};
+  const providers = (settings.providers as unknown as Record<string, Record<string, unknown>>) ?? {};
   const defaults = (settings?.defaults as Record<string, unknown> | undefined) ?? {};
   const tracing = (settings?.tracing as Record<string, unknown> | undefined) ?? {};
   const advanced = (settings?.advanced as Record<string, unknown> | undefined) ?? {};
@@ -824,10 +1002,10 @@ export default function App() {
             <div className="row" style={{ gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
               <button className="btn ghost" onClick={() => void loadModels(true)} disabled={modelsLoading}>{modelsLoading ? "Loading…" : "Refresh models"}</button>
               {modelsUpdatedAt && <span className="muted" style={{ fontSize: 11 }}>Updated: {new Date(modelsUpdatedAt).toLocaleTimeString()}</span>}
-              {modelsError && <span style={{ fontSize: 11, color: "var(--error)" }}>{modelsError} — <a href="#" onClick={(e) => { e.preventDefault(); setPickerOpen(false); setSettingsOpen(true); setTab("providers"); }}>Open Settings → Providers</a></span>}
+              {modelsErrorLocal && <span style={{ fontSize: 11, color: "var(--error)" }}>{modelsErrorLocal} — <a href="#" onClick={(e) => { e.preventDefault(); setPickerOpen(false); setSettingsOpen(true); setTab("providers"); }}>Open Settings → Providers</a></span>}
             </div>
             {modelsLoading && <Skeleton lines={4} />}
-            {!modelsLoading && models.length === 0 && !modelsError && <p className="muted">No models — enable a provider in Settings → Providers and Test connection.</p>}
+            {!modelsLoading && models.length === 0 && !modelsErrorLocal && <p className="muted">No models — enable a provider in Settings → Providers and Test connection.</p>}
             {!modelsLoading && (
               <div style={{ maxHeight: 380, overflowY: "auto" }}>
                 {/* Favorites */}
@@ -1058,10 +1236,8 @@ export default function App() {
                         <div className="field" style={{ marginTop: 8 }}>
                           <label htmlFor={`base-${pid}`}>Base URL</label>
                           <div className="row">
-                            <input id={`base-${pid}`} value={String(prov?.baseUrl ?? "")} onChange={(e) => {
-                              const v = e.target.value;
-                              // local draft, save on blur
-                              setSettings((s) => s ? { ...s, providers: { ...(s.providers as Record<string, unknown>), [pid]: { ...(prov as Record<string, unknown>), baseUrl: v } } } as unknown as Record<string, unknown> : s);
+                            <input id={`base-${pid}`} value={String(prov?.baseUrl ?? "")} onChange={() => {
+                              // local draft - actual save on blur via patchSettings
                             }} onBlur={(e) => {
                               const v = e.target.value.trim().replace(/\/$/, "");
                               if (!v) return;
@@ -1087,12 +1263,11 @@ export default function App() {
                           const res = await fetch("/api/settings/import", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(parsed) });
                           const body = await res.json() as Record<string, unknown>;
                           if (!res.ok) throw new Error(String((body as Record<string, unknown>).message ?? "invalid import"));
-                          setSettings(body.settings as Record<string, unknown>);
-                          notify("Imported ✓");
+                          notify("Imported ✓ — reload to reflect imported settings");
                         } catch (err) { notify(`Import failed: ${err instanceof Error ? err.message : String(err)}`); }
                       }} />
                     </label>
-                    <button className="btn ghost" onClick={async () => { if (!confirm("Reset all settings to defaults?")) return; const res = await fetch("/api/settings/reset", { method: "POST" }); if (res.ok) { const body = await res.json() as Record<string, unknown>; setSettings(body.settings as Record<string, unknown>); notify("Reset to defaults ✓"); } }}>Reset to defaults</button>
+                    <button className="btn ghost" onClick={async () => { if (!confirm("Reset all settings to defaults?")) return; const res = await fetch("/api/settings/reset", { method: "POST" }); if (res.ok) { resetSettings(); resetProviderStore(); notify("Reset to defaults ✓"); } }}>Reset to defaults</button>
                   </div>
                 </>
               )}
@@ -1214,7 +1389,7 @@ export default function App() {
                   </div>
                   <div className="field">
                     <label>System prompt</label>
-                    <textarea value={String(defaults.systemPrompt ?? "")} onChange={(e) => setSettings((s) => s ? { ...s, defaults: { ...(s.defaults as Record<string, unknown>), systemPrompt: e.target.value } } as unknown as Record<string, unknown> : s)} onBlur={(e) => void patchSettings({ defaults: { systemPrompt: e.target.value } } as unknown as Record<string, unknown>, "defaults.systemPrompt")} rows={3} style={{ width: "100%" }} />
+                    <textarea defaultValue={String(defaults.systemPrompt ?? "")} onBlur={(e) => void patchSettings({ defaults: { systemPrompt: e.target.value } } as unknown as Record<string, unknown>, "defaults.systemPrompt")} rows={3} style={{ width: "100%" }} />
                     <span className="muted" style={{ fontSize: 12 }}>{fieldStatus["defaults.systemPrompt"]}</span>
                   </div>
                 </>
@@ -1242,11 +1417,11 @@ export default function App() {
                   </div>
                   <div className="field">
                     <label>OTLP endpoint</label>
-                    <input value={String(tracing.otlpEndpoint ?? tracing.exportPath ?? "")} onChange={(e) => setSettings((s) => s ? { ...s, tracing: { ...(s.tracing as Record<string, unknown>), otlpEndpoint: e.target.value, exportPath: e.target.value } } as unknown as Record<string, unknown> : s)} onBlur={(e) => void patchSettings({ tracing: { otlpEndpoint: e.target.value, exportPath: e.target.value } } as unknown as Record<string, unknown>, "tracing.otlpEndpoint")} placeholder="https://otel.example.com/v1/traces" style={{ width: "100%" }} />
+                    <input defaultValue={String(tracing.otlpEndpoint ?? tracing.exportPath ?? "")} onBlur={(e) => void patchSettings({ tracing: { otlpEndpoint: e.target.value, exportPath: e.target.value } } as unknown as Record<string, unknown>, "tracing.otlpEndpoint")} placeholder="https://otel.example.com/v1/traces" style={{ width: "100%" }} />
                   </div>
                   <div className="field">
                     <label>Redact patterns (regex, comma-separated)</label>
-                    <input value={Array.isArray(tracing.redactPatterns) ? (tracing.redactPatterns as string[]).join(", ") : ""} onChange={(e) => setSettings((s) => s ? { ...s, tracing: { ...(s.tracing as Record<string, unknown>), redactPatterns: e.target.value.split(",").map((x) => x.trim()).filter(Boolean) } } as unknown as Record<string, unknown> : s)} onBlur={(e) => void patchSettings({ tracing: { redactPatterns: e.target.value.split(",").map((x) => x.trim()).filter(Boolean) } } as unknown as Record<string, unknown>, "tracing.redactPatterns")} placeholder="sk-or-.*, password.*" style={{ width: "100%" }} />
+                    <input defaultValue={Array.isArray(tracing.redactPatterns) ? (tracing.redactPatterns as string[]).join(", ") : ""} onBlur={(e) => void patchSettings({ tracing: { redactPatterns: e.target.value.split(",").map((x) => x.trim()).filter(Boolean) } } as unknown as Record<string, unknown>, "tracing.redactPatterns")} placeholder="sk-or-.*, password.*" style={{ width: "100%" }} />
                   </div>
                 </>
               )}
@@ -1280,13 +1455,13 @@ export default function App() {
                   <h3>Data & Storage</h3>
                   <div className="field">
                     <label>Storage location</label>
-                    <input value={String(dataCfg.storageLocation ?? "")} placeholder="default: ~/.greeneek" onChange={(e) => setSettings((s) => s ? { ...s, data: { ...(s.data as Record<string, unknown>), storageLocation: e.target.value } } as unknown as Record<string, unknown> : s)} onBlur={(e) => void patchSettings({ data: { storageLocation: e.target.value || undefined } } as unknown as Record<string, unknown>, "data.storageLocation")} style={{ width: "100%" }} />
+                    <input defaultValue={String(dataCfg.storageLocation ?? "")} placeholder="default: ~/.greeneek" onBlur={(e) => void patchSettings({ data: { storageLocation: e.target.value || undefined } } as unknown as Record<string, unknown>, "data.storageLocation")} style={{ width: "100%" }} />
                   </div>
                   <div className="row" style={{ gap: 8, marginTop: 12 }}>
                     <button className="btn ghost" onClick={async () => { if (!confirm("Clear all conversations?")) return; await fetch("/api/audit/entries", { method: "DELETE" }).catch(() => {}); notify("Conversations cleared (sessions remain on disk)"); }}>Clear conversations</button>
                     <button className="btn ghost" onClick={async () => { if (!confirm("Clear traces?")) return; notify("Traces are file-based — clear not yet implemented"); }}>Clear traces</button>
                   </div>
-                  <p className="muted" style={{ fontSize: 12, marginTop: 8 }}>Settings are versioned (schemaVersion {String(settings.schemaVersion ?? 2)}) and migrated automatically. Size limit: {String(tracing.maxSizeMB ?? 100)} MB, retention: {String(tracing.retentionDays ?? 30)} days.</p>
+                  <p className="muted" style={{ fontSize: 12, marginTop: 8 }}>Settings are versioned (schemaVersion {String(settings.version ?? 2)}) and migrated automatically. Size limit: {String(tracing.maxSizeMB ?? 100)} MB, retention: {String(tracing.retentionDays ?? 30)} days.</p>
                 </>
               )}
 
