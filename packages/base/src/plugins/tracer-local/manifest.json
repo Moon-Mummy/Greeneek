@@ -1,9 +1,0 @@
-{
-  "id": "greeneek.tracer.local",
-  "name": "Local Tracer",
-  "version": "0.1.0",
-  "description": "Append-only local trace store (JSONL)",
-  "kinds": ["tracer"],
-  "permissions": ["filesystem"],
-  "minAppVersion": "0.1.0"
-}

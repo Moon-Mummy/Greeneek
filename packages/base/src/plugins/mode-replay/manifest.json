@@ -1,9 +1,0 @@
-{
-  "id": "greeneek.mode.replay",
-  "name": "Replay Mode",
-  "version": "0.1.0",
-  "description": "replay mode",
-  "kinds": ["mode"],
-  "permissions": [],
-  "minAppVersion": "0.1.0"
-}

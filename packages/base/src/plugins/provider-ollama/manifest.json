@@ -1,9 +1,0 @@
-{
-  "id": "greeneek.provider.ollama",
-  "name": "Ollama Provider",
-  "version": "0.1.0",
-  "description": "Ollama local provider via OpenAI-compatible endpoint",
-  "kinds": ["provider"],
-  "permissions": ["network"],
-  "minAppVersion": "0.1.0"
-}

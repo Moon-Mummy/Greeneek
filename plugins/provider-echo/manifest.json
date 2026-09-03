@@ -1,9 +1,0 @@
-{
-  "id": "greeneek.provider.echo",
-  "name": "Echo Provider",
-  "version": "0.1.0",
-  "description": "Deterministic offline Echo provider for demos and tests",
-  "kinds": ["provider"],
-  "permissions": [],
-  "minAppVersion": "0.1.0"
-}

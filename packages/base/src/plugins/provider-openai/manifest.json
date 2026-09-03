@@ -1,9 +1,0 @@
-{
-  "id": "greeneek.provider.openai",
-  "name": "OpenAI Provider",
-  "version": "0.1.0",
-  "description": "OpenAI-compatible provider — streaming, tools, usage",
-  "kinds": ["provider"],
-  "permissions": ["network", "secrets"],
-  "minAppVersion": "0.1.0"
-}

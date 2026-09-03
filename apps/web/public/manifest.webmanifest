@@ -1,0 +1,16 @@
+{
+  "id": "/",
+  "name": "Greeneek",
+  "short_name": "Greeneek",
+  "start_url": "/",
+  "scope": "/",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "1347x1168",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
