@@ -11,7 +11,7 @@ English | [中文](README.zh.md)
 <p align="center">
   <a href="https://github.com/Moon-Mummy/Greeneek/actions"><img src="https://img.shields.io/badge/CI-passing-067a52" alt="CI"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-067a52" alt="MIT"></a>
-  <a href="https://github.com/deepseek-ai/deepseek-harness"><img src="https://img.shields.io/badge/upstream-DeepSeek%20Harness-34d399" alt="Upstream"></a>
+  <a href="https://github.com/deepseek-ai/deepseek-harness"><img src="https://img.shields.io/badge/upstream-dsh%20(MIT)-34d399" alt="Upstream"></a>
 </p>
 
 ---
