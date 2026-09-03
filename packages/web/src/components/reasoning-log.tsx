@@ -35,10 +35,10 @@ export function ReasoningLog(props: {
       className="reasoning-log"
       style={{
         margin: "6px 0",
-        border: "0.5px solid var(--stroke)",
+        border: "0.5px solid var(--dsw-alias-border-l2)",
         borderRadius: "10px",
         overflow: "hidden",
-        background: "var(--surface-container-low)",
+        background: "var(--dsw-alias-bg-layer-1)",
       }}
       aria-live="polite"
       aria-busy={streaming ? "true" : "false"}
@@ -58,23 +58,23 @@ export function ReasoningLog(props: {
         }}
         style={{
           padding: "7px 10px",
-          background: "var(--surface-container)",
+          background: "var(--dsw-alias-bg-layer-2)",
           cursor: "pointer",
           alignItems: "center",
           gap: 8,
           userSelect: "none",
-          borderBottom: visible ? "0.5px solid var(--stroke)" : "none",
+          borderBottom: visible ? "0.5px solid var(--dsw-alias-border-l2)" : "none",
         }}
       >
-        <span style={{ fontSize: 12, fontWeight: 650, letterSpacing: "-0.01em", color: "var(--on-surface)" }}>
+        <span style={{ fontSize: 12, fontWeight: 650, letterSpacing: "-0.01em", color: "var(--dsw-alias-label-primary)" }}>
           Reasoning {streaming ? "· streaming…" : hasContent ? `· ${content.length} chars` : ""}
         </span>
-        {!streaming && hasContent && <span style={{ fontSize: 11, color: "var(--on-surface-variant)" }}>{open ? "hide" : "show"}</span>}
+        {!streaming && hasContent && <span style={{ fontSize: 11, color: "var(--dsw-alias-label-secondary)" }}>{open ? "hide" : "show"}</span>}
         {streaming && <span className="spinner" aria-hidden style={{ width: 12, height: 12, borderWidth: 1.5 }} />}
         <span style={{ flex: 1 }} />
         {onToggleEnabled && (
           <label
-            style={{ fontSize: 11, display: "flex", alignItems: "center", gap: 4, color: "var(--on-surface-variant)" }}
+            style={{ fontSize: 11, display: "flex", alignItems: "center", gap: 4, color: "var(--dsw-alias-label-secondary)" }}
             onClick={(e) => e.stopPropagation()}
           >
             <input type="checkbox" checked={enabled} onChange={(e) => onToggleEnabled(e.target.checked)} aria-label="Show reasoning" />
@@ -92,7 +92,7 @@ export function ReasoningLog(props: {
         >
           Copy
         </button>
-        <span aria-hidden style={{ fontSize: 11, color: "var(--on-surface-variant)", minWidth: 12, textAlign: "center" }}>
+        <span aria-hidden style={{ fontSize: 11, color: "var(--dsw-alias-label-secondary)", minWidth: 12, textAlign: "center" }}>
           {show ? "▾" : "▸"}
         </span>
       </div>
@@ -108,9 +108,9 @@ export function ReasoningLog(props: {
             wordBreak: "break-word",
             maxHeight: 320,
             overflowY: "auto",
-            background: "var(--surface-container-lowest)",
-            color: "var(--on-surface-variant)",
-            fontFamily: "var(--font-technical)",
+            background: "var(--dsw-alias-bg-layer-1)",
+            color: "var(--dsw-alias-label-secondary)",
+            fontFamily: "var(--ds-font-family-code)",
           }}
         >
           {content || (streaming ? "Thinking…" : "")}

@@ -7,8 +7,8 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: 24, maxWidth: 640, margin: "40px auto", border: "1px solid var(--error)", borderRadius: 12 }}>
-          <h3 style={{ margin: 0, color: "var(--error)" }}>Something went wrong</h3>
+        <div style={{ padding: 24, maxWidth: 640, margin: "40px auto", border: "1px solid var(--dsw-alias-state-error-primary)", borderRadius: 12 }}>
+          <h3 style={{ margin: 0, color: "var(--dsw-alias-state-error-primary)" }}>Something went wrong</h3>
           <p className="muted" style={{ fontSize: 13, whiteSpace: "pre-wrap" }}>{this.state.msg}</p>
           <button className="btn" onClick={() => this.setState({ hasError: false, msg: "" })}>Try again</button>
           <button className="btn ghost" style={{ marginLeft: 8 }} onClick={() => location.reload()}>Reload</button>
@@ -68,10 +68,10 @@ export function Skeleton({ lines = 3, variant = "line" }: { lines?: number; vari
     return (
       <div aria-busy="true" aria-label="loading" style={{ display: "grid", gap: 12, padding: 8 }}>
         {Array.from({ length: lines }).map((_, i) => (
-          <div key={i} style={{ border: "0.5px solid var(--stroke)", borderRadius: 10, padding: 12, display: "grid", gap: 8, background: "var(--surface-container-low)", opacity: 0.85 - i * 0.12 }}>
-            <div style={{ height: 14, width: `${60 + (i % 3) * 10}%`, borderRadius: 6, background: "var(--surface-container-high)", animation: "skeletonPulse 1.2s ease-in-out infinite" }} />
-            <div style={{ height: 10, width: "88%", borderRadius: 6, background: "var(--surface-container-highest)", animation: "skeletonPulse 1.2s ease-in-out infinite", animationDelay: `${i * 120}ms` }} />
-            <div style={{ height: 10, width: "72%", borderRadius: 6, background: "var(--surface-container-highest)", opacity: 0.7 }} />
+          <div key={i} style={{ border: "0.5px solid var(--dsw-alias-border-l2)", borderRadius: 10, padding: 12, display: "grid", gap: 8, background: "var(--dsw-alias-bg-layer-1)", opacity: 0.85 - i * 0.12 }}>
+            <div style={{ height: 14, width: `${60 + (i % 3) * 10}%`, borderRadius: 6, background: "var(--dsw-alias-bg-layer-3)", animation: "skeletonPulse 1.2s ease-in-out infinite" }} />
+            <div style={{ height: 10, width: "88%", borderRadius: 6, background: "var(--dsw-alias-bg-layer-3)", animation: "skeletonPulse 1.2s ease-in-out infinite", animationDelay: `${i * 120}ms` }} />
+            <div style={{ height: 10, width: "72%", borderRadius: 6, background: "var(--dsw-alias-bg-layer-3)", opacity: 0.7 }} />
           </div>
         ))}
       </div>
@@ -81,11 +81,11 @@ export function Skeleton({ lines = 3, variant = "line" }: { lines?: number; vari
     return (
       <div aria-busy="true" aria-label="loading" style={{ display: "grid", gap: 8, padding: 8 }}>
         {Array.from({ length: lines }).map((_, i) => (
-          <div key={i} style={{ display: "flex", gap: 10, alignItems: "center", padding: "8px 0", borderBottom: "0.5px solid var(--stroke)", opacity: 0.9 - i * 0.1 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 8, background: "var(--surface-container-high)", flexShrink: 0, animation: "skeletonPulse 1.2s ease-in-out infinite" }} />
+          <div key={i} style={{ display: "flex", gap: 10, alignItems: "center", padding: "8px 0", borderBottom: "0.5px solid var(--dsw-alias-border-l2)", opacity: 0.9 - i * 0.1 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 8, background: "var(--dsw-alias-bg-layer-3)", flexShrink: 0, animation: "skeletonPulse 1.2s ease-in-out infinite" }} />
             <div style={{ flex: 1, display: "grid", gap: 6 }}>
-              <div style={{ height: 12, width: "54%", borderRadius: 6, background: "var(--surface-container-high)" }} />
-              <div style={{ height: 10, width: "78%", borderRadius: 6, background: "var(--surface-container-highest)" }} />
+              <div style={{ height: 12, width: "54%", borderRadius: 6, background: "var(--dsw-alias-bg-layer-3)" }} />
+              <div style={{ height: 10, width: "78%", borderRadius: 6, background: "var(--dsw-alias-bg-layer-3)" }} />
             </div>
           </div>
         ))}
@@ -95,7 +95,7 @@ export function Skeleton({ lines = 3, variant = "line" }: { lines?: number; vari
   return (
     <div aria-busy="true" aria-label="loading" style={{ display: "grid", gap: 8, padding: 8 }}>
       {Array.from({ length: lines }).map((_, i) => (
-        <div key={i} style={{ height: 12, borderRadius: 6, background: "var(--surface-container-high)", opacity: 0.7 - i * 0.12, animation: "skeletonPulse 1.2s ease-in-out infinite", animationDelay: `${i * 90}ms` }} />
+        <div key={i} style={{ height: 12, borderRadius: 6, background: "var(--dsw-alias-bg-layer-3)", opacity: 0.7 - i * 0.12, animation: "skeletonPulse 1.2s ease-in-out infinite", animationDelay: `${i * 90}ms` }} />
       ))}
     </div>
   );
@@ -104,15 +104,15 @@ export function Skeleton({ lines = 3, variant = "line" }: { lines?: number; vari
 export function TraceSkeleton({ rows = 5 }: { rows?: number }) {
   return (
     <div aria-busy="true" aria-label="loading traces" style={{ display: "grid", gap: 0, padding: 0 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "80px 90px 120px 70px 70px 70px 60px", gap: 8, padding: "8px 12px", borderBottom: "1px solid var(--stroke)", background: "var(--surface-container-high)", opacity: 0.6 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "80px 90px 120px 70px 70px 70px 60px", gap: 8, padding: "8px 12px", borderBottom: "1px solid var(--dsw-alias-border-l2)", background: "var(--dsw-alias-bg-layer-3)", opacity: 0.6 }}>
         {Array.from({ length: 7 }).map((_, i) => (
-          <div key={i} style={{ height: 10, borderRadius: 4, background: "var(--surface-container-highest)" }} />
+          <div key={i} style={{ height: 10, borderRadius: 4, background: "var(--dsw-alias-bg-layer-3)" }} />
         ))}
       </div>
       {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} style={{ display: "grid", gridTemplateColumns: "80px 90px 120px 70px 70px 70px 60px", gap: 8, padding: "10px 12px", borderBottom: "0.5px solid var(--stroke)", opacity: 0.9 - i * 0.12 }}>
+        <div key={i} style={{ display: "grid", gridTemplateColumns: "80px 90px 120px 70px 70px 70px 60px", gap: 8, padding: "10px 12px", borderBottom: "0.5px solid var(--dsw-alias-border-l2)", opacity: 0.9 - i * 0.12 }}>
           {Array.from({ length: 7 }).map((_, j) => (
-            <div key={j} style={{ height: 12, borderRadius: 6, background: j === 4 ? "var(--surface-container)" : "var(--surface-container-high)", animation: j < 2 ? "skeletonPulse 1.2s ease-in-out infinite" : undefined, animationDelay: `${i * 80}ms` }} />
+            <div key={j} style={{ height: 12, borderRadius: 6, background: j === 4 ? "var(--dsw-alias-bg-layer-2)" : "var(--dsw-alias-bg-layer-3)", animation: j < 2 ? "skeletonPulse 1.2s ease-in-out infinite" : undefined, animationDelay: `${i * 80}ms` }} />
           ))}
         </div>
       ))}

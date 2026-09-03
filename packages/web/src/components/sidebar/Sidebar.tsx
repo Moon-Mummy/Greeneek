@@ -195,12 +195,12 @@ export function Sidebar({
         style={{
           width: 0,
           minWidth: 0,
-          borderRight: "0.5px solid var(--stroke)",
+          borderRight: "0.5px solid var(--dsw-alias-border-l2)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           padding: "8px 0",
-          background: "var(--surface-container-low)",
+          background: "var(--dsw-alias-bg-layer-1)",
           overflow: "hidden",
         }}
         aria-label="sidebar collapsed"
@@ -255,8 +255,8 @@ export function Sidebar({
             bottom: 0,
             width: clampWidth(width),
             maxWidth: "85vw",
-            background: "var(--surface-container-lowest)",
-            borderRight: "1px solid var(--stroke)",
+            background: "var(--dsw-alias-bg-layer-1)",
+            borderRight: "1px solid var(--dsw-alias-border-l2)",
             display: "flex",
             flexDirection: "column",
             zIndex: 31,
@@ -311,8 +311,8 @@ export function Sidebar({
         maxWidth: clampWidth(width),
         display: "flex",
         flexDirection: "column",
-        background: "var(--surface-container-low)",
-        borderRight: "0.5px solid var(--stroke)",
+        background: "var(--dsw-alias-bg-layer-1)",
+        borderRight: "0.5px solid var(--dsw-alias-border-l2)",
         overflow: "hidden",
         position: "relative",
       }}
@@ -438,8 +438,8 @@ function SidebarInner(props: {
           alignItems: "center",
           gap: 8,
           padding: "12px 12px 10px 12px",
-          borderBottom: "0.5px solid var(--stroke)",
-          background: "var(--surface-container-low)",
+          borderBottom: "0.5px solid var(--dsw-alias-border-l2)",
+          background: "var(--dsw-alias-bg-layer-1)",
           flexShrink: 0,
         }}
       >
@@ -480,15 +480,15 @@ function SidebarInner(props: {
             width: "100%",
             height: 32,
             borderRadius: 8,
-            border: "0.5px solid var(--stroke)",
-            background: "var(--surface-container-lowest)",
+            border: "0.5px solid var(--dsw-alias-border-l2)",
+            background: "var(--dsw-alias-bg-layer-1)",
             padding: "0 10px",
             fontSize: 13,
             outline: "none",
           }}
         />
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, justifyContent: "space-between" }}>
-          <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "var(--tertiary)", cursor: "pointer" }}>
+          <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "var(--dsw-alias-label-tertiary)", cursor: "pointer" }}>
             <input type="checkbox" checked={showArchived} onChange={(e) => setShowArchived(e.target.checked)} /> Archived
           </label>
           <span className="muted" style={{ fontSize: 10 }}>
@@ -500,14 +500,14 @@ function SidebarInner(props: {
       {/* List */}
       <div style={{ flex: 1, overflowY: "auto", padding: "4px 8px 8px 8px", display: "flex", flexDirection: "column", gap: 12 }}>
         {!hasThreads && (
-          <div className="muted" style={{ fontSize: 12, textAlign: "center", padding: "24px 12px", color: "var(--tertiary)" }}>
+          <div className="muted" style={{ fontSize: 12, textAlign: "center", padding: "24px 12px", color: "var(--dsw-alias-label-tertiary)" }}>
             {searchInput ? "No matches" : showArchived ? "No archived chats" : "No chats yet — start one with ＋ New Chat"}
           </div>
         )}
 
         {pinned.length > 0 && (
           <div>
-            <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 0.6, color: "var(--secondary)", margin: "4px 4px 6px 4px", fontWeight: 600 }}>Pinned</div>
+            <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 0.6, color: "var(--dsw-alias-state-business-primary)", margin: "4px 4px 6px 4px", fontWeight: 600 }}>Pinned</div>
             {pinned.map((t) => (
               <ThreadRow
                 key={t.id}
@@ -534,7 +534,7 @@ function SidebarInner(props: {
 
         {unpinned.length > 0 && (
           <div>
-            {pinned.length > 0 && <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 0.6, color: "var(--on-surface-variant)", margin: "4px 4px 6px 4px" }}>Recent</div>}
+            {pinned.length > 0 && <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 0.6, color: "var(--dsw-alias-label-secondary)", margin: "4px 4px 6px 4px" }}>Recent</div>}
             {unpinned.map((t) => (
               <ThreadRow
                 key={t.id}
@@ -625,14 +625,14 @@ function ThreadRow(props: {
         padding: "8px 8px",
         borderRadius: 8,
         cursor: "pointer",
-        background: active ? "var(--surface-container-high)" : "transparent",
-        border: `0.5px solid ${active ? "var(--secondary)" : "transparent"}`,
+        background: active ? "var(--dsw-alias-bg-layer-3)" : "transparent",
+        border: `0.5px solid ${active ? "var(--dsw-alias-state-business-primary)" : "transparent"}`,
         opacity: thread.archived ? 0.6 : 1,
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
-        {thread.pinned && <span style={{ fontSize: 10, color: "var(--secondary)" }}>★</span>}
-        {thread.archived && <span style={{ fontSize: 9, color: "var(--tertiary)", border: "0.5px solid var(--stroke)", borderRadius: 4, padding: "0 4px" }}>archived</span>}
+        {thread.pinned && <span style={{ fontSize: 10, color: "var(--dsw-alias-state-business-primary)" }}>★</span>}
+        {thread.archived && <span style={{ fontSize: 9, color: "var(--dsw-alias-label-tertiary)", border: "0.5px solid var(--dsw-alias-border-l2)", borderRadius: 4, padding: "0 4px" }}>archived</span>}
         {editing ? (
           <input
             ref={editRef}
@@ -644,7 +644,7 @@ function ThreadRow(props: {
               if (e.key === "Escape") cancelRename();
             }}
             onClick={(e) => e.stopPropagation()}
-            style={{ flex: 1, minWidth: 0, height: 24, border: "0.5px solid var(--accent)", borderRadius: 6, padding: "0 6px", fontSize: 12 }}
+            style={{ flex: 1, minWidth: 0, height: 24, border: "0.5px solid var(--dsw-alias-state-business-primary)", borderRadius: 6, padding: "0 6px", fontSize: 12 }}
             aria-label="Rename thread"
           />
         ) : (
@@ -657,16 +657,16 @@ function ThreadRow(props: {
               whiteSpace: "nowrap",
               fontSize: 13,
               fontWeight: active ? 600 : 500,
-              color: active ? "var(--on-surface)" : "var(--on-surface-variant)",
+              color: active ? "var(--dsw-alias-label-primary)" : "var(--dsw-alias-label-secondary)",
             }}
           >
             {thread.title}
           </span>
         )}
-        <span style={{ fontSize: 10, color: "var(--tertiary)", flexShrink: 0 }}>{formatTime(thread.updatedAt)}</span>
+        <span style={{ fontSize: 10, color: "var(--dsw-alias-label-tertiary)", flexShrink: 0 }}>{formatTime(thread.updatedAt)}</span>
       </div>
 
-      {!editing && preview && <div style={{ fontSize: 11, color: "var(--tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{preview}</div>}
+      {!editing && preview && <div style={{ fontSize: 11, color: "var(--dsw-alias-label-tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{preview}</div>}
 
       <div style={{ display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap" }} onClick={(e) => e.stopPropagation()}>
         <button
@@ -693,7 +693,7 @@ function ThreadRow(props: {
             onClick={() => setConfirmDeleteId(thread.id)}
             title="Delete"
             aria-label="Delete"
-            style={{ height: 22, padding: "0 6px", fontSize: 11, color: "var(--error)" }}
+            style={{ height: 22, padding: "0 6px", fontSize: 11, color: "var(--dsw-alias-state-error-primary)" }}
           >
             🗑
           </button>

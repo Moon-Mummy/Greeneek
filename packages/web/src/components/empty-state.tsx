@@ -60,7 +60,7 @@ export function EmptyState(props: {
     <div className="empty empty-welcome" role="region" aria-label="Welcome — get started with Local AI">
       <img src="/assets/logo-mark.png" width={72} height={72} alt="Greeneek" style={{ borderRadius: 18 }} />
       <h2>Welcome to Greeneek — Local AI</h2>
-      <p style={{ maxWidth: "56ch", color: "var(--on-surface-variant)", fontSize: 13, lineHeight: "20px" }}>
+      <p style={{ maxWidth: "56ch", color: "var(--dsw-alias-label-secondary)", fontSize: 13, lineHeight: "20px" }}>
         Run models locally with Ollama — no API key needed. Chat, plan with tools, and keep everything on-device. Cloud keys are optional.
       </p>
 
@@ -68,9 +68,9 @@ export function EmptyState(props: {
         className="welcome-card"
         style={{
           width: "min(560px, 100%)",
-          border: "0.5px solid var(--stroke)",
+          border: "0.5px solid var(--dsw-alias-border-l2)",
           borderRadius: 16,
-          background: "var(--surface-container-lowest)",
+          background: "var(--dsw-alias-bg-layer-1)",
           padding: 16,
           display: "flex",
           flexDirection: "column",
@@ -83,7 +83,7 @@ export function EmptyState(props: {
           <strong style={{ fontSize: 13 }}>Get started — Local AI</strong>
           {status === "checking" && <span className="chip"><span className="spinner" /> Checking…</span>}
           {status === "online" && <span className="chip active"><span className="dot" /> Local ready</span>}
-          {status === "offline" && <span className="chip" style={{ background: "var(--error-container)", color: "var(--on-error-container)"}}><span className="dot" style={{ background: "var(--error)" }} /> Offline</span>}
+          {status === "offline" && <span className="chip" style={{ background: "var(--dsw-static-red-50)", color: "var(--dsw-static-red-900)"}}><span className="dot" style={{ background: "var(--dsw-alias-state-error-primary)" }} /> Offline</span>}
           {status === "no-models" && <span className="chip"><span className="dot" /> No local models</span>}
         </div>
 
@@ -110,7 +110,7 @@ export function EmptyState(props: {
           </button>
         </div>
 
-        <div style={{ fontFamily: "var(--font-technical)", fontSize: 11, background: "var(--surface-container)", padding: "8px 10px", borderRadius: 8, overflowX: "auto", whiteSpace: "pre-wrap", color: "var(--on-surface-variant)" }}>
+        <div style={{ fontFamily: "var(--ds-font-family-code)", fontSize: 11, background: "var(--dsw-alias-bg-layer-2)", padding: "8px 10px", borderRadius: 8, overflowX: "auto", whiteSpace: "pre-wrap", color: "var(--dsw-alias-label-secondary)" }}>
           {"# 1 — Install Ollama  https://ollama.com\n# 2 — Pull a model\nollama pull llama3.1   # or: qwen2.5, mistral\n# 3 — Serve (usually auto) + Refresh\nollama serve  # if needed, then click Refresh in Greeneek"}
         </div>
 
@@ -119,7 +119,7 @@ export function EmptyState(props: {
         </p>
       </div>
 
-      <p className="mono" style={{ fontFamily: "var(--font-technical)", fontSize: 11, color: "var(--tertiary)" }}>
+      <p className="mono" style={{ fontFamily: "var(--ds-font-family-code)", fontSize: 11, color: "var(--dsw-alias-label-tertiary)" }}>
         Try: <code>@execute calc.eval {"{"}&quot;expression&quot;:&quot;(2+3)*7&quot;{"}"}</code> — or just ask anything.
       </p>
     </div>

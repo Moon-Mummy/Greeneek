@@ -808,9 +808,7 @@ export default function App() {
     return () => m.removeEventListener("change", apply);
   }, []);
 
-  useEffect(() => {
-    document.documentElement.style.setProperty("--accent", "#067a52");
-  }, []);
+
 
   useEffect(() => {
     localStorage.setItem("gk.lang", lang);
@@ -1209,7 +1207,7 @@ export default function App() {
         <div className="header-spacer" />
         <ConnectionStatus running={running} />
         <span className="statusline" title={providerMeta} style={{ display: "none" }}>
-          <span className="dot" style={{ background: running ? "var(--accent)" : "var(--tertiary)" }} />
+          <span className="dot" style={{ background: running ? "var(--dsw-alias-state-business-primary)" : "var(--dsw-alias-label-tertiary)" }} />
           {running ? t(lang, "streaming") : providerMeta}
         </span>
         <span className="muted" style={{ fontSize: 11, maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={providerMeta}>{providerMeta}</span>
@@ -1272,7 +1270,7 @@ export default function App() {
                   {item.images?.length ? (
                     <div style={{ display: "flex", gap: 6, marginTop: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
                       {item.images.map((img, idx) => (
-                        <img key={idx} src={img.dataUrl} alt={img.name} style={{ width: 120, height: 120, objectFit: "cover", borderRadius: 8, border: "1px solid var(--outlineVariant)" }} />
+                        <img key={idx} src={img.dataUrl} alt={img.name} style={{ width: 120, height: 120, objectFit: "cover", borderRadius: 8, border: "1px solid var(--dsw-alias-border-l2)" }} />
                       ))}
                     </div>
                   ) : null}
@@ -1315,7 +1313,7 @@ export default function App() {
               return (
                 <div className="turn" key={i}>
                   <p className="meta-line" style={{ justifyContent: "center", fontStyle: "italic" }}>
-                    <span className="dot" style={{ background: "var(--outline)" }} />
+                    <span className="dot" style={{ background: "var(--dsw-alias-border-l3)" }} />
                     {item.text}
                   </p>
                 </div>
@@ -1347,7 +1345,7 @@ export default function App() {
 
           {items.length > 0 && !running && (
             <p className="meta-line" style={{ justifyContent: "center" }}>
-              <span className="dot" style={{ background: "var(--outline)" }} />
+              <span className="dot" style={{ background: "var(--dsw-alias-border-l3)" }} />
               {t(lang, "runAgain")}
             </p>
           )}
@@ -1425,7 +1423,7 @@ export default function App() {
             <div className="row" style={{ gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
               <button className="btn ghost" onClick={() => void loadModels(true)} disabled={modelsLoading}>{modelsLoading ? "Loading…" : "Refresh models"}</button>
               {modelsUpdatedAt && <span className="muted" style={{ fontSize: 11 }}>Updated: {new Date(modelsUpdatedAt).toLocaleTimeString()}</span>}
-              {modelsErrorLocal && <span style={{ fontSize: 11, color: "var(--error)" }}>{modelsErrorLocal} — <a href="#" onClick={(e) => { e.preventDefault(); setPickerOpen(false); setSettingsOpen(true); setTab("providers"); }}>Open Settings → Providers</a></span>}
+              {modelsErrorLocal && <span style={{ fontSize: 11, color: "var(--dsw-alias-state-error-primary)" }}>{modelsErrorLocal} — <a href="#" onClick={(e) => { e.preventDefault(); setPickerOpen(false); setSettingsOpen(true); setTab("providers"); }}>Open Settings → Providers</a></span>}
             </div>
             {modelsLoading && <Skeleton lines={4} />}
             {!modelsLoading && models.length === 0 && !modelsErrorLocal && <p className="muted">No models — enable a provider in Settings → Providers and Test connection.</p>}
@@ -1439,12 +1437,12 @@ export default function App() {
                       const m = models.find((x) => x.id === fid);
                       if (!m) return null;
                       return (
-                        <div key={`fav-${fid}`} className="row" style={{ padding: "6px 0", borderBottom: "1px solid var(--outlineVariant)", alignItems: "center" }}>
+                        <div key={`fav-${fid}`} className="row" style={{ padding: "6px 0", borderBottom: "1px solid var(--dsw-alias-border-l2)", alignItems: "center" }}>
                           <button className="btn ghost" onClick={() => toggleFavorite(fid)} title="Unfavorite">★</button>
                           <div style={{ flex: 1, cursor: "pointer" }} onClick={() => { persistModel(m.id, m.provider); setPickerOpen(false); }}>
                             <strong>{m.id}</strong> <span className="muted" style={{ fontSize: 11 }}>{m.name}</span>
                             <span className="chip" style={{ marginLeft: 8, fontSize: 10 }}>{m.contextLength ? `${Math.round((m.contextLength ?? 0) / 1000)}k` : ""}</span>
-                            {m.pricing?.isFree ? <span className="chip" style={{ fontSize: 10, background: "var(--secondaryContainer)" }}>FREE</span> : m.pricing?.promptPer1M ? <span className="muted" style={{ fontSize: 10 }}>${m.pricing.promptPer1M}/1M in</span> : null}
+                            {m.pricing?.isFree ? <span className="chip" style={{ fontSize: 10, background: "var(--dsw-alias-state-business-tertiary)" }}>FREE</span> : m.pricing?.promptPer1M ? <span className="muted" style={{ fontSize: 10 }}>${m.pricing.promptPer1M}/1M in</span> : null}
                             {m.supportsTools && <span className="muted" style={{ fontSize: 10, marginLeft: 6 }}>tools</span>}
                           </div>
                         </div>
@@ -1460,7 +1458,7 @@ export default function App() {
                       const m = models.find((x) => x.id === rid);
                       if (!m) return null;
                       return (
-                        <div key={`rec-${rid}`} className="row" style={{ padding: "6px 0", borderBottom: "1px solid var(--outlineVariant)", alignItems: "center" }}>
+                        <div key={`rec-${rid}`} className="row" style={{ padding: "6px 0", borderBottom: "1px solid var(--dsw-alias-border-l2)", alignItems: "center" }}>
                           <span className="muted" style={{ fontSize: 11, width: 24 }}>↻</span>
                           <div style={{ flex: 1, cursor: "pointer" }} onClick={() => { persistModel(m.id, m.provider); setPickerOpen(false); }}>
                             <strong>{m.id}</strong> <span className="muted" style={{ fontSize: 11 }}>{m.name}</span>
@@ -1489,7 +1487,7 @@ export default function App() {
               <button className="btn ghost" onClick={() => setModePickerOpen(false)}>✕</button>
             </div>
             {(modes.length === 0 ? [{ id: "chat", label: "Chat", description: "Single call, no tools", capabilities: { tools: false, multiStep: false, sideEffects: "none" } }, { id: "agent", label: "Agent", description: "Tool loop", capabilities: { tools: true, multiStep: true, sideEffects: "ask" } }, { id: "plan", label: "Plan", description: "Plan then execute", capabilities: { tools: true, multiStep: true, sideEffects: "ask" } }, { id: "dry-run", label: "Dry-run", description: "Simulated tools", capabilities: { tools: true, multiStep: true, sideEffects: "none" } }, { id: "replay", label: "Replay", description: "Re-execute a run", capabilities: { tools: true, multiStep: true, sideEffects: "none" } }] as typeof modes : modes).map((m) => (
-              <div key={m.id} className="row" style={{ padding: "10px 0", borderBottom: "1px solid var(--outlineVariant)", cursor: "pointer", background: conversationMode === m.id ? "var(--surfaceContainerLow)" : "transparent" }} onClick={() => {
+              <div key={m.id} className="row" style={{ padding: "10px 0", borderBottom: "1px solid var(--dsw-alias-border-l2)", cursor: "pointer", background: conversationMode === m.id ? "var(--dsw-alias-bg-layer-1)" : "transparent" }} onClick={() => {
                 const prev = conversationMode;
                 setConversationMode(m.id);
                 localStorage.setItem("gk.mode.current", m.id);
@@ -1503,7 +1501,7 @@ export default function App() {
                   <div className="muted" style={{ fontSize: 12 }}>{m.description}</div>
                   <div className="muted" style={{ fontSize: 10 }}>tools:{String(m.capabilities.tools)} · multi:{String(m.capabilities.multiStep)} · sideEffects:{m.capabilities.sideEffects}</div>
                 </div>
-                {conversationMode === m.id && <span style={{ color: "var(--secondary)" }}>✓</span>}
+                {conversationMode === m.id && <span style={{ color: "var(--dsw-alias-state-business-primary)" }}>✓</span>}
               </div>
             ))}
             <p className="muted" style={{ fontSize: 11, marginTop: 8 }}>Per-mode overrides: settings.defaults → mode.defaultParams → conversation. Default in Settings → Defaults.</p>
@@ -1528,18 +1526,18 @@ export default function App() {
               <div style={{ maxHeight: 500, overflowY: "auto" }}>
                 <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse" }}>
                   <thead>
-                    <tr style={{ textAlign: "left", borderBottom: "1px solid var(--outlineVariant)" }}>
+                    <tr style={{ textAlign: "left", borderBottom: "1px solid var(--dsw-alias-border-l2)" }}>
                       <th>Time</th><th>Conversation</th><th>Model</th><th>Mode</th><th>Status</th><th>Tokens</th><th>Cost</th><th>Latency</th><th></th>
                     </tr>
                   </thead>
                   <tbody>
                     {traces.map((r) => (
-                      <tr key={r.runId} style={{ borderBottom: "1px solid var(--outlineVariant)" }}>
+                      <tr key={r.runId} style={{ borderBottom: "1px solid var(--dsw-alias-border-l2)" }}>
                         <td>{new Date(r.startedAt).toLocaleTimeString()}</td>
-                        <td style={{ fontFamily: "var(--font-technical)", fontSize: 10 }}>{r.conversationId?.slice(0, 8) ?? "-"}</td>
+                        <td style={{ fontFamily: "var(--ds-font-family-code)", fontSize: 10 }}>{r.conversationId?.slice(0, 8) ?? "-"}</td>
                         <td>{r.modelId}</td>
                         <td>{r.modeId}</td>
-                        <td><span className={`chip ${r.status === "ok" ? "active" : r.status === "error" ? "fail" : ""}`}>{r.status}</span>{r.error && <span style={{ color: "var(--error)", marginLeft: 6 }}>{r.error.kind}: {r.error.message.slice(0, 60)}</span>}</td>
+                        <td><span className={`chip ${r.status === "ok" ? "active" : r.status === "error" ? "fail" : ""}`}>{r.status}</span>{r.error && <span style={{ color: "var(--dsw-alias-state-error-primary)", marginLeft: 6 }}>{r.error.kind}: {r.error.message.slice(0, 60)}</span>}</td>
                         <td>{r.usage ? `${r.usage.promptTokens + r.usage.completionTokens}` : "-"}</td>
                         <td>{r.usage?.costUsd !== undefined ? `$${r.usage.costUsd.toFixed(4)}` : "-"}</td>
                         <td>{r.latencyMs ? `${r.latencyMs}ms` : "-"}</td>
@@ -1585,13 +1583,13 @@ export default function App() {
             <div style={{ maxHeight: 400, overflowY: "auto", fontSize: 12 }}>
               <h4>Waterfall</h4>
               {(selectedTrace.spans as Array<{ name: string; kind: string; status: string; startedAt: string; endedAt?: string; attributes: Record<string, unknown> }>).map((s, i) => (
-                <div key={i} style={{ borderLeft: `4px solid ${s.status === "ok" ? "var(--secondary)" : s.status === "error" ? "var(--error)" : "var(--outline)"}`, padding: "6px 8px", marginBottom: 6, background: "var(--surfaceContainerLow)" }}>
+                <div key={i} style={{ borderLeft: `4px solid ${s.status === "ok" ? "var(--dsw-alias-state-business-primary)" : s.status === "error" ? "var(--dsw-alias-state-error-primary)" : "var(--dsw-alias-border-l3)"}`, padding: "6px 8px", marginBottom: 6, background: "var(--dsw-alias-bg-layer-1)" }}>
                   <strong>{s.name}</strong> <span className="muted">{s.kind} · {s.status}</span> <span className="muted">{s.startedAt} → {s.endedAt ?? "-"}</span>
                   <pre style={{ fontSize: 10, whiteSpace: "pre-wrap", margin: "4px 0 0 0" }}>{JSON.stringify(s.attributes, null, 2).slice(0, 800)}</pre>
                 </div>
               ))}
               <h4>Raw JSON</h4>
-              <pre style={{ fontSize: 10, background: "var(--surfaceContainerLow)", padding: 8, overflowX: "auto" }}>{JSON.stringify(selectedTrace, null, 2).slice(0, 8000)}</pre>
+              <pre style={{ fontSize: 10, background: "var(--dsw-alias-bg-layer-1)", padding: 8, overflowX: "auto" }}>{JSON.stringify(selectedTrace, null, 2).slice(0, 8000)}</pre>
             </div>
           </div>
         </div>
@@ -1624,7 +1622,7 @@ export default function App() {
                     const status = fieldStatus[`providers.${pid}.apiKey`] ?? "";
                     const test = testResult[pid];
                     return (
-                      <div key={pid} style={{ border: "1px solid var(--outlineVariant)", borderRadius: 8, padding: 12, marginBottom: 12 }}>
+                      <div key={pid} style={{ border: "1px solid var(--dsw-alias-border-l2)", borderRadius: 8, padding: 12, marginBottom: 12 }}>
                         <div className="row" style={{ justifyContent: "space-between" }}>
                           <strong style={{ textTransform: "capitalize" }}>{pid}</strong>
                           <label style={{ display: "flex", gap: 6, alignItems: "center", fontSize: 12 }}>
@@ -1651,7 +1649,7 @@ export default function App() {
                               <button className="btn ghost" onClick={() => void testProvider(pid)}>Test connection</button>
                               <span className="muted" style={{ fontSize: 12 }}>{status}</span>
                             </div>
-                            {test && <p style={{ fontSize: 12, color: test.ok ? "var(--secondary)" : "var(--error)", marginTop: 6 }}>{test.ok ? "✓ " : "✗ "}{test.message} {test.kind ? `· ${test.kind}` : ""}</p>}
+                            {test && <p style={{ fontSize: 12, color: test.ok ? "var(--dsw-alias-state-business-primary)" : "var(--dsw-alias-state-error-primary)", marginTop: 6 }}>{test.ok ? "✓ " : "✗ "}{test.message} {test.kind ? `· ${test.kind}` : ""}</p>}
                           </div>
                         ) : (
                           <p className="muted" style={{ fontSize: 12 }}>Ollama is local — no key required. Set baseUrl below.</p>
@@ -1733,14 +1731,14 @@ export default function App() {
                   <ul className="flat-list">
                     {registryPlugins.length === 0 && <li className="muted">Loading…</li>}
                     {registryPlugins.map((p) => (
-                      <li key={p.id} style={{ border: "1px solid var(--outlineVariant)", borderRadius: 8, padding: 12, marginBottom: 8 }}>
+                      <li key={p.id} style={{ border: "1px solid var(--dsw-alias-border-l2)", borderRadius: 8, padding: 12, marginBottom: 8 }}>
                         <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
                           <div>
                             <strong>{p.name}</strong> <span className="muted">v{p.version} · {p.kinds.join(",")} · {p.permissions.join(",") || "no perms"}</span>
                             <div className="muted" style={{ fontSize: 12 }}>{p.description}</div>
                             <div style={{ fontSize: 11, marginTop: 4 }}>
                               <span className={`chip ${p.status === "active" ? "active" : p.status === "errored" ? "fail" : ""}`}>{p.status}</span>
-                              {p.error && <span style={{ color: "var(--error)", marginLeft: 8 }}>Error: {p.error}</span>}
+                              {p.error && <span style={{ color: "var(--dsw-alias-state-error-primary)", marginLeft: 8 }}>Error: {p.error}</span>}
                               {p.status === "errored" && <span className="muted" style={{ marginLeft: 8 }}>Core and other plugins keep working.</span>}
                             </div>
                           </div>
@@ -1761,7 +1759,7 @@ export default function App() {
                           </label>
                         </div>
                         {p.kinds.includes("provider") && p.id === "greeneek.provider.openrouter" && p.status !== "active" && (
-                          <p style={{ fontSize: 11, color: "var(--error)", marginTop: 6 }}>Disabling OpenRouter will remove its models from the picker immediately.</p>
+                          <p style={{ fontSize: 11, color: "var(--dsw-alias-state-error-primary)", marginTop: 6 }}>Disabling OpenRouter will remove its models from the picker immediately.</p>
                         )}
                       </li>
                     ))}
@@ -1828,7 +1826,7 @@ export default function App() {
                     {Object.keys(presets).length > 0 ? (
                       <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 4 }}>
                         {Object.keys(presets).map((n) => (
-                          <div key={n} className="row" style={{ justifyContent: "space-between", border: "1px solid var(--outlineVariant)", borderRadius: 6, padding: 6 }}>
+                          <div key={n} className="row" style={{ justifyContent: "space-between", border: "1px solid var(--dsw-alias-border-l2)", borderRadius: 6, padding: 6 }}>
                             <strong style={{ fontSize: 12 }}>{n}</strong>
                             <span className="row" style={{ gap: 4 }}>
                               <button className="btn ghost" style={{ fontSize: 11 }} onClick={() => applyPreset(n)}>Apply</button>
@@ -1999,7 +1997,7 @@ export default function App() {
                         <div className="row">
                           <span className="chip">{e.action}</span>
                           <span className="muted">{e.resource}</span>
-                          <span className="muted" style={{ fontFamily: "var(--font-technical)", fontSize: "10px" }}>
+                          <span className="muted" style={{ fontFamily: "var(--ds-font-family-code)", fontSize: "10px" }}>
                             #{e.seq} · {e.hash.slice(0, 12)}… · {new Date(e.ts).toLocaleString()}
                           </span>
                         </div>
@@ -2021,7 +2019,7 @@ export default function App() {
         </div>
       )}
 
-      {toast && <div style={{ position: "fixed", bottom: 92, left: "50%", transform: "translateX(-50%)", background: "var(--primary)", color: "var(--on-primary)", padding: "8px 14px", borderRadius: 999, fontSize: 12 }}>{toast}</div>}
+      {toast && <div style={{ position: "fixed", bottom: 92, left: "50%", transform: "translateX(-50%)", background: "var(--dsw-alias-label-primary)", color: "var(--dsw-static-neutral-bluish-00)", padding: "8px 14px", borderRadius: 999, fontSize: 12 }}>{toast}</div>}
     </div>
     </ErrorBoundary>
   );

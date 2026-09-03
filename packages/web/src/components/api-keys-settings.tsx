@@ -128,18 +128,18 @@ export function ApiKeysManager(props: {
       <div
         key={pid}
         style={{
-          border: "1px solid var(--outlineVariant)",
+          border: "1px solid var(--dsw-alias-border-l2)",
           borderRadius: 10,
           padding: 14,
           marginBottom: 12,
-          background: isLocal ? "var(--surface-container-low)" : "var(--surface-container)",
+          background: isLocal ? "var(--dsw-alias-bg-layer-1)" : "var(--dsw-alias-bg-layer-2)",
         }}
       >
         <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <strong style={{ fontSize: 13 }}>{baseLabel}</strong>
             {isLocal ? (
-              <span className="chip" style={{ marginLeft: 8, fontSize: 10, background: "var(--secondaryContainer)" }}>
+              <span className="chip" style={{ marginLeft: 8, fontSize: 10, background: "var(--dsw-alias-state-business-tertiary)" }}>
                 No API Key Required • Runs Locally • Free
               </span>
             ) : (
@@ -224,7 +224,7 @@ export function ApiKeysManager(props: {
               <p
                 style={{
                   fontSize: 12,
-                  color: test.ok ? "var(--secondary)" : test.message === "Testing…" ? "var(--outline)" : "var(--error)",
+                  color: test.ok ? "var(--dsw-alias-state-business-primary)" : test.message === "Testing…" ? "var(--dsw-alias-border-l3)" : "var(--dsw-alias-state-error-primary)",
                   marginTop: 6,
                 }}
               >
@@ -328,11 +328,11 @@ export function ApiKeysManager(props: {
       {/* Encryption toggle — AES-GCM */}
       <div
         style={{
-          border: "1px solid var(--outlineVariant)",
+          border: "1px solid var(--dsw-alias-border-l2)",
           borderRadius: 10,
           padding: 14,
           marginBottom: 16,
-          background: "var(--surface-container-low)",
+          background: "var(--dsw-alias-bg-layer-1)",
         }}
       >
         <label style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 13, fontWeight: 600 }}>
@@ -416,14 +416,14 @@ export function ApiKeysManager(props: {
       <h4 style={{ margin: "16px 0 8px 0" }}>Bring Your Own Key (BYOK) — Cloud</h4>
       {cloudIds.map((id) => renderRow(id, false))}
 
-      <div style={{ marginTop: 18, borderTop: "1px solid var(--outlineVariant)", paddingTop: 12 }}>
-        <h4 style={{ color: "var(--error)", margin: 0 }}>Danger Zone</h4>
+      <div style={{ marginTop: 18, borderTop: "1px solid var(--dsw-alias-border-l2)", paddingTop: 12 }}>
+        <h4 style={{ color: "var(--dsw-alias-state-error-primary)", margin: 0 }}>Danger Zone</h4>
         <p className="muted" style={{ fontSize: 12 }}>
           Clear all API keys from this device. This cannot be undone.
         </p>
         <button
           className="btn ghost"
-          style={{ color: "var(--error)", borderColor: "var(--error)" }}
+          style={{ color: "var(--dsw-alias-state-error-primary)", borderColor: "var(--dsw-alias-state-error-primary)" }}
           onClick={() => setShowDanger(true)}
         >
           Clear All Keys
@@ -454,16 +454,16 @@ export function ApiKeysManager(props: {
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              background: "var(--surface)",
+              background: "var(--dsw-alias-bg-base)",
               borderRadius: 12,
               padding: 20,
               maxWidth: 480,
               width: "100%",
-              border: "1px solid var(--outlineVariant)",
+              border: "1px solid var(--dsw-alias-border-l2)",
               boxShadow: "0 12px 40px rgba(0,0,0,0.18)",
             }}
           >
-            <h3 style={{ margin: "0 0 8px 0", color: "var(--error)" }}>Clear all API keys?</h3>
+            <h3 style={{ margin: "0 0 8px 0", color: "var(--dsw-alias-state-error-primary)" }}>Clear all API keys?</h3>
             <p style={{ fontSize: 12, margin: "0 0 12px 0" }}>
               This will remove every stored API key from this browser. Traces and logs will be redacted and keys will be purged. Type{" "}
               <code>CLEAR</code> to confirm.
@@ -487,7 +487,7 @@ export function ApiKeysManager(props: {
               </button>
               <button
                 className="btn"
-                style={{ background: "var(--error)", color: "white", opacity: dangerConfirm !== "CLEAR" ? 0.5 : 1 }}
+                style={{ background: "var(--dsw-alias-state-error-primary)", color: "white", opacity: dangerConfirm !== "CLEAR" ? 0.5 : 1 }}
                 disabled={dangerConfirm !== "CLEAR"}
                 onClick={() => {
                   for (const pid of [...localIds, ...cloudIds]) onClear(pid);

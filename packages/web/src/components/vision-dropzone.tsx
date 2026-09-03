@@ -153,12 +153,12 @@ export function VisionDropzone(props: {
       role="region"
       tabIndex={-1}
       style={{
-        border: dragActive ? "1.5px solid var(--accent)" : attachments.length ? "0.5px solid var(--stroke)" : "1px dashed var(--outline-variant)",
+        border: dragActive ? "1.5px solid var(--dsw-alias-state-business-primary)" : attachments.length ? "0.5px solid var(--dsw-alias-border-l2)" : "1px dashed var(--dsw-alias-border-l2)",
         borderRadius: "10px",
         padding: attachments.length ? 8 : 10,
-        background: dragActive ? "color-mix(in srgb, var(--accent) 7%, var(--surface-container-lowest))" : "var(--surface-container-lowest)",
+        background: dragActive ? "color-mix(in srgb, var(--dsw-alias-state-business-primary) 7%, var(--dsw-alias-bg-layer-1))" : "var(--dsw-alias-bg-layer-1)",
         transition: "border-color 120ms ease, background 120ms ease",
-        outline: dragActive ? "2px solid color-mix(in srgb, var(--accent) 22%, transparent)" : "none",
+        outline: dragActive ? "2px solid color-mix(in srgb, var(--dsw-alias-state-business-primary) 22%, transparent)" : "none",
         outlineOffset: 2,
       }}
       title={guardMessage || "Drop images here, or press Ctrl+V to paste from clipboard"}
@@ -208,8 +208,8 @@ export function VisionDropzone(props: {
                 height: 96,
                 borderRadius: 8,
                 overflow: "hidden",
-                border: "0.5px solid var(--stroke)",
-                background: "var(--surface)",
+                border: "0.5px solid var(--dsw-alias-border-l2)",
+                background: "var(--dsw-alias-bg-base)",
               }}
               title={`${a.name} · ${(a.size / 1024).toFixed(0)}KB · ${a.mimeType}`}
             >

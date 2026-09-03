@@ -94,7 +94,7 @@ export function ConnectionStatus({ running }: { running: boolean }) {
     };
   }, []);
 
-  const dotColor = !online ? "var(--error)" : running ? "var(--accent)" : overallOk === false ? "var(--error)" : overallOk === true ? "var(--secondary)" : "var(--tertiary)";
+  const dotColor = !online ? "var(--dsw-alias-state-error-primary)" : running ? "var(--dsw-alias-state-business-primary)" : overallOk === false ? "var(--dsw-alias-state-error-primary)" : overallOk === true ? "var(--dsw-alias-state-business-primary)" : "var(--dsw-alias-label-tertiary)";
   const tooltipLines = healths.map((h) => {
     const baseDisplay = h.baseUrl ? ` at ${h.baseUrl.replace(/^https?:\/\//, "")}` : "";
     const status = h.ok === true ? "● OK" : h.ok === false ? "● " + h.message : "● checking";
@@ -112,7 +112,7 @@ export function ConnectionStatus({ running }: { running: boolean }) {
           height: 8,
           borderRadius: "50%",
           display: "inline-block",
-          boxShadow: running ? "0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent)" : "none",
+          boxShadow: running ? "0 0 0 4px color-mix(in srgb, var(--dsw-alias-state-business-primary) 18%, transparent)" : "none",
           transition: "background 160ms ease, box-shadow 160ms ease",
         }}
         aria-label={!online ? "offline" : overallOk === false ? "degraded" : "online"}

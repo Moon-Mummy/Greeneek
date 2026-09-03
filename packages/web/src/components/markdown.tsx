@@ -19,9 +19,9 @@ function FallbackMarkdown({ text }: { text: string }) {
           <code
             key={i}
             style={{
-              fontFamily: "var(--font-technical)",
+              fontFamily: "var(--ds-font-family-code)",
               fontSize: "12px",
-              background: "var(--surface-container-high)",
+              background: "var(--dsw-alias-bg-layer-3)",
               padding: "1px 5px",
               borderRadius: "4px",
             }}
@@ -83,7 +83,7 @@ function CodeComponent(props: { inline?: boolean; className?: string; children?:
   const codeText = String(children ?? "").replace(/\n$/, "");
   if (inline) {
     return (
-      <code className={className} style={{ fontFamily: "var(--font-technical)", fontSize: "0.92em", background: "var(--surface-container-high)", padding: "1px 5px", borderRadius: "4px" }}>
+      <code className={className} style={{ fontFamily: "var(--ds-font-family-code)", fontSize: "0.92em", background: "var(--dsw-alias-bg-layer-3)", padding: "1px 5px", borderRadius: "4px" }}>
         {children}
       </code>
     );
