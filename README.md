@@ -1,19 +1,38 @@
+<p align="center">
+  <img src="apps/web/public/assets/logo-mark.png" width="88" height="88" alt="Greeneek logo" />
+</p>
+
 # Greeneek
 
 English | [中文](README.zh.md)
 
+<p align="center"><strong>The surgeon's toolkit for AI agents. Everything is a plugin.</strong></p>
+
+<p align="center">
+  <a href="https://github.com/Moon-Mummy/Greeneek/actions"><img src="https://img.shields.io/badge/CI-passing-067a52" alt="CI"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-067a52" alt="MIT"></a>
+  <a href="https://github.com/deepseek-ai/deepseek-harness"><img src="https://img.shields.io/badge/upstream-DeepSeek%20Harness-34d399" alt="Upstream"></a>
+</p>
+
+---
+
 Greeneek is an open-source agent harness based on the MIT-licensed [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) codebase.
 
 It is built on an **everything-is-a-plugin** architecture and powered by [Cordis](https://github.com/cordiverse/cordis), whose design is described in [_A Programming Paradigm for Spatiotemporal Composability_](https://arxiv.org/abs/2608.25512).
+
+- **Surfaces**: Web GUI (`dsh --profile web`), headless runs, automation ACP server, TypeScript SDK, and Python SDK.
+- **DeepSeek models**: `DeepSeek`, `DeepSeek-V4-Flash`, `DeepSeek-V4-Pro`, `DeepSeek-V4-Flash-Vision-Exp`.
+- **Sessions and tracing**: durable session persistence, titles, and telemetry.
+- **Extensible**: every capability is a plugin; tag community plugins with the [`dsh-plugin`](https://github.com/topics/dsh-plugin) topic.
 
 Documentation: see the in-repository [user guide](docs/user/guide/index.md) and [development guide](docs/development.md).
 
 ## Branding and models
 
 - App branding stays **Greeneek**.
-- The logo stays **Greeneek**.
-- The theme stays **Greeneek green**.
-- Model provider and model names stay **DeepSeek**, because Greeneek does not have separate model names:
+- Logo stays **Greeneek**.
+- Green theme stays **Greeneek green**.
+- Model provider/models are back to **DeepSeek**:
   - `DeepSeek`
   - `DeepSeek-V4-Flash`
   - `DeepSeek-V4-Pro`

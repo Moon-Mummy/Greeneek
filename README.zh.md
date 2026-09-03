@@ -1,10 +1,29 @@
+<p align="center">
+  <img src="apps/web/public/assets/logo-mark.png" width="88" height="88" alt="Greeneek logo" />
+</p>
+
 # Greeneek
 
 [English](README.md) | 中文
 
+<p align="center"><strong>AI 智能体的外科手术工具包。一切皆插件。</strong></p>
+
+<p align="center">
+  <a href="https://github.com/Moon-Mummy/Greeneek/actions"><img src="https://img.shields.io/badge/CI-passing-067a52" alt="CI"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-067a52" alt="MIT"></a>
+  <a href="https://github.com/deepseek-ai/deepseek-harness"><img src="https://img.shields.io/badge/upstream-DeepSeek%20Harness-34d399" alt="Upstream"></a>
+</p>
+
+---
+
 Greeneek 是基于 MIT 许可的 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（`dsh`）代码库构建的开源 agent harness（智能体框架）。
 
 它构建于**一切皆插件**的架构之上，由 [Cordis](https://github.com/cordiverse/cordis) 驱动，其设计参见论文 [_A Programming Paradigm for Spatiotemporal Composability_](https://arxiv.org/abs/2608.25512)。
+
+- **运行界面**：Web GUI（`dsh --profile web`）、headless 运行、自动化 ACP 服务器、TypeScript SDK 与 Python SDK。
+- **DeepSeek 模型**：`DeepSeek`、`DeepSeek-V4-Flash`、`DeepSeek-V4-Pro`、`DeepSeek-V4-Flash-Vision-Exp`。
+- **会话与追踪**：持久的会话存储、标题与遥测。
+- **可扩展**：每个能力都是插件；为社区插件添加 [`dsh-plugin`](https://github.com/topics/dsh-plugin) 话题。
 
 文档：参见仓库内的[用户指南](docs/user/guide/index.zh.md)与[开发指南](docs/development.zh.md)。
 
@@ -12,8 +31,8 @@ Greeneek 是基于 MIT 许可的 [DeepSeek Harness](https://github.com/deepseek-
 
 - 应用品牌保持为 **Greeneek**。
 - Logo 保持为 **Greeneek**。
-- 主题保持为 **Greeneek green**。
-- 模型提供商与模型名称保持为 **DeepSeek**，因为 Greeneek 没有单独的模型名称：
+- 绿色主题保持为 **Greeneek green**。
+- 模型提供商与模型名称回到 **DeepSeek**：
   - `DeepSeek`
   - `DeepSeek-V4-Flash`
   - `DeepSeek-V4-Pro`
