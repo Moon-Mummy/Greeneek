@@ -1,6 +1,7 @@
+/* rebrand:ignore-start -- pi-ai adapter specs are upstream-catalog data (B4, decisions.md D16); the rebrand rules must never rewrite them */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { Context, Service } from '@deepseek-ai/cordis'
-import { AttachmentId, AttachmentStore, ImageVariantId } from '@deepseek-ai/dsh-attachment'
+import { Context, Service } from '@greeneek/cordis'
+import { AttachmentId, AttachmentStore, ImageVariantId } from '@greeneek/gnk-attachment'
 import type {
   ImageAttachmentLimits,
   ImageAttachmentRef,
@@ -8,11 +9,11 @@ import type {
   RequestImageAttachment,
   SaveImageAttachment,
   StoredImageAttachment,
-} from '@deepseek-ai/dsh-attachment'
-import LlmRuntime, { createUserMessage, CONTEXT_WINDOW_EXCEEDED_CODE, LlmError, ReasoningEffortId, userAgent } from '@deepseek-ai/dsh-llm'
-import * as LlmPiAi from '@deepseek-ai/dsh-llm-pi-ai'
-import { PiAiAdapter } from '@deepseek-ai/dsh-llm-pi-ai'
-import { MAX_TIMER_DELAY_MS } from '@deepseek-ai/dsh-timeout'
+} from '@greeneek/gnk-attachment'
+import LlmRuntime, { createUserMessage, CONTEXT_WINDOW_EXCEEDED_CODE, LlmError, ReasoningEffortId, userAgent } from '@greeneek/gnk-llm'
+import * as LlmPiAi from '@greeneek/gnk-llm-pi-ai'
+import { PiAiAdapter } from '@greeneek/gnk-llm-pi-ai'
+import { MAX_TIMER_DELAY_MS } from '@greeneek/gnk-timeout'
 import { getBuiltinModels } from '@earendil-works/pi-ai/providers/all'
 import { DEFAULT_MAX_REQUEST_IMAGE_BYTES, resolveProfiles } from '../src/config.ts'
 import { memoryAuth } from './auth-double.ts'
@@ -31,8 +32,8 @@ const IMAGE_REF: ImageAttachmentRef = {
   width: 1,
   height: 1,
 }
-const HOST_IMAGE_PATH = '/host/.dsh/attachments/objects/aa/object'
-const MODEL_IMAGE_PATH = '/model/.dsh/attachments/objects/aa/object'
+const HOST_IMAGE_PATH = '/host/.gnk/attachments/objects/aa/object'
+const MODEL_IMAGE_PATH = '/model/.gnk/attachments/objects/aa/object'
 
 class MappedFileSystem extends Service {
   constructor(ctx: Context) {
@@ -148,8 +149,8 @@ describe('PiAiAdapter provider routing', () => {
       thinking: { type: 'enabled' },
       reasoning_effort: 'max',
     })
-    expect(server.requests[0]).not.toHaveProperty('dsh_session_log')
-    expect(server.requests[0]).not.toHaveProperty('dsh_plugin_packages')
+    expect(server.requests[0]).not.toHaveProperty('gnk_session_log')
+    expect(server.requests[0]).not.toHaveProperty('gnk_plugin_packages')
   })
 
   it('uses a dynamic request effort and reports unsupported efforts before network I/O', async () => {
@@ -493,7 +494,7 @@ describe('provider profile lifecycle', () => {
     const ctx = new Context()
     await ctx.plugin(LlmRuntime)
     await ctx.plugin(LlmPiAi, {
-      providers: { deepseek: {}, openai: {} },
+      providers: { deepseek: { baseURL: 'https://catalog.test' }, openai: {} },
     })
 
     await expect(ctx.llm.resolveModelInfo('deepseek', 'deepseek-v4-flash'))
@@ -527,7 +528,7 @@ describe('provider profile lifecycle', () => {
     const supported = new Context()
     await supported.plugin(LlmRuntime)
     await supported.plugin(LlmPiAi, {
-      providers: { deepseek: { reasoning: 'max' } },
+      providers: { deepseek: { baseURL: 'https://catalog.test', reasoning: 'max' } },
     })
     await expect(supported.llm.resolveModelInfo('deepseek', 'deepseek-v4-flash'))
       .resolves.toMatchObject({ reasoning: { defaultEffort: ReasoningEffortId('max') } })
@@ -540,7 +541,7 @@ describe('provider profile lifecycle', () => {
     const unsupported = new Context()
     await unsupported.plugin(LlmRuntime)
     await unsupported.plugin(LlmPiAi, {
-      providers: { deepseek: { reasoning: 'medium' } },
+      providers: { deepseek: { baseURL: 'https://catalog.test', reasoning: 'medium' } },
     })
     const described = await unsupported.llm.resolveModelInfo('deepseek', 'deepseek-v4-flash')
     expect(described.reasoning?.defaultEffort).toBeUndefined()
@@ -554,7 +555,7 @@ describe('provider profile lifecycle', () => {
     const disabled = new Context()
     await disabled.plugin(LlmRuntime)
     await disabled.plugin(LlmPiAi, {
-      providers: { deepseek: { reasoning: 'off' } },
+      providers: { deepseek: { baseURL: 'https://catalog.test', reasoning: 'off' } },
     })
     await expect(disabled.llm.resolveModelInfo('deepseek', 'deepseek-v4-flash'))
       .resolves.toMatchObject({ reasoning: { defaultEffort: ReasoningEffortId('off') } })
@@ -903,7 +904,7 @@ describe('provider profile lifecycle', () => {
   })
 
   it('rejects unsupported or unresolved image input before provider I/O', async () => {
-    const adapter = adapterOf({ openai: {}, deepseek: {} })
+    const adapter = adapterOf({ openai: {}, deepseek: { baseURL: 'https://catalog.test' } })
     const drain = async (options: Parameters<PiAiAdapter['stream']>[0]): Promise<void> => {
       for await (const _chunk of adapter.stream(options)) { /* drain */ }
     }
@@ -958,7 +959,7 @@ describe('abort wiring', () => {
     const message = Object.defineProperty({}, 'content', {
       get() { throw original },
     })
-    const adapter = adapterOf({ deepseek: {} })
+    const adapter = adapterOf({ deepseek: { baseURL: 'https://catalog.test' } })
     const drain = async (): Promise<void> => {
       for await (const _chunk of adapter.stream({
         provider: 'deepseek',
@@ -979,7 +980,7 @@ describe('abort wiring', () => {
         throw original
       },
     })
-    const adapter = adapterOf({ deepseek: {} })
+    const adapter = adapterOf({ deepseek: { baseURL: 'https://catalog.test' } })
     const drain = async (): Promise<void> => {
       for await (const _chunk of adapter.stream({
         provider: 'deepseek',
@@ -992,8 +993,8 @@ describe('abort wiring', () => {
     await expect(drain()).rejects.toMatchObject({ code: 'ABORTED', cause: original })
   })
 
-  it('resolves catalog endpoints without an override before honoring pre-abort', async () => {
-    const adapter = adapterOf({ deepseek: {} })
+  it('resolves catalog endpoints (private override) before honoring pre-abort', async () => {
+    const adapter = adapterOf({ deepseek: { baseURL: 'https://catalog.test' } })
     const controller = new AbortController()
     controller.abort('already stopped')
     const chunks = []
@@ -1040,3 +1041,4 @@ describe('abort wiring', () => {
     expect(server.requests).toHaveLength(1)
   })
 })
+/* rebrand:ignore-end */

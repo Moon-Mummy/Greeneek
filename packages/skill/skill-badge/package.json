@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-skill-badge",
-  "description": "Bundled dsh badge skill provider for DeepSeek Harness",
+  "name": "@greeneek/gnk-skill-badge",
+  "description": "Bundled gnk badge skill provider for Greeneek Harness",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/skill/skill-badge"
   },
   "type": "module",
@@ -27,11 +27,11 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/dsh-skill": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-skill": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-skill": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-skill": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   }
 }

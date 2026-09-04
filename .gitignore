@@ -27,17 +27,20 @@ tmp/
 .idea
 mise.toml
 dist-exe/
-python/sdk-runtime/src/deepseek_harness_runtime/runtime/deepseek-harness-sdk-runtime-*
-python/sdk-runtime/src/deepseek_harness_runtime/runtime/node/
+python/sdk-runtime/src/greeneek_harness_runtime/runtime/greeneek-harness-sdk-runtime-*
+python/sdk-runtime/src/greeneek_harness_runtime/runtime/node/
 python/**/__pycache__/
 python/**/.pytest_cache/
 packages/**/__pycache__/
 apps/web/dist/
 .artifacts/
-.dsh-build/
+.gnk-build/
 .playwright-mcp/
 .orig
 .worktrees/
 worktrees/
 .agents/worktrees/
 .typert-*/
+
+# Rebrand codemod work artifacts (parity baselines, dry-run diffs)
+.rebrand/

@@ -1,15 +1,15 @@
 /**
- * Low-level JSON-RPC client for a DeepSeek Harness SDK runtime subprocess.
+ * Low-level JSON-RPC client for a Greeneek Harness SDK runtime subprocess.
  * {@link HarnessClient} owns the child process: it spawns the runtime, speaks
- * the `@deepseek-ai/dsh-sdk-protocol` wire over the child's stdio, fans
+ * the `@greeneek/gnk-sdk-protocol` wire over the child's stdio, fans
  * server notifications out to subscriptions, and tears the child down to
  * quiescence through a private EOF → SIGTERM → SIGKILL ladder. The design
  * twin is the Python SDK's `HarnessClient` (`python/sdk`); both drive the
  * same runtime protocol. This client runs OUTSIDE any harness context, so it
- * spawns directly rather than through the `dsh-subprocess` service — the
+ * spawns directly rather than through the `gnk-subprocess` service — the
  * seam's documented exception for SDK-managed transports.
  *
- * @module @deepseek-ai/dsh-sdk-client/client
+ * @module @greeneek/gnk-sdk-client/client
  */
 
 import { spawn, type ChildProcess } from 'node:child_process'
@@ -20,9 +20,9 @@ import {
   type InitializeResult,
   type SessionPromptParams,
   type SdkPromptContentBlock,
-} from '@deepseek-ai/dsh-sdk-protocol'
+} from '@greeneek/gnk-sdk-protocol'
 import { disposeRuntimeProcess } from './dispose.ts'
-import { resolveDshLaunch, type RuntimeProcessOptions } from './launch.ts'
+import { resolveGnkLaunch, type RuntimeProcessOptions } from './launch.ts'
 import type { HarnessClientOptions, HarnessNotification, NotificationFilter } from './types.ts'
 
 /** Retained stderr lines used to diagnose an unexpected runtime death. */
@@ -174,7 +174,7 @@ class NotificationSubscriptionImpl implements NotificationSubscription {
 }
 
 /**
- * JSON-RPC client for the DeepSeek Harness SDK runtime over subprocess stdio.
+ * JSON-RPC client for the Greeneek Harness SDK runtime over subprocess stdio.
  *
  * The subprocess starts lazily on {@link start} and is owned by this instance
  * until {@link close}, which requests protocol `shutdown` and then walks the
@@ -183,7 +183,7 @@ class NotificationSubscriptionImpl implements NotificationSubscription {
  * runtime is closed.
  */
 export class HarnessClient {
-  /** Original public dsh launch and timeout options for this client. */
+  /** Original public gnk launch and timeout options for this client. */
   readonly options: HarnessClientOptions
   private readonly runtime: RuntimeProcessOptions
   private child: ChildProcess | undefined
@@ -197,11 +197,11 @@ export class HarnessClient {
   private streamsSettled: Promise<void> = Promise.resolve()
   private closeTask: Promise<void> | undefined
 
-  /** @param options - dsh profile, patch, home, process, environment, and timeout options. */
+  /** @param options - gnk profile, patch, home, process, environment, and timeout options. */
   constructor(options?: HarnessClientOptions)
   constructor(options: HarnessClientOptions = {}, runtime?: RuntimeProcessOptions) {
     this.options = options
-    this.runtime = runtime ?? resolveDshLaunch(options)
+    this.runtime = runtime ?? resolveGnkLaunch(options)
   }
 
   /**
@@ -209,7 +209,7 @@ export class HarnessClient {
    * the process is live; rejects reuse after {@link close}.
    */
   start(): void {
-    if (this.closeTask !== undefined) throw new TransportClosedError('DeepSeek Harness runtime client is closed')
+    if (this.closeTask !== undefined) throw new TransportClosedError('Greeneek Harness runtime client is closed')
     if (this.child !== undefined) return
     const child = spawn(this.runtime.command, this.runtime.args, {
       cwd: this.runtime.cwd,
@@ -222,7 +222,7 @@ export class HarnessClient {
       // A spawn failure destroys the pipes without an input 'end' edge, so the
       // transport's pending requests must be failed here.
       this.transport?.close()
-      this.failSubscriptions(this.closedError('DeepSeek Harness runtime failed to start'))
+      this.failSubscriptions(this.closedError('Greeneek Harness runtime failed to start'))
     })
     // Writes racing the runtime's death EPIPE on stdin; the exit edge below is
     // the real signal, so the stream-level error only needs to be non-fatal.
@@ -254,7 +254,7 @@ export class HarnessClient {
       this.exitCode = code
       settled.exited = true
       maybeSettle()
-      this.failSubscriptions(this.closedError('DeepSeek Harness runtime exited'))
+      this.failSubscriptions(this.closedError('Greeneek Harness runtime exited'))
     })
     child.once('close', () => {
       // All stdio has settled: stdout 'end' already drained every tail frame,
@@ -312,11 +312,11 @@ export class HarnessClient {
     // writing into a destroyed pipe and hanging until the timeout.
     if (this.exitCode !== undefined || this.spawnError !== undefined) {
       await this.settleStreams()
-      throw this.closedError('DeepSeek Harness runtime is not running')
+      throw this.closedError('Greeneek Harness runtime is not running')
     }
     const transport = this.transport
     /* v8 ignore next -- start() either sets the transport or throws */
-    if (transport === undefined) throw new TransportClosedError('DeepSeek Harness runtime is not running')
+    if (transport === undefined) throw new TransportClosedError('Greeneek Harness runtime is not running')
     const timeout = timeoutMs ?? this.runtime.requestTimeoutMs
     try {
       if (timeout === undefined) return await transport.request(method, params ?? {})
@@ -353,7 +353,7 @@ export class HarnessClient {
     const state: SubscriptionState = { queue: [], waiters: [], filter, failure: undefined }
     const subscription = new NotificationSubscriptionImpl(state, () => { this.subscriptions.delete(id) })
     if (this.closeTask !== undefined || this.exitCode !== undefined || this.spawnError !== undefined) {
-      subscription.fail(this.closedError('DeepSeek Harness runtime closed'))
+      subscription.fail(this.closedError('Greeneek Harness runtime closed'))
       return subscription
     }
     this.subscriptions.set(id, subscription)
@@ -406,7 +406,7 @@ export class HarnessClient {
       disposeGraceMs: this.runtime.disposeGraceMs ?? 3_000,
     })
     this.transport?.close()
-    this.failSubscriptions(this.closedError('DeepSeek Harness runtime closed'))
+    this.failSubscriptions(this.closedError('Greeneek Harness runtime closed'))
   }
 
   private dispatchNotification(notification: HarnessNotification): void {

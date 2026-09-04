@@ -1,5 +1,5 @@
 // Web e2e scenario for the shipped default search composition. A real browser
-// drives `web_search`; the model stream is replayed while the real DeepSeek
+// drives `web_search`; the model stream is replayed while the real Greeneek
 // provider calls a deterministic local Anthropic-compatible endpoint through
 // the real credentials service.
 import { readFile } from 'node:fs/promises'
@@ -9,9 +9,9 @@ import { fileURLToPath } from 'node:url'
 import type { Browser, Page } from 'playwright'
 import { chromium } from 'playwright'
 import { afterAll, beforeAll, describe, expect, it, onTestFailed } from 'vitest'
-import { credentialRef } from '@deepseek-ai/dsh-credentials'
-import type { SessionEvent } from '@deepseek-ai/dsh-session'
-import { WEB_SEARCH_MAX_RESULTS } from '@deepseek-ai/dsh-tool-web'
+import { credentialRef } from '@greeneek/gnk-credentials'
+import type { SessionEvent } from '@greeneek/gnk-session'
+import { WEB_SEARCH_MAX_RESULTS } from '@greeneek/gnk-tool-web'
 import {
   assertFixtureInventory, captureStableAria, compareOrRefreshGolden, fixtureUserPrompts,
   launchWebScaffold, recordFixture, watchConsole, webSnapshotMode, type WebScaffold,
@@ -22,9 +22,9 @@ const SNAPSHOT_DIR = fileURLToPath(new URL('../../../snapshots/web/web-search-ro
 const FIXTURE = fileURLToPath(new URL('../../../snapshots/web/web-search-round/session.jsonl', import.meta.url))
 const UI_EXPECTED = fileURLToPath(new URL('../../../snapshots/web/web-search-round/ui.expected.md', import.meta.url))
 const MODE = webSnapshotMode()
-const QUERIES = ['DeepSeek Harness snapshot search', 'DeepSeek Harness multi-query search'] as const
+const QUERIES = ['Greeneek Harness snapshot search', 'Greeneek Harness multi-query search'] as const
 const PROMPT = `Use web_search once with queries ${JSON.stringify(QUERIES)}. Then reply exactly SEARCH_DONE and stop.`
-const SEARCH_CREDENTIAL_REF = credentialRef('DSH_WEB_SEARCH_E2E_KEY')
+const SEARCH_CREDENTIAL_REF = credentialRef('GNK_WEB_SEARCH_E2E_KEY')
 const SEARCH_CREDENTIAL = 'snapshot-search-key'
 
 /**
@@ -77,7 +77,7 @@ interface CapturedSearchRequest {
   body: unknown
 }
 
-/** Start the deterministic DeepSeek Messages double used by the real provider. */
+/** Start the deterministic Greeneek Messages double used by the real provider. */
 async function startSearchServer(captured: CapturedSearchRequest[]): Promise<{ server: Server; baseURL: string }> {
   const server = createServer((request, response) => {
     let body = ''
@@ -149,7 +149,7 @@ describe('web e2e: shipped default web search', () => {
     searchBaseURL = search.baseURL
     scaffold = await launchWebScaffold({
       compareReplaySession: true,
-      deepSeekSearch: {
+      greeneekSearch: {
         baseURL: search.baseURL,
         apiKeyEnv: SEARCH_CREDENTIAL_REF,
       },
@@ -212,8 +212,8 @@ describe('web e2e: shipped default web search', () => {
     }
 
     const auxiliaryRequests = sessionEvents.filter(
-      (event): event is Extract<SessionEvent, { type: 'web/deepseek-search-llm-request' }> =>
-        event.type === 'web/deepseek-search-llm-request',
+      (event): event is Extract<SessionEvent, { type: 'web/greeneek-search-llm-request' }> =>
+        event.type === 'web/greeneek-search-llm-request',
     )
     expect(auxiliaryRequests).toHaveLength(QUERIES.length)
     for (const query of QUERIES) {

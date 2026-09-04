@@ -89,7 +89,7 @@
   overflow: hidden;
   display: flex;
   align-items: center;
-  height: calc(24px + var(--dsh-content-font-delta, 0px));
+  height: calc(24px + var(--gnk-content-font-delta, 0px));
   min-width: 0;
 }
 
@@ -107,11 +107,11 @@
     color-mix(in srgb, var(--dsw-alias-bg-base) 60%, transparent) 55%,
     transparent 100%
   );
-  animation: dsh-bash-row-sweep 2.6s ease-out infinite;
+  animation: gnk-bash-row-sweep 2.6s ease-out infinite;
   pointer-events: none;
 }
 
-@keyframes dsh-bash-row-sweep {
+@keyframes gnk-bash-row-sweep {
   0% { left: -300px; }
   90%, 100% { left: 100%; }
 }
@@ -119,8 +119,8 @@
 .leading {
   position: relative; /* .chevronHover overlay anchor */
   flex: none;
-  width: calc(16px + var(--dsh-content-font-delta, 0px));
-  height: calc(16px + var(--dsh-content-font-delta, 0px));
+  width: calc(16px + var(--gnk-content-font-delta, 0px));
+  height: calc(16px + var(--gnk-content-font-delta, 0px));
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -136,8 +136,8 @@
    .compactionLeading, and MessageIconActions); migrating the bash row onto
    the shared DisclosureRow would collapse them to one. */
 .leading svg:not([data-state]) {
-  width: calc(14px + var(--dsh-content-font-delta, 0px));
-  height: calc(14px + var(--dsh-content-font-delta, 0px));
+  width: calc(14px + var(--gnk-content-font-delta, 0px));
+  height: calc(14px + var(--gnk-content-font-delta, 0px));
 }
 
 .chevron {
@@ -170,8 +170,8 @@
 
 .title {
   flex: none;
-  font-size: var(--dsh-content-font-size-secondary, 13px);
-  line-height: calc(24px + var(--dsh-content-font-delta, 0px));
+  font-size: var(--gnk-content-font-size-secondary, 13px);
+  line-height: calc(24px + var(--gnk-content-font-delta, 0px));
   color: var(--dsw-alias-label-secondary);
 }
 
@@ -190,8 +190,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: var(--dsh-content-font-size-secondary, 13px);
-  line-height: calc(24px + var(--dsh-content-font-delta, 0px));
+  font-size: var(--gnk-content-font-size-secondary, 13px);
+  line-height: calc(24px + var(--gnk-content-font-delta, 0px));
   color: var(--dsw-alias-label-tertiary);
 }
 

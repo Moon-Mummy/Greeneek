@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { COMPOSITION_FILE, discoverPresets, scanRoot } from '@deepseek-ai/dsh-agent-presets'
+import { COMPOSITION_FILE, discoverPresets, scanRoot } from '@greeneek/gnk-agent-presets'
 
 const fsHarness = vi.hoisted(() => ({
   nextReadError: undefined as NodeJS.ErrnoException | undefined,
@@ -37,7 +37,7 @@ beforeEach(() => {
 
 describe('display order', () => {
   it('puts declared order first, then everything else by id', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'dsh-order-'))
+    const root = await mkdtemp(join(tmpdir(), 'gnk-order-'))
     for (const [id, order] of [['zulu', 1], ['alpha', 2]] as const) {
       await mkdir(join(root, id), { recursive: true })
       await writeFile(join(root, id, COMPOSITION_FILE), '[]\n')
@@ -56,7 +56,7 @@ describe('display order', () => {
   })
 
   it('breaks a tie between equal declared orders by id', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'dsh-order-tie-'))
+    const root = await mkdtemp(join(tmpdir(), 'gnk-order-tie-'))
     for (const id of ['yankee', 'alpha']) {
       await mkdir(join(root, id), { recursive: true })
       await writeFile(join(root, id, COMPOSITION_FILE), '[]\n')
@@ -93,7 +93,7 @@ describe('preset discovery', () => {
   })
 
   it('skips a directory whose name no preset id could ever claim', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'dsh-presets-oddname-'))
+    const root = await mkdtemp(join(tmpdir(), 'gnk-presets-oddname-'))
     await mkdir(join(root, '.hidden'))
     await mkdir(join(root, 'Has_Caps'))
     await mkdir(join(root, 'usable'))
@@ -128,7 +128,7 @@ describe('preset discovery', () => {
   })
 
   it('ignores a plain file sitting beside the preset directories', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'dsh-presets-'))
+    const root = await mkdtemp(join(tmpdir(), 'gnk-presets-'))
     await writeFile(join(root, 'stray.yml'), '- id: x\n')
     await mkdir(join(root, 'real'))
     await writeFile(join(root, 'real', COMPOSITION_FILE), '[]\n')
@@ -139,7 +139,7 @@ describe('preset discovery', () => {
   })
 
   it('reports a root it cannot read rather than treating it as empty', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'dsh-presets-'))
+    const root = await mkdtemp(join(tmpdir(), 'gnk-presets-'))
     const notADirectory = join(root, 'file-as-root')
     await writeFile(notADirectory, 'not a directory\n')
 
@@ -150,7 +150,7 @@ describe('preset discovery', () => {
   it('expands a leading tilde in a root path', async () => {
     // `~` alone resolves to the home directory, which exists but holds no
     // preset directories; the point is that it did not throw on a literal `~`.
-    const found = await scanRoot({ path: '~/.dsh-agent-presets-absent', trust: 'user' }, HARNESS)
+    const found = await scanRoot({ path: '~/.gnk-agent-presets-absent', trust: 'user' }, HARNESS)
 
     expect(found).toEqual([])
   })
@@ -167,7 +167,7 @@ describe('composition health', () => {
    * @returns the reported reason, or undefined when the composition is healthy.
    */
   async function scanned(composition: string): Promise<string | undefined> {
-    const root = await mkdtemp(join(tmpdir(), 'dsh-presets-health-'))
+    const root = await mkdtemp(join(tmpdir(), 'gnk-presets-health-'))
     await mkdir(join(root, 'probe'))
     await writeFile(join(root, 'probe', COMPOSITION_FILE), composition)
     const [preset] = await scanRoot({ path: root, trust: 'user' }, HARNESS)
@@ -207,7 +207,7 @@ describe('composition health', () => {
   })
 
   it('reports a composition that stats but cannot be read', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'dsh-presets-unreadable-'))
+    const root = await mkdtemp(join(tmpdir(), 'gnk-presets-unreadable-'))
     await mkdir(join(root, 'sealed'))
     const path = join(root, 'sealed', COMPOSITION_FILE)
     await writeFile(path, '[]\n')
@@ -234,7 +234,7 @@ describe('composition health', () => {
 describe('rows naming a plugin that cannot be resolved', () => {
   /** One directory under a fresh root holding `composition`, scanned. */
   async function scanned(composition: string): Promise<string | undefined> {
-    const root = await mkdtemp(join(tmpdir(), 'dsh-presets-resolve-'))
+    const root = await mkdtemp(join(tmpdir(), 'gnk-presets-resolve-'))
     await mkdir(join(root, 'probe'))
     await writeFile(join(root, 'probe', COMPOSITION_FILE), composition)
     const [preset] = await scanRoot({ path: root, trust: 'user' }, HARNESS)
@@ -245,8 +245,8 @@ describe('rows naming a plugin that cannot be resolved', () => {
     // The way an authored preset actually rots: it named a package that a
     // later release renamed, so the composition still parses and still cannot
     // compose a session.
-    expect(await scanned('- id: stale\n  name: \'@deepseek-ai/dsh-no-such-package\'\n'))
-      .toBe('row "stale" names a plugin that cannot be resolved: @deepseek-ai/dsh-no-such-package')
+    expect(await scanned('- id: stale\n  name: \'@greeneek/gnk-no-such-package\'\n'))
+      .toBe('row "stale" names a plugin that cannot be resolved: @greeneek/gnk-no-such-package')
   })
 
   it('names every unresolvable row rather than only the first', async () => {
@@ -271,7 +271,7 @@ describe('rows naming a plugin that cannot be resolved', () => {
   })
 
   it('resolves a preset-relative row against the preset\'s own directory', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'dsh-presets-relative-'))
+    const root = await mkdtemp(join(tmpdir(), 'gnk-presets-relative-'))
     await mkdir(join(root, 'probe'))
     await writeFile(join(root, 'probe', 'own-plugin.mjs'), 'export function apply() {}\n')
     await writeFile(join(root, 'probe', COMPOSITION_FILE), '- id: own\n  name: ./own-plugin.mjs\n- id: gone\n  name: ./deleted.mjs\n')
@@ -303,14 +303,14 @@ describe('rows naming a plugin that cannot be resolved', () => {
   it('reports a file: URL whose target is not there', async () => {
     // The Loader accepts a `file:` URL for the same thing an absolute path
     // names; a resolver handed one only normalizes it and never looks.
-    const missing = pathToFileURL(join(tmpdir(), 'dsh-presets-absent', 'nope.mjs')).href
+    const missing = pathToFileURL(join(tmpdir(), 'gnk-presets-absent', 'nope.mjs')).href
     expect(await scanned(`- id: url\n  name: '${missing}'\n`)).toMatch(/cannot be resolved/)
   })
 
   it('reads an installed package off disk without asking the resolver', async () => {
     // The fast path, and the one that has to answer alone: this package has a
     // directory and nothing to import, so a resolver would reject it.
-    const home = await mkdtemp(join(tmpdir(), 'dsh-presets-installed-'))
+    const home = await mkdtemp(join(tmpdir(), 'gnk-presets-installed-'))
     await mkdir(join(home, 'node_modules', '@scope', 'pkg'), { recursive: true })
     await writeFile(join(home, 'node_modules', '@scope', 'pkg', 'package.json'), '{"name":"@scope/pkg"}\n')
     await mkdir(join(home, 'presets', 'probe'), { recursive: true })
@@ -325,7 +325,7 @@ describe('rows naming a plugin that cannot be resolved', () => {
   it('reports a package whose install link dangles', async () => {
     // What a stale profile install leaves behind: the name is still in
     // `node_modules`, pointing at a checkout that is gone.
-    const home = await mkdtemp(join(tmpdir(), 'dsh-presets-dangling-'))
+    const home = await mkdtemp(join(tmpdir(), 'gnk-presets-dangling-'))
     await mkdir(join(home, 'node_modules', '@scope'), { recursive: true })
     await symlink(join(home, 'deleted-checkout'), join(home, 'node_modules', '@scope', 'pkg'))
     await mkdir(join(home, 'presets', 'probe'), { recursive: true })

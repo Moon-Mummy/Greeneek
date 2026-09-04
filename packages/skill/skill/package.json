@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-skill",
-  "description": "Agent skill provider registry for the DeepSeek Harness",
+  "name": "@greeneek/gnk-skill",
+  "description": "Agent skill provider registry for the Greeneek Harness",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/skill/skill"
   },
   "type": "module",
@@ -27,17 +27,17 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-llm": "workspace:^",
-    "@deepseek-ai/dsh-scope": "workspace:^"
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-llm": "workspace:^",
+    "@greeneek/gnk-scope": "workspace:^"
   },
   "dependencies": {
-    "@deepseek-ai/dsh-util-values": "workspace:^",
-    "@deepseek-ai/schemastery": "workspace:^"
+    "@greeneek/gnk-util-values": "workspace:^",
+    "@greeneek/schemastery": "workspace:^"
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-llm": "workspace:^",
-    "@deepseek-ai/dsh-scope": "workspace:^"
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-llm": "workspace:^",
+    "@greeneek/gnk-scope": "workspace:^"
   }
 }

@@ -10,7 +10,7 @@ Nothing in `settings.yaml` could describe a hand-declared pi-ai model as accepti
 
 The harness treats an omitted modality as negative capability, and three admission points act on it before any request is built: model selection refuses to switch into a session that already holds images, prompt admission refuses an image, and `read_image` refuses to read one. Their diagnostics tell the user to select an image-capable model — advice with no reachable referent, because no configuration key could make a hand-declared model image-capable. The route was closed at the metadata, not at the capability: the request converter and every pi-ai wire protocol carry images, and `llm-pi-ai`'s own stream guard is the only thing that would have stopped one.
 
-The assumption was justified in the source as the adapter's real capability rather than a deployment choice, and [[2026-08-03-pi-ai-declared-provider-catalog]] recorded the same reasoning when it decided which `Model` fields the configuration surface would expose ("nothing reads them: … `context.ts` keeps only text blocks"). That justification described the DeepSeek chat-completions adapter, whose serializer genuinely rejects image blocks, and had never been true of the pi-ai route. This note supersedes that one on modalities alone; pricing stays closed there for its own, still-current reason.
+The assumption was justified in the source as the adapter's real capability rather than a deployment choice, and [[2026-08-03-pi-ai-declared-provider-catalog]] recorded the same reasoning when it decided which `Model` fields the configuration surface would expose ("nothing reads them: … `context.ts` keeps only text blocks"). That justification described the Greeneek chat-completions adapter, whose serializer genuinely rejects image blocks, and had never been true of the pi-ai route. This note supersedes that one on modalities alone; pricing stays closed there for its own, still-current reason.
 
 ## Decision
 
@@ -24,7 +24,7 @@ The assumption was justified in the source as the adapter's real capability rath
 
 **No configuration surface edits `input`.** It joins `compat`, `reasoningEfforts`, `thinkingBudgets`, and `headers` as a settings-document field, and the model-list editor stays a hand-written form over id, name, and the two capacities. This costs nothing durable because that card was already built to carry fields it does not edit: its row patch spreads the stored row before applying changes, and adoption keeps an existing row over a rediscovered candidate, so a hand-written `input` survives both.
 
-The direct DeepSeek adapter owns a separate exact-model catalog. Its supported vision entry declares image input, while its text models and unlisted pass-through ids remain text-only.
+The direct Greeneek adapter owns a separate exact-model catalog. Its supported vision entry declares image input, while its text models and unlisted pass-through ids remain text-only.
 
 ## Alternatives considered
 
@@ -50,4 +50,4 @@ A model that declares image input its endpoint does not serve is not caught loca
 
 `config.spec.ts` holds the schema boundary: an unknown modality refused at both levels, the empty route list accepted by the schema and refused by the namespace validator that the settings seam actually runs, and the `[]` materialization for an absent array that the inheritance rule depends on.
 
-No keyless snapshot lane exercises a pi-ai route: the recorded-session corpus drives `dsh-llm-replay`, which declares modalities directly in its configuration, and a pi-ai route needs a live endpoint whose port a static `cordis.yml` cannot name. The admission points this change feeds are covered by [`read-image`](../../../../snapshots/session/read-image/) and [`read-image-text-route`](../../../../snapshots/session/read-image-text-route/) and are unaffected — what changed is what one adapter reports, not how a gate reads it.
+No keyless snapshot lane exercises a pi-ai route: the recorded-session corpus drives `gnk-llm-replay`, which declares modalities directly in its configuration, and a pi-ai route needs a live endpoint whose port a static `cordis.yml` cannot name. The admission points this change feeds are covered by [`read-image`](../../../../snapshots/session/read-image/) and [`read-image-text-route`](../../../../snapshots/session/read-image-text-route/) and are unaffected — what changed is what one adapter reports, not how a gate reads it.

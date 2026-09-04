@@ -3,13 +3,13 @@ description: "面向宿主驱动 UI 的文件引用发现与 @file mention 语�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-file-reference
+# @greeneek/gnk-file-reference
 
 [English](README.md) | 中文
 
 ## 概述
 
-宿主驱动 UI 使用 `dsh-file-reference` 提供 `@file` 补全：UI 为指定 agent 请求路径候选，模型输入 `@path` 或 `@"path with spaces"`，选中候选后，匹配的 mention 作为普通提示词文本插入。seam 本身不拥有文件系统访问——具体提供方（如 `@deepseek-ai/dsh-file-reference-local`）负责提供候选、排序、缓存与失效。选中候选绝不读取或附带文件内容；模型必须调用文件系统工具才能查看文件。Session Controller 通过 `fileReferences/list` Remote 向浏览器消费方暴露同一发现能力。
+宿主驱动 UI 使用 `gnk-file-reference` 提供 `@file` 补全：UI 为指定 agent 请求路径候选，模型输入 `@path` 或 `@"path with spaces"`，选中候选后，匹配的 mention 作为普通提示词文本插入。seam 本身不拥有文件系统访问——具体提供方（如 `@greeneek/gnk-file-reference-local`）负责提供候选、排序、缓存与失效。选中候选绝不读取或附带文件内容；模型必须调用文件系统工具才能查看文件。Session Controller 通过 `fileReferences/list` Remote 向浏览器消费方暴露同一发现能力。
 
 ## 目录
 
@@ -37,7 +37,7 @@ kind: "package-reference"
 
 ### 搭配提供方
 
-本地文件系统请挂载 `@deepseek-ai/dsh-file-reference-local`；其他命名空间（远程或虚拟文件系统）需要发现能力与生效工具一致的提供方。当指定 agent 可以调用 `read` 时，提供方可以安装稳定的 `FILE_REFERENCE_PROMPT` 指引，告诉模型先读取被引用文件、再声称检查过它。
+本地文件系统请挂载 `@greeneek/gnk-file-reference-local`；其他命名空间（远程或虚拟文件系统）需要发现能力与生效工具一致的提供方。当指定 agent 可以调用 `read` 时，提供方可以安装稳定的 `FILE_REFERENCE_PROMPT` 指引，告诉模型先读取被引用文件、再声称检查过它。
 
 -----
 
@@ -51,7 +51,7 @@ kind: "package-reference"
 
 ### 设计理念
 
-本包把抽象发现服务与共享、浏览器安全的 mention 语法分开，由提供方负责命名空间访问、排序、缓存与失效。该服务保持 wire 中立；`dsh-api-session-controller` 持有 `fileReferences/list` Remote adapter，并在解析 Agent 后委派给当前 provider。
+本包把抽象发现服务与共享、浏览器安全的 mention 语法分开，由提供方负责命名空间访问、排序、缓存与失效。该服务保持 wire 中立；`gnk-api-session-controller` 持有 `fileReferences/list` Remote adapter，并在解析 Agent 后委派给当前 provider。
 
 ### 源码地图
 
@@ -78,7 +78,7 @@ UI 通过 `activeAtToken` 识别活动 `@` token，用查询文本调用 `list`�
 - [本地文件引用提供方](../file-reference-local/README.zh.md)——本 seam 的随附本地工作区实现。
 - [会话引用子系统](../../../docs/subsystems/session-reference.zh.md)——宿主 UI 背后的共享文件引用与会话引用约定。
 - [context 组地图](../README.zh.md)——相邻的请求上下文包。
-- [文件系统工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-fs)——被引用路径所对应的 `read` 工具。
+- [文件系统工具目录](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-fs)——被引用路径所对应的 `read` 工具。
 
 -----
 

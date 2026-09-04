@@ -3,13 +3,13 @@ description: "SPA dist server for the Web shell: claims the webserver fallback s
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-host-frontend-static
+# @greeneek/gnk-host-frontend-static
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-Browsers get the built Web shell from `dsh-host-frontend-static`: it claims the [webserver](../webserver/README.md) fallback seat and serves the built frontend directory with locked semantics — only the dist root and the configured index path render `index.html` (HTTP 200), other existing files are served directly, an absent or non-file target inside the dist root — including a missing configured index — returns an empty 404, traversal outside the dist root is 403, unknown extensions ship as `application/octet-stream`, and non-GET/HEAD without a matching named route is 405. Every successful index response is rendered through the webserver's `renderIndex`, which is how the boot manifest reaches the page. The fallback seat is single-owner: a second claim throws, and unloading the plugin releases the seat.
+Browsers get the built Web shell from `gnk-host-frontend-static`: it claims the [webserver](../webserver/README.md) fallback seat and serves the built frontend directory with locked semantics — only the dist root and the configured index path render `index.html` (HTTP 200), other existing files are served directly, an absent or non-file target inside the dist root — including a missing configured index — returns an empty 404, traversal outside the dist root is 403, unknown extensions ship as `application/octet-stream`, and non-GET/HEAD without a matching named route is 405. Every successful index response is rendered through the webserver's `renderIndex`, which is how the boot manifest reaches the page. The fallback seat is single-owner: a second claim throws, and unloading the plugin releases the seat.
 
 ## Table of Contents
 
@@ -30,12 +30,12 @@ Compose this plugin in a browser-facing host that serves the built Web shell: it
 ### Minimal configuration
 
 ```yaml
-- name: '@deepseek-ai/dsh-host-frontend-static'
+- name: '@greeneek/gnk-host-frontend-static'
   config:
     distIndex: /absolute/path/to/dist/index.html
 ```
 
-`distIndex` is an assembly fact of the composing application: [`dsh-web-app`](../../bundle/web-app/README.md) resolves it through the frontend package's exports and mounts this plugin; a deployment never hardcodes it.
+`distIndex` is an assembly fact of the composing application: [`gnk-web-app`](../../bundle/web-app/README.md) resolves it through the frontend package's exports and mounts this plugin; a deployment never hardcodes it.
 
 ### What the server enforces
 
@@ -79,9 +79,9 @@ The package is one function plugin around `serveStatic`: `apply` resolves the di
 Read these when the serving contract is not enough: the seat owner's contract, then the composition that resolves the dist and the subsystem reference.
 
 - [Webserver](../webserver/README.md) — the fallback seat this plugin claims and the index taps it runs.
-- [dsh-web-app bundle](../../bundle/web-app/README.md) — the application that resolves `distIndex` and mounts this plugin.
+- [gnk-web-app bundle](../../bundle/web-app/README.md) — the application that resolves `distIndex` and mounts this plugin.
 - [HTTP server subsystem](../../../docs/subsystems/web-server.md) — how the fallback seat fits the route tables.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-host-frontend-static) — every accepted config field and its source declaration.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-host-frontend-static) — every accepted config field and its source declaration.
 
 -----
 

@@ -169,7 +169,7 @@ const CORPUS: Record<string, string> = {
     '',
     '[relative dropped](/settings) and [js dropped](javascript:alert(1)) and [upper kept](HTTPS://example.com).',
     '',
-    '<https://deepseek.com> and bare autolink https://autolink.example.com literal.',
+    '<https://greeneek.dev> and bare autolink https://autolink.example.com literal.',
     '',
     '[spaces encoded](https://example.com/a b)',
   ].join('\n'),

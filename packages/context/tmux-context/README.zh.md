@@ -3,13 +3,13 @@ description: "可选的按轮次 tmux 位置上下文，供启用或调优 agent
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tmux-context
+# @greeneek/gnk-tmux-context
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-tmux-context` 告诉模型它的 agent（智能体）进程运行在哪里：在 tmux 状态发生变化的每一轮，它追加一条持久、带来源的读数，命名 tmux session、window 与 pane，以及该 window 的 pane 树布局。它在准备模型请求时每轮采样一次，且仅当进程确实位于所指名的 pane 内时——仅从 tmux 祖先进程继承了 `$TMUX`／`$TMUX_PANE` 的终端会被视为不在 tmux 中，不添加任何内容。位置未变化时不添加任何内容；查询失败是空操作，绝不导致轮次失败。本插件需主动启用，且不属于随附 Web／无头组合。
+`gnk-tmux-context` 告诉模型它的 agent（智能体）进程运行在哪里：在 tmux 状态发生变化的每一轮，它追加一条持久、带来源的读数，命名 tmux session、window 与 pane，以及该 window 的 pane 树布局。它在准备模型请求时每轮采样一次，且仅当进程确实位于所指名的 pane 内时——仅从 tmux 祖先进程继承了 `$TMUX`／`$TMUX_PANE` 的终端会被视为不在 tmux 中，不添加任何内容。位置未变化时不添加任何内容；查询失败是空操作，绝不导致轮次失败。本插件需主动启用，且不属于随附 Web／无头组合。
 
 ## 目录
 
@@ -36,7 +36,7 @@ kind: "package-reference"
 最小挂载无需任何配置。正的 `refreshIntervalMs` 会额外抑制距最近一次注入不足该毫秒数的注入；省略或设为 `0` 时，只要 tmux 状态自上次注入以来发生变化就注入。
 
 ```yaml
-- name: '@deepseek-ai/dsh-tmux-context'
+- name: '@greeneek/gnk-tmux-context'
   config:
     refreshIntervalMs: 60000
 ```
@@ -45,7 +45,7 @@ kind: "package-reference"
 |---|---|---|
 | `refreshIntervalMs` | `0`（每个变化轮次） | 同一会话中两次持久注入之间的最小毫秒数 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tmux-context)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-tmux-context)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### 何时知道位置
 
@@ -88,7 +88,7 @@ kind: "package-reference"
 - [tmux 位置上下文决策记录](../../../.agents/notes/implemented/feature/2026-07-27-tmux-location-context.zh.md)——基于 tty 的检测与读数形状的设计理由。
 - [shell 子系统](../../../docs/subsystems/shell.zh.md)——只读查询所经由的执行器服务。
 - [context 组地图](../README.zh.md)——相邻的请求上下文包。
-- [生成的配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tmux-context)——每个受支持配置字段及其源声明。
+- [生成的配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-tmux-context)——每个受支持配置字段及其源声明。
 
 -----
 

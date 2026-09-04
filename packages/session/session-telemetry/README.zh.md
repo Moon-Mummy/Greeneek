@@ -3,13 +3,13 @@ description: "面向部署方与后端作者的会话遥测捕获 seam 说明，
 kind: "package-library"
 ---
 
-# @deepseek-ai/dsh-session-telemetry
+# @greeneek/gnk-session-telemetry
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-session-telemetry` 捕获会话活动用于对外上报：它把会话事件投影为遥测记录，允许部署方脱敏，再交给实现其约定的上报后端。部署方不直接加载本包——它们只加载一个后端（随附的 OpenTelemetry 后端是 `dsh-session-telemetry-otel`），由它注册 `ctx.sessionTelemetry` 并组装捕获协调器。seam 拥有捕获、脱敏与共享披露；批处理、重试、排队与丢失策略属于后端自身的 SDK，止于 `emit()`。每个已挂载后端都披露其部署级共享策略，使确认 surface 能够报告会话是否以及如何被共享。约定与捕获行为在前；实现内部细节放在下方可折叠的开发者章节中。
+`gnk-session-telemetry` 捕获会话活动用于对外上报：它把会话事件投影为遥测记录，允许部署方脱敏，再交给实现其约定的上报后端。部署方不直接加载本包——它们只加载一个后端（随附的 OpenTelemetry 后端是 `gnk-session-telemetry-otel`），由它注册 `ctx.sessionTelemetry` 并组装捕获协调器。seam 拥有捕获、脱敏与共享披露；批处理、重试、排队与丢失策略属于后端自身的 SDK，止于 `emit()`。每个已挂载后端都披露其部署级共享策略，使确认 surface 能够报告会话是否以及如何被共享。约定与捕获行为在前；实现内部细节放在下方可折叠的开发者章节中。
 
 ## 目录
 

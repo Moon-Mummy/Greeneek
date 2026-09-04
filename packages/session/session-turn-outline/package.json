@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-session-turn-outline",
-  "description": "Whole-log turn outline projection (turnOutline) for the DeepSeek Harness",
+  "name": "@greeneek/gnk-session-turn-outline",
+  "description": "Whole-log turn outline projection (turnOutline) for the Greeneek Harness",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/session/session-turn-outline"
   },
   "type": "module",
@@ -36,20 +36,20 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-llm": "workspace:^",
-    "@deepseek-ai/dsh-session": "workspace:^",
-    "@deepseek-ai/dsh-session-projection": "workspace:^"
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-llm": "workspace:^",
+    "@greeneek/gnk-session": "workspace:^",
+    "@greeneek/gnk-session-projection": "workspace:^"
   },
   "dependencies": {
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/cordis-plugin-include": "workspace:^",
-    "@deepseek-ai/cordis-plugin-loader": "workspace:^",
-    "@deepseek-ai/dsh-llm": "workspace:^",
-    "@deepseek-ai/dsh-session": "workspace:^",
-    "@deepseek-ai/dsh-session-projection": "workspace:^"
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/cordis-plugin-include": "workspace:^",
+    "@greeneek/cordis-plugin-loader": "workspace:^",
+    "@greeneek/gnk-llm": "workspace:^",
+    "@greeneek/gnk-session": "workspace:^",
+    "@greeneek/gnk-session-projection": "workspace:^"
   }
 }

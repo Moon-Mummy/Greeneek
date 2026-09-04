@@ -12,9 +12,9 @@ Status: implemented
 
 Goal Round 的 `complete` 或 `blocked` 成功不再调用 `concludeTurn()`。工具改为在自己的结果上附带一条收尾上下文：以 `{ kind: 'plugin', plugin: 'tool-goal' }` 为 source 的 user 消息，携带 `<goal_complete>`/`<goal_blocked>` 指令，要求模型向用户写出有依据的收尾消息且不再调用工具。之后轮次经由 agent loop 常规的无工具调用停止路径结束，因此不存在新的 loop 原语，steering 语义不受影响。人类直接变更保持原样、不注入指令。代价是每个 goal 生命周期一次额外模型请求，而非每轮一次。
 
-指令措辞通过在 `deepseek-v4-pro` 上用重构的 Goal Round 转录做 A/B 采样选定：结构化指令（结果、验证、产物、后续）在完整度上稳定优于极简“总结一下”；补充“以会话内证据为准”的 grounding 条款让无依据细节从断言事实退为带保留的建议；而无指令对照组的收尾方差很大，包括言之凿凿的文件级细节编造。
+指令措辞通过在 `greeneek-v4-pro` 上用重构的 Goal Round 转录做 A/B 采样选定：结构化指令（结果、验证、产物、后续）在完整度上稳定优于极简“总结一下”；补充“以会话内证据为准”的 grounding 条款让无依据细节从断言事实退为带保留的建议；而无指令对照组的收尾方差很大，包括言之凿凿的文件级细节编造。
 
-为让 keyless 证明可脚本化，快照设施补了一项能力：`dsh-llm-replay` 会针对实时请求解析脚本条目中的 `{{fromRequest:<regex>}}` 占位符，因为静态伴随文件不可能预知模型必须回填进 `update_goal` 的随机生成 goal id。
+为让 keyless 证明可脚本化，快照设施补了一项能力：`gnk-llm-replay` 会针对实时请求解析脚本条目中的 `{{fromRequest:<regex>}}` 占位符，因为静态伴随文件不可能预知模型必须回填进 `update_goal` 的随机生成 goal id。
 
 ## 验证
 

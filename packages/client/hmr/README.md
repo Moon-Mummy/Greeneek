@@ -3,13 +3,13 @@ description: "Development-only hot reload for browser client plugins: rebuilding
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-client-hmr
+# @greeneek/gnk-client-hmr
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-client-hmr` reloads a browser client plugin in place when its bundle is rebuilt, so a developer editing plugin source sees the change without a full page reload. The reload chain stays idle without a rebuild watcher: only a `pnpm run dev:web`-style process rewriting client bundles produces the rebuilds it reacts to. Each reload swaps one plugin with fresh component state while the data layer (connection, runtime, and Session objects) stays untouched. Everything here is development machinery in the browser; the model never sees it.
+`gnk-client-hmr` reloads a browser client plugin in place when its bundle is rebuilt, so a developer editing plugin source sees the change without a full page reload. The reload chain stays idle without a rebuild watcher: only a `pnpm run dev:web`-style process rewriting client bundles produces the rebuilds it reacts to. Each reload swaps one plugin with fresh component state while the data layer (connection, runtime, and Session objects) stays untouched. Everything here is development machinery in the browser; the model never sees it.
 
 ## Table of Contents
 
@@ -41,7 +41,7 @@ Each reload re-executes the plugin bundle and remounts the plugin with fresh sta
 |---|---|---|
 | `pollIntervalMs` | `500` | Bundle stat-poll interval in milliseconds |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-client-hmr) is the exhaustive source for every accepted field and its JSDoc.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-client-hmr) is the exhaustive source for every accepted field and its JSDoc.
 
 ### Observing success
 
@@ -93,7 +93,7 @@ Read these when the reload contract is not enough: the module system that serves
 - [Client module system](../modules/README.md) — the lazy-CJS module table and `invalidate`/`prefetch` hooks this driver drives.
 - [Web boot kernel](../web/README.md) — the shell that boots the plugin tree and shows entry status.
 - [Client group map](../README.md) — the browser half this package reloads.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-client-hmr) — every accepted config field and its source declaration.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-client-hmr) — every accepted config field and its source declaration.
 
 -----
 

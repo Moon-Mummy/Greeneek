@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-lsp-stdio",
-  "description": "Generic stdio language-server provider for the DeepSeek Harness LSP capability seam (ctx.lsp) — spawns configured servers, translates JSON-RPC, and serves transient-open goToDefinition/findReferences/goToImplementation/hover queries in the host filesystem namespace",
+  "name": "@greeneek/gnk-lsp-stdio",
+  "description": "Generic stdio language-server provider for the Greeneek Harness LSP capability seam (ctx.lsp) — spawns configured servers, translates JSON-RPC, and serves transient-open goToDefinition/findReferences/goToImplementation/hover queries in the host filesystem namespace",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/lsp/lsp-stdio"
   },
   "type": "module",
@@ -27,28 +27,28 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-brand": "workspace:^",
-    "@deepseek-ai/dsh-fs": "workspace:^",
-    "@deepseek-ai/dsh-llm": "workspace:^",
-    "@deepseek-ai/dsh-lsp": "workspace:^",
-    "@deepseek-ai/dsh-subprocess": "workspace:^",
-    "@deepseek-ai/dsh-timeout": "workspace:^"
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-brand": "workspace:^",
+    "@greeneek/gnk-fs": "workspace:^",
+    "@greeneek/gnk-llm": "workspace:^",
+    "@greeneek/gnk-lsp": "workspace:^",
+    "@greeneek/gnk-subprocess": "workspace:^",
+    "@greeneek/gnk-timeout": "workspace:^"
   },
   "dependencies": {
-    "@deepseek-ai/dsh-util-values": "workspace:^",
-    "@deepseek-ai/schemastery": "workspace:^"
+    "@greeneek/gnk-util-values": "workspace:^",
+    "@greeneek/schemastery": "workspace:^"
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-brand": "workspace:^",
-    "@deepseek-ai/dsh-fs": "workspace:^",
-    "@deepseek-ai/dsh-fs-local": "workspace:^",
-    "@deepseek-ai/dsh-llm": "workspace:^",
-    "@deepseek-ai/dsh-lsp": "workspace:^",
-    "@deepseek-ai/dsh-subprocess": "workspace:^",
-    "@deepseek-ai/dsh-subprocess-local": "workspace:^",
-    "@deepseek-ai/dsh-timeout": "workspace:^",
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-brand": "workspace:^",
+    "@greeneek/gnk-fs": "workspace:^",
+    "@greeneek/gnk-fs-local": "workspace:^",
+    "@greeneek/gnk-llm": "workspace:^",
+    "@greeneek/gnk-lsp": "workspace:^",
+    "@greeneek/gnk-subprocess": "workspace:^",
+    "@greeneek/gnk-subprocess-local": "workspace:^",
+    "@greeneek/gnk-timeout": "workspace:^",
     "typescript": "^6.0.3",
     "typescript-language-server": "^5.0.0"
   }

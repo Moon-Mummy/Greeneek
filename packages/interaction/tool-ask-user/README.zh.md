@@ -3,13 +3,13 @@ description: "基于用户交互 seam 的模型侧 ask_user_question 工具；�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tool-ask-user
+# @greeneek/gnk-tool-ask-user
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-tool-ask-user` 为模型提供一个工具——`ask_user_question`——用于在需要确认、选择结果或缺失的信息才能继续时，向用户提出简明问题。工具会暂停，直到首个作用域 answerer 接受请求，然后把回答作为普通工具结果送回 agent loop（智能体循环），因此循环机制没有任何变化。工具返回规范的 `{ answers: [...] }` 结构，并以紧凑的 JSON 文本形式呈现。它自身不渲染 UI，也不了解输入的收集方式；Web Client 通过 Remote Events 提供 answerer。运行时中归属于其他 agent 的子级不能向用户提问；它必须在最终结果中包含尚未解决的问题。
+`gnk-tool-ask-user` 为模型提供一个工具——`ask_user_question`——用于在需要确认、选择结果或缺失的信息才能继续时，向用户提出简明问题。工具会暂停，直到首个作用域 answerer 接受请求，然后把回答作为普通工具结果送回 agent loop（智能体循环），因此循环机制没有任何变化。工具返回规范的 `{ answers: [...] }` 结构，并以紧凑的 JSON 文本形式呈现。它自身不渲染 UI，也不了解输入的收集方式；Web Client 通过 Remote Events 提供 answerer。运行时中归属于其他 agent 的子级不能向用户提问；它必须在最终结果中包含尚未解决的问题。
 
 ## 目录
 
@@ -94,7 +94,7 @@ kind: "package-reference"
 当包级约定不够用时阅读以下页面。它们从工具表面逐步进入 seam 约定及其 answerer waterfall。
 
 - [用户交互子系统参考](../../../docs/subsystems/user-questions.zh.md)——此工具背后的服务约定、问题词汇与 answerer waterfall。
-- [工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-ask-user)——生成的 `ask_user_question` schema。
+- [工具目录](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-ask-user)——生成的 `ask_user_question` schema。
 - [user-questions 包](../user-questions/README.zh.md)——本工具消费的 seam。
 - [交互组映射](../README.zh.md)——相邻的审批与命令表面。
 
@@ -107,7 +107,7 @@ kind: "package-reference"
 
 #### 模型看到的内容
 
-模型会看到生成的 [`ask_user_question` schema](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-ask-user)，其中包含问题 id、提示语、标题、选项与多选标志。
+模型会看到生成的 [`ask_user_question` schema](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-ask-user)，其中包含问题 id、提示语、标题、选项与多选标志。
 
 #### Token 影响
 

@@ -5,7 +5,7 @@
 - id: headless-runner
   disabled: true
 
-- id: llm-deepseek
+- id: llm-greeneek
   disabled: true
 
 - id: agent-loop
@@ -18,14 +18,14 @@
 
 - id: shell-env
   config:
-    dshHome: './.dsh-home'
+    gnkHome: './.gnk-home'
 
 - id: agent-instructions
   disabled: true
 
 - id: skill-filesystem
   config:
-    dshHome: './.dsh-home'
+    gnkHome: './.gnk-home'
     agentsHome: './.agents-home'
 
 - id: session-persistence-jsonl

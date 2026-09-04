@@ -5,7 +5,7 @@
 
 .root:not([data-expanded]) {
   contain: size layout;
-  height: calc(24px + var(--dsh-content-font-delta, 0px));
+  height: calc(24px + var(--gnk-content-font-delta, 0px));
 }
 
 .row {
@@ -25,11 +25,11 @@
     color-mix(in srgb, var(--dsw-alias-bg-base) 60%, transparent) 55%,
     transparent 100%
   );
-  animation: dsh-reasoning-row-sweep 2.6s ease-out infinite;
+  animation: gnk-reasoning-row-sweep 2.6s ease-out infinite;
   pointer-events: none;
 }
 
-@keyframes dsh-reasoning-row-sweep {
+@keyframes gnk-reasoning-row-sweep {
   0% { left: -300px; }
   90%, 100% { left: 100%; }
 }
@@ -63,8 +63,8 @@
   overflow: hidden;
   flex: 1 1 auto;
   color: var(--dsw-alias-label-tertiary);
-  font-size: var(--dsh-content-font-size-secondary, 13px);
-  line-height: calc(20px + var(--dsh-content-font-delta-secondary, 0px));
+  font-size: var(--gnk-content-font-size-secondary, 13px);
+  line-height: calc(20px + var(--gnk-content-font-delta-secondary, 0px));
   white-space: nowrap;
 }
 
@@ -90,10 +90,10 @@
 
 .thinkBody {
   /* Indent under the title, which starts at leading (16 + delta) + gap 6. */
-  padding: 4px 0 4px calc(22px + var(--dsh-content-font-delta, 0px));
+  padding: 4px 0 4px calc(22px + var(--gnk-content-font-delta, 0px));
   color: var(--dsw-alias-label-tertiary);
-  font-size: var(--dsh-content-font-size-secondary, 13px);
-  line-height: calc(20px + var(--dsh-content-font-delta-secondary, 0px));
+  font-size: var(--gnk-content-font-size-secondary, 13px);
+  line-height: calc(20px + var(--gnk-content-font-delta-secondary, 0px));
   white-space: pre-wrap;
   word-break: break-word;
 }

@@ -6,7 +6,7 @@ Status: implemented
 
 ## Problem
 
-下面两层已经让 pi-ai 路由变成[一份声明](2026-08-03-pi-ai-declared-provider-catalog.zh.md)，并给了 host [询问草稿端点](2026-08-04-draft-provider-endpoint-interrogation.zh.md)的能力。但两者都没有抵达不编辑 YAML 的人：Models 页仍然只为每个提供方提供一个 API 密钥输入框和一个装着 API 地址的折叠区，因此接入一个网关意味着打开 `$DSH_HOME/settings.yaml` 并知道 profile 的形状，更正一个陈旧的上下文窗口也是如此。能力已经存在，界面却没有暴露它。
+下面两层已经让 pi-ai 路由变成[一份声明](2026-08-03-pi-ai-declared-provider-catalog.zh.md)，并给了 host [询问草稿端点](2026-08-04-draft-provider-endpoint-interrogation.zh.md)的能力。但两者都没有抵达不编辑 YAML 的人：Models 页仍然只为每个提供方提供一个 API 密钥输入框和一个装着 API 地址的折叠区，因此接入一个网关意味着打开 `$GNK_HOME/settings.yaml` 并知道 profile 的形状，更正一个陈旧的上下文窗口也是如此。能力已经存在，界面却没有暴露它。
 
 缺的是两件事，而它们的形状并不相同。编辑既有路由的模型，是一张已经存在的卡片上的一个*字段*；声明一条路由则是一次*创建*：路由 id 正在此处被选定，而在选定之前根本没有可编辑的 settings 地址。
 
@@ -44,7 +44,7 @@ Status: implemented
 
 网关、自建服务，或比已安装 catalog 更新的模型，如今无需离开浏览器就能配置，而模型 id 在端点能提供时由端点自己给出。页面多了两个组件和一个共用的列表编辑器；编辑卡片的 pi-ai 折叠区从两个字段长成了一个列表，已声明路由上还多了一个名称输入框和一个协议选择框。
 
-代价是：只有 pi-ai 路由可以手工声明，因为 `llm-pi-ai` 是唯一一个其 profile 描述整个提供方的 namespace——`llm-deepseek` 路由仍是组合面的事实。询问只覆盖 OpenAI 兼容端点，因此讲其他协议的网关会报告自己无法被询问，其模型需手工键入。另外，页面在一次获取期间会把密钥保存在组件状态里，这与 `credentials.set` 已有的暴露面相同，且不长于卡片的存活时间。
+代价是：只有 pi-ai 路由可以手工声明，因为 `llm-pi-ai` 是唯一一个其 profile 描述整个提供方的 namespace——`llm-greeneek` 路由仍是组合面的事实。询问只覆盖 OpenAI 兼容端点，因此讲其他协议的网关会报告自己无法被询问，其模型需手工键入。另外，页面在一次获取期间会把密钥保存在组件状态里，这与 `credentials.set` 已有的暴露面相同，且不长于卡片的存活时间。
 
 ## Testing
 

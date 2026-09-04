@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-shell",
-  "description": "Abstract bash executor seam (ctx.shell) for the DeepSeek Harness",
+  "name": "@greeneek/gnk-shell",
+  "description": "Abstract bash executor seam (ctx.shell) for the Greeneek Harness",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/shell/shell"
   },
   "type": "module",
@@ -27,15 +27,15 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/dsh-subprocess": "workspace:^",
-    "@deepseek-ai/dsh-sandbox": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-settings": "workspace:^"
+    "@greeneek/gnk-subprocess": "workspace:^",
+    "@greeneek/gnk-sandbox": "workspace:^",
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-settings": "workspace:^"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-subprocess": "workspace:^",
-    "@deepseek-ai/dsh-sandbox": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-settings": "workspace:^"
+    "@greeneek/gnk-subprocess": "workspace:^",
+    "@greeneek/gnk-sandbox": "workspace:^",
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-settings": "workspace:^"
   }
 }

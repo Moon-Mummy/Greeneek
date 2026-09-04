@@ -137,8 +137,8 @@ export const zh: Record<AgentPresetSettingsKey, string> = {
   deleting: '正在删除…',
 }
 
-// The resolution itself is the shared fold in `dsh-agent-presets/display`,
+// The resolution itself is the shared fold in `gnk-agent-presets/display`,
 // re-exported here so every surface in this plugin reads one path; the
 // Settings plugin list inlines the same fold over this plugin's dictionaries.
-export { presetDisplayText } from '@deepseek-ai/dsh-agent-presets/display'
-export type { PresetDisplaySource, PresetDisplayText } from '@deepseek-ai/dsh-agent-presets/display'
+export { presetDisplayText } from '@greeneek/gnk-agent-presets/display'
+export type { PresetDisplaySource, PresetDisplayText } from '@greeneek/gnk-agent-presets/display'

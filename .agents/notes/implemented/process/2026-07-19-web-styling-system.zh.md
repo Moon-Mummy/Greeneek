@@ -47,7 +47,7 @@ GUI 无设计师供给，样式由 agent 编写并 review；没有一套机器�
 |---|---|
 | 框架五条、工程约束、为何两层/为何不 token 化字号 | 本 RFC（修改框架须由新 RFC 取代本文） |
 | token 逐项权威值（含暗色）、视觉基线常数（侧边栏/气泡/会话行/输入卡片几何）、RPC 四象限方向符视觉词汇、编码规范 12 条、偏离记录 | web-styling.md（活文档，随实现演进） |
-| 取值证据（deepseekchat file:line） | 调研归档已完成使命，git 历史留档 |
+| 取值证据（greeneekchat file:line） | 调研归档已完成使命，git 历史留档 |
 
 ## Consequences
 

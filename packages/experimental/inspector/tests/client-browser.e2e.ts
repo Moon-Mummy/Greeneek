@@ -240,7 +240,7 @@ function browserFixture(bootstrap: InspectorHandle['endpoint']['client']): strin
   const boot = {
     rev: 'browser-test',
     entries: [{
-      id: '@deepseek-ai/dsh-experimental-inspector',
+      id: '@greeneek/gnk-experimental-inspector',
       url: '/client.js?rev=browser-test',
       rev: 'browser-test',
     }],
@@ -248,8 +248,8 @@ function browserFixture(bootstrap: InspectorHandle['endpoint']['client']): strin
   return `<!doctype html>
 <title>Inspector Browser Client</title>
 <script>
-globalThis.__DSH_INSPECTOR__ = ${JSON.stringify(bootstrap)};
-globalThis.__DSH_BOOT__ = ${JSON.stringify(boot)};
+globalThis.__GNK_INSPECTOR__ = ${JSON.stringify(bootstrap)};
+globalThis.__GNK_BOOT__ = ${JSON.stringify(boot)};
 globalThis.__ModuleLoader__ = { load(registration) { globalThis.__INSPECTOR_REGISTRATION__ = registration; } };
 </script>
 <script src="/client.js?rev=browser-test"></script>
@@ -267,7 +267,7 @@ const root = {
 root.root = root;
 const cordis = { Context: { is(value) { return value?.__inspectorContext === true; } } };
 const plugin = registration.factory(specifier => {
-  if (specifier === '@deepseek-ai/cordis') return cordis;
+  if (specifier === '@greeneek/cordis') return cordis;
   throw new Error('Unexpected Client bundle dependency ' + specifier);
 });
 await plugin.apply(root);

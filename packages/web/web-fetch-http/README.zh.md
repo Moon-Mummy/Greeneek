@@ -3,13 +3,13 @@ description: "ctx.web 的匿名公共 HTTP(S) 抓取后端：部署方如何挂�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-web-fetch-http
+# @greeneek/gnk-web-fetch-http
 
 [English](README.md) | 中文
 
 ## 概述
 
-有了 `dsh-web-fetch-http`，harness 可以通过 web 服务（`ctx.web`）抓取公共 HTTP(S) 页面，并在不发送凭据的情况下获得状态码与有界、解码后的内容。当组合需要 URL 校验、公开地址解析、连接固定、仅同源重定向、字节和字符上限及显式产品 `User-Agent` 时选择它。它把非 2xx 响应作为结果而非错误返回，并拒绝非公开目标、二进制数据与不受支持的内容类型。面向模型的 `web_fetch` 工具位于 `dsh-tool-web`，由它渲染本提供方的正文。
+有了 `gnk-web-fetch-http`，harness 可以通过 web 服务（`ctx.web`）抓取公共 HTTP(S) 页面，并在不发送凭据的情况下获得状态码与有界、解码后的内容。当组合需要 URL 校验、公开地址解析、连接固定、仅同源重定向、字节和字符上限及显式产品 `User-Agent` 时选择它。它把非 2xx 响应作为结果而非错误返回，并拒绝非公开目标、二进制数据与不受支持的内容类型。面向模型的 `web_fetch` 工具位于 `gnk-tool-web`，由它渲染本提供方的正文。
 
 ## 目录
 
@@ -36,8 +36,8 @@ kind: "package-reference"
 加载 web 服务与本提供方；可配置上限都有安全默认值，并在插件构造时验证，因此无效值会响亮地失败，而不是构造出上限荒谬的提供方。URL 安全上限固定为 2,048 个字符。
 
 ```yaml
-- name: '@deepseek-ai/dsh-web'
-- name: '@deepseek-ai/dsh-web-fetch-http'
+- name: '@greeneek/gnk-web'
+- name: '@greeneek/gnk-web-fetch-http'
 ```
 
 | 字段 | 默认值 | 含义 |
@@ -46,9 +46,9 @@ kind: "package-reference"
 | `maxBodyChars` | `100,000` | 解码主体最大字符数 |
 | `timeoutMs` | `30,000` | 抓取超时——资源兜底，不是面向模型的工具预算 |
 | `maxRedirects` | `5` | 同源重定向最大跳数（`0` 表示不跟随） |
-| `userAgent` | `deepseek-harness/…` | 每次请求发送的 `User-Agent` 标头 |
+| `userAgent` | `greeneek-harness/…` | 每次请求发送的 `User-Agent` 标头 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-web-fetch-http)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-web-fetch-http)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### 抓取返回什么
 
@@ -81,8 +81,8 @@ const page = await ctx.web.fetch({ url: 'https://example.com' })
 
 本包建立在一个分离与一个分层超时之上：
 
-- **安全获取与呈现分离。** 本提供方拥有 URL 校验、公开地址强制规则、连接固定、HTTP 传输、重定向策略、上限、charset 解码与二进制拒绝；`dsh-tool-web` 拥有 HTML→markdown 与截断格式化。非 2xx 响应是数据，不是失败。
-- **两层超时。** 提供方的 `timeoutMs` 是直接 `ctx.web.fetch()` 调用方的资源兜底；面向模型的工具调用预算属于 `dsh-tool-call-timeout-policy`，由它触发 `exec.signal`。外层截止期限先到时，提供方报告 `WEB_ABORTED`，策略再以 `TOOL_TIMEOUT` 替换；因此 `WEB_FETCH_TIMEOUT` 标识的是提供方预算耗尽的直接服务调用方。
+- **安全获取与呈现分离。** 本提供方拥有 URL 校验、公开地址强制规则、连接固定、HTTP 传输、重定向策略、上限、charset 解码与二进制拒绝；`gnk-tool-web` 拥有 HTML→markdown 与截断格式化。非 2xx 响应是数据，不是失败。
+- **两层超时。** 提供方的 `timeoutMs` 是直接 `ctx.web.fetch()` 调用方的资源兜底；面向模型的工具调用预算属于 `gnk-tool-call-timeout-policy`，由它触发 `exec.signal`。外层截止期限先到时，提供方报告 `WEB_ABORTED`，策略再以 `TOOL_TIMEOUT` 替换；因此 `WEB_FETCH_TIMEOUT` 标识的是提供方预算耗尽的直接服务调用方。
 
 ### 源码地图
 
@@ -109,9 +109,9 @@ const page = await ctx.web.fetch({ url: 'https://example.com' })
 
 - [web 子系统](../../../docs/subsystems/web.zh.md)——穷尽式的抓取请求／结果词汇与错误码。
 - [web 包映射](../README.zh.md)——六包家族与各角色。
-- [dsh-web](../web/README.zh.md)——本提供方注册进入的 web 服务。
-- [dsh-tool-web](../tool-web/README.zh.md)——渲染本提供方正文的面向模型 `web_fetch` 工具。
-- [生成配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-web-fetch-http)——每个受支持配置字段及其源声明。
+- [gnk-web](../web/README.zh.md)——本提供方注册进入的 web 服务。
+- [gnk-tool-web](../tool-web/README.zh.md)——渲染本提供方正文的面向模型 `web_fetch` 工具。
+- [生成配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-web-fetch-http)——每个受支持配置字段及其源声明。
 - [web 能力 seam 决策](../../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.zh.md)——搜索与抓取为何共用一项提供方选择服务。
 
 -----
@@ -119,7 +119,7 @@ const page = await ctx.web.fetch({ url: 'https://example.com' })
 <a id="model-experience"></a>
 ## 模型体验
 
-间接地，通过 `dsh-tool-web`：该工具把本提供方经 `maxBodyChars` 限制的解码文本或由 HTML 转换得到的 markdown 置于抓取结果包装层内，而重定向、标头与传输上限保持隐藏。
+间接地，通过 `gnk-tool-web`：该工具把本提供方经 `maxBodyChars` 限制的解码文本或由 HTML 转换得到的 markdown 置于抓取结果包装层内，而重定向、标头与传输上限保持隐藏。
 
 #### KV Cache 影响
 

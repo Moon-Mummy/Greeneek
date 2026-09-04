@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-terminal",
-  "description": "Persistent PTY session seam for the DeepSeek Harness — owner-scoped ids, backend registry, interactive sends, reads, signals, and awaited cleanup",
+  "name": "@greeneek/gnk-terminal",
+  "description": "Persistent PTY session seam for the Greeneek Harness — owner-scoped ids, backend registry, interactive sends, reads, signals, and awaited cleanup",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/terminal/terminal"
   },
   "type": "module",
@@ -27,14 +27,14 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/dsh-agent": "workspace:^",
-    "@deepseek-ai/dsh-brand": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-agent": "workspace:^",
+    "@greeneek/gnk-brand": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-agent": "workspace:^",
-    "@deepseek-ai/dsh-brand": "workspace:^",
-    "@deepseek-ai/dsh-session": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-agent": "workspace:^",
+    "@greeneek/gnk-brand": "workspace:^",
+    "@greeneek/gnk-session": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   }
 }

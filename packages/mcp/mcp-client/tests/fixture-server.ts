@@ -1,5 +1,5 @@
 /**
- * Minimal MCP server over stdio for e2e testing of the dsh-mcp-client plugin.
+ * Minimal MCP server over stdio for e2e testing of the gnk-mcp-client plugin.
  * Registers controlled tools with predictable behavior for asserting edge cases.
  *
  * Run: node fixture-server.ts
@@ -62,7 +62,7 @@ server.registerTool('crash', {
   return { content: [{ type: 'text', text: 'crashing' }] }
 })
 
-// Dotted name: legal in MCP, illegal in the DeepSeek function-name contract.
+// Dotted name: legal in MCP, illegal in the Greeneek function-name contract.
 // Exercises the bridge's normalize-and-hash public-name path end to end.
 server.registerTool('admin.reset', {
   title: 'Admin Reset Tool',

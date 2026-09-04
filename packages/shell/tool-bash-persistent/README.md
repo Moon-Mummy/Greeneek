@@ -3,13 +3,13 @@ description: "The model-facing persistent bash tool for users and maintainers ch
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tool-bash-persistent
+# @greeneek/gnk-tool-bash-persistent
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-tool-bash-persistent` gives the agent a `bash` tool whose shell state persists across calls for the owning agent: cwd, exported variables, functions, and background jobs survive between commands. Each agent gets its own shell backed by an owner-scoped PTY session from the terminal service, and commands for the same agent run one at a time. Configuration selects the PTY backend and the wall-clock limit for one command; a timeout or an explicit `exit` closes the shell, and the next call starts fresh. It complements the one-shot `dsh-tool-bash` tool — choose it when work needs cross-call state. Mount it together with a terminal backend such as `dsh-terminal-bash` and the `ctx.terminals` service.
+`gnk-tool-bash-persistent` gives the agent a `bash` tool whose shell state persists across calls for the owning agent: cwd, exported variables, functions, and background jobs survive between commands. Each agent gets its own shell backed by an owner-scoped PTY session from the terminal service, and commands for the same agent run one at a time. Configuration selects the PTY backend and the wall-clock limit for one command; a timeout or an explicit `exit` closes the shell, and the next call starts fresh. It complements the one-shot `gnk-tool-bash` tool — choose it when work needs cross-call state. Mount it together with a terminal backend such as `gnk-terminal-bash` and the `ctx.terminals` service.
 
 ## Table of Contents
 
@@ -29,16 +29,16 @@ Load this plugin in any composition where the agent should keep shell state betw
 
 ### When to choose it
 
-Choose the persistent tool when work depends on cross-call state: a one-shot `dsh-tool-bash` call cannot remember a `cd` or an exported variable. Choose the one-shot tool when every command should start from a known, clean environment, or when the command is short and self-contained. Commands that need interactive stdin are unsupported here — a foreground child that reads input blocks until the command timeout — so interactive work belongs to the terminal tools.
+Choose the persistent tool when work depends on cross-call state: a one-shot `gnk-tool-bash` call cannot remember a `cd` or an exported variable. Choose the one-shot tool when every command should start from a known, clean environment, or when the command is short and self-contained. Commands that need interactive stdin are unsupported here — a foreground child that reads input blocks until the command timeout — so interactive work belongs to the terminal tools.
 
 ### Minimal configuration
 
-The default `shell` backend starts an interactive bash through `dsh-terminal-bash`; deployments may register another PTY backend and select it by name.
+The default `shell` backend starts an interactive bash through `gnk-terminal-bash`; deployments may register another PTY backend and select it by name.
 
 ```yaml
-- name: '@deepseek-ai/dsh-terminal'
-- name: '@deepseek-ai/dsh-terminal-bash'
-- name: '@deepseek-ai/dsh-tool-bash-persistent'
+- name: '@greeneek/gnk-terminal'
+- name: '@greeneek/gnk-terminal-bash'
+- name: '@greeneek/gnk-tool-bash-persistent'
 ```
 
 | Field | Default | Meaning |
@@ -48,7 +48,7 @@ The default `shell` backend starts an interactive bash through `dsh-terminal-bas
 | `maxOutputChars` | `16,000` | Maximum retained command-output characters; fixed diagnostics are added afterward |
 | `description` | `Run commands in a persistent bash shell. State, including the current directory and exported environment variables, persists across calls for this agent.` | Model-facing environment contract; deployments may describe their environment |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-tool-bash-persistent) is the exhaustive source for every accepted field and its JSDoc.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-tool-bash-persistent) is the exhaustive source for every accepted field and its JSDoc.
 
 ### What the agent can rely on
 
@@ -100,8 +100,8 @@ Read these pages when the package-level contract is not enough. They move from t
 - [terminal-bash backend](../../terminal/terminal-bash/README.md) — the default `shell` backend.
 - [tool-terminal](../../terminal/tool-terminal/README.md) — six model-facing terminal tools for interactive work.
 - [Persistent PTY sessions Agent Note](../../../.agents/notes/implemented/feature/2026-07-16-persistent-pty-sessions.md) — the owner-scoped session design and its rationale.
-- [Generated tool catalog](../../../docs/tool-catalog.md#deepseek-aidsh-tool-bash-persistent) — the exact `bash` argument schema.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-tool-bash-persistent) — every accepted config field and its source declaration.
+- [Generated tool catalog](../../../docs/tool-catalog.md#greeneekgnk-tool-bash-persistent) — the exact `bash` argument schema.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-tool-bash-persistent) — every accepted config field and its source declaration.
 
 -----
 
@@ -112,7 +112,7 @@ Read these pages when the package-level contract is not enough. They move from t
 
 #### What the model sees
 
-The generated [`bash` schema](../../../docs/tool-catalog.md#deepseek-aidsh-tool-bash-persistent), including the configured `description`. The plugin contributes no standalone system-prompt section; the deployment owns persona and environment guidance.
+The generated [`bash` schema](../../../docs/tool-catalog.md#greeneekgnk-tool-bash-persistent), including the configured `description`. The plugin contributes no standalone system-prompt section; the deployment owns persona and environment guidance.
 
 #### Token effect
 

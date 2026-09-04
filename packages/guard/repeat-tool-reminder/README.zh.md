@@ -3,13 +3,13 @@ description: "建议性循环卫生 guard：当 agent 重复完全相同的工�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-repeat-tool-reminder
+# @greeneek/gnk-repeat-tool-reminder
 
 [English](README.md) | 中文
 
 ## 概述
 
-模型可能会卡在以相同参数调用同一工具上——反复运行失败的命令、反复读取未变化的文件——白白消耗时间和 token 却没有进展。`dsh-repeat-tool-reminder` 会发现这种模式并让模型停下来：在选定的重复次数上，它送出一条提醒，要求模型分析上一次结果并改用其他方法或结束任务。提醒只是建议，绝非阻止：合理的重复调用不会被延迟分毫，是否继续、改变方法或停止仍由模型决定。它分别跟踪每个 agent（智能体），一个 agent 的循环绝不会干扰另一个 agent 的工作，新的用户消息会清零计数。它随 `dsh` base 组合默认启用，在 3、5、8 次重复时提醒。
+模型可能会卡在以相同参数调用同一工具上——反复运行失败的命令、反复读取未变化的文件——白白消耗时间和 token 却没有进展。`gnk-repeat-tool-reminder` 会发现这种模式并让模型停下来：在选定的重复次数上，它送出一条提醒，要求模型分析上一次结果并改用其他方法或结束任务。提醒只是建议，绝非阻止：合理的重复调用不会被延迟分毫，是否继续、改变方法或停止仍由模型决定。它分别跟踪每个 agent（智能体），一个 agent 的循环绝不会干扰另一个 agent 的工作，新的用户消息会清零计数。它随 `gnk` base 组合默认启用，在 3、5、8 次重复时提醒。
 
 ## 目录
 
@@ -25,7 +25,7 @@ kind: "package-reference"
 <a id="use-this-package"></a>
 ## 使用本包
 
-当模型应当自行发现自己在相同工具调用上循环时，挂载此插件。无需学习或接线：`dsh` base 组合已经运行它，默认值适用于大多数会话——想更早、更晚或在更少的工具上收到提醒时，调优下面的阈值与工具范围即可。
+当模型应当自行发现自己在相同工具调用上循环时，挂载此插件。无需学习或接线：`gnk` base 组合已经运行它，默认值适用于大多数会话——想更早、更晚或在更少的工具上收到提醒时，调优下面的阈值与工具范围即可。
 
 ### 何时选择
 
@@ -36,7 +36,7 @@ kind: "package-reference"
 想改变提醒何时触发或覆盖哪些工具时，用配置挂载插件：
 
 ```yaml
-- name: '@deepseek-ai/dsh-repeat-tool-reminder'
+- name: '@greeneek/gnk-repeat-tool-reminder'
   config:
     thresholds: [3, 5, 8]        # remind at 3, 5, and 8 consecutive repeats
     include: []                  # track every tool; list patterns to track only some
@@ -51,7 +51,7 @@ kind: "package-reference"
 | `exclude` | `[]` | 绝不跟踪这些工具；对它们的调用既不计数也不重置 |
 | `argumentsPreviewChars` | `500` | 详细提醒中显示多少字符的重复参数 |
 
-无效配置会在启动时以清晰错误失败——空的 `thresholds` 列表、小于 2 的重复次数或重复值——绝不会静默改变行为。生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-repeat-tool-reminder)记录每个受支持的值。
+无效配置会在启动时以清晰错误失败——空的 `thresholds` 列表、小于 2 的重复次数或重复值——绝不会静默改变行为。生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-repeat-tool-reminder)记录每个受支持的值。
 
 ### 你会得到什么
 
@@ -107,7 +107,7 @@ guard 建立在四项承诺之上：
 当包级约定不够用时阅读以下页面。它们从工具 waterfall 逐步进入穷尽式配置与 guard 组映射。
 
 - [工具子系统参考](../../../docs/subsystems/tools.zh.md)——本 guard 消费的 `tools/execute` waterfall、`additionalContexts` 与决策形态。
-- [生成配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-repeat-tool-reminder)——每个受支持配置字段及其源声明。
+- [生成配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-repeat-tool-reminder)——每个受支持配置字段及其源声明。
 - [guard 组映射](../README.zh.md)——同组的 guard 包与循环卫生家族。
 
 -----

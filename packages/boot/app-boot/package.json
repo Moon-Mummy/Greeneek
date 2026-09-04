@@ -1,5 +1,5 @@
 {
-  "name": "@deepseek-ai/dsh-app-boot",
+  "name": "@greeneek/gnk-app-boot",
   "description": "Shared boot glue for the app bins: .env loading, fail-loud Loader guards, snapshot-aware config resolution, and the Loader boot sequence",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
@@ -7,7 +7,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/boot/app-boot"
   },
   "type": "module",
@@ -27,35 +27,35 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@deepseek-ai/dsh-atomic-write": "workspace:^",
+    "@greeneek/gnk-atomic-write": "workspace:^",
     "js-yaml": "^4.2.0",
     "resolve.exports": "^2.0.3"
   },
   "peerDependencies": {
-    "@deepseek-ai/cordis-plugin-group": "workspace:^",
-    "@deepseek-ai/cordis-plugin-hmr": "workspace:^",
-    "@deepseek-ai/cordis-plugin-include": "workspace:^",
-    "@deepseek-ai/cordis-plugin-loader": "workspace:^",
-    "@deepseek-ai/dsh-launch-environment": "workspace:^",
-    "@deepseek-ai/dsh-home-paths": "workspace:^",
-    "@deepseek-ai/dsh-system-prompt": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/cordis-plugin-group": "workspace:^",
+    "@greeneek/cordis-plugin-hmr": "workspace:^",
+    "@greeneek/cordis-plugin-include": "workspace:^",
+    "@greeneek/cordis-plugin-loader": "workspace:^",
+    "@greeneek/gnk-launch-environment": "workspace:^",
+    "@greeneek/gnk-home-paths": "workspace:^",
+    "@greeneek/gnk-system-prompt": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   },
   "peerDependenciesMeta": {
-    "@deepseek-ai/cordis-plugin-hmr": {
+    "@greeneek/cordis-plugin-hmr": {
       "optional": true
     }
   },
   "devDependencies": {
-    "@deepseek-ai/cordis-plugin-group": "workspace:^",
-    "@deepseek-ai/cordis-plugin-hmr": "workspace:^",
-    "@deepseek-ai/cordis-plugin-include": "workspace:^",
-    "@deepseek-ai/cordis-plugin-loader": "workspace:^",
-    "@deepseek-ai/cordis-plugin-timer": "workspace:^",
-    "@deepseek-ai/dsh-launch-environment": "workspace:^",
-    "@deepseek-ai/dsh-home-paths": "workspace:^",
-    "@deepseek-ai/dsh-system-prompt": "workspace:^",
+    "@greeneek/cordis-plugin-group": "workspace:^",
+    "@greeneek/cordis-plugin-hmr": "workspace:^",
+    "@greeneek/cordis-plugin-include": "workspace:^",
+    "@greeneek/cordis-plugin-loader": "workspace:^",
+    "@greeneek/cordis-plugin-timer": "workspace:^",
+    "@greeneek/gnk-launch-environment": "workspace:^",
+    "@greeneek/gnk-home-paths": "workspace:^",
+    "@greeneek/gnk-system-prompt": "workspace:^",
     "@types/js-yaml": "^4.0.9",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/cordis": "workspace:^"
   }
 }

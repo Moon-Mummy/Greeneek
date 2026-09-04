@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-tool-web",
-  "description": "Model-facing web tools (web_search, web_fetch) over the DeepSeek Harness web capability seam (ctx.web)",
+  "name": "@greeneek/gnk-tool-web",
+  "description": "Model-facing web tools (web_search, web_fetch) over the Greeneek Harness web capability seam (ctx.web)",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/web/tool-web"
   },
   "type": "module",
@@ -27,31 +27,31 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-llm": "workspace:^",
-    "@deepseek-ai/dsh-system-prompt": "workspace:^",
-    "@deepseek-ai/dsh-tools": "workspace:^",
-    "@deepseek-ai/dsh-web": "workspace:^"
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-llm": "workspace:^",
+    "@greeneek/gnk-system-prompt": "workspace:^",
+    "@greeneek/gnk-tools": "workspace:^",
+    "@greeneek/gnk-web": "workspace:^"
   },
   "dependencies": {
-    "@deepseek-ai/dsh-util-values": "workspace:^",
-    "@deepseek-ai/schemastery": "workspace:^",
+    "@greeneek/gnk-util-values": "workspace:^",
+    "@greeneek/schemastery": "workspace:^",
     "@joplin/turndown-plugin-gfm": "^1.0.67",
     "turndown": "^7.2.4"
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-agent": "workspace:^",
-    "@deepseek-ai/dsh-llm": "workspace:^",
-    "@deepseek-ai/dsh-session": "workspace:^",
-    "@deepseek-ai/dsh-spill-local": "workspace:^",
-    "@deepseek-ai/dsh-spill-policy": "workspace:^",
-    "@deepseek-ai/dsh-system-prompt": "workspace:^",
-    "@deepseek-ai/dsh-tool-call-timeout-policy": "workspace:^",
-    "@deepseek-ai/dsh-tools": "workspace:^",
-    "@deepseek-ai/dsh-web": "workspace:^",
-    "@deepseek-ai/dsh-web-fetch-http": "workspace:^",
-    "@deepseek-ai/dsh-web-search-exa": "workspace:^",
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-agent": "workspace:^",
+    "@greeneek/gnk-llm": "workspace:^",
+    "@greeneek/gnk-session": "workspace:^",
+    "@greeneek/gnk-spill-local": "workspace:^",
+    "@greeneek/gnk-spill-policy": "workspace:^",
+    "@greeneek/gnk-system-prompt": "workspace:^",
+    "@greeneek/gnk-tool-call-timeout-policy": "workspace:^",
+    "@greeneek/gnk-tools": "workspace:^",
+    "@greeneek/gnk-web": "workspace:^",
+    "@greeneek/gnk-web-fetch-http": "workspace:^",
+    "@greeneek/gnk-web-search-exa": "workspace:^",
     "@types/turndown": "^5.0.6"
   }
 }

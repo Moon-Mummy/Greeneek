@@ -3,13 +3,13 @@ description: "The deployment default model selection for users and maintainers c
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-agent-default-model
+# @greeneek/gnk-agent-default-model
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-agent-default-model` supplies the deployment's default model selection — provider, model, and optional reasoning effort — that agent entry points apply when a fresh session has no selection of its own. Direct entry points such as `dsh --profile headless` and Host-backed entry points read `ctx.agentDefaultModel` instead of owning parallel defaults, so one composition entry controls which model new agents start on. A mounted settings provider layers the user's choice over the composition entry, and a saved change is visible on the next read. It is one process-wide default: per-session model selection remains the entry point's responsibility. Choose it when you want a single place to set the model new agents use.
+`gnk-agent-default-model` supplies the deployment's default model selection — provider, model, and optional reasoning effort — that agent entry points apply when a fresh session has no selection of its own. Direct entry points such as `gnk --profile headless` and Host-backed entry points read `ctx.agentDefaultModel` instead of owning parallel defaults, so one composition entry controls which model new agents start on. A mounted settings provider layers the user's choice over the composition entry, and a saved change is visible on the next read. It is one process-wide default: per-session model selection remains the entry point's responsibility. Choose it when you want a single place to set the model new agents use.
 
 ## Table of Contents
 
@@ -32,10 +32,10 @@ Mount this package wherever agents are created without an explicit model route. 
 The composition entry is the base of the default: it requires a provider and model and stays usable without any settings provider.
 
 ```yaml
-- name: '@deepseek-ai/dsh-agent-default-model'
+- name: '@greeneek/gnk-agent-default-model'
   config:
-    provider: deepseek
-    model: deepseek-chat
+    provider: greeneek
+    model: greeneek-chat
 ```
 
 | Field | Default | Meaning |
@@ -43,7 +43,7 @@ The composition entry is the base of the default: it requires a provider and mod
 | `provider` | required | Registered provider route for fresh agents |
 | `model` | required | Provider-owned model id for fresh agents |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-agent-default-model) is the exhaustive source for every accepted field. `reasoningEffort` is deliberately not a config field: it belongs to the settings layer, so a complete saved selection can clear an effort when the next selected model has none, while a composition value would be inherited again.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-agent-default-model) is the exhaustive source for every accepted field. `reasoningEffort` is deliberately not a config field: it belongs to the settings layer, so a complete saved selection can clear an effort when the next selected model has none, while a composition value would be inherited again.
 
 ### Read and change the default
 
@@ -92,7 +92,7 @@ The package-level contract is enough for most consumers; read these when you nee
 
 - [Core subsystem](../../../docs/subsystems/core.md) — the `Agent` handle and `AgentOptions` route selection.
 - [agent-loop package](../agent-loop/README.md) — how agents resolve provider and model at request time.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-agent-default-model) — every accepted config field and its source declaration.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-agent-default-model) — every accepted config field and its source declaration.
 - [Core group map](../README.md) — how the core packages compose.
 
 -----

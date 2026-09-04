@@ -12,7 +12,7 @@ The first durable Web image-input slice introduced required ordered multi-image 
 
 Version one accepts ordered image batches bounded by configurable per-message count and aggregate-byte limits plus per-image byte and pixel limits. The browser rejects unsupported declared formats before preview allocation, while the host authoritatively decodes the complete batch, checks current deployment bounds, validates every image without storage writes, and only then saves every image while preserving submitted order in the resulting durable blocks. Request buffering derives directly from the attachment service's aggregate image-byte limit. This preserves validation atomicity without adding a batch transaction, rollback protocol, or policy snapshot in `host.describe`.
 
-Provider/model selection remains configuration and profile state. The boot composition registers the shipped DeepSeek, OpenAI, and Anthropic routes; the CLI does not add image-specific selection flags, inspect the yml provider roster, or dynamically mount an adapter.
+Provider/model selection remains configuration and profile state. The boot composition registers the shipped Greeneek, OpenAI, and Anthropic routes; the CLI does not add image-specific selection flags, inspect the yml provider roster, or dynamically mount an adapter.
 
 Exact-model metadata carries only the input modalities that current admission decisions consume. `ImageBlock` carries the durable attachment reference; its optional display name supplies accessible UI text, so the core block has no separate alternative-text field. Provider-neutral token estimation does not apply one provider's visual pricing formula to other routes.
 

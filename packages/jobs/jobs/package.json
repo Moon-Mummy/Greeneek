@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-jobs",
-  "description": "Background job registry (ctx.jobs) for the DeepSeek Harness — shared ids, owner isolation, polling, cancellation, and completion listeners for long-running tool work",
+  "name": "@greeneek/gnk-jobs",
+  "description": "Background job registry (ctx.jobs) for the Greeneek Harness — shared ids, owner isolation, polling, cancellation, and completion listeners for long-running tool work",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/jobs/jobs"
   },
   "type": "module",
@@ -37,17 +37,17 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/dsh-agent": "workspace:^",
-    "@deepseek-ai/dsh-brand": "workspace:^",
-    "@deepseek-ai/dsh-invariants": "workspace:^",
-    "@deepseek-ai/dsh-session": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-agent": "workspace:^",
+    "@greeneek/gnk-brand": "workspace:^",
+    "@greeneek/gnk-invariants": "workspace:^",
+    "@greeneek/gnk-session": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-agent": "workspace:^",
-    "@deepseek-ai/dsh-brand": "workspace:^",
-    "@deepseek-ai/dsh-invariants": "workspace:^",
-    "@deepseek-ai/dsh-session": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-agent": "workspace:^",
+    "@greeneek/gnk-brand": "workspace:^",
+    "@greeneek/gnk-invariants": "workspace:^",
+    "@greeneek/gnk-session": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   }
 }

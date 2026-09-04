@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-attachment",
-  "description": "Durable immutable attachment storage seam for the DeepSeek Harness",
+  "name": "@greeneek/gnk-attachment",
+  "description": "Durable immutable attachment storage seam for the Greeneek Harness",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/attachment/attachment"
   },
   "type": "module",
@@ -22,11 +22,11 @@
   "files": ["lib/index.js", "lib/types/**/*.js", "lib/types/**/*.d.ts"],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/dsh-brand": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-brand": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-brand": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-brand": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   }
 }

@@ -1,8 +1,8 @@
-import { Context } from '@deepseek-ai/cordis'
-import { HostConnectionService } from '@deepseek-ai/dsh-client-connection'
-import type { BrowserAuth } from '@deepseek-ai/dsh-client-connection/src/browser-auth.ts'
-import type { SessionHeader, SessionId } from '@deepseek-ai/dsh-session'
-import type { SessionHandle } from '@deepseek-ai/dsh-session-persistence'
+import { Context } from '@greeneek/cordis'
+import { HostConnectionService } from '@greeneek/gnk-client-connection'
+import type { BrowserAuth } from '@greeneek/gnk-client-connection/src/browser-auth.ts'
+import type { SessionHeader, SessionId } from '@greeneek/gnk-session'
+import type { SessionHandle } from '@greeneek/gnk-session-persistence'
 import { strFromU8, unzipSync } from 'fflate'
 import { describe, expect, it } from 'vitest'
 import {

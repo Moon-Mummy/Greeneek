@@ -1,2 +1,2 @@
-dsh: reasoning:
+gnk: reasoning:
 Inspecting the task before the tool call.

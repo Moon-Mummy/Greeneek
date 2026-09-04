@@ -6,8 +6,8 @@ import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
 const root = resolve(import.meta.dirname, '..')
-const unavailableOwner = ['deepseek', 'ai'].join('-')
-const unavailableRepositoryName = ['deepseek', 'harness', 'sdk'].join('-')
+const unavailableOwner = ['greeneek', 'ai'].join('-')
+const unavailableRepositoryName = ['greeneek', 'harness', 'sdk'].join('-')
 const unavailableRepository = `${unavailableOwner}/${unavailableRepositoryName}`
 const archivedAgentNotePrefix = '.agents/notes/archived/'
 

@@ -3,13 +3,13 @@ description: "对话 UI 的附件呈现：草稿图片栏、文档拖放目标�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-client-ui-attachment
+# @greeneek/gnk-client-ui-attachment
 
 [English](README.md) | 中文
 
 ## 概述
 
-本包渲染对话 UI 中与附件相关的一切：composer 下的待发送草稿图片、全视口拖放邀请层、Chat、Trajectory 与工具结果中的持久图片，以及查看原图的灯箱。它是纯呈现层——附件数据、图片加载与回调都经声明槽位来自 conversation 包。需要 DeepSeek Chat 风格的图片体验时选择它；非图片文件在此没有任何表面。
+本包渲染对话 UI 中与附件相关的一切：composer 下的待发送草稿图片、全视口拖放邀请层、Chat、Trajectory 与工具结果中的持久图片，以及查看原图的灯箱。它是纯呈现层——附件数据、图片加载与回调都经声明槽位来自 conversation 包。需要 Greeneek Chat 风格的图片体验时选择它；非图片文件在此没有任何表面。
 
 ## 目录
 
@@ -89,7 +89,7 @@ kind: "package-reference"
 
 这些限制界定了当前附件表面。它们是包约束，不是通用图片查看器对比或任务积压。
 
-- **仅支持图片**——非图片文件尚无附件栏卡片与历史渲染；DeepSeek Chat 风格的文件卡片和上传进度等输入框接受非图片附件后再做。
+- **仅支持图片**——非图片文件尚无附件栏卡片与历史渲染；Greeneek Chat 风格的文件卡片和上传进度等输入框接受非图片附件后再做。
 - **灯箱无缩放与下载**——预览仅以适配视口的尺寸渲染原图。
 - **灯箱不锁定焦点**——它设置 `aria-modal` 并在关闭时归还焦点，但 Tab 仍可移动到背后的页面。
 

@@ -3,13 +3,13 @@ description: "Bounded model-facing output for tools that must cap how much conte
 kind: "package-library"
 ---
 
-# @deepseek-ai/dsh-output-retention
+# @greeneek/gnk-output-retention
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-output-retention` bounds how much context a tool returns to the model: a caller feeds items or text chunks into a retainer, then gets back the retained content plus exact omission metadata. `ItemRetainer` caps an ordered list of logical units (paths, matches, sources) at a head budget; `TextRetainer` caps a byte-oriented text stream with head, tail, or head-and-tail windows and keeps UTF-8 boundaries valid at every cut. A standardized omission clause and a notice formatter give tools a consistent "results capped" footer while the tool owns the recovery guidance. The library answers only the mechanical question of what was kept and what was omitted — grouping, line numbering, spill files, and provider error states stay in the tool. It is a dependency-light library that tool packages import directly; a `cordis.yml` cannot load it.
+`gnk-output-retention` bounds how much context a tool returns to the model: a caller feeds items or text chunks into a retainer, then gets back the retained content plus exact omission metadata. `ItemRetainer` caps an ordered list of logical units (paths, matches, sources) at a head budget; `TextRetainer` caps a byte-oriented text stream with head, tail, or head-and-tail windows and keeps UTF-8 boundaries valid at every cut. A standardized omission clause and a notice formatter give tools a consistent "results capped" footer while the tool owns the recovery guidance. The library answers only the mechanical question of what was kept and what was omitted — grouping, line numbering, spill files, and provider error states stay in the tool. It is a dependency-light library that tool packages import directly; a `cordis.yml` cannot load it.
 
 ## Table of Contents
 
@@ -30,7 +30,7 @@ Use a retainer wherever a tool must cap how much of its result reaches the model
 ### Bounding a list of items
 
 ```ts
-import { ItemRetainer } from '@deepseek-ai/dsh-output-retention'
+import { ItemRetainer } from '@greeneek/gnk-output-retention'
 
 declare const globMaxResults: number
 declare const candidates: AsyncIterable<{ path: string }>
@@ -46,7 +46,7 @@ const { items, truncated, omitted } = retainer.finish()
 ### Bounding a text stream
 
 ```text
-import { TextRetainer } from '@deepseek-ai/dsh-output-retention'
+import { TextRetainer } from '@greeneek/gnk-output-retention'
 
 const out = new TextRetainer({ kind: 'headTail', headBytes: headCap, tailBytes: tailCap })
 child.stdout.on('data', (chunk: Buffer) => { out.push(chunk) })
@@ -58,11 +58,11 @@ const { text, omittedBytes } = out.finish()
 ### Building the omission footer
 
 ```ts
-import { formatRetentionNotice } from '@deepseek-ai/dsh-output-retention'
+import { formatRetentionNotice } from '@greeneek/gnk-output-retention'
 
 declare const grepMaxMatches: number
 declare const items: { length: number }
-import type { Omitted } from '@deepseek-ai/dsh-output-retention'
+import type { Omitted } from '@greeneek/gnk-output-retention'
 
 declare const omitted: Omitted
 

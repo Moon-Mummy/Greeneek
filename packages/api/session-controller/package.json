@@ -1,5 +1,5 @@
 {
-  "name": "@deepseek-ai/dsh-api-session-controller",
+  "name": "@greeneek/gnk-api-session-controller",
   "description": "Session Remote commands, cold reads, and live control transport",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
@@ -7,7 +7,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/api/session-controller"
   },
   "type": "module",
@@ -41,13 +41,13 @@
     "./src/*": "./src/*",
     "./package.json": "./package.json"
   },
-  "dsh": {
+  "gnk": {
     "client": {
       "external": [
-        "@deepseek-ai/dsh-api-gateway/client"
+        "@greeneek/gnk-api-gateway/client"
       ],
       "inject": [
-        "@deepseek-ai/dsh-api-gateway"
+        "@greeneek/gnk-api-gateway"
       ],
       "platform": "web"
     }
@@ -68,80 +68,80 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@deepseek-ai/dsh-brand": "workspace:^",
-    "@deepseek-ai/dsh-deque": "workspace:^",
-    "@deepseek-ai/schemastery": "workspace:^",
+    "@greeneek/gnk-brand": "workspace:^",
+    "@greeneek/gnk-deque": "workspace:^",
+    "@greeneek/schemastery": "workspace:^",
     "zod": "^4.4.3"
   },
   "peerDependencies": {
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-agent": "workspace:^",
-    "@deepseek-ai/dsh-agent-default-model": "workspace:^",
-    "@deepseek-ai/dsh-agent-presets": "workspace:^",
-    "@deepseek-ai/dsh-api-gateway": "workspace:^",
-    "@deepseek-ai/dsh-attachment": "workspace:^",
-    "@deepseek-ai/dsh-client-connection": "workspace:^",
-    "@deepseek-ai/dsh-file-reference": "workspace:^",
-    "@deepseek-ai/dsh-jobs": "workspace:^",
-    "@deepseek-ai/dsh-llm": "workspace:^",
-    "@deepseek-ai/dsh-native-command": "workspace:^",
-    "@deepseek-ai/dsh-scope": "workspace:^",
-    "@deepseek-ai/dsh-session": "workspace:^",
-    "@deepseek-ai/dsh-session-persistence": "workspace:^",
-    "@deepseek-ai/dsh-session-projection": "workspace:^",
-    "@deepseek-ai/dsh-session-projection-cache": "workspace:^",
-    "@deepseek-ai/dsh-session-query": "workspace:^",
-    "@deepseek-ai/dsh-session-title": "workspace:^",
-    "@deepseek-ai/dsh-skill": "workspace:^",
-    "@deepseek-ai/dsh-subagent": "workspace:^",
-    "@deepseek-ai/dsh-typert-protocol": "workspace:^",
-    "@deepseek-ai/dsh-typert-registry": "workspace:^",
-    "@deepseek-ai/dsh-util-time": "workspace:^",
-    "@deepseek-ai/dsh-util-workspace-path": "workspace:^",
-    "@deepseek-ai/dsh-workspace": "workspace:^"
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-agent": "workspace:^",
+    "@greeneek/gnk-agent-default-model": "workspace:^",
+    "@greeneek/gnk-agent-presets": "workspace:^",
+    "@greeneek/gnk-api-gateway": "workspace:^",
+    "@greeneek/gnk-attachment": "workspace:^",
+    "@greeneek/gnk-client-connection": "workspace:^",
+    "@greeneek/gnk-file-reference": "workspace:^",
+    "@greeneek/gnk-jobs": "workspace:^",
+    "@greeneek/gnk-llm": "workspace:^",
+    "@greeneek/gnk-native-command": "workspace:^",
+    "@greeneek/gnk-scope": "workspace:^",
+    "@greeneek/gnk-session": "workspace:^",
+    "@greeneek/gnk-session-persistence": "workspace:^",
+    "@greeneek/gnk-session-projection": "workspace:^",
+    "@greeneek/gnk-session-projection-cache": "workspace:^",
+    "@greeneek/gnk-session-query": "workspace:^",
+    "@greeneek/gnk-session-title": "workspace:^",
+    "@greeneek/gnk-skill": "workspace:^",
+    "@greeneek/gnk-subagent": "workspace:^",
+    "@greeneek/gnk-typert-protocol": "workspace:^",
+    "@greeneek/gnk-typert-registry": "workspace:^",
+    "@greeneek/gnk-util-time": "workspace:^",
+    "@greeneek/gnk-util-workspace-path": "workspace:^",
+    "@greeneek/gnk-workspace": "workspace:^"
   },
   "peerDependenciesMeta": {
-    "@deepseek-ai/dsh-jobs": {
+    "@greeneek/gnk-jobs": {
       "optional": true
     },
-    "@deepseek-ai/dsh-session-persistence": {
+    "@greeneek/gnk-session-persistence": {
       "optional": true
     },
-    "@deepseek-ai/dsh-session-projection-cache": {
+    "@greeneek/gnk-session-projection-cache": {
       "optional": true
     }
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-agent": "workspace:^",
-    "@deepseek-ai/dsh-agent-default-model": "workspace:^",
-    "@deepseek-ai/dsh-agent-presets": "workspace:^",
-    "@deepseek-ai/dsh-api-gateway": "workspace:^",
-    "@deepseek-ai/dsh-attachment": "workspace:^",
-    "@deepseek-ai/dsh-client-connection": "workspace:^",
-    "@deepseek-ai/dsh-client-store": "workspace:^",
-    "@deepseek-ai/dsh-file-reference": "workspace:^",
-    "@deepseek-ai/dsh-jobs": "workspace:^",
-    "@deepseek-ai/dsh-llm": "workspace:^",
-    "@deepseek-ai/dsh-native-command": "workspace:^",
-    "@deepseek-ai/dsh-permission-presets": "workspace:^",
-    "@deepseek-ai/dsh-scope": "workspace:^",
-    "@deepseek-ai/dsh-session": "workspace:^",
-    "@deepseek-ai/dsh-session-persistence": "workspace:^",
-    "@deepseek-ai/dsh-session-projection": "workspace:^",
-    "@deepseek-ai/dsh-session-projection-cache": "workspace:^",
-    "@deepseek-ai/dsh-session-query": "workspace:^",
-    "@deepseek-ai/dsh-session-title": "workspace:^",
-    "@deepseek-ai/dsh-skill": "workspace:^",
-    "@deepseek-ai/dsh-storage": "workspace:^",
-    "@deepseek-ai/dsh-storage-domain": "workspace:^",
-    "@deepseek-ai/dsh-storage-json": "workspace:^",
-    "@deepseek-ai/dsh-subagent": "workspace:^",
-    "@deepseek-ai/dsh-typert-protocol": "workspace:^",
-    "@deepseek-ai/dsh-typert-registry": "workspace:^",
-    "@deepseek-ai/dsh-util-crypto": "workspace:^",
-    "@deepseek-ai/dsh-util-time": "workspace:^",
-    "@deepseek-ai/dsh-util-workspace-path": "workspace:^",
-    "@deepseek-ai/dsh-workspace": "workspace:^"
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-agent": "workspace:^",
+    "@greeneek/gnk-agent-default-model": "workspace:^",
+    "@greeneek/gnk-agent-presets": "workspace:^",
+    "@greeneek/gnk-api-gateway": "workspace:^",
+    "@greeneek/gnk-attachment": "workspace:^",
+    "@greeneek/gnk-client-connection": "workspace:^",
+    "@greeneek/gnk-client-store": "workspace:^",
+    "@greeneek/gnk-file-reference": "workspace:^",
+    "@greeneek/gnk-jobs": "workspace:^",
+    "@greeneek/gnk-llm": "workspace:^",
+    "@greeneek/gnk-native-command": "workspace:^",
+    "@greeneek/gnk-permission-presets": "workspace:^",
+    "@greeneek/gnk-scope": "workspace:^",
+    "@greeneek/gnk-session": "workspace:^",
+    "@greeneek/gnk-session-persistence": "workspace:^",
+    "@greeneek/gnk-session-projection": "workspace:^",
+    "@greeneek/gnk-session-projection-cache": "workspace:^",
+    "@greeneek/gnk-session-query": "workspace:^",
+    "@greeneek/gnk-session-title": "workspace:^",
+    "@greeneek/gnk-skill": "workspace:^",
+    "@greeneek/gnk-storage": "workspace:^",
+    "@greeneek/gnk-storage-domain": "workspace:^",
+    "@greeneek/gnk-storage-json": "workspace:^",
+    "@greeneek/gnk-subagent": "workspace:^",
+    "@greeneek/gnk-typert-protocol": "workspace:^",
+    "@greeneek/gnk-typert-registry": "workspace:^",
+    "@greeneek/gnk-util-crypto": "workspace:^",
+    "@greeneek/gnk-util-time": "workspace:^",
+    "@greeneek/gnk-util-workspace-path": "workspace:^",
+    "@greeneek/gnk-workspace": "workspace:^"
   }
 }

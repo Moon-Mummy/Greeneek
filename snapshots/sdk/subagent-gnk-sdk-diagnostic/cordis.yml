@@ -1,0 +1,68 @@
+# TypeScript SDK snapshot patch for foreground and background GNK SDK failures.
+
+- id: skill-filesystem
+  name: '@greeneek/gnk-skill-filesystem'
+  config:
+    includeDefaultRoots: false
+
+- id: llm-greeneek
+  name: '@greeneek/gnk-llm-greeneek'
+  config:
+    thinking: enabled
+    reasoningEffort: max
+
+- id: session-persistence-jsonl
+  name: '@greeneek/gnk-session-persistence-jsonl'
+  config:
+    root: !!js gnkHomePath('sessions')
+    compression: !!js "process.env.GNK_SNAPSHOT === undefined ? 'zstd' : 'none'"
+
+- id: session-log-greeneek
+  name: '@greeneek/gnk-session-log-greeneek'
+  config:
+    enabled: true
+
+- insert:
+    - id: subagent-gnk-sdk-diagnostic
+      name: '@greeneek/gnk-subagent-gnk-sdk'
+      config:
+        providerName: gnk-sdk-diagnostic
+        profile: sdk
+        patches:
+          - !!js process.env.GNK_TEST_CHILD_PATCH
+        gnkHome: !!js gnkHomePath('children/foreground')
+        provider: mock
+        model: mock-echo
+        env:
+          GNK_TELEMETRY_DISABLED: '1'
+          GNK_TEST_CHILD_FAILURE: '1'
+    - id: tool-subagent-gnk-sdk-diagnostic
+      name: '@greeneek/gnk-tool-subagent'
+      config:
+        provider: gnk-sdk-diagnostic
+        toolName: subagent_gnk_sdk
+        backgroundMode: one-shot
+        maxDepth: provider-managed
+    - id: subagent-gnk-sdk-diagnostic-background
+      name: '@greeneek/gnk-subagent-gnk-sdk'
+      config:
+        providerName: gnk-sdk-diagnostic-background
+        profile: sdk
+        patches:
+          - !!js process.env.GNK_TEST_CHILD_PATCH
+        gnkHome: !!js gnkHomePath('children/background')
+        provider: mock
+        model: mock-echo
+        env:
+          GNK_TELEMETRY_DISABLED: '1'
+          GNK_TEST_CHILD_FAILURE: '1'
+          FAKE_INIT_GO: .gnk-sdk-background-release
+    - id: tool-subagent-gnk-sdk-diagnostic-background
+      name: '@greeneek/gnk-tool-subagent'
+      config:
+        provider: gnk-sdk-diagnostic-background
+        toolName: subagent_gnk_sdk_background
+        backgroundMode: one-shot
+        maxDepth: provider-managed
+    - id: release-gnk-sdk-background-on-job-output
+      name: '../../../apps/cli/tests/profiles/sdk/fixtures/subagent-gnk-sdk-release-on-job-output.ts'

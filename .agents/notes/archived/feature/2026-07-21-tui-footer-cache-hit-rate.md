@@ -24,7 +24,7 @@ The footer appends `cache <rate>%` after `↑<input> ↓<output>`, where the rat
 
 **Compute the rate against all tokens (`input + output + cache`).** Rejected: output tokens are never cache-served, so folding them into the denominator understates the rate for no meaning; cache hit rate is a property of the prompt.
 
-**Drop `cacheWrite` from the denominator.** Rejected: cache writes are billed input the provider spent to populate the cache, so excluding them overstates the hit rate on a writing turn. DeepSeek reports no cache-write metric today, but the formula stays general and the write path is covered.
+**Drop `cacheWrite` from the denominator.** Rejected: cache writes are billed input the provider spent to populate the cache, so excluding them overstates the hit rate on a writing turn. Greeneek reports no cache-write metric today, but the formula stays general and the write path is covered.
 
 **Render `cache 0%` on an empty session.** Rejected: the billed input is `0`, the ratio is `0/0`, and a `0%` badge on a fresh session is a lie about a value that does not exist yet; the segment stays hidden until input is billed.
 

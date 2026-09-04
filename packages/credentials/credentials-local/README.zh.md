@@ -3,13 +3,13 @@ description: "面向用户与维护者的文件型凭据提供方：选择、配
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-credentials-local
+# @greeneek/gnk-credentials-local
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-credentials-local` 是产品默认的本机凭据存储：harness home 下的一个私有文件，存放 API 密钥与其他机密，可由配置界面写入，你自己编辑该文件时也会自动重载。该文件是带版本的文档，含一个存放密钥值的 `refs` 分节和一个存放持久化按插件记录的 `records` 分节，因此授权 grant 或提供方环境值能与密钥一起跨重启保留。密钥来自四个位置，顺序固定：你启动时的环境优先，其次是存储文件，再次是项目和主目录的 `.env` 文件。你保存的密钥会立即生效，即使某个 `.env` 里还留着更旧的密钥。只有你的 OS 用户能读取该文件，而且产品绝不把文件路径交给 agent（智能体）。
+`gnk-credentials-local` 是产品默认的本机凭据存储：harness home 下的一个私有文件，存放 API 密钥与其他机密，可由配置界面写入，你自己编辑该文件时也会自动重载。该文件是带版本的文档，含一个存放密钥值的 `refs` 分节和一个存放持久化按插件记录的 `records` 分节，因此授权 grant 或提供方环境值能与密钥一起跨重启保留。密钥来自四个位置，顺序固定：你启动时的环境优先，其次是存储文件，再次是项目和主目录的 `.env` 文件。你保存的密钥会立即生效，即使某个 `.env` 里还留着更旧的密钥。只有你的 OS 用户能读取该文件，而且产品绝不把文件路径交给 agent（智能体）。
 
 ## 目录
 
@@ -34,7 +34,7 @@ kind: "package-reference"
 ### 设置
 
 ```yaml
-- name: '@deepseek-ai/dsh-credentials-local'
+- name: '@greeneek/gnk-credentials-local'
   config:
     path: /absolute/path/to/.credentials.yaml
 ```
@@ -42,23 +42,23 @@ kind: "package-reference"
 | 字段 | 默认值 | 含义 |
 |---|---|---|
 | `path` | `<harness home>/.credentials.yaml` | 凭据文件所在位置 |
-| `dshHome` | `$DSH_HOME` 或 `~/.dsh` | `path` 缺省时使用的 harness home |
+| `gnkHome` | `$GNK_HOME` 或 `~/.gnk` | `path` 缺省时使用的 harness home |
 | `watch` | `true` | 文件在磁盘上变化时自动重载 |
 | `debounceMs` | `100` | 变化后等待这么久再重载，单位为毫秒 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-credentials-local)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-credentials-local)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### 存储与移除密钥
 
 用 `set` 保存密钥、用 `unset` 移除、用 `describe` 检查密钥是否已配置——与凭据 API 提供的操作相同：
 
 ```ts
-import type { Context } from '@deepseek-ai/cordis'
-import { credentialRef } from '@deepseek-ai/dsh-credentials'
+import type { Context } from '@greeneek/cordis'
+import { credentialRef } from '@greeneek/gnk-credentials'
 
 declare const ctx: Context
 
-const ref = credentialRef('DEEPSEEK_API_KEY')
+const ref = credentialRef('GREENEEK_API_KEY')
 await ctx.credentials.set(ref, 'sk-…')          // save
 await ctx.credentials.describe(ref)             // { configured, source?, writable } — never the value
 await ctx.credentials.unset(ref)                // remove
@@ -72,12 +72,12 @@ await ctx.credentials.unset(ref)                // remove
 
 | 位置 | 可写？ | 优先于 |
 |---|---|---|
-| 你启动时的环境（`DEEPSEEK_API_KEY=… dsh`） | 否 | 一切 |
+| 你启动时的环境（`GREENEEK_API_KEY=… gnk`） | 否 | 一切 |
 | 存储文件 | 是（`set`/`unset`） | 两个 `.env` 文件 |
 | 项目的 `.env`（`<invocation cwd>/.env`） | 不在此处 | 主目录 `.env` |
-| 主目录的 `.env`（`$DSH_HOME/.env`） | 不在此处 | 无 |
+| 主目录的 `.env`（`$GNK_HOME/.env`） | 不在此处 | 无 |
 
-启动环境优先，因为按次覆盖——`DEEPSEEK_API_KEY=… dsh`、CI 机密、容器 `-e`——代表本次运行的明确意图；它无法从产品内部修改，因此被报告为只读，写入会被拒绝。其他一切来源都输给存储文件，这正是你保存的密钥会立即生效的原因，即使某个 `.env` 里还留着更旧的密钥；没有存储任何东西时，那两个 `.env` 层会参与解析。环境层是启动时拍摄的启动器[环境快照](../../util/launch-environment/README.zh.md)，因此启动之后才导出的变量不会被看到。
+启动环境优先，因为按次覆盖——`GREENEEK_API_KEY=… gnk`、CI 机密、容器 `-e`——代表本次运行的明确意图；它无法从产品内部修改，因此被报告为只读，写入会被拒绝。其他一切来源都输给存储文件，这正是你保存的密钥会立即生效的原因，即使某个 `.env` 里还留着更旧的密钥；没有存储任何东西时，那两个 `.env` 层会参与解析。环境层是启动时拍摄的启动器[环境快照](../../util/launch-environment/README.zh.md)，因此启动之后才导出的变量不会被看到。
 
 ### 凭据文件本身
 
@@ -87,7 +87,7 @@ await ctx.credentials.unset(ref)                // remove
 version: 1
 
 refs:
-  DEEPSEEK_API_KEY: sk-…
+  GREENEEK_API_KEY: sk-…
   OPENAI_API_KEY: sk-…
 
 records:
@@ -116,7 +116,7 @@ records:
 
 ### 可能出错的地方
 
-- **启动环境提供的密钥是只读的**——`DEEPSEEK_API_KEY=… dsh` 在本轮运行中优先，保存或移除它都会被拒绝。请先在启动 shell 中清除该变量。
+- **启动环境提供的密钥是只读的**——`GREENEEK_API_KEY=… gnk` 在本轮运行中优先，保存或移除它都会被拒绝。请先在启动 shell 中清除该变量。
 - **空值无法保存**——存储空字符串会被拒绝；请改为移除密钥。
 - **存储拒绝加载它无法信任的文件**——任何其他用户可读的文件、格式错误的 YAML 或无法到达的路径都会在启动时失败；运行期热重载则保留最后可用内容并告警。
 - **同一时刻的修改都会被保留**——如果你在产品写入的同时编辑文件，你的变更会被并入，而不是被覆盖。
@@ -199,7 +199,7 @@ YAML 解析器自己的消息会引用出错的那行源码，而在这份文档
 - **同一引用的并发写入是后写胜出**——写锁加读-改-写让并发写入者不会丢掉彼此的条目，但两个写入者编辑同一个引用时仍以较后的写入为准；没有修订检查。
 - **同 UID 进程可以读取该文档**——文件效果沙箱模式不会拒绝读取，OS 钥匙串提供方仍是延后项。
 - **环境变化不可见**——快照在启动时冻结，因此启动之后 export 的变量既不会进入解析，也不会进入 `describe`；要更换来自环境的凭据需要重启。
-- **原子但不具备崩溃持久性**——继承自 `dsh-atomic-write`；存储在启动时重新读取。
+- **原子但不具备崩溃持久性**——继承自 `gnk-atomic-write`；存储在启动时重新读取。
 
 <a id="dev-note"></a>
 ### 开发备注

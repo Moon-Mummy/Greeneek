@@ -9,16 +9,16 @@
  */
 
 import { describe, expect, it, vi } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import AgentRegistry, { Inbox } from '@deepseek-ai/dsh-agent'
-import type { Agent, AgentStatus } from '@deepseek-ai/dsh-agent'
-import { createUserMessage } from '@deepseek-ai/dsh-llm'
-import type { UserMessage } from '@deepseek-ai/dsh-session'
-import SessionStore from '@deepseek-ai/dsh-session'
-import type { Session } from '@deepseek-ai/dsh-session'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import GoalService, { GoalId, applyGoalProjection, foldGoal, goalProjectionDefinition } from '@deepseek-ai/dsh-goal'
-import type { GoalProjection, GoalProjectionState, GoalRef } from '@deepseek-ai/dsh-goal'
+import { Context } from '@greeneek/cordis'
+import AgentRegistry, { Inbox } from '@greeneek/gnk-agent'
+import type { Agent, AgentStatus } from '@greeneek/gnk-agent'
+import { createUserMessage } from '@greeneek/gnk-llm'
+import type { UserMessage } from '@greeneek/gnk-session'
+import SessionStore from '@greeneek/gnk-session'
+import type { Session } from '@greeneek/gnk-session'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import GoalService, { GoalId, applyGoalProjection, foldGoal, goalProjectionDefinition } from '@greeneek/gnk-goal'
+import type { GoalProjection, GoalProjectionState, GoalRef } from '@greeneek/gnk-goal'
 
 interface Bench {
   ctx: Context

@@ -1,23 +1,23 @@
 import { describe, expect, it } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import { ToolCallId , createMessage, createToolResultMessage } from '@deepseek-ai/dsh-llm'
-import type { ContentBlock } from '@deepseek-ai/dsh-llm'
+import { Context } from '@greeneek/cordis'
+import { ToolCallId , createMessage, createToolResultMessage } from '@greeneek/gnk-llm'
+import type { ContentBlock } from '@greeneek/gnk-llm'
 import SessionStore, {
   Session,
   SessionId,
-} from '@deepseek-ai/dsh-session'
-import type { SurfaceEvent } from '@deepseek-ai/dsh-session'
-import * as SessionInvariant from '@deepseek-ai/dsh-session/invariant'
-import InvariantRegistry from '@deepseek-ai/dsh-invariants'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import TokenMeter from '@deepseek-ai/dsh-token-meter'
+} from '@greeneek/gnk-session'
+import type { SurfaceEvent } from '@greeneek/gnk-session'
+import * as SessionInvariant from '@greeneek/gnk-session/invariant'
+import InvariantRegistry from '@greeneek/gnk-invariants'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import TokenMeter from '@greeneek/gnk-token-meter'
 import ToolResultPruner, {
   codePointLength,
   DEFAULTS,
   PRUNE_MARKER,
   resolveConfig,
-} from '@deepseek-ai/dsh-compaction-tool-result-pruner'
-import type { ToolResultPruneConfig } from '@deepseek-ai/dsh-compaction-tool-result-pruner'
+} from '@greeneek/gnk-compaction-tool-result-pruner'
+import type { ToolResultPruneConfig } from '@greeneek/gnk-compaction-tool-result-pruner'
 
 const MODEL = 'test-model'
 const SMALL: ToolResultPruneConfig = {

@@ -1,15 +1,15 @@
 ---
-description: "面向用户与维护者的匿名按 harness home 身份说明，用于追踪遥测、反馈确认与 DeepSeek 提供方请求如何关联记录。"
+description: "面向用户与维护者的匿名按 harness home 身份说明，用于追踪遥测、反馈确认与 Greeneek 提供方请求如何关联记录。"
 kind: "package-library"
 ---
 
-# @deepseek-ai/dsh-anonymous-user-id
+# @greeneek/gnk-anonymous-user-id
 
 [English](README.md) | 中文
 
 ## 概述
 
-每个 harness home 都会获得一个匿名 id，遥测、反馈与 DeepSeek 请求会把它附加到各自的记录上，让接收系统无需了解用户身份即可判断记录来自同一套安装。该 id 是存储在 `$DSH_HOME/.anonymous-user-id`（默认 `~/.dsh`）中的随机 UUID；它会在这些功能之一首次运行时自动出现，跨重启保持稳定，删除文件后会重新生成。不同 harness home 永远不会共享同一个 id，其中也不包含任何机器或账户信息。当你希望关联来自同一套安装、且不依赖账户的记录时使用它；它无法关联不同 home 之间的记录。
+每个 harness home 都会获得一个匿名 id，遥测、反馈与 Greeneek 请求会把它附加到各自的记录上，让接收系统无需了解用户身份即可判断记录来自同一套安装。该 id 是存储在 `$GNK_HOME/.anonymous-user-id`（默认 `~/.gnk`）中的随机 UUID；它会在这些功能之一首次运行时自动出现，跨重启保持稳定，删除文件后会重新生成。不同 harness home 永远不会共享同一个 id，其中也不包含任何机器或账户信息。当你希望关联来自同一套安装、且不依赖账户的记录时使用它；它无法关联不同 home 之间的记录。
 
 ## 目录
 
@@ -25,7 +25,7 @@ kind: "package-library"
 <a id="use-this-package"></a>
 ## 使用本包
 
-当你希望本机安装外发的记录能被识别为来自同一个 harness home——遥测、反馈与 DeepSeek 请求都携带同一个共享 id——本包就是提供它的地方。无需安装或配置任何东西：id 会自动出现，已随附的反馈、遥测与 DeepSeek 功能已经在使用它。不要用它来识别用户，也不要用它关联不同 home 之间的记录；它是匿名的且限定于单个 home。
+当你希望本机安装外发的记录能被识别为来自同一个 harness home——遥测、反馈与 Greeneek 请求都携带同一个共享 id——本包就是提供它的地方。无需安装或配置任何东西：id 会自动出现，已随附的反馈、遥测与 Greeneek 功能已经在使用它。不要用它来识别用户，也不要用它关联不同 home 之间的记录；它是匿名的且限定于单个 home。
 
 ### 该 id 能为你做什么
 
@@ -33,18 +33,18 @@ kind: "package-library"
 
 - **会话遥测**——你的遥测导出会以 `user.id` Resource 属性携带该 id，采集器因此可以按安装分组记录。
 - **反馈**——每条反馈确认都会指名记录该反馈的匿名安装。
-- **DeepSeek 请求**——每次提供方请求都会携带 `x-deepseek-harness-user-id` 标头，因此可以按安装归因用量。
+- **Greeneek 请求**——每次提供方请求都会携带 `x-greeneek-harness-user-id` 标头，因此可以按安装归因用量。
 
 ### 查看与重置 id
 
-该 id 存放在 `$DSH_HOME/.anonymous-user-id`（默认 `~/.dsh`）中，是一个纯 UUID 文本文件。删除该文件即可在下次启动时获得全新 id；正在运行的进程在退出前会一直保留当前 id。不同 harness home 各自保留独立 id，值中永远不会包含任何机器或账户信息。
+该 id 存放在 `$GNK_HOME/.anonymous-user-id`（默认 `~/.gnk`）中，是一个纯 UUID 文本文件。删除该文件即可在下次启动时获得全新 id；正在运行的进程在退出前会一直保留当前 id。不同 harness home 各自保留独立 id，值中永远不会包含任何机器或账户信息。
 
 ### 在自己的包中使用
 
-当你构建的功能需要共享该安装的匿名 id 时，导入该值并复用一次即可——遥测、反馈与 DeepSeek 已经在使用同一个 id，因此你的记录能与它们相互对应：
+当你构建的功能需要共享该安装的匿名 id 时，导入该值并复用一次即可——遥测、反馈与 Greeneek 已经在使用同一个 id，因此你的记录能与它们相互对应：
 
 ```ts
-import { getOrCreateAnonymousUserId } from '@deepseek-ai/dsh-anonymous-user-id'
+import { getOrCreateAnonymousUserId } from '@greeneek/gnk-anonymous-user-id'
 
 const userId = getOrCreateAnonymousUserId() // stable for the process lifetime
 ```
@@ -94,10 +94,10 @@ const userId = getOrCreateAnonymousUserId() // stable for the process lifetime
 当包级约定不够用时阅读以下页面。它们从 identity 组映射逐步进入本包所依赖的 home 路径解析，以及使用该 id 的功能。
 
 - [identity 组映射](../README.zh.md)——兄弟包与组范围。
-- [dsh-home-paths](../../util/home-paths/README.zh.md)——负责 `$DSH_HOME` 与 `~/.dsh` 的解析。
-- [dsh-session-telemetry-otel](../../session/session-telemetry-otel/README.zh.md)——将该 id 作为 OTel Resource `user.id` 上报。
-- [dsh-command-feedback](../../feedback/command-feedback/README.zh.md)——将 id 嵌入反馈确认。
-- [dsh-llm-deepseek](../../llm/llm-deepseek/README.zh.md)——在提供方请求中发送 `x-deepseek-harness-user-id`。
+- [gnk-home-paths](../../util/home-paths/README.zh.md)——负责 `$GNK_HOME` 与 `~/.gnk` 的解析。
+- [gnk-session-telemetry-otel](../../session/session-telemetry-otel/README.zh.md)——将该 id 作为 OTel Resource `user.id` 上报。
+- [gnk-command-feedback](../../feedback/command-feedback/README.zh.md)——将 id 嵌入反馈确认。
+- [gnk-llm-greeneek](../../llm/llm-greeneek/README.zh.md)——在提供方请求中发送 `x-greeneek-harness-user-id`。
 - [会话遥测子系统](../../../docs/subsystems/session-telemetry.zh.md)——遥测 seam 及其后端约定。
 
 -----
@@ -105,7 +105,7 @@ const userId = getOrCreateAnonymousUserId() // stable for the process lifetime
 <a id="model-experience"></a>
 ## 模型体验
 
-无，因为该共享标识符只会作为模型不可见的 HTTP 元数据发送给 DeepSeek，且不注册任何面向模型的内容。
+无，因为该共享标识符只会作为模型不可见的 HTTP 元数据发送给 Greeneek，且不注册任何面向模型的内容。
 
 #### KV Cache 影响
 
@@ -120,8 +120,8 @@ const userId = getOrCreateAnonymousUserId() // stable for the process lifetime
 
 - **删除后无法恢复**——文件丢失后会按设计生成新的匿名身份；恢复需要稳定的派生材料，这会削弱匿名性。
 - **Best-effort 并发**——如果读取方恰好落在并发进程完成独占创建但尚未写完的狭窄时间窗内，本次运行可能使用不同的内存 UUID；后续启动会收敛到已持久化的值。
-- **没有跨 home 身份**——不同 `$DSH_HOME` 值之间无法关联。
-- **已配置的 DeepSeek gateway 会收到该 id**——`dsh-llm-deepseek` 会把稳定标头发送至解析后的 `baseURL`（包括部署覆盖），且不受遥测共享模式影响。
+- **没有跨 home 身份**——不同 `$GNK_HOME` 值之间无法关联。
+- **已配置的 Greeneek gateway 会收到该 id**——`gnk-llm-greeneek` 会把稳定标头发送至解析后的 `baseURL`（包括部署覆盖），且不受遥测共享模式影响。
 - **删除文件不会重置当前进程**——记忆化会让本次运行的 id 一直保留到下次启动。
 
 <a id="dev-note"></a>

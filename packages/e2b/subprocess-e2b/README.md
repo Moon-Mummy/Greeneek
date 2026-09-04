@@ -3,13 +3,13 @@ description: "Shell commands and terminals inside the shared remote sandbox: wha
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-subprocess-e2b
+# @greeneek/gnk-subprocess-e2b
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-subprocess-e2b` runs the agent's shell commands and terminals inside the remote sandbox: the agent can execute Bash, open interactive terminals, and read their output exactly as with local execution, while nothing runs on the host machine. Existing command, terminal, and language-server features keep working unchanged — no E2B-specific tools are needed. Secrets and host environment variables never leak into the sandbox: only environment entries the agent explicitly requests are passed along. Use it together with `dsh-e2b` and `dsh-fs-e2b` so commands, terminals, and files share one remote world. The main cost is remote latency — each command starts with a short asynchronous setup instead of launching instantly.
+`gnk-subprocess-e2b` runs the agent's shell commands and terminals inside the remote sandbox: the agent can execute Bash, open interactive terminals, and read their output exactly as with local execution, while nothing runs on the host machine. Existing command, terminal, and language-server features keep working unchanged — no E2B-specific tools are needed. Secrets and host environment variables never leak into the sandbox: only environment entries the agent explicitly requests are passed along. Use it together with `gnk-e2b` and `gnk-fs-e2b` so commands, terminals, and files share one remote world. The main cost is remote latency — each command starts with a short asynchronous setup instead of launching instantly.
 
 ## Table of Contents
 
@@ -39,7 +39,7 @@ The only setting is how often the package checks a running command's status; the
 |---|---|---|
 | `pollMs` | `20` | How often the package checks a running command's status, in milliseconds |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-subprocess-e2b) is the exhaustive source for every accepted field and its JSDoc.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-subprocess-e2b) is the exhaustive source for every accepted field and its JSDoc.
 
 ### Running commands
 
@@ -97,7 +97,7 @@ The synchronous seam returns a handle immediately while the command starts async
 
 ### Environment boundary
 
-One trusted control-shell probe resolves the sandbox user's login home from its passwd entry and transports the sandbox environment as base64 ASCII for one strict UTF-8 decode; the wrapper then removes ambient `DSH_*` and credential-shaped (`*KEY*`, `*SECRET*`, `*TOKEN*`) names and restores every valid `spec.env` entry as an explicit caller opt-in. Empty names, `=`, and NUL framing violations reject before launch; subsequent command and PTY login shells receive a fresh randomized root-level `HOME` plus empty overrides for every scrubbed ambient name before user profiles can run. Private environment files are removed after consumption.
+One trusted control-shell probe resolves the sandbox user's login home from its passwd entry and transports the sandbox environment as base64 ASCII for one strict UTF-8 decode; the wrapper then removes ambient `GNK_*` and credential-shaped (`*KEY*`, `*SECRET*`, `*TOKEN*`) names and restores every valid `spec.env` entry as an explicit caller opt-in. Empty names, `=`, and NUL framing violations reject before launch; subsequent command and PTY login shells receive a fresh randomized root-level `HOME` plus empty overrides for every scrubbed ambient name before user profiles can run. Private environment files are removed after consumption.
 
 ### Output handling
 
@@ -121,7 +121,7 @@ Read these pages when the package-level contract is not enough. They move from t
 - [Subprocess seam package](../../subprocess/subprocess/README.md) — the abstract contract this provider implements.
 - [Bash executor](../../shell/bash-local/README.md) — the consumer that renders spawned commands to the model.
 - [PTY terminal backend](../../terminal/terminal-bash/README.md) — the consumer that renders terminal sessions.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-subprocess-e2b) — every accepted config field and its source declaration.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-subprocess-e2b) — every accepted config field and its source declaration.
 
 -----
 
@@ -143,8 +143,8 @@ These limits define when the provider is a poor fit or needs special operational
 
 - **The SDK still retains complete command output in host memory** — E2B `CommandHandle.stdout` and `.stderr` accumulate the base64 transport even when this adapter exposes bounded raw-byte tails, so the subprocess seam's normal host-memory bound is not achieved and transport retention is larger than the source stream.
 - **Synchronous-PID consumers are unsupported** — `pid` remains `-1` during remote startup; consumers that require a positive PID immediately, including the ACP child backend, cannot use this provider unchanged.
-- **Private state lives for the sandbox lifetime** — process directories and valid spill files remain under `.dsh-e2b` until the owner deletes the sandbox; this POC supplies no in-sandbox sweep.
-- **Control state shares the sandbox user's UID** — E2B runs every command as the same default user, so `0700`/`0600` modes cannot isolate `.dsh-e2b` control files from concurrently running sandbox processes; real isolation needs an E2B per-command user or an out-of-band control channel.
+- **Private state lives for the sandbox lifetime** — process directories and valid spill files remain under `.gnk-e2b` until the owner deletes the sandbox; this POC supplies no in-sandbox sweep.
+- **Control state shares the sandbox user's UID** — E2B runs every command as the same default user, so `0700`/`0600` modes cannot isolate `.gnk-e2b` control files from concurrently running sandbox processes; real isolation needs an E2B per-command user or an out-of-band control channel.
 - **Numeric process identities are not reuse-fenced** — E2B exposes numeric PID/PGID input, signalling, and cleanup operations but no atomic identity-bound alternative; replacement is deferred until E2B adds an identity primitive or a failure demonstrates a narrower protocol.
 - **The initial environment probe inherits sandbox defaults** — E2B merges command overrides with default environment entries, so the probe cannot blank unknown credential-shaped names before enumerating them; this POC therefore does not support secrets in sandbox-default environment variables.
 - **E2B exposes no signal fact** — an adapter-requested `SIGTERM` or `SIGKILL` is reported only when no wrapper-published direct exit code wins; every unrequested SDK exit remains an exit code, including values equal to `128 + signal`.

@@ -3,13 +3,13 @@ description: "The LSP capability seam (ctx.lsp): provider selection by file exte
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-lsp
+# @greeneek/gnk-lsp
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-lsp` provides the harness's language-server code navigation: an agent can go to a symbol's definition, find its references, jump to its implementations, or read hover documentation, and the code-navigation service (`ctx.lsp`) routes each query to the language-server provider that owns the file's extension. Providers register by branded id and file extension, so a provider swap never changes how navigation is requested or what the model sees. The service exposes exactly four read-only operations and no generic JSON-RPC escape hatch, and it contributes no prompt or tool schema itself — the model-facing `lsp` tool lives in `dsh-tool-lsp`. Compose it with a provider such as `dsh-lsp-stdio` and the tool to give agents precise navigation; this package does nothing on its own.
+`gnk-lsp` provides the harness's language-server code navigation: an agent can go to a symbol's definition, find its references, jump to its implementations, or read hover documentation, and the code-navigation service (`ctx.lsp`) routes each query to the language-server provider that owns the file's extension. Providers register by branded id and file extension, so a provider swap never changes how navigation is requested or what the model sees. The service exposes exactly four read-only operations and no generic JSON-RPC escape hatch, and it contributes no prompt or tool schema itself — the model-facing `lsp` tool lives in `gnk-tool-lsp`. Compose it with a provider such as `gnk-lsp-stdio` and the tool to give agents precise navigation; this package does nothing on its own.
 
 ## Table of Contents
 
@@ -36,14 +36,14 @@ Choose this service when a deployment wants model-visible code navigation backed
 The seam needs a provider and a consumer to do anything. A minimal composition mounts the service, a stdio provider, and the tool:
 
 ```yaml
-- name: '@deepseek-ai/dsh-fs-local'
-- name: '@deepseek-ai/dsh-subprocess-local'
-- name: '@deepseek-ai/dsh-lsp'
-- name: '@deepseek-ai/dsh-lsp-stdio'
-- name: '@deepseek-ai/dsh-tool-lsp'
+- name: '@greeneek/gnk-fs-local'
+- name: '@greeneek/gnk-subprocess-local'
+- name: '@greeneek/gnk-lsp'
+- name: '@greeneek/gnk-lsp-stdio'
+- name: '@greeneek/gnk-tool-lsp'
 ```
 
-Server commands, extension mappings, and the filesystem/subprocess pairing are configured in the provider and tool packages; see [dsh-lsp-stdio](../lsp-stdio/README.md) and [dsh-tool-lsp](../tool-lsp/README.md).
+Server commands, extension mappings, and the filesystem/subprocess pairing are configured in the provider and tool packages; see [gnk-lsp-stdio](../lsp-stdio/README.md) and [gnk-tool-lsp](../tool-lsp/README.md).
 
 ### The four operations
 
@@ -74,7 +74,7 @@ This section explains the design decisions behind the seam and where the code re
 
 ### Design philosophy
 
-- **Capability seam, Service Definition role.** The package owns `ctx.lsp` and the provider registry; providers register capabilities, not tools, and `dsh-tool-lsp` is the only owner of the model-facing surface.
+- **Capability seam, Service Definition role.** The package owns `ctx.lsp` and the provider registry; providers register capabilities, not tools, and `gnk-tool-lsp` is the only owner of the model-facing surface.
 - **Atomic registration.** `registerProvider()` validates and conflict-checks everything before mutating: an invalid or conflicting registration publishes nothing, and its disposer releases the id and every extension reservation together.
 - **Order-independent selection.** `query()` routes by the file's final extension, normalized to lowercase leading-dot form; registration and HMR order never change routing. The language id only synchronizes the transient document and never participates in selection.
 - **Closed vocabulary.** The four-operation union is closed — adding an operation is a compile-enforced change across the seam, providers, and the tool. There is no JSON-RPC escape hatch, and every request field is required, so there is no `resolve()` step.
@@ -104,8 +104,8 @@ Read these pages when the package-level contract is not enough. They move from t
 
 - [LSP navigation subsystem](../../../docs/subsystems/lsp.md) — operations, coordinates, requests and results, and `LspError` codes.
 - [LSP capability seam Agent Note](../../../.agents/notes/implemented/architecture/2026-07-15-lsp-capability-seam.md) — design rationale, alternatives, and deliberately deferred API.
-- [dsh-lsp-stdio](../lsp-stdio/README.md) — the stdio provider that registers against this seam.
-- [dsh-tool-lsp](../tool-lsp/README.md) — the model-facing tool over this seam.
+- [gnk-lsp-stdio](../lsp-stdio/README.md) — the stdio provider that registers against this seam.
+- [gnk-tool-lsp](../tool-lsp/README.md) — the model-facing tool over this seam.
 - [lsp group map](../README.md) — the three-package family and its related documentation.
 
 -----
@@ -113,11 +113,11 @@ Read these pages when the package-level contract is not enough. They move from t
 <a id="model-experience"></a>
 ## Model Experience
 
-Indirectly, through `dsh-tool-lsp`, which owns the model-facing `lsp` schema, prompt guidance, and rendered results while this registry contributes no prompt or schema itself.
+Indirectly, through `gnk-tool-lsp`, which owns the model-facing `lsp` schema, prompt guidance, and rendered results while this registry contributes no prompt or schema itself.
 
 #### KV Cache effect
 
-No direct invalidation; `dsh-tool-lsp` owns request-prefix changes.
+No direct invalidation; `gnk-tool-lsp` owns request-prefix changes.
 
 ## Known Limitations and Deferred Work
 

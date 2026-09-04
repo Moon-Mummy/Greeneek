@@ -8,16 +8,16 @@
 
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Context } from '@deepseek-ai/cordis'
-import { LOADER_SMOKE_TEST_TIMEOUT_MS, runLoaderSmoke } from '@deepseek-ai/dsh-loader-smoke'
+import { Context } from '@greeneek/cordis'
+import { LOADER_SMOKE_TEST_TIMEOUT_MS, runLoaderSmoke } from '@greeneek/gnk-loader-smoke'
 import {
   SESSION_FORMAT_VERSION,
   SessionId,
   SessionSeq,
   type SessionEvent,
   type SessionHeader,
-} from '@deepseek-ai/dsh-session'
-import JsonlSessionPersistence from '@deepseek-ai/dsh-session-persistence-jsonl'
+} from '@greeneek/gnk-session'
+import JsonlSessionPersistence from '@greeneek/gnk-session-persistence-jsonl'
 import { logPath } from '../../../../../../packages/session/session-persistence-jsonl/src/format.ts'
 import { describe, expect, it } from 'vitest'
 
@@ -56,13 +56,13 @@ describe('session format guard through the assembled app', () => {
     let sessionPath = ''
     const result = await runLoaderSmoke({
       label: 'newer-format resume refusal',
-      tempDirPrefix: 'dsh-format-guard-version-',
+      tempDirPrefix: 'gnk-format-guard-version-',
       binScript,
       libBinScript: binScript,
       configPath,
       binArgs: [configPath, 'Try to resume.'],
       tsconfigPath,
-      env: { DSH_SNAPSHOT_FILE: replayFixture },
+      env: { GNK_SNAPSHOT_FILE: replayFixture },
       expectedExitCode: 1,
       prepare: async (runCwd) => {
         sessionPath = await seedSession(join(runCwd, '.sessions'), runCwd, SESSION_FORMAT_VERSION + 99, closedTurn())
@@ -81,13 +81,13 @@ describe('session format guard through the assembled app', () => {
     let sessionPath = ''
     const result = await runLoaderSmoke({
       label: 'unknown-event resume refusal',
-      tempDirPrefix: 'dsh-format-guard-event-',
+      tempDirPrefix: 'gnk-format-guard-event-',
       binScript,
       libBinScript: binScript,
       configPath,
       binArgs: [configPath, 'Try to resume.'],
       tsconfigPath,
-      env: { DSH_SNAPSHOT_FILE: replayFixture },
+      env: { GNK_SNAPSHOT_FILE: replayFixture },
       expectedExitCode: 1,
       prepare: async (runCwd) => {
         sessionPath = await seedSession(join(runCwd, '.sessions'), runCwd, SESSION_FORMAT_VERSION, [

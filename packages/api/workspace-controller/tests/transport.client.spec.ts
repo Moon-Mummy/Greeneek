@@ -1,14 +1,14 @@
-import { Context } from '@deepseek-ai/cordis'
+import { Context } from '@greeneek/cordis'
 import { describe, expect, it, vi } from 'vitest'
 import {
   RemoteStream,
   RemoteStreamCarrierError,
   type ClientRemote,
   type RemoteStreamOptions,
-} from '@deepseek-ai/dsh-api-gateway/client'
-import type { ConnectionHandle } from '@deepseek-ai/dsh-client-connection/client'
-import { SessionId } from '@deepseek-ai/dsh-session/types'
-import { RemoteError, type RemoteFailure, type RemoteResult } from '@deepseek-ai/dsh-typert-protocol'
+} from '@greeneek/gnk-api-gateway/client'
+import type { ConnectionHandle } from '@greeneek/gnk-client-connection/client'
+import { SessionId } from '@greeneek/gnk-session/types'
+import { RemoteError, type RemoteFailure, type RemoteResult } from '@greeneek/gnk-typert-protocol'
 import * as WorkspaceClientPlugin from '../src/client/index.ts'
 import {
   ClientWorkspaceModel,

@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-pwsh-sandbox",
-  "description": "Sandbox-consuming implementation of the DeepSeek Harness PowerShell executor seam (confines every command via ctx.sandbox, reports denial/enforcement result facts)",
+  "name": "@greeneek/gnk-pwsh-sandbox",
+  "description": "Sandbox-consuming implementation of the Greeneek Harness PowerShell executor seam (confines every command via ctx.sandbox, reports denial/enforcement result facts)",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/shell/pwsh-sandbox"
   },
   "type": "module",
@@ -27,20 +27,20 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/dsh-shell": "workspace:^",
-    "@deepseek-ai/dsh-pwsh-local": "workspace:^",
-    "@deepseek-ai/dsh-sandbox": "workspace:^",
-    "@deepseek-ai/dsh-sandbox-policy": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-shell": "workspace:^",
+    "@greeneek/gnk-pwsh-local": "workspace:^",
+    "@greeneek/gnk-sandbox": "workspace:^",
+    "@greeneek/gnk-sandbox-policy": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-shell": "workspace:^",
-    "@deepseek-ai/dsh-pwsh-local": "workspace:^",
-    "@deepseek-ai/dsh-sandbox": "workspace:^",
-    "@deepseek-ai/dsh-sandbox-local": "workspace:^",
-    "@deepseek-ai/dsh-sandbox-policy": "workspace:^",
-    "@deepseek-ai/dsh-session-projection": "workspace:^",
-    "@deepseek-ai/dsh-subprocess-local": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-shell": "workspace:^",
+    "@greeneek/gnk-pwsh-local": "workspace:^",
+    "@greeneek/gnk-sandbox": "workspace:^",
+    "@greeneek/gnk-sandbox-local": "workspace:^",
+    "@greeneek/gnk-sandbox-policy": "workspace:^",
+    "@greeneek/gnk-session-projection": "workspace:^",
+    "@greeneek/gnk-subprocess-local": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   }
 }

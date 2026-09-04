@@ -3,13 +3,13 @@ description: "面向模型的 read、read_image、write 与 edit 工具：供组
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tool-fs
+# @greeneek/gnk-tool-fs
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-tool-fs` 提供面向模型的文件系统工具——`read`、`read_image`、`write` 与 `edit`——及其执行器。借助它们，模型可以带行号读取文件、原子地创建或替换文件，并执行有针对性的字面量编辑；结果都有上限，失败携带稳定错误码与恢复指令，所有文件操作都运行在已挂载的 `ctx.fs` 后端之上。编辑前读取策略位于独立插件（`dsh-fs-observation-policy`）中，因此省略它只会得到无条件、依然原子的变更。`read_image` 在持久附件存储已挂载时出现，并且只在路由模型声明图片输入时允许执行。当模型需要读取、创建、替换或编辑 UTF-8 文本文件时选择本包；发现工具（`glob`/`grep`）在同级包中。
+`gnk-tool-fs` 提供面向模型的文件系统工具——`read`、`read_image`、`write` 与 `edit`——及其执行器。借助它们，模型可以带行号读取文件、原子地创建或替换文件，并执行有针对性的字面量编辑；结果都有上限，失败携带稳定错误码与恢复指令，所有文件操作都运行在已挂载的 `ctx.fs` 后端之上。编辑前读取策略位于独立插件（`gnk-fs-observation-policy`）中，因此省略它只会得到无条件、依然原子的变更。`read_image` 在持久附件存储已挂载时出现，并且只在路由模型声明图片输入时允许执行。当模型需要读取、创建、替换或编辑 UTF-8 文本文件时选择本包；发现工具（`glob`/`grep`）在同级包中。
 
 ## 目录
 
@@ -32,9 +32,9 @@ kind: "package-reference"
 一个后端、策略插件，然后是工具；附件存储为可选，用于启用 `read_image`。
 
 ```yaml
-- name: '@deepseek-ai/dsh-fs-local'
-- name: '@deepseek-ai/dsh-fs-observation-policy'
-- name: '@deepseek-ai/dsh-tool-fs'
+- name: '@greeneek/gnk-fs-local'
+- name: '@greeneek/gnk-fs-observation-policy'
+- name: '@greeneek/gnk-tool-fs'
 ```
 
 策略插件是可选的：省略时，工具直接使用裸提供方（无条件写入、覆盖与编辑，无已观察状态）。加载这些工具的部署也应加载该插件，从而提供写入/编辑前读取行为。`read_image` 只在持久 `ctx.attachments` 服务已挂载时注册；执行时还拒绝确切模型未声明图像输入的路由，因此文本路由的持久历史不会出现图像块。
@@ -61,7 +61,7 @@ kind: "package-reference"
 | `readMaxBytes` | `51200` | 一次 `read` 调用所选行的字节上限；溢出时以「已达上限」footer 结束窗口 |
 | `readStreamMinSize` | `10485760` | 大于等于该大小或大小未知的文件采用流式读取，而不是整体加载到内存 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-fs)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-tool-fs)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### 策略与沙箱行为
 
@@ -118,11 +118,11 @@ kind: "package-reference"
 当包级约定不够用时阅读以下页面。它们从工具逐步进入它们所组合的约定、后端与策略。
 
 - [文件系统子系统](../../../docs/subsystems/filesystem.zh.md)——穷尽式提供方约定、策略事件与错误分类体系。
-- [dsh-fs](../fs/README.zh.md)——这些工具消费的 `ctx.fs` 约定。
+- [gnk-fs](../fs/README.zh.md)——这些工具消费的 `ctx.fs` 约定。
 - [fs-local](../fs-local/README.zh.md)——这些工具运行于其上的宿主文件系统后端。
 - [fs-sandbox](../fs-sandbox/README.zh.md)——添加升权字段的沙箱强制后端。
 - [fs-observation-policy](../fs-observation-policy/README.zh.md)——通过 `fs/*` 事件防护变更的策略插件。
-- [生成工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-fs)——本包注册的穷尽式 schema。
+- [生成工具目录](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-fs)——本包注册的穷尽式 schema。
 
 -----
 
@@ -165,7 +165,7 @@ Use the edit tool for targeted changes to existing UTF-8 text files. It replaces
 
 #### 模型看到的内容
 
-模型会看到已生成的 [`read`、`read_image`、`write` 和 `edit` schema](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-fs)，参数使用 snake_case。图片工具只在持久附件存储已挂载时出现；schema 本身与路由无关，严格门禁在执行时拒绝。作用域工具限制可以为某个 agent 移除任一定义。
+模型会看到已生成的 [`read`、`read_image`、`write` 和 `edit` schema](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-fs)，参数使用 snake_case。图片工具只在持久附件存储已挂载时出现；schema 本身与路由无关，严格门禁在执行时拒绝。作用域工具限制可以为某个 agent 移除任一定义。
 
 #### Token 影响
 
@@ -238,7 +238,7 @@ Use the edit tool for targeted changes to existing UTF-8 text files. It replaces
 
 这些限制说明工具套件何时不合适，或何时需要特别的运维注意。它们是当前包约束，不是通用文件系统对比或任务积压。
 
-- **未交付面向模型的目录列表工具**：`ctx.fs.listDir` 服务于 skill（技能）发现等提供方代码，同级 `dsh-tool-fs-search` 包则提供基于 ripgrep 的 `glob` 与 `grep`，而不是扩展文件系统 seam。
+- **未交付面向模型的目录列表工具**：`ctx.fs.listDir` 服务于 skill（技能）发现等提供方代码，同级 `gnk-tool-fs-search` 包则提供基于 ripgrep 的 `glob` 与 `grep`，而不是扩展文件系统 seam。
 - **`read` 只处理 UTF-8 文本文件**：图像使用独立的 `read_image` 工具；PDF、音频和视频仍延期处理。目录目标为 `FS_NOT_REGULAR_FILE`。
 - **媒体类型按扩展名声明**：扩展名选择声明类型，附件存储的魔数校验保持权威；扩展名错误但格式正确的图像会得到改名修复提示，而不是被嗅探接受。只有没有扩展名的路径按文件签名识别格式。
 - **对象路径重新走源准入**：对规范化附件对象调用 `read_image` 会把其字节作为新来源重新准入，因此把 `maxImageBytes`/`maxMessageImageBytes` 配置得低于规范化图片字节预算的部署可能拒绝 `ctx.attachments.readImage` 仍可读取的对象路径；默认配置下规范化预算（4 MiB）远低于源上限（20 MiB）。

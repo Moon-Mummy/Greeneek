@@ -1,5 +1,5 @@
 {
-  "name": "@deepseek-ai/dsh-tool-subagent",
+  "name": "@greeneek/gnk-tool-subagent",
   "description": "Model-facing subagent delegation tool over the ctx.subagents seam",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
@@ -7,7 +7,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/subagent/tool-subagent"
   },
   "type": "module",
@@ -37,41 +37,41 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/dsh-agent": "workspace:^",
-    "@deepseek-ai/dsh-invariants": "workspace:^",
-    "@deepseek-ai/dsh-llm": "workspace:^",
-    "@deepseek-ai/dsh-session": "workspace:^",
-    "@deepseek-ai/dsh-session-projection": "workspace:^",
-    "@deepseek-ai/dsh-scope": "workspace:^",
-    "@deepseek-ai/dsh-settings": "workspace:^",
-    "@deepseek-ai/dsh-subagent": "workspace:^",
-    "@deepseek-ai/dsh-system-prompt": "workspace:^",
-    "@deepseek-ai/dsh-jobs": "workspace:^",
-    "@deepseek-ai/dsh-tools": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-agent": "workspace:^",
+    "@greeneek/gnk-invariants": "workspace:^",
+    "@greeneek/gnk-llm": "workspace:^",
+    "@greeneek/gnk-session": "workspace:^",
+    "@greeneek/gnk-session-projection": "workspace:^",
+    "@greeneek/gnk-scope": "workspace:^",
+    "@greeneek/gnk-settings": "workspace:^",
+    "@greeneek/gnk-subagent": "workspace:^",
+    "@greeneek/gnk-system-prompt": "workspace:^",
+    "@greeneek/gnk-jobs": "workspace:^",
+    "@greeneek/gnk-tools": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   },
   "dependencies": {
-    "@deepseek-ai/schemastery": "workspace:^",
+    "@greeneek/schemastery": "workspace:^",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@deepseek-ai/cordis-plugin-loader": "workspace:^",
-    "@deepseek-ai/dsh-agent": "workspace:^",
-    "@deepseek-ai/dsh-invariants": "workspace:^",
-    "@deepseek-ai/dsh-llm": "workspace:^",
-    "@deepseek-ai/dsh-session": "workspace:^",
-    "@deepseek-ai/dsh-scope": "workspace:^",
-    "@deepseek-ai/dsh-session-persistence": "workspace:^",
-    "@deepseek-ai/dsh-session-persistence-jsonl": "workspace:^",
-    "@deepseek-ai/dsh-settings": "workspace:^",
-    "@deepseek-ai/dsh-subagent": "workspace:^",
-    "@deepseek-ai/dsh-subagent-spawn-in-process": "workspace:^",
-    "@deepseek-ai/dsh-system-prompt": "workspace:^",
-    "@deepseek-ai/dsh-jobs": "workspace:^",
-    "@deepseek-ai/dsh-jobs-local": "workspace:^",
-    "@deepseek-ai/dsh-tool-jobs": "workspace:^",
-    "@deepseek-ai/dsh-tools": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-session-projection": "workspace:^"
+    "@greeneek/cordis-plugin-loader": "workspace:^",
+    "@greeneek/gnk-agent": "workspace:^",
+    "@greeneek/gnk-invariants": "workspace:^",
+    "@greeneek/gnk-llm": "workspace:^",
+    "@greeneek/gnk-session": "workspace:^",
+    "@greeneek/gnk-scope": "workspace:^",
+    "@greeneek/gnk-session-persistence": "workspace:^",
+    "@greeneek/gnk-session-persistence-jsonl": "workspace:^",
+    "@greeneek/gnk-settings": "workspace:^",
+    "@greeneek/gnk-subagent": "workspace:^",
+    "@greeneek/gnk-subagent-spawn-in-process": "workspace:^",
+    "@greeneek/gnk-system-prompt": "workspace:^",
+    "@greeneek/gnk-jobs": "workspace:^",
+    "@greeneek/gnk-jobs-local": "workspace:^",
+    "@greeneek/gnk-tool-jobs": "workspace:^",
+    "@greeneek/gnk-tools": "workspace:^",
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-session-projection": "workspace:^"
   }
 }

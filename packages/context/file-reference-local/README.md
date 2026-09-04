@@ -3,13 +3,13 @@ description: "Local-workspace @file completion provider for users and maintainer
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-file-reference-local
+# @greeneek/gnk-file-reference-local
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-Agents and their host UIs get ranked path candidates for `@file` mentions, scoped to each agent's workspace and bounded so even large repositories stay responsive. `dsh-file-reference-local` implements `ctx.fileReferences` for the local filesystem: it keeps one reusable search index per agent, rebuilds it in the background after tool results so completion reflects workspace changes without stalling, and never follows directory symlinks. When the addressed agent can call `read`, it also installs a stable one-sentence guidance into the system prompt. Choose it when the agent's `read` tool operates on the Harness host filesystem; remote or virtual namespaces need a provider whose discovery matches the tool.
+Agents and their host UIs get ranked path candidates for `@file` mentions, scoped to each agent's workspace and bounded so even large repositories stay responsive. `gnk-file-reference-local` implements `ctx.fileReferences` for the local filesystem: it keeps one reusable search index per agent, rebuilds it in the background after tool results so completion reflects workspace changes without stalling, and never follows directory symlinks. When the addressed agent can call `read`, it also installs a stable one-sentence guidance into the system prompt. Choose it when the agent's `read` tool operates on the Harness host filesystem; remote or virtual namespaces need a provider whose discovery matches the tool.
 
 ## Table of Contents
 
@@ -32,7 +32,7 @@ Mount this provider when `@file` completion should discover the Harness host's o
 The defaults suit a typical workspace, so the minimal mount needs no configuration:
 
 ```yaml
-- name: '@deepseek-ai/dsh-file-reference-local'
+- name: '@greeneek/gnk-file-reference-local'
   config:
     maxResults: 20
 ```
@@ -88,7 +88,7 @@ Read these pages when the package-level contract is not enough. They move from t
 
 - [File-reference seam](../file-reference/README.md) — the service contract and `@file` grammar this provider implements.
 - [Session-reference subsystem](../../../docs/subsystems/session-reference.md) — the shared file-reference contract behind host UIs.
-- [Filesystem tool catalog](../../../docs/tool-catalog.md#deepseek-aidsh-tool-fs) — the `read` tool whose namespace discovery must match.
+- [Filesystem tool catalog](../../../docs/tool-catalog.md#greeneekgnk-tool-fs) — the `read` tool whose namespace discovery must match.
 - [Context group map](../README.md) — sibling request-context packages.
 
 -----

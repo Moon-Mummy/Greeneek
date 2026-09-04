@@ -3,13 +3,13 @@ description: "动态 Cordis 包的浏览器半说明，供选择、组合或排�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-cordis-client-runner
+# @greeneek/gnk-cordis-client-runner
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-cordis-client-runner` 让页面运行动态 Cordis 包的浏览器半：它应答 host 的运行请求、把浏览器半源码装载进页面成为活插件，并在 host 撤回该次运行时把它移除。人可以批准或拒绝一次运行——也可以直接启动一次——而本包回报的结果变成模型读到的 `cordis_run` 工具结果。激活时什么都不装载，刷新后也不恢复；一页只在有人应答运行请求或在此主动要求时，才运行动态包。
+`gnk-cordis-client-runner` 让页面运行动态 Cordis 包的浏览器半：它应答 host 的运行请求、把浏览器半源码装载进页面成为活插件，并在 host 撤回该次运行时把它移除。人可以批准或拒绝一次运行——也可以直接启动一次——而本包回报的结果变成模型读到的 `cordis_run` 工具结果。激活时什么都不装载，刷新后也不恢复；一页只在有人应答运行请求或在此主动要求时，才运行动态包。
 
 ## 目录
 

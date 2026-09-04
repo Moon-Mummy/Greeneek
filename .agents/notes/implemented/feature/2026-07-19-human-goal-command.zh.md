@@ -12,7 +12,7 @@ Status: implemented
 
 ## 决策
 
-位于 `packages/goal/command-goal/` 的 `@deepseek-ai/dsh-command-goal` 是构建在 `ctx.commands` 与 `ctx.goals` 之上的命令生产方。它在自身挂载的 Cordis scope 中注册一个 `goal` 定义，因此读取目标 agent scope 的每个命令适配器都会发现同一个命令；不兼容的应用或 agent preset 应省略该生产方，而不是在适配器处屏蔽其注册。处理器从命令分发接收准确的目标 agent（智能体），通过领域服务读取或改变该 agent 的目标，并返回直接的纯文本 UI 输出。它不导入任何适配器或具体 agent loop（智能体循环）。
+位于 `packages/goal/command-goal/` 的 `@greeneek/gnk-command-goal` 是构建在 `ctx.commands` 与 `ctx.goals` 之上的命令生产方。它在自身挂载的 Cordis scope 中注册一个 `goal` 定义，因此读取目标 agent scope 的每个命令适配器都会发现同一个命令；不兼容的应用或 agent preset 应省略该生产方，而不是在适配器处屏蔽其注册。处理器从命令分发接收准确的目标 agent（智能体），通过领域服务读取或改变该 agent 的目标，并返回直接的纯文本 UI 输出。它不导入任何适配器或具体 agent loop（智能体循环）。
 
 该命令遵循 [OpenAI Codex 公共仓库 `678157a` 提交中的 TUI 分发实现](https://github.com/openai/codex/blob/678157acaa819d5510adfe359abb5d0392cfe461/codex-rs/tui/src/chatwidget/slash_dispatch.rs#L750-L805)所呈现的紧凑形态：无参数状态查询、自由形式目标描述，以及 `clear`、`edit`、`pause` 或 `resume` 控制。固定到提交的链接使调研所得语法在 Codex 后续演进时仍可核验。本仓库保留自身的事件溯源状态、Round 计数策略与恢复后激活规则，而不复制 Codex 的 SQLite、token 预算或自动恢复行为。
 
@@ -38,7 +38,7 @@ Status: implemented
 
 ### 应用组合
 
-`dsh-base` 将 goal 领域与模型工具所有者作为显式配置行挂载，独立的 `sdk-minimal` 配置树则省略完整栈。这项显式组合选择对 SDK 单次调用方很重要：它们的结果 API 会在与调用关联的一个物理轮次后结束，不能静默变成长时间运行的逻辑目标操作。
+`gnk-base` 将 goal 领域与模型工具所有者作为显式配置行挂载，独立的 `sdk-minimal` 配置树则省略完整栈。这项显式组合选择对 SDK 单次调用方很重要：它们的结果 API 会在与调用关联的一个物理轮次后结束，不能静默变成长时间运行的逻辑目标操作。
 
 TUI 应用包作出相反的产品选择。它默认让 `goals` 使用所有者默认值，并挂载目标领域、模型工具、同会话驱动器、命令注册表与本生产方；`goals: false` 会一致地移除整个栈。Web 组合包把 goal 领域与驱动器保留在 host 中以供远程访问，停用 host 命令生产方，并在 `standard`、`code` 与 `cordis` agent preset 中挂载该生产方；`minimal` 会同时省略命令与模型 goal 工具。切换 preset 不会改变 host 所拥有的 goal 状态，Web GoalBar 仍保留直接 edit、pause、resume 与 clear 控制。[ACP（Agent Client Protocol）自动化应用](../simplification/2026-07-23-acp-automation-only-protocol.zh.md)也默认挂载目标领域与模型工具，但有意省略命令服务。Python SDK 运行时闭包交付本生产方、命令与目标栈，使外部 `cordis.yml` 能组合相同命令。
 

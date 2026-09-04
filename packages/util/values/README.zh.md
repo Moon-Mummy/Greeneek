@@ -3,13 +3,13 @@ description: "供运行时包使用的无损 JSON 校验、分离式快照、深
 kind: "package-library"
 ---
 
-# @deepseek-ai/dsh-util-values
+# @greeneek/gnk-util-values
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-util-values` 为运行时包提供统一的无损 JSON 值、不可变对象图、JSON 结构相等和封闭联合类型穷尽失败实现。调用方可以校验不受信任的值、分离 JSON 快照、冻结待发布值、比较 JSON 兼容数据，或终止不可达分支，而无需导入某个能力包。这些 helper 不持有共享注册表、constructor identity 或可变模块状态。
+`gnk-util-values` 为运行时包提供统一的无损 JSON 值、不可变对象图、JSON 结构相等和封闭联合类型穷尽失败实现。调用方可以校验不受信任的值、分离 JSON 快照、冻结待发布值、比较 JSON 兼容数据，或终止不可达分支，而无需导入某个能力包。这些 helper 不持有共享注册表、constructor identity 或可变模块状态。
 
 ## 目录
 
@@ -29,7 +29,7 @@ kind: "package-library"
 需要 predicate 时使用 `isJsonValue()`，还需要分离副本时使用 `snapshotJsonValue()`。两者只接受无损 JSON 根值：`null`、布尔值、除负零外的有限数字、字符串、稠密的内建数组，以及只含可枚举字符串键的普通或 null-prototype 记录。循环、稀疏数组、自有 symbol 或不可枚举属性、函数和 class 实例都会被拒绝。
 
 ```ts
-import { isJsonValue, snapshotJsonValue, type JsonValue } from '@deepseek-ai/dsh-util-values'
+import { isJsonValue, snapshotJsonValue, type JsonValue } from '@greeneek/gnk-util-values'
 
 declare const input: unknown
 

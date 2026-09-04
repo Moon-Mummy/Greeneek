@@ -3,13 +3,13 @@ description: "Nominal string and number types with stateless constructors for pa
 kind: "package-library"
 ---
 
-# @deepseek-ai/dsh-brand
+# @greeneek/gnk-brand
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-brand` makes structurally identical strings or numbers non-interchangeable at the type level: a `SessionId` cannot be passed where a `ToolCallId` is expected, and an event sequence cannot be passed where a log offset is required. `brandString<T>()` and `brandNumber<T>()` apply nominal brands without shared runtime state, so owning packages can define domain types without importing an unrelated capability.
+`gnk-brand` makes structurally identical strings or numbers non-interchangeable at the type level: a `SessionId` cannot be passed where a `ToolCallId` is expected, and an event sequence cannot be passed where a log offset is required. `brandString<T>()` and `brandNumber<T>()` apply nominal brands without shared runtime state, so owning packages can define domain types without importing an unrelated capability.
 
 ## Table of Contents
 
@@ -30,7 +30,7 @@ Brand a domain value when it crosses a package boundary and could plausibly be c
 Declare the branded type in the owning package and apply it at the point where that package admits a string:
 
 ```ts
-import { brandString, type Branded } from '@deepseek-ai/dsh-brand'
+import { brandString, type Branded } from '@greeneek/gnk-brand'
 
 export type SessionId = Branded<'SessionId'>
 
@@ -44,7 +44,7 @@ const sessionId = brandString<SessionId>('session-1')
 Declare a numeric brand in its owning package and apply it only after that package admits the number:
 
 ```ts
-import { brandNumber, type BrandedNumber } from '@deepseek-ai/dsh-brand'
+import { brandNumber, type BrandedNumber } from '@greeneek/gnk-brand'
 
 export type SessionSeq = BrandedNumber<'SessionSeq'>
 
@@ -55,7 +55,7 @@ const seq = brandNumber<SessionSeq>(7)
 
 ### When to brand
 
-Brand values that cross package boundaries and could plausibly be confused — `ToolCallId` in `dsh-llm`, the shared agent/session `SessionId` in `dsh-session`, `JobId` in `dsh-jobs`, and `SessionSeq` versus `SessionLogOffset` in `dsh-session`. Values that stay local or cannot be confused do not need this abstraction.
+Brand values that cross package boundaries and could plausibly be confused — `ToolCallId` in `gnk-llm`, the shared agent/session `SessionId` in `gnk-session`, `JobId` in `gnk-jobs`, and `SessionSeq` versus `SessionLogOffset` in `gnk-session`. Values that stay local or cannot be confused do not need this abstraction.
 
 -----
 
@@ -80,7 +80,7 @@ The private symbol never exists at runtime: TypeScript erases it, so branded val
 
 ### Why it stays dependency-free
 
-Keeping these helpers in their own package means `dsh-jobs` can brand `JobId` without importing an unrelated capability package, while each capability still owns the meaning and validation of its concrete ids.
+Keeping these helpers in their own package means `gnk-jobs` can brand `JobId` without importing an unrelated capability package, while each capability still owns the meaning and validation of its concrete ids.
 
 </details>
 

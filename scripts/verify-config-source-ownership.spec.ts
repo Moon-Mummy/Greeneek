@@ -12,13 +12,13 @@ afterEach(() => {
 
 describe('configuration source ownership gate', () => {
   it('rejects inline endpoints in shipped bundle patches', () => {
-    const root = mkdtempSync(join(tmpdir(), 'dsh-config-source-ownership-'))
+    const root = mkdtempSync(join(tmpdir(), 'gnk-config-source-ownership-'))
     roots.push(root)
     const directory = join(root, 'packages/subagent/subagent-claude-code')
     mkdirSync(directory, { recursive: true })
     writeFileSync(
       join(directory, 'cordis.patch.yml'),
-      'config:\n  baseURL: !!js process.env.DEEPSEEK_SEARCH_BASE_URL\n',
+      'config:\n  baseURL: !!js process.env.GREENEEK_SEARCH_BASE_URL\n',
     )
 
     expect(collectConfigSourceOwnershipViolations(root)).toEqual([

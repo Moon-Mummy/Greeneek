@@ -12,9 +12,9 @@ An autonomous goal round that reported `update_goal` `complete` or `blocked` con
 
 A goal-round `complete` or `blocked` success no longer calls `concludeTurn()`. Instead the tool defers one wrap-up context onto its own result: a `{ kind: 'plugin', plugin: 'tool-goal' }`-sourced user message carrying a `<goal_complete>`/`<goal_blocked>` instruction to write a grounded closing message to the user and call no more tools. The turn then ends through the agent loop's ordinary no-tool-calls stop, so no new loop primitive exists and steering semantics are untouched. Direct-human mutations remain uninstructed exactly as before. The cost is one additional model request per goal lifecycle, not per round.
 
-The instruction wording was selected by A/B sampling on `deepseek-v4-pro` with a reconstructed goal-round transcript: a structured instruction (outcome, verification, artifacts, next steps) consistently beat a minimal "summarize" one on completeness; adding a session-grounding clause shifted unsupported detail from asserted fact to hedged suggestion; and the no-instruction control produced high-variance closings, including confidently fabricated file-level detail.
+The instruction wording was selected by A/B sampling on `greeneek-v4-pro` with a reconstructed goal-round transcript: a structured instruction (outcome, verification, artifacts, next steps) consistently beat a minimal "summarize" one on completeness; adding a session-grounding clause shifted unsupported detail from asserted fact to hedged suggestion; and the no-instruction control produced high-variance closings, including confidently fabricated file-level detail.
 
-Scripting the keyless proof required one snapshot-harness addition: `dsh-llm-replay` resolves `{{fromRequest:<regex>}}` placeholders in scripted entries against the live request, because a static sidecar cannot know the randomly minted goal id the model must echo into `update_goal`.
+Scripting the keyless proof required one snapshot-harness addition: `gnk-llm-replay` resolves `{{fromRequest:<regex>}}` placeholders in scripted entries against the live request, because a static sidecar cannot know the randomly minted goal id the model must echo into `update_goal`.
 
 ## Verification
 

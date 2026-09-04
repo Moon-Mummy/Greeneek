@@ -8,7 +8,7 @@ import { join, resolve } from 'node:path'
 import { performance } from 'node:perf_hooks'
 import { parseArgs } from 'node:util'
 
-const TARGET_PACKAGE = '@deepseek-ai/dsh'
+const TARGET_PACKAGE = '@greeneek/gnk'
 const DEFAULT_TIMEOUT_MS = 300_000
 const TERMINATION_GRACE_MS = 1_000
 const FORCED_EXIT_TIMEOUT_MS = 5_000
@@ -379,7 +379,7 @@ async function runNpm(
 ): Promise<{ durationMs: number; output: string; timedOut: boolean }> {
   const npmrc = join(cwd, '.npmrc')
   const globalNpmrc = join(cwd, '.npmrc-global')
-  writeFileSync(npmrc, `registry=${registry}\n@deepseek-ai:registry=${registry}\n`)
+  writeFileSync(npmrc, `registry=${registry}\n@greeneek:registry=${registry}\n`)
   writeFileSync(globalNpmrc, '')
   const inheritedEnvironment = Object.fromEntries(Object.entries(process.env)
     .filter(([name]) => !name.toLowerCase().startsWith('npm_config_')))
@@ -462,10 +462,10 @@ export async function resolveNpmPackageLock(
   })
   const port = await listen(server)
   registry = `http://127.0.0.1:${String(port)}/`
-  const consumer = mkdtempSync(join(tmpdir(), 'dsh-npm-resolution-'))
+  const consumer = mkdtempSync(join(tmpdir(), 'gnk-npm-resolution-'))
   try {
     writeFileSync(join(consumer, 'package.json'), `${JSON.stringify({
-      name: 'dsh-npm-resolution-benchmark',
+      name: 'gnk-npm-resolution-benchmark',
       version: '0.0.0',
       private: true,
       dependencies,
@@ -489,7 +489,7 @@ export async function resolveNpmPackageLock(
 /**
  * Resolve the CLI install graph once without downloading package archives.
  * @param index - Package metadata exposed through the local registry.
- * @param targetVersion - Version of `@deepseek-ai/dsh` to install.
+ * @param targetVersion - Version of `@greeneek/gnk` to install.
  * @param timeoutMs - Hard wall-clock limit for the npm child process.
  * @returns Timing and registry-request observations.
  */

@@ -3,30 +3,30 @@ requires = ["hatchling==1.30.1"]
 build-backend = "hatchling.build"
 
 [project]
-name = "deepseek-harness-runtime-bin"
+name = "greeneek-harness-runtime-bin"
 version = "0.0.0.dev0"
-description = "Bundled dsh CLI runtime for the DeepSeek Harness Python SDK"
+description = "Bundled gnk CLI runtime for the Greeneek Harness Python SDK"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
-authors = [{ name = "DeepSeek" }]
+authors = [{ name = "Greeneek" }]
 
 [project.urls]
-Homepage = "https://github.com/deepseek-ai/deepseek-harness"
-Documentation = "https://github.com/deepseek-ai/deepseek-harness/blob/master/python/sdk-runtime/README.md"
-Issues = "https://github.com/deepseek-ai/deepseek-harness/issues"
-Source = "https://github.com/deepseek-ai/deepseek-harness"
+Homepage = "https://github.com/greeneek/greeneek-harness"
+Documentation = "https://github.com/greeneek/greeneek-harness/blob/master/python/sdk-runtime/README.md"
+Issues = "https://github.com/greeneek/greeneek-harness/issues"
+Source = "https://github.com/greeneek/greeneek-harness"
 
 [project.scripts]
-dsh = "deepseek_harness_runtime:main"
+gnk = "greeneek_harness_runtime:main"
 
-# Include the injected dsh executable and sidecars; exclude the dev-only node closure.
+# Include the injected gnk executable and sidecars; exclude the dev-only node closure.
 [tool.hatch.build]
-artifacts = ["src/deepseek_harness_runtime/runtime/deepseek-harness-sdk-runtime-*"]
-exclude = ["src/deepseek_harness_runtime/runtime/node"]
+artifacts = ["src/greeneek_harness_runtime/runtime/greeneek-harness-sdk-runtime-*"]
+exclude = ["src/greeneek_harness_runtime/runtime/node"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/deepseek_harness_runtime"]
+packages = ["src/greeneek_harness_runtime"]
 
 [tool.hatch.build.targets.wheel.hooks.custom]
 

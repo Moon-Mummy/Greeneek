@@ -3,7 +3,7 @@ description: "Shell layout for the Web GUI: the three-column AppFrame with drag 
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-client-ui-layout
+# @greeneek/gnk-client-ui-layout
 
 English | [中文](README.zh.md)
 
@@ -29,7 +29,7 @@ Mount this plugin at the root slot; it then renders the app frame around whateve
 
 ### Theme presentation
 
-The presenter consumes resolved theme snapshots and projects them onto the document: `html { color-scheme }` for native UA chrome, `body[data-ds-dark-theme]` from the active color scheme, the theme's alias tokens and `--dsh-content-font-size` as inline variables on body, and one owned `<meta name="theme-color">` whose content follows the computed body background. Disposing the presenter removes its metadata node with its other global writes.
+The presenter consumes resolved theme snapshots and projects them onto the document: `html { color-scheme }` for native UA chrome, `body[data-ds-dark-theme]` from the active color scheme, the theme's alias tokens and `--gnk-content-font-size` as inline variables on body, and one owned `<meta name="theme-color">` whose content follows the computed body background. Disposing the presenter removes its metadata node with its other global writes.
 
 -----
 

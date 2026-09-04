@@ -4,9 +4,9 @@ import { join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { execa } from 'execa'
 import { describe, expect, it } from 'vitest'
-import { resolveExampleLaunch } from '@deepseek-ai/dsh-loader-smoke'
+import { resolveExampleLaunch } from '@greeneek/gnk-loader-smoke'
 
-const dshBinScript = fileURLToPath(new URL('../src/bin.ts', import.meta.url))
+const gnkBinScript = fileURLToPath(new URL('../src/bin.ts', import.meta.url))
 const tsconfigPath = fileURLToPath(new URL('../../../tsconfig.json', import.meta.url))
 const fixturePlugin = pathToFileURL(fileURLToPath(
   new URL('./profiles/headless/tests/fixtures/team-llm.mjs', import.meta.url),
@@ -16,32 +16,32 @@ function records(content: string): Record<string, unknown>[] {
   return content.split('\n').filter(Boolean).map(line => JSON.parse(line) as Record<string, unknown>)
 }
 
-describe('dsh run with Agent Teams enabled', () => {
+describe('gnk run with Agent Teams enabled', () => {
   it('runs two teammates, durable peer mail, dependent tasks, waiting, and final aggregation', async () => {
-    const cwd = await mkdtemp(join(tmpdir(), 'dsh-agent-team-headless-'))
+    const cwd = await mkdtemp(join(tmpdir(), 'gnk-agent-team-headless-'))
     try {
-      const home = join(cwd, '.dsh')
+      const home = join(cwd, '.gnk')
       const sessions = join(home, 'sessions')
       const profileDir = join(home, 'profiles', 'headless')
       await mkdir(profileDir, { recursive: true })
       await writeFile(join(profileDir, 'package.json'), JSON.stringify({
-        name: 'dsh-profile-headless',
+        name: 'gnk-profile-headless',
         private: true,
         dependencies: {
-          '@deepseek-ai/dsh-experimental-agent-team-profile': 'workspace:^',
+          '@greeneek/gnk-experimental-agent-team-profile': 'workspace:^',
         },
-        dsh: {
+        gnk: {
           profile: {
             bundles: [
-              '@deepseek-ai/dsh-base',
-              '@deepseek-ai/dsh-headless',
-              '@deepseek-ai/dsh-experimental-agent-team-profile',
+              '@greeneek/gnk-base',
+              '@greeneek/gnk-headless',
+              '@greeneek/gnk-experimental-agent-team-profile',
             ],
           },
         },
       }, undefined, 2) + '\n')
       await writeFile(join(profileDir, 'cordis.patch.yml'), [
-        '- id: llm-deepseek',
+        '- id: llm-greeneek',
         '  disabled: true',
         '- id: session-persistence-jsonl',
         '  config:',
@@ -53,14 +53,14 @@ describe('dsh run with Agent Teams enabled', () => {
         '',
       ].join('\n'))
       const launch = resolveExampleLaunch({
-        srcBin: dshBinScript,
+        srcBin: gnkBinScript,
         configArgs: ['--profile', 'headless', '请明确使用 Agent Teams，把调研和实现拆给两个 teammate，等待完成后汇总。'],
         tsconfigPath,
         env: {
-          DSH_HOME: home,
-          DSH_AGENTS_HOME: join(cwd, '.agents'),
-          DSH_TELEMETRY_DISABLED: '1',
-          DEEPSEEK_API_KEY: '',
+          GNK_HOME: home,
+          GNK_AGENTS_HOME: join(cwd, '.agents'),
+          GNK_TELEMETRY_DISABLED: '1',
+          GREENEEK_API_KEY: '',
           NODE_OPTIONS: [
             process.env.NODE_OPTIONS,
             '--disable-warning=ExperimentalWarning',
@@ -78,7 +78,7 @@ describe('dsh run with Agent Teams enabled', () => {
       })
       expect(
         result.exitCode,
-        `dsh headless profile exited unexpectedly.\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`,
+        `gnk headless profile exited unexpectedly.\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`,
       ).toBe(0)
       expect(result.stderr).toBe('')
       expect(result.stdout).toContain('TEAM_WORKFLOW_OK')

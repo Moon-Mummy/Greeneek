@@ -1,11 +1,11 @@
 # Keyless counterpart to depth-two.cordis.yml: apply the depth patch and replace
 # the live adapter with per-session replay.
-- id: llm-deepseek
-  name: '@deepseek-ai/dsh-llm-deepseek'
+- id: llm-greeneek
+  name: '@greeneek/gnk-llm-greeneek'
   disabled: true
 
 - id: sandbox
-  name: '@deepseek-ai/dsh-sandbox-local'
+  name: '@greeneek/gnk-sandbox-local'
   config:
     runnerCommand:
       - bash
@@ -16,7 +16,7 @@
       - 'passthrough-runner: profile rejected'
 
 - id: tool-subagent
-  name: '@deepseek-ai/dsh-tool-subagent'
+  name: '@greeneek/gnk-tool-subagent'
   config:
     provider: spawn
     toolName: subagent
@@ -24,24 +24,24 @@
     maxDepth: 2
 # Select the recorded flash model for this composition.
 - id: agent-default-model
-  name: '@deepseek-ai/dsh-agent-default-model'
+  name: '@greeneek/gnk-agent-default-model'
   config:
-    provider: deepseek-official
-    model: deepseek-v4-flash
+    provider: greeneek-official
+    model: greeneek-v4-flash
 
 - id: session-persistence-jsonl
-  name: '@deepseek-ai/dsh-session-persistence-jsonl'
+  name: '@greeneek/gnk-session-persistence-jsonl'
   config:
-    root: !!js dshHomePath('sessions')
+    root: !!js gnkHomePath('sessions')
     compression: none
 
 - id: agent-instructions
-  name: '@deepseek-ai/dsh-agent-instructions'
+  name: '@greeneek/gnk-agent-instructions'
   config:
     maxBytes: 65536
 
 - id: system-prompt
-  name: '@deepseek-ai/dsh-system-prompt'
+  name: '@greeneek/gnk-system-prompt'
   config:
     persona: |
       You are a coding assistant powered by the {{model}} model. Your working directory is {{cwd}}. Your bash tool runs under a file sandbox — a `[sandbox: file access denied …]` result is policy, not a command bug.
@@ -50,11 +50,11 @@
 
 - insert:
     - id: llm-replay
-      name: '@deepseek-ai/dsh-llm-replay'
+      name: '@greeneek/gnk-llm-replay'
       config:
         providers:
-          - id: deepseek-official
-            name: DeepSeek
+          - id: greeneek-official
+            name: Greeneek
             models:
-              - id: deepseek-v4-flash
-              - id: deepseek-v4-pro
+              - id: greeneek-v4-flash
+              - id: greeneek-v4-pro

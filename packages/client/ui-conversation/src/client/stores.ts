@@ -1,9 +1,9 @@
 /** Per-session Conversation store shared by the shell body and header. */
-import { defineStore, type EngineStoreHandle } from '@deepseek-ai/dsh-client-store'
-import type { SessionId } from '@deepseek-ai/dsh-session/types'
+import { defineStore, readPersistedKey, type EngineStoreHandle } from '@greeneek/gnk-client-store'
+import type { SessionId } from '@greeneek/gnk-session/types'
 import type { ConversationStoreState } from './contract/views.ts'
 
-const CONVERSATION_STORE_KEY = 'dsh.conversation'
+const CONVERSATION_STORE_KEY = 'gnk.conversation'
 
 /** Declared write set for the Conversation shell. */
 type ConversationActions = {
@@ -41,7 +41,7 @@ export function createConversationStore(): EngineStoreHandle<ConversationStoreSt
 export function readConversationViewPreference(sessionId: SessionId): string | null {
   if (typeof localStorage === 'undefined') return null
   try {
-    const raw = localStorage.getItem(`${CONVERSATION_STORE_KEY}.${sessionId}`)
+    const raw = readPersistedKey(`${CONVERSATION_STORE_KEY}.${sessionId}`)
     if (raw === null) return null
     const stored: unknown = JSON.parse(raw)
     if (typeof stored !== 'object' || stored === null || !('view' in stored)) return null

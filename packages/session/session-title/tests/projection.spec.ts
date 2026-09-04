@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import { createUserMessage } from '@deepseek-ai/dsh-llm'
-import SessionStore, { SessionId, SessionLogOffset, SessionSeq } from '@deepseek-ai/dsh-session'
-import type { Session, SessionSeq as SessionSeqType } from '@deepseek-ai/dsh-session'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import SessionTitleService from '@deepseek-ai/dsh-session-title'
+import { Context } from '@greeneek/cordis'
+import { createUserMessage } from '@greeneek/gnk-llm'
+import SessionStore, { SessionId, SessionLogOffset, SessionSeq } from '@greeneek/gnk-session'
+import type { Session, SessionSeq as SessionSeqType } from '@greeneek/gnk-session'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import SessionTitleService from '@greeneek/gnk-session-title'
 
 const CONFIG = { fallbackMaxWords: 8, fallbackMaxBytes: 64, maxTitleBytes: 256 }
 

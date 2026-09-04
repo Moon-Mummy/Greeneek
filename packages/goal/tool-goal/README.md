@@ -3,13 +3,13 @@ description: "The model-facing goal tools for users and maintainers choosing, co
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tool-goal
+# @greeneek/gnk-tool-goal
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-tool-goal` gives the model three tools over the persisted goal service: `get_goal` reads the current goal, `create_goal` starts a new one, and `update_goal` edits, pauses, resumes, completes, or blocks it. The model may infer a long-running objective from a direct human request and create a goal; updates must carry the exact id and revision read beforehand. Authority is enforced at execution: create, edit, pause, and resume require a direct human turn on a top-level agent, while complete and blocked also accept the current goal round during automatic continuation. A configured threshold (default 3) bounds how soon an autonomous round may self-report `blocked`. Mount it with `dsh-goal` whenever the model should manage goals itself.
+`gnk-tool-goal` gives the model three tools over the persisted goal service: `get_goal` reads the current goal, `create_goal` starts a new one, and `update_goal` edits, pauses, resumes, completes, or blocks it. The model may infer a long-running objective from a direct human request and create a goal; updates must carry the exact id and revision read beforehand. Authority is enforced at execution: create, edit, pause, and resume require a direct human turn on a top-level agent, while complete and blocked also accept the current goal round during automatic continuation. A configured threshold (default 3) bounds how soon an autonomous round may self-report `blocked`. Mount it with `gnk-goal` whenever the model should manage goals itself.
 
 ## Table of Contents
 
@@ -25,7 +25,7 @@ English | [中文](README.zh.md)
 <a id="use-this-package"></a>
 ## Use this package
 
-Mount `dsh-tool-goal` beside the goal service when the model should create and update persisted goals itself. The tools are the model-facing half of the goal surface; the `/goal` command is the human-facing half, and the continuation driver uses the same tools to complete or block goals at the end of autonomous rounds.
+Mount `gnk-tool-goal` beside the goal service when the model should create and update persisted goals itself. The tools are the model-facing half of the goal surface; the `/goal` command is the human-facing half, and the continuation driver uses the same tools to complete or block goals at the end of autonomous rounds.
 
 ### Tools
 
@@ -43,12 +43,12 @@ Call `get_goal` before `update_goal` and copy the exact `goal_id` and `revision`
 
 ```yaml
 - id: tool-goal
-  name: '@deepseek-ai/dsh-tool-goal'
+  name: '@greeneek/gnk-tool-goal'
   config:
     blockedAfterConsecutiveRounds: 3
 ```
 
-The value must be a positive safe integer. It supplies both the hard lower bound on model self-blocking and the number named in model guidance. The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-tool-goal) is the exhaustive source for every accepted field.
+The value must be a positive safe integer. It supplies both the hard lower bound on model self-blocking and the number named in model guidance. The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-tool-goal) is the exhaustive source for every accepted field.
 
 ### Authority rules
 
@@ -97,7 +97,7 @@ The tools are the model-facing half of the goal surface; read these pages for th
 
 - [Goal service](../goal/README.md) — the goal state and lifecycle the tools mutate.
 - [Goal group map](../README.md) — the goal packages and how they compose.
-- [Generated tool catalog](../../../docs/tool-catalog.md#deepseek-aidsh-tool-goal) — the exact schemas the model receives.
+- [Generated tool catalog](../../../docs/tool-catalog.md#greeneekgnk-tool-goal) — the exact schemas the model receives.
 - [Goal-tool Agent Note](../../../.agents/notes/implemented/feature/2026-07-19-model-facing-goal-tools.md) — the authority split and UX decisions.
 
 -----
@@ -129,7 +129,7 @@ Prefix-stable while the plugin scope, configured threshold, and guidance text ar
 
 #### What the model sees
 
-The generated [`get_goal`, `create_goal`, and `update_goal` schemas](../../../docs/tool-catalog.md#deepseek-aidsh-tool-goal). Successful results are compact JSON. A mutation appends the goal domain's durable `goal/change` event without queuing model context. `activation` in a result is a live observation and never becomes replay authority.
+The generated [`get_goal`, `create_goal`, and `update_goal` schemas](../../../docs/tool-catalog.md#greeneekgnk-tool-goal). Successful results are compact JSON. A mutation appends the goal domain's durable `goal/change` event without queuing model context. `activation` in a result is a live observation and never becomes replay authority.
 
 #### Token effect
 
@@ -148,7 +148,7 @@ These limits define when the goal tools are a poor fit or need special care. The
 
 - **Semantic intent remains model judgment** — execution can prove that the current turn contains a direct human message, not whether the request is substantial enough to merit a goal.
 - **Same-condition blocking remains model judgment** — the runtime enforces distinct admitted-round count, not semantic equivalence of obstacles; an independent evaluator is deferred.
-- **No scheduling or direct human rendering** — these tools mutate state only; the same-session driver and `dsh-command-goal` are independent consumers of the same domain.
+- **No scheduling or direct human rendering** — these tools mutate state only; the same-session driver and `gnk-command-goal` are independent consumers of the same domain.
 - **Goal-round authority requires a driver** — the autonomous `complete`/`blocked` path is dormant unless a continuation driver admits goal-sourced user turns; mounting this tool package alone does not create them.
 - **Prompt registration is independent of filtering** — a scope may hide the tools while retaining their guidance unless the deployment scopes both registrations together.
 

@@ -1,20 +1,20 @@
 /**
  * Concrete session-query service with SQLite FTS5 over the live-preferred corpus.
  *
- * @module @deepseek-ai/dsh-session-query-sqlite
+ * @module @greeneek/gnk-session-query-sqlite
  */
 
 import { createHash, randomUUID } from 'node:crypto'
-import { SessionSeq } from '@deepseek-ai/dsh-session'
+import { SessionSeq } from '@greeneek/gnk-session'
 import type { DatabaseSync } from 'node:sqlite'
-import { Context, Service, type Fiber } from '@deepseek-ai/cordis'
-import z from '@deepseek-ai/schemastery'
-import type { Session, SessionEvent, SessionHeader, SessionId , SessionLogOffset } from '@deepseek-ai/dsh-session'
-import type SessionPersistence from '@deepseek-ai/dsh-session-persistence'
+import { Context, Service, type Fiber } from '@greeneek/cordis'
+import z from '@greeneek/schemastery'
+import type { Session, SessionEvent, SessionHeader, SessionId , SessionLogOffset } from '@greeneek/gnk-session'
+import type SessionPersistence from '@greeneek/gnk-session-persistence'
 import type {
   SessionPersistenceRevision,
   SessionPersistenceSnapshot,
-} from '@deepseek-ai/dsh-session-persistence'
+} from '@greeneek/gnk-session-persistence'
 import SessionQueryEngine, {
   SESSION_QUERY_DEFAULT_PERSISTED_INSPECT_CONCURRENCY,
   SESSION_QUERY_DEFAULT_PREPARED_SESSION_CACHE_SIZE,
@@ -24,7 +24,7 @@ import SessionQueryEngine, {
   assertSessionHeadersCompatible,
   buildSessionEventSearchDocuments,
   readColdSessionLog,
-} from '@deepseek-ai/dsh-session-query'
+} from '@greeneek/gnk-session-query'
 import type {
   Config as SessionQueryConfig,
   SessionEventSearchDocument,
@@ -36,7 +36,7 @@ import type {
   SessionSearchCursor as SessionSearchCursorValue,
   SessionSearchPage,
   SessionSearchRequest,
-} from '@deepseek-ai/dsh-session-query'
+} from '@greeneek/gnk-session-query'
 import {
   type JournalMode,
   openSearchDatabase,
@@ -68,7 +68,7 @@ export {
 /** Boot-context slot for a launcher-owned absolute path to this process's derived query index. */
 export const SESSION_QUERY_SQLITE_PATH_KEY = 'launcherSessionQueryPath'
 
-declare module '@deepseek-ai/cordis' {
+declare module '@greeneek/cordis' {
   interface Context {
     /** Launcher-owned absolute path to this process's disposable derived query index. */
     launcherSessionQueryPath?: string

@@ -1,19 +1,19 @@
 /**
  * Plugin-owned human-command registry shared by interactive UI adapters.
- * @module @deepseek-ai/dsh-commands
+ * @module @greeneek/gnk-commands
  */
 
-import { Context } from '@deepseek-ai/cordis'
-import { randomUUID } from '@deepseek-ai/dsh-util-crypto'
-import type { Agent } from '@deepseek-ai/dsh-agent'
-import { AttachmentError, admitEncodedImages } from '@deepseek-ai/dsh-attachment'
-import type { EncodedImageAttachment } from '@deepseek-ai/dsh-attachment/types'
-import type { ImageBlock } from '@deepseek-ai/dsh-llm'
-import { NamedEntries, ScopedLayers } from '@deepseek-ai/dsh-scope'
-import type { ScopeKey, ScopeLayer } from '@deepseek-ai/dsh-scope'
-import { SessionSeq } from '@deepseek-ai/dsh-session'
-import type { Session, SessionEvent, SessionEventMap } from '@deepseek-ai/dsh-session'
-import { TypertRemoteService, Remote } from '@deepseek-ai/dsh-typert-protocol'
+import { Context } from '@greeneek/cordis'
+import { randomUUID } from '@greeneek/gnk-util-crypto'
+import type { Agent } from '@greeneek/gnk-agent'
+import { AttachmentError, admitEncodedImages } from '@greeneek/gnk-attachment'
+import type { EncodedImageAttachment } from '@greeneek/gnk-attachment/types'
+import type { ImageBlock } from '@greeneek/gnk-llm'
+import { NamedEntries, ScopedLayers } from '@greeneek/gnk-scope'
+import type { ScopeKey, ScopeLayer } from '@greeneek/gnk-scope'
+import { SessionSeq } from '@greeneek/gnk-session'
+import type { Session, SessionEvent, SessionEventMap } from '@greeneek/gnk-session'
+import { TypertRemoteService, Remote } from '@greeneek/gnk-typert-protocol'
 import { CommandId } from './brand.ts'
 import type {
   CommandDescriptor,
@@ -103,7 +103,7 @@ class CommandLayer implements ScopeLayer {
   }
 }
 
-declare module '@deepseek-ai/cordis' {
+declare module '@greeneek/cordis' {
   interface Context {
     commands: CommandRuntime
   }

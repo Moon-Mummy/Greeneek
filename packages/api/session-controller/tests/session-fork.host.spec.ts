@@ -1,15 +1,15 @@
 /** Session Controller fork boundaries, lineage, and inherited model routing. */
 
 import { describe, expect, it, vi } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import AgentRegistry, { agentEvents } from '@deepseek-ai/dsh-agent'
-import type { Agent, AgentHandle, CreateAgentOptions } from '@deepseek-ai/dsh-agent'
-import { createUserMessage, ReasoningEffortId } from '@deepseek-ai/dsh-llm'
-import type { LlmCallConfig } from '@deepseek-ai/dsh-llm'
-import SessionStore, { SessionLogOffset, SessionSeq } from '@deepseek-ai/dsh-session'
-import type { Session, SessionEvent, SessionHeader, SessionId } from '@deepseek-ai/dsh-session'
-import SystemPrompt from '@deepseek-ai/dsh-system-prompt'
-import type { Workspace } from '@deepseek-ai/dsh-workspace'
+import { Context } from '@greeneek/cordis'
+import AgentRegistry, { agentEvents } from '@greeneek/gnk-agent'
+import type { Agent, AgentHandle, CreateAgentOptions } from '@greeneek/gnk-agent'
+import { createUserMessage, ReasoningEffortId } from '@greeneek/gnk-llm'
+import type { LlmCallConfig } from '@greeneek/gnk-llm'
+import SessionStore, { SessionLogOffset, SessionSeq } from '@greeneek/gnk-session'
+import type { Session, SessionEvent, SessionHeader, SessionId } from '@greeneek/gnk-session'
+import SystemPrompt from '@greeneek/gnk-system-prompt'
+import type { Workspace } from '@greeneek/gnk-workspace'
 import {
   createSessionTestRemote, installSessionReadTestServices, testSessionPersistence,
 } from './test-remote.ts'

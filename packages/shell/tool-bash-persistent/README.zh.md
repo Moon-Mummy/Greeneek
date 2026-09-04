@@ -3,13 +3,13 @@ description: "面向模型的持久 bash 工具，供选择、配置或排查跨
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tool-bash-persistent
+# @greeneek/gnk-tool-bash-persistent
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-tool-bash-persistent` 为 agent 提供 `bash` 工具，其 shell 状态对拥有它的 agent 跨调用保留：cwd、导出的变量、函数与后台任务都会在命令之间存活。每个 agent 都有自己由 terminal 服务的按所有者隔离 PTY 会话支撑的 shell，同一 agent 的命令逐个串行执行。配置选择 PTY 后端与单条命令的墙钟上限；超时或显式 `exit` 会关闭 shell，下一次调用从全新状态开始。它补充一次性 `dsh-tool-bash` 工具——当工作依赖跨调用状态时选择它。请与 `dsh-terminal-bash` 等 terminal 后端以及 `ctx.terminals` 服务一起挂载。
+`gnk-tool-bash-persistent` 为 agent 提供 `bash` 工具，其 shell 状态对拥有它的 agent 跨调用保留：cwd、导出的变量、函数与后台任务都会在命令之间存活。每个 agent 都有自己由 terminal 服务的按所有者隔离 PTY 会话支撑的 shell，同一 agent 的命令逐个串行执行。配置选择 PTY 后端与单条命令的墙钟上限；超时或显式 `exit` 会关闭 shell，下一次调用从全新状态开始。它补充一次性 `gnk-tool-bash` 工具——当工作依赖跨调用状态时选择它。请与 `gnk-terminal-bash` 等 terminal 后端以及 `ctx.terminals` 服务一起挂载。
 
 ## 目录
 
@@ -29,16 +29,16 @@ kind: "package-reference"
 
 ### 何时选择
 
-当工作依赖跨调用状态时选择持久工具：一次性 `dsh-tool-bash` 调用无法记住 `cd` 或导出的变量。当每条命令都应从已知、干净的环境开始，或命令又短又独立时，选择一次性工具。这里不支持需要交互 stdin 的命令——读取输入的前台子进程会一直阻塞到命令超时——因此交互工作属于 terminal 工具。
+当工作依赖跨调用状态时选择持久工具：一次性 `gnk-tool-bash` 调用无法记住 `cd` 或导出的变量。当每条命令都应从已知、干净的环境开始，或命令又短又独立时，选择一次性工具。这里不支持需要交互 stdin 的命令——读取输入的前台子进程会一直阻塞到命令超时——因此交互工作属于 terminal 工具。
 
 ### 最小配置
 
-默认的 `shell` 后端通过 `dsh-terminal-bash` 启动交互式 bash；部署方可以注册其他 PTY 后端并按名称选择。
+默认的 `shell` 后端通过 `gnk-terminal-bash` 启动交互式 bash；部署方可以注册其他 PTY 后端并按名称选择。
 
 ```yaml
-- name: '@deepseek-ai/dsh-terminal'
-- name: '@deepseek-ai/dsh-terminal-bash'
-- name: '@deepseek-ai/dsh-tool-bash-persistent'
+- name: '@greeneek/gnk-terminal'
+- name: '@greeneek/gnk-terminal-bash'
+- name: '@greeneek/gnk-tool-bash-persistent'
 ```
 
 | 字段 | 默认值 | 含义 |
@@ -48,7 +48,7 @@ kind: "package-reference"
 | `maxOutputChars` | `16,000` | 保留的命令输出字符上限；固定诊断信息在其后追加 |
 | `description` | `Run commands in a persistent bash shell. State, including the current directory and exported environment variables, persists across calls for this agent.` | 面向模型的环境约定；部署方可描述自己的环境 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-bash-persistent)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-tool-bash-persistent)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### agent 可以依赖什么
 
@@ -100,8 +100,8 @@ kind: "package-reference"
 - [terminal-bash 后端](../../terminal/terminal-bash/README.zh.md)——默认的 `shell` 后端。
 - [tool-terminal](../../terminal/tool-terminal/README.zh.md)——面向交互工作的六个模型侧 terminal 工具。
 - [持久 PTY 会话 Agent Note](../../../.agents/notes/implemented/feature/2026-07-16-persistent-pty-sessions.zh.md)——按所有者会话的设计及其理由。
-- [生成的工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-bash-persistent)——`bash` 参数 schema 的确切内容。
-- [生成的配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-bash-persistent)——每个受支持配置字段及其源声明。
+- [生成的工具目录](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-bash-persistent)——`bash` 参数 schema 的确切内容。
+- [生成的配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-tool-bash-persistent)——每个受支持配置字段及其源声明。
 
 -----
 
@@ -112,7 +112,7 @@ kind: "package-reference"
 
 #### 模型看到什么
 
-生成的 [`bash` schema](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-bash-persistent)，包括配置的 `description`。本插件不贡献独立的系统提示词区段；人设与环境指引由部署方负责。
+生成的 [`bash` schema](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-bash-persistent)，包括配置的 `description`。本插件不贡献独立的系统提示词区段；人设与环境指引由部署方负责。
 
 #### Token 影响
 

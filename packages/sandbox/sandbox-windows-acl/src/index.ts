@@ -1,5 +1,5 @@
 /**
- * Windows ACL write-restriction sandbox backend for the DeepSeek Harness
+ * Windows ACL write-restriction sandbox backend for the Greeneek Harness
  * sandbox seam. Mirrors the mechanism of github.com/huoyaoyuan/
  * windows-acl-restrict-poc @ 10e4dfb (the fixed revision): a WRITE_RESTRICTED
  * token whose restricting SIDs include distinct workspace and temp write
@@ -37,12 +37,12 @@
  *    the CALLER owns the DACLs (the sandbox seam's grant reuse):
  *    init()/dispose() skip grant/revoke entirely and the caller must not
  *    revoke under live children.
- * @module @deepseek-ai/dsh-sandbox-windows-acl
+ * @module @greeneek/gnk-sandbox-windows-acl
  */
 
 import { existsSync, statSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { Win32Error } from '@deepseek-ai/dsh-win32-process'
+import { Win32Error } from '@greeneek/gnk-win32-process'
 
 import { grantWrite, revokeWrite } from './acl.ts'
 import { allocPtrSlot, decodePtr, isNullPtr, throwLastError, win32 } from './ffi.ts'

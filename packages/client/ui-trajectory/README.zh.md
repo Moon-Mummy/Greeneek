@@ -1,15 +1,15 @@
 ---
-description: "dsh Web 客户端的 Trajectory 视图：按轮次组织的事件记录表加交互式时间概览，注册进对话视图环。"
+description: "gnk Web 客户端的 Trajectory 视图：按轮次组织的事件记录表加交互式时间概览，注册进对话视图环。"
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-client-ui-trajectory
+# @greeneek/gnk-client-ui-trajectory
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-client-ui-trajectory` 是 dsh Web 客户端的 Trajectory 视图：它渲染按轮次组织的事件记录表，其中可选择用户、助手、工具与嵌套子工具记录，并带交互式时间概览。较粗的分割线标示轮次边界，紧凑的行内标记标识步骤；选择记录会打开局部检查器，查看 token 用量、耗时、输入、输出、计时，以及用户、助手或工具内容中的持久图片。该视图是纯消费方：它注册 target 专属 Event Definition、Trajectory view builder 以及对话 `conversation.view` slot 环中的一个视图标签页，不提供 service，也不声明 Context 合并。带类型的 `trajectory` locale namespace 拥有所有产品编写的 ledger、timeline、inspector、tooltip 与无障碍文案；事件内容、工具名称、标识符与 provider 诊断保持原始数据。长记录表打开时定位于当前尾部、按需加载更早历史，并且只挂载可见行窗口。
+`gnk-client-ui-trajectory` 是 gnk Web 客户端的 Trajectory 视图：它渲染按轮次组织的事件记录表，其中可选择用户、助手、工具与嵌套子工具记录，并带交互式时间概览。较粗的分割线标示轮次边界，紧凑的行内标记标识步骤；选择记录会打开局部检查器，查看 token 用量、耗时、输入、输出、计时，以及用户、助手或工具内容中的持久图片。该视图是纯消费方：它注册 target 专属 Event Definition、Trajectory view builder 以及对话 `conversation.view` slot 环中的一个视图标签页，不提供 service，也不声明 Context 合并。带类型的 `trajectory` locale namespace 拥有所有产品编写的 ledger、timeline、inspector、tooltip 与无障碍文案；事件内容、工具名称、标识符与 provider 诊断保持原始数据。长记录表打开时定位于当前尾部、按需加载更早历史，并且只挂载可见行窗口。
 
 ## 目录
 

@@ -12,13 +12,13 @@ Session positions used one structural `number` type for two incompatible meaning
 
 ## Decision
 
-`@deepseek-ai/dsh-brand` exports the erased numeric primitive `BrandedNumber<B>` and the runtime-identity helper `brandNumber()`. `@deepseek-ai/dsh-session` owns two validated brands: `SessionSeq` names one existing event and `SessionLogOffset` names a log gap, prefix length, or read offset. `SessionSeqCursor = SessionSeq | -1` represents an inclusive watermark before or after the first event, and `OptionalSessionSeq = SessionSeq | null` represents an event identity whose absence is data.
+`@greeneek/gnk-brand` exports the erased numeric primitive `BrandedNumber<B>` and the runtime-identity helper `brandNumber()`. `@greeneek/gnk-session` owns two validated brands: `SessionSeq` names one existing event and `SessionLogOffset` names a log gap, prefix length, or read offset. `SessionSeqCursor = SessionSeq | -1` represents an inclusive watermark before or after the first event, and `OptionalSessionSeq = SessionSeq | null` represents an event identity whose absence is data.
 
 `SessionEvent.seq`, surface replacement endpoints, provenance, and owner payload fields that identify Session events use `SessionSeq`. `Session.seq`, `Session.firstLiveSeq`, `Session.inheritedEventCount`, body-read offsets, and inherited prefix cuts use `SessionLogOffset`. Arithmetic returns an ordinary number and re-enters either domain through its validating constructor.
 
 The logical `SessionHeader` carries `isSeeded: boolean` and no numeric seed cut. Body-bearing storage values and observations carry `inheritedEventCount` beside the header; `Session.ownEvents()` and `Session.isOwnSeq()` hide the comparison from ordinary consumers. A seeded constructor requires an explicit seed and exact cut, including an empty seed with cut zero, because constructor input may contain child-owned setup events after the inherited prefix.
 
-The v0 JSONL header remains byte-compatible: absent `seedLength` decodes to `isSeeded: false` with cut zero, while present zero or nonzero values decode to `isSeeded: true` with the exact cut. Header-only listing translates only the presence bit. API, SDK, DeepSeek, telemetry, query-row, and JSON representations continue to carry ordinary numbers; their owning adapters validate and brand values when they enter same-process domain code.
+The v0 JSONL header remains byte-compatible: absent `seedLength` decodes to `isSeeded: false` with cut zero, while present zero or nonzero values decode to `isSeeded: true` with the exact cut. Header-only listing translates only the presence bit. API, SDK, Greeneek, telemetry, query-row, and JSON representations continue to carry ordinary numbers; their owning adapters validate and brand values when they enter same-process domain code.
 
 ## Admission and ownership
 

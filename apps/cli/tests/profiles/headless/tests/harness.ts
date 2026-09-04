@@ -1,25 +1,25 @@
-import { Context } from '@deepseek-ai/cordis'
-import type { SessionEvent } from '@deepseek-ai/dsh-session'
-import type { Agent } from '@deepseek-ai/dsh-agent'
-import AgentLoop from '@deepseek-ai/dsh-agent-loop'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import { mountAgentLoopTestDependencies } from '@deepseek-ai/dsh-agent-loop-testkit'
-import { LocalBashExecutor } from '@deepseek-ai/dsh-bash-local'
-import * as BashEnvPlugin from '@deepseek-ai/dsh-shell-env'
-import LocalSubprocessRuntime from '@deepseek-ai/dsh-subprocess-local'
-import * as ToolBash from '@deepseek-ai/dsh-tool-bash'
-import * as ToolTodo from '@deepseek-ai/dsh-tool-todo'
-import * as LlmDeepSeek from '@deepseek-ai/dsh-llm-deepseek'
-import TokenMeter from '@deepseek-ai/dsh-token-meter'
-import ToolResultPruner from '@deepseek-ai/dsh-compaction-tool-result-pruner'
-import JsonlSessionPersistence from '@deepseek-ai/dsh-session-persistence-jsonl'
-import * as SessionCheckpointPolicy from '@deepseek-ai/dsh-session-checkpoint-policy'
-import { BasicCompactionEngine } from '@deepseek-ai/dsh-compaction-basic'
-import type { BasicCompactionConfig } from '@deepseek-ai/dsh-compaction-basic'
+import { Context } from '@greeneek/cordis'
+import type { SessionEvent } from '@greeneek/gnk-session'
+import type { Agent } from '@greeneek/gnk-agent'
+import AgentLoop from '@greeneek/gnk-agent-loop'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import { mountAgentLoopTestDependencies } from '@greeneek/gnk-agent-loop-testkit'
+import { LocalBashExecutor } from '@greeneek/gnk-bash-local'
+import * as BashEnvPlugin from '@greeneek/gnk-shell-env'
+import LocalSubprocessRuntime from '@greeneek/gnk-subprocess-local'
+import * as ToolBash from '@greeneek/gnk-tool-bash'
+import * as ToolTodo from '@greeneek/gnk-tool-todo'
+import * as LlmGreeneek from '@greeneek/gnk-llm-greeneek'
+import TokenMeter from '@greeneek/gnk-token-meter'
+import ToolResultPruner from '@greeneek/gnk-compaction-tool-result-pruner'
+import JsonlSessionPersistence from '@greeneek/gnk-session-persistence-jsonl'
+import * as SessionCheckpointPolicy from '@greeneek/gnk-session-checkpoint-policy'
+import { BasicCompactionEngine } from '@greeneek/gnk-compaction-basic'
+import type { BasicCompactionConfig } from '@greeneek/gnk-compaction-basic'
 
 /**
  * Shared harness for the headless-agent e2e suites: the full plugin stack
- * with the real DeepSeek adapter and the real bash + todo_write tools. Lives
+ * with the real Greeneek adapter and the real bash + todo_write tools. Lives
  * outside the *.e2e.ts pattern so importing it never re-registers another
  * file's tests.
  */
@@ -50,7 +50,7 @@ export interface CodingHarnessOptions {
    * compaction plugin (the default suites run without it).
    */
   compact?: BasicCompactionConfig
-  /** Test-only context capacity advertised for `deepseek-v4-flash`. */
+  /** Test-only context capacity advertised for `greeneek-v4-flash`. */
   modelContextWindow?: number
 }
 
@@ -61,8 +61,8 @@ export async function codingHarness(workdir: string, options: CodingHarnessOptio
     systemPrompt: { persona: options.persona ?? '' },
   })
   await ctx.plugin(AgentLoop, { agents: [] })
-  await ctx.plugin(LlmDeepSeek, options.modelContextWindow === undefined ? {} : {
-    models: [{ id: 'deepseek-v4-flash', contextWindow: options.modelContextWindow }],
+  await ctx.plugin(LlmGreeneek, options.modelContextWindow === undefined ? {} : {
+    models: [{ id: 'greeneek-v4-flash', contextWindow: options.modelContextWindow }],
   })
   await ctx.plugin(LocalSubprocessRuntime)
   await ctx.plugin(BashEnvPlugin)

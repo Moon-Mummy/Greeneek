@@ -3,13 +3,13 @@ description: "面向组合或调试 turnOutline 投影单元的客户端与维�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-session-turn-outline
+# @greeneek/gnk-session-turn-outline
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-session-turn-outline` 以 `turnOutline` 投影单元提供全日志的轮次大纲——每个已开始的轮次连同其 `turn/start` seq 以及有界的提示词与最终回复预览。按窗口分页历史的客户端读取大纲即可提供会话的每一轮（无论是否已加载），并把向后分页精确定位到能载入某轮事件的 seq。在已挂载投影注册表的组合中选择它，例如以聊天轮次导航栏为参考消费者的 Web 应用包；没有注册表的装配不受影响，其消费者回退到仅按已加载窗口导航。用法与条目语义在前；折叠内部细节放在下方可折叠的开发者章节中。
+`gnk-session-turn-outline` 以 `turnOutline` 投影单元提供全日志的轮次大纲——每个已开始的轮次连同其 `turn/start` seq 以及有界的提示词与最终回复预览。按窗口分页历史的客户端读取大纲即可提供会话的每一轮（无论是否已加载），并把向后分页精确定位到能载入某轮事件的 seq。在已挂载投影注册表的组合中选择它，例如以聊天轮次导航栏为参考消费者的 Web 应用包；没有注册表的装配不受影响，其消费者回退到仅按已加载窗口导航。用法与条目语义在前；折叠内部细节放在下方可折叠的开发者章节中。
 
 ## 目录
 
@@ -30,9 +30,9 @@ kind: "package-reference"
 ### 组合
 
 ```yaml
-- name: '@deepseek-ai/dsh-session'
-- name: '@deepseek-ai/dsh-session-projection'
-- name: '@deepseek-ai/dsh-session-turn-outline'
+- name: '@greeneek/gnk-session'
+- name: '@greeneek/gnk-session-projection'
+- name: '@greeneek/gnk-session-turn-outline'
 ```
 
 ### 各字段含义

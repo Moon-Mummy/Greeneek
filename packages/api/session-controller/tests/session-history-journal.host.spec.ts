@@ -1,19 +1,19 @@
 /** Raw Session journal transport and message-aligned pagination coverage. */
 
 import { describe, expect, it, vi } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import AgentRegistry from '@deepseek-ai/dsh-agent'
-import SessionStore, { SessionSeq } from '@deepseek-ai/dsh-session'
-import { decodeStorageRecord, type ChunkRow } from '@deepseek-ai/dsh-session/chunk-rows'
-import { ToolCallId, createMessage, createToolResultMessage, createUserMessage } from '@deepseek-ai/dsh-llm'
-import type { Session, SessionEvent, SessionId } from '@deepseek-ai/dsh-session'
-import { SessionHistoryController } from '@deepseek-ai/dsh-api-session-controller/src/history.ts'
+import { Context } from '@greeneek/cordis'
+import AgentRegistry from '@greeneek/gnk-agent'
+import SessionStore, { SessionSeq } from '@greeneek/gnk-session'
+import { decodeStorageRecord, type ChunkRow } from '@greeneek/gnk-session/chunk-rows'
+import { ToolCallId, createMessage, createToolResultMessage, createUserMessage } from '@greeneek/gnk-llm'
+import type { Session, SessionEvent, SessionId } from '@greeneek/gnk-session'
+import { SessionHistoryController } from '@greeneek/gnk-api-session-controller/src/history.ts'
 import type {
   ChunkRowEvent,
   SessionFollowFrame,
   SessionPage,
   SessionWireEvent,
-} from '@deepseek-ai/dsh-api-session-controller/types'
+} from '@greeneek/gnk-api-session-controller/types'
 import { createSessionTestRemote, installSessionReadTestServices } from './test-remote.ts'
 
 /** Append a production-shaped human prompt to the session surface. */

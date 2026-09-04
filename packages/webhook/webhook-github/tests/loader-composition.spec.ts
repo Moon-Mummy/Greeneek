@@ -3,10 +3,10 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { Context } from '@deepseek-ai/cordis'
-import Include from '@deepseek-ai/cordis-plugin-include'
-import Loader from '@deepseek-ai/cordis-plugin-loader'
-import WebServer from '@deepseek-ai/dsh-host-webserver'
+import { Context } from '@greeneek/cordis'
+import Include from '@greeneek/cordis-plugin-include'
+import Loader from '@greeneek/cordis-plugin-loader'
+import WebServer from '@greeneek/gnk-host-webserver'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import * as GitHubAdapter from '../src/index.ts'
 
@@ -22,19 +22,19 @@ afterEach(async () => {
 
 describe('real Loader composition', () => {
   it('registers on a real WebServer and dispatches a signed request', { timeout: 60_000 }, async () => {
-    root = await mkdtemp(join(tmpdir(), 'dsh-webhook-github-loader-'))
+    root = await mkdtemp(join(tmpdir(), 'gnk-webhook-github-loader-'))
     const configPath = join(root, 'cordis.yml')
     await writeFile(configPath, [
       '- name: fixture-dependencies',
-      "- name: '@deepseek-ai/dsh-host-webserver'",
+      "- name: '@greeneek/gnk-host-webserver'",
       '  config:',
       "    host: '127.0.0.1'",
       '    port: 0',
-      "- name: '@deepseek-ai/dsh-webhook-github'",
+      "- name: '@greeneek/gnk-webhook-github'",
       '  config:',
       '    source: loader',
       '    path: /github',
-      '    secretEnv: DSH_GITHUB_WEBHOOK_SECRET',
+      '    secretEnv: GNK_GITHUB_WEBHOOK_SECRET',
       '    maxBodyBytes: 1024',
       '',
     ].join('\n'))
@@ -55,8 +55,8 @@ describe('real Loader composition', () => {
     context.loader.builtins.include = Include
     const modules = new Map<string, unknown>([
       ['fixture-dependencies', dependencies],
-      ['@deepseek-ai/dsh-host-webserver', WebServer],
-      ['@deepseek-ai/dsh-webhook-github', GitHubAdapter],
+      ['@greeneek/gnk-host-webserver', WebServer],
+      ['@greeneek/gnk-webhook-github', GitHubAdapter],
     ])
     context.loader.internal = {
       version: 'v2',

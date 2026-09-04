@@ -3,13 +3,13 @@ description: "Whole-log conversation counts and wall times for clients and maint
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-session-stats
+# @greeneek/gnk-session-stats
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-session-stats` serves whole-log conversation figures — turn and step counts plus LLM, tool, first-token, and decode wall times — as the `sessionStats` projection unit. Clients read the figures from the registry's snapshot and change feed, and paging or compaction cannot change them because they fold from the complete durable log. Choose it in compositions that already mount the projection registry, such as the web chat bundle whose stats strip is the reference consumer; assemblies without the registry are unaffected and their consumers fall back to window-scoped counting. Setup and field semantics come first; the fold internals live in a collapsible developer section below.
+`gnk-session-stats` serves whole-log conversation figures — turn and step counts plus LLM, tool, first-token, and decode wall times — as the `sessionStats` projection unit. Clients read the figures from the registry's snapshot and change feed, and paging or compaction cannot change them because they fold from the complete durable log. Choose it in compositions that already mount the projection registry, such as the web chat bundle whose stats strip is the reference consumer; assemblies without the registry are unaffected and their consumers fall back to window-scoped counting. Setup and field semantics come first; the fold internals live in a collapsible developer section below.
 
 ## Table of Contents
 
@@ -30,9 +30,9 @@ Mount the plugin beside the session store and the projection registry when clien
 ### Composition
 
 ```yaml
-- name: '@deepseek-ai/dsh-session'
-- name: '@deepseek-ai/dsh-session-projection'
-- name: '@deepseek-ai/dsh-session-stats'
+- name: '@greeneek/gnk-session'
+- name: '@greeneek/gnk-session-projection'
+- name: '@greeneek/gnk-session-stats'
 ```
 
 ### What the figures mean
@@ -131,4 +131,4 @@ None.
 
 </details>
 
-**Runtime invariant:** No companion is published. The package owns a single pure projection fold whose wire payload is schema-validated by the projection registry at every snapshot and change-feed emission, and the event relations the fold relies on (`step/end` exactly once per entered step, monotonic host-assigned turn numbers, chunk and tool events carrying their step coordinates and call ids) are owned and runtime-checked by dsh-agent-loop and the session surface, not here.
+**Runtime invariant:** No companion is published. The package owns a single pure projection fold whose wire payload is schema-validated by the projection registry at every snapshot and change-feed emission, and the event relations the fold relies on (`step/end` exactly once per entered step, monotonic host-assigned turn numbers, chunk and tool events carrying their step coordinates and call ids) are owned and runtime-checked by gnk-agent-loop and the session surface, not here.

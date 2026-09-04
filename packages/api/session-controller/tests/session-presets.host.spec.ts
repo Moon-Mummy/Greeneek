@@ -3,13 +3,13 @@
 import { mkdtempSync, realpathSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { Context } from '@deepseek-ai/cordis'
-import AgentRegistry from '@deepseek-ai/dsh-agent'
-import type { Agent, AgentFactory } from '@deepseek-ai/dsh-agent'
-import { agentPresetProjectionDefinition } from '@deepseek-ai/dsh-agent-presets'
-import SessionStore, { SessionId } from '@deepseek-ai/dsh-session'
-import type { Session } from '@deepseek-ai/dsh-session'
-import { RemoteError } from '@deepseek-ai/dsh-typert-protocol'
+import { Context } from '@greeneek/cordis'
+import AgentRegistry from '@greeneek/gnk-agent'
+import type { Agent, AgentFactory } from '@greeneek/gnk-agent'
+import { agentPresetProjectionDefinition } from '@greeneek/gnk-agent-presets'
+import SessionStore, { SessionId } from '@greeneek/gnk-session'
+import type { Session } from '@greeneek/gnk-session'
+import { RemoteError } from '@greeneek/gnk-typert-protocol'
 import { describe, expect, it } from 'vitest'
 import { createSessionTestRemote } from './test-remote.ts'
 
@@ -41,7 +41,7 @@ function roster(ids: readonly string[]): unknown {
 }
 
 async function harness(presets?: readonly string[]) {
-  const cwd = realpathSync(mkdtempSync(join(tmpdir(), 'dsh-session-preset-')))
+  const cwd = realpathSync(mkdtempSync(join(tmpdir(), 'gnk-session-preset-')))
   const ctx = new Context()
   await ctx.plugin(SessionStore)
   await ctx.plugin(AgentRegistry)

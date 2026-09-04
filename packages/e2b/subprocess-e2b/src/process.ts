@@ -9,16 +9,16 @@ import {
   FileNotFoundError,
   SandboxNotFoundError,
   quoteE2BShellArg,
-} from '@deepseek-ai/dsh-e2b'
-import type { CommandHandle, CommandResult, Sandbox } from '@deepseek-ai/dsh-e2b'
+} from '@greeneek/gnk-e2b'
+import type { CommandHandle, CommandResult, Sandbox } from '@greeneek/gnk-e2b'
 import type {
   SubprocessCollect,
   SubprocessHandle,
   SubprocessOutcome,
   SubprocessOutputMode,
   SubprocessSpawnSpec,
-} from '@deepseek-ai/dsh-subprocess'
-import type E2BRuntime from '@deepseek-ai/dsh-e2b'
+} from '@greeneek/gnk-subprocess'
+import type E2BRuntime from '@greeneek/gnk-e2b'
 import { bootstrapEnvironment, readRemoteEnvironment, serializeRemoteEnvironment } from './environment.ts'
 import { E2BBase64Decoder, E2B_OUTPUT_COMPLETE_FRAME, E2BOutputReader } from './output.ts'
 import { asError, commandOpts, signalRemoteGroups, waitTick } from './remote.ts'
@@ -91,49 +91,49 @@ function withinMs(settlement: Promise<CommandSettlement>, timeoutMs: number): Pr
 }
 
 function commandText(spec: SubprocessSpawnSpec, paths: RemotePaths): string {
-  const encoder = `"$dsh_e2b_env_bin" -i "$dsh_e2b_node" -e ${quoteE2BShellArg(OUTPUT_ENCODER_SOURCE)}`
+  const encoder = `"$gnk_e2b_env_bin" -i "$gnk_e2b_node" -e ${quoteE2BShellArg(OUTPUT_ENCODER_SOURCE)}`
   const stdoutRedirect = hasSpill(spec.stdio.stdout)
-    ? `> >("$dsh_e2b_tee" --output-error=warn-nopipe >("$dsh_e2b_head" -c ${spec.stdio.stdout.spill.maxBytes} > ${quoteE2BShellArg(paths.stdout)}) | ${encoder} 2>/dev/null)`
+    ? `> >("$gnk_e2b_tee" --output-error=warn-nopipe >("$gnk_e2b_head" -c ${spec.stdio.stdout.spill.maxBytes} > ${quoteE2BShellArg(paths.stdout)}) | ${encoder} 2>/dev/null)`
     : `> >(${encoder} 2>/dev/null)`
   const stderrRedirect = hasSpill(spec.stdio.stderr)
-    ? `2> >("$dsh_e2b_tee" --output-error=warn-nopipe >("$dsh_e2b_head" -c ${spec.stdio.stderr.spill.maxBytes} > ${quoteE2BShellArg(paths.stderr)}) | ${encoder} >&2 2>/dev/null)`
+    ? `2> >("$gnk_e2b_tee" --output-error=warn-nopipe >("$gnk_e2b_head" -c ${spec.stdio.stderr.spill.maxBytes} > ${quoteE2BShellArg(paths.stderr)}) | ${encoder} >&2 2>/dev/null)`
     : `2> >(${encoder} >&2 2>/dev/null)`
   const inner = [
     'set +e',
-    'dsh_e2b_env_bin=$1',
-    'dsh_e2b_node=$2',
-    'dsh_e2b_ps=$3',
-    'dsh_e2b_tr=$4',
-    'dsh_e2b_tee=$5',
-    'dsh_e2b_head=$6',
-    'dsh_e2b_rm=$7',
+    'gnk_e2b_env_bin=$1',
+    'gnk_e2b_node=$2',
+    'gnk_e2b_ps=$3',
+    'gnk_e2b_tr=$4',
+    'gnk_e2b_tee=$5',
+    'gnk_e2b_head=$6',
+    'gnk_e2b_rm=$7',
     'shift 7',
-    'dsh_e2b_pgid="$("$dsh_e2b_ps" -o pgid= -p "$$" | "$dsh_e2b_tr" -d " ")"',
-    `printf '%s\\n' "$dsh_e2b_pgid" > ${quoteE2BShellArg(paths.pid)}`,
-    `mapfile -d '' -t dsh_e2b_env < ${quoteE2BShellArg(paths.environment)}`,
-    `"$dsh_e2b_rm" -f -- ${quoteE2BShellArg(paths.environment)}`,
-    `"$dsh_e2b_env_bin" -i -- "\${dsh_e2b_env[@]}" "$@" ${stdoutRedirect} ${stderrRedirect}`.trimEnd(),
-    'dsh_e2b_status=$?',
-    `printf '%s\\n' "$dsh_e2b_status" > ${quoteE2BShellArg(paths.status)}`,
+    'gnk_e2b_pgid="$("$gnk_e2b_ps" -o pgid= -p "$$" | "$gnk_e2b_tr" -d " ")"',
+    `printf '%s\\n' "$gnk_e2b_pgid" > ${quoteE2BShellArg(paths.pid)}`,
+    `mapfile -d '' -t gnk_e2b_env < ${quoteE2BShellArg(paths.environment)}`,
+    `"$gnk_e2b_rm" -f -- ${quoteE2BShellArg(paths.environment)}`,
+    `"$gnk_e2b_env_bin" -i -- "\${gnk_e2b_env[@]}" "$@" ${stdoutRedirect} ${stderrRedirect}`.trimEnd(),
+    'gnk_e2b_status=$?',
+    `printf '%s\\n' "$gnk_e2b_status" > ${quoteE2BShellArg(paths.status)}`,
     'wait',
-    'exit "$dsh_e2b_status"',
+    'exit "$gnk_e2b_status"',
   ].join('\n')
   const argv = spec.argv.map(quoteE2BShellArg).join(' ')
   const bootstrap = [
-    `mapfile -d '' -t dsh_e2b_env < ${quoteE2BShellArg(paths.environment)}`,
-    'dsh_e2b_env_bin="$(command -v env)"',
-    'dsh_e2b_setsid="$(command -v setsid)"',
-    'dsh_e2b_bash="$(command -v bash)"',
-    'dsh_e2b_node="$(command -v node)"',
-    'dsh_e2b_ps="$(command -v ps)"',
-    'dsh_e2b_tr="$(command -v tr)"',
-    'dsh_e2b_tee="$(command -v tee)"',
-    'dsh_e2b_head="$(command -v head)"',
-    'dsh_e2b_rm="$(command -v rm)"',
-    'for dsh_e2b_tool in "$dsh_e2b_env_bin" "$dsh_e2b_setsid" "$dsh_e2b_bash" "$dsh_e2b_node" "$dsh_e2b_ps" "$dsh_e2b_tr" "$dsh_e2b_tee" "$dsh_e2b_head" "$dsh_e2b_rm"; do',
-    '  [[ "$dsh_e2b_tool" == /* && -x "$dsh_e2b_tool" ]] || exit 125',
+    `mapfile -d '' -t gnk_e2b_env < ${quoteE2BShellArg(paths.environment)}`,
+    'gnk_e2b_env_bin="$(command -v env)"',
+    'gnk_e2b_setsid="$(command -v setsid)"',
+    'gnk_e2b_bash="$(command -v bash)"',
+    'gnk_e2b_node="$(command -v node)"',
+    'gnk_e2b_ps="$(command -v ps)"',
+    'gnk_e2b_tr="$(command -v tr)"',
+    'gnk_e2b_tee="$(command -v tee)"',
+    'gnk_e2b_head="$(command -v head)"',
+    'gnk_e2b_rm="$(command -v rm)"',
+    'for gnk_e2b_tool in "$gnk_e2b_env_bin" "$gnk_e2b_setsid" "$gnk_e2b_bash" "$gnk_e2b_node" "$gnk_e2b_ps" "$gnk_e2b_tr" "$gnk_e2b_tee" "$gnk_e2b_head" "$gnk_e2b_rm"; do',
+    '  [[ "$gnk_e2b_tool" == /* && -x "$gnk_e2b_tool" ]] || exit 125',
     'done',
-    `exec "$dsh_e2b_env_bin" -i -- "\${dsh_e2b_env[@]}" "$dsh_e2b_setsid" --wait -- "$dsh_e2b_bash" -c ${quoteE2BShellArg(inner)} dsh-e2b "$dsh_e2b_env_bin" "$dsh_e2b_node" "$dsh_e2b_ps" "$dsh_e2b_tr" "$dsh_e2b_tee" "$dsh_e2b_head" "$dsh_e2b_rm" ${argv}`,
+    `exec "$gnk_e2b_env_bin" -i -- "\${gnk_e2b_env[@]}" "$gnk_e2b_setsid" --wait -- "$gnk_e2b_bash" -c ${quoteE2BShellArg(inner)} gnk-e2b "$gnk_e2b_env_bin" "$gnk_e2b_node" "$gnk_e2b_ps" "$gnk_e2b_tr" "$gnk_e2b_tee" "$gnk_e2b_head" "$gnk_e2b_rm" ${argv}`,
   ].join('\n')
   return bootstrap
 }

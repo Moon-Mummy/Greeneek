@@ -3,13 +3,13 @@ description: "Advisory loop-hygiene guard that nudges the model out of identical
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-repeat-tool-reminder
+# @greeneek/gnk-repeat-tool-reminder
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-A model can get stuck calling the same tool with the same arguments — re-running a failing command, re-reading an unchanged file — burning time and tokens without making progress. `dsh-repeat-tool-reminder` notices the pattern and tells the model to stop: at chosen repeat counts it delivers a reminder to analyze the last result and either try a different approach or finish. The reminder is advice, never a block: a legitimate repeated call is delayed by nothing, and the decision to continue, change approach, or stop stays with the model. It tracks each agent separately, so one agent's loop never disturbs another's work, and a new user message clears the count. It ships enabled in the `dsh` base bundle with reminders at 3, 5, and 8 repeats.
+A model can get stuck calling the same tool with the same arguments — re-running a failing command, re-reading an unchanged file — burning time and tokens without making progress. `gnk-repeat-tool-reminder` notices the pattern and tells the model to stop: at chosen repeat counts it delivers a reminder to analyze the last result and either try a different approach or finish. The reminder is advice, never a block: a legitimate repeated call is delayed by nothing, and the decision to continue, change approach, or stop stays with the model. It tracks each agent separately, so one agent's loop never disturbs another's work, and a new user message clears the count. It ships enabled in the `gnk` base bundle with reminders at 3, 5, and 8 repeats.
 
 ## Table of Contents
 
@@ -25,7 +25,7 @@ A model can get stuck calling the same tool with the same arguments — re-runni
 <a id="use-this-package"></a>
 ## Use this package
 
-Mount this plugin when the model should catch itself looping on identical tool calls. There is nothing to learn or wire: the `dsh` base bundle already runs it, and the defaults work for most sessions — tune the thresholds and tool scope below when you want the nudge sooner, later, or on fewer tools.
+Mount this plugin when the model should catch itself looping on identical tool calls. There is nothing to learn or wire: the `gnk` base bundle already runs it, and the defaults work for most sessions — tune the thresholds and tool scope below when you want the nudge sooner, later, or on fewer tools.
 
 ### When to choose it
 
@@ -36,7 +36,7 @@ Choose it when the model works autonomously for long stretches and a stuck loop 
 When you want to change when reminders fire or which tools they cover, mount the plugin with configuration:
 
 ```yaml
-- name: '@deepseek-ai/dsh-repeat-tool-reminder'
+- name: '@greeneek/gnk-repeat-tool-reminder'
   config:
     thresholds: [3, 5, 8]        # remind at 3, 5, and 8 consecutive repeats
     include: []                  # track every tool; list patterns to track only some
@@ -51,7 +51,7 @@ When you want to change when reminders fire or which tools they cover, mount the
 | `exclude` | `[]` | These tools are never tracked; calls to them neither count nor reset |
 | `argumentsPreviewChars` | `500` | How many characters of the repeated arguments the detailed reminder shows |
 
-Invalid configuration fails at startup with a clear error — an empty `thresholds` list, a repeat count below 2, or a duplicate — never a silent change of behavior. The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-repeat-tool-reminder) documents every accepted value.
+Invalid configuration fails at startup with a clear error — an empty `thresholds` list, a repeat count below 2, or a duplicate — never a silent change of behavior. The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-repeat-tool-reminder) documents every accepted value.
 
 ### What you get
 
@@ -107,7 +107,7 @@ Reminders ride the post-execute decision's `additionalContexts` (source `{kind: 
 Read these pages when the package-level contract is not enough. They move from the tools waterfall to exhaustive configuration and the guard group map.
 
 - [Tools subsystem reference](../../../docs/subsystems/tools.md) — the `tools/execute` waterfall, `additionalContexts`, and decision shapes this guard consumes.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-repeat-tool-reminder) — every accepted config field and its source declaration.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-repeat-tool-reminder) — every accepted config field and its source declaration.
 - [guard group map](../README.md) — the sibling guard packages and the loop-hygiene family.
 
 -----

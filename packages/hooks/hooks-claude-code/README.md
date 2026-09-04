@@ -3,13 +3,13 @@ description: "Run your existing Claude Code hooks.json or settings hook config d
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-hooks-claude-code
+# @greeneek/gnk-hooks-claude-code
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-hooks-claude-code` runs the hooks from your existing Claude Code config — a `hooks.json` or a settings file's `hooks` key — during agent runs, so the behavior you already wrote keeps working without rewriting it. Your hooks fire at the matching moments: when a session starts, when a prompt is submitted, before and after a tool runs, when the run is about to stop, and when subagents start or end. A hook can block a prompt or tool call with a message the model sees, attach extra context to the conversation, or force the run to continue. Choose it when you have Claude Code command hooks and want them to work in the harness as-is; behavior with no Claude Code equivalent belongs in a native plugin.
+`gnk-hooks-claude-code` runs the hooks from your existing Claude Code config — a `hooks.json` or a settings file's `hooks` key — during agent runs, so the behavior you already wrote keeps working without rewriting it. Your hooks fire at the matching moments: when a session starts, when a prompt is submitted, before and after a tool runs, when the run is about to stop, and when subagents start or end. A hook can block a prompt or tool call with a message the model sees, attach extra context to the conversation, or force the run to continue. Choose it when you have Claude Code command hooks and want them to work in the harness as-is; behavior with no Claude Code equivalent belongs in a native plugin.
 
 ## Table of Contents
 
@@ -34,7 +34,7 @@ Use it when you own a Claude Code `hooks.json` (or a settings file whose `hooks`
 ### Smallest working setup
 
 ```yaml
-- name: '@deepseek-ai/dsh-hooks-claude-code'
+- name: '@greeneek/gnk-hooks-claude-code'
   config:
     configPath: ./.claude/hooks.json
     pluginRoot: ./.claude/plugins/my-plugin
@@ -49,7 +49,7 @@ Use it when you own a Claude Code `hooks.json` (or a settings file whose `hooks`
 | `defaultTimeoutMs` | `600,000` | Per-hook timeout when a hook sets none (the Claude Code default) |
 | `stderrSummaryMaxChars` | `500` | Character cap on the persisted `hook/result` stderr summary |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-hooks-claude-code) is the exhaustive source for every accepted field.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-hooks-claude-code) is the exhaustive source for every accepted field.
 
 ### What your hooks can do
 
@@ -96,7 +96,7 @@ The matcher subject is the tool name (`PreToolUse` / `PostToolUse`), the session
 
 ### Detached runs and disposal
 
-The three emit points (`SessionStart`, `SubagentStart`, `SubagentStop`) run detached — no extension point awaits them. Each run chain is tracked, and disposing the bridge aborts still-running hook processes, then drains the continuations before the dispose resolves (`createDetachedRuns` in `dsh-hook-protocol`).
+The three emit points (`SessionStart`, `SubagentStart`, `SubagentStop`) run detached — no extension point awaits them. Each run chain is tracked, and disposing the bridge aborts still-running hook processes, then drains the continuations before the dispose resolves (`createDetachedRuns` in `gnk-hook-protocol`).
 
 ### Design philosophy
 
@@ -129,7 +129,7 @@ Read these pages when the package-level contract is not enough. They move from t
 - [Hook protocol library](../hook-protocol/README.md) — the shared hook rules this bridge applies.
 - [Hook bridges Agent Note](../../../.agents/notes/implemented/feature/2026-06-30-hook-bridges.md) — the bridge design, decision mapping, and deferred gaps.
 - [Interception extension-points Agent Note](../../../.agents/notes/implemented/feature/2026-06-30-interception-extension-points.md) — the typed-Decision surface the bridge maps onto.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-hooks-claude-code) — every accepted config field and its source declaration.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-hooks-claude-code) — every accepted config field and its source declaration.
 
 -----
 

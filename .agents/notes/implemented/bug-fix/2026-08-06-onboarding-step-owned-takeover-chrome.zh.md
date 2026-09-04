@@ -6,7 +6,7 @@
 
 ## 问题
 
-设置外壳在 `settings.onboarding` 有已注册且本地未完成的步骤时，就立即挂出首次使用引导的接管界面框架——portal 到 body 的浮层，带不透明的 `--dsw-alias-bg-layer-1` 展示层、模糊遮罩，并把 `#root` 置为 `inert`。而每个步骤都要先加载私有事实才能判定自己是否需要出场（WelcomeNotice：经其设置 join 读取确认位；DeepSeekOnboardingDialog：经 Models join 读取凭据就绪状态），判定期间渲染 `null`。渲染 `null` 无法抑制界面框架，因为不透明展示层是外壳画在 slot outlet 外面的，不属于步骤。
+设置外壳在 `settings.onboarding` 有已注册且本地未完成的步骤时，就立即挂出首次使用引导的接管界面框架——portal 到 body 的浮层，带不透明的 `--dsw-alias-bg-layer-1` 展示层、模糊遮罩，并把 `#root` 置为 `inert`。而每个步骤都要先加载私有事实才能判定自己是否需要出场（WelcomeNotice：经其设置 join 读取确认位；GreeneekOnboardingDialog：经 Models join 读取凭据就绪状态），判定期间渲染 `null`。渲染 `null` 无法抑制界面框架，因为不透明展示层是外壳画在 slot outlet 外面的，不属于步骤。
 
 于是每次在 hero（空白或无会话）状态下刷新页面，会话列表一变 `ready` 就弹出整屏不透明层——亮色主题下是白色——并阻断全部交互，时长恰好等于一次凭据/设置 RPC 往返；之后已配置好的步骤自我完成，图层消失。用户看到的就是每次刷新在 workspace/会话列表落地的瞬间闪一下白屏。
 
@@ -32,4 +32,4 @@
 
 ## 测试
 
-`packages/client/ui-primitives/tests/onboarding-surface.client.spec.tsx` 钉住原语行为：包裹内容的 body portal、遮罩／展示层类名存在、`#root` 的 `inert` 恰好持续挂载生命周期，以及无 `#root` 的组合。`packages/client/ui-settings-general/tests/settings-root.client.spec.tsx` 钉住反转后的外壳约定：已挂载步骤什么都不渲染时，无接管界面框架、无 inert。`apps/web/tests/onboarding-deepseek-config.e2e.ts` 新增本缺陷的整装回归钉：已配置世界刷新页面，同时在浏览器网络边界扣住所有 `settings.describe` 响应——把步骤的判定窗口从 loopback 下不可见拉宽到数百毫秒，这正是断言保持非空洞的关键——页内 8ms 采样器证明接管界面框架从未挂载、`#root` 从未变为 inert。该文件的既有场景与步骤 spec（`ui-settings-general`、`ui-settings-models`）原样通过——样式表逐字迁移，遮罩选择器与几何钉子得以幸存。
+`packages/client/ui-primitives/tests/onboarding-surface.client.spec.tsx` 钉住原语行为：包裹内容的 body portal、遮罩／展示层类名存在、`#root` 的 `inert` 恰好持续挂载生命周期，以及无 `#root` 的组合。`packages/client/ui-settings-general/tests/settings-root.client.spec.tsx` 钉住反转后的外壳约定：已挂载步骤什么都不渲染时，无接管界面框架、无 inert。`apps/web/tests/onboarding-greeneek-config.e2e.ts` 新增本缺陷的整装回归钉：已配置世界刷新页面，同时在浏览器网络边界扣住所有 `settings.describe` 响应——把步骤的判定窗口从 loopback 下不可见拉宽到数百毫秒，这正是断言保持非空洞的关键——页内 8ms 采样器证明接管界面框架从未挂载、`#root` 从未变为 inert。该文件的既有场景与步骤 spec（`ui-settings-general`、`ui-settings-models`）原样通过——样式表逐字迁移，遮罩选择器与几何钉子得以幸存。

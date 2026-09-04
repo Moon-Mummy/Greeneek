@@ -3,13 +3,13 @@ description: "Six model-facing persistent terminal tools with owner isolation, b
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tool-terminal
+# @greeneek/gnk-tool-terminal
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-tool-terminal` gives the model six tools over persistent terminal sessions: `terminal_open`, `terminal_send`, `terminal_read`, `terminal_signal`, `terminal_close`, and `terminal_list`. Every call is fenced to the exact agent that opened the session, so a model cannot operate another agent's terminal even if it learns the id. Sends run in the foreground (returning bounded output with a wait reason) or in the background through the jobs service (returning a job id collected with `job_output` and stopped with `job_kill`). Results are capped by `maxResultBytes` and stay in session history until compaction. A short guidance section tells the model to prefer one-shot tools unless a terminal's persistent state or interactive stdin is genuinely needed.
+`gnk-tool-terminal` gives the model six tools over persistent terminal sessions: `terminal_open`, `terminal_send`, `terminal_read`, `terminal_signal`, `terminal_close`, and `terminal_list`. Every call is fenced to the exact agent that opened the session, so a model cannot operate another agent's terminal even if it learns the id. Sends run in the foreground (returning bounded output with a wait reason) or in the background through the jobs service (returning a job id collected with `job_output` and stopped with `job_kill`). Results are capped by `maxResultBytes` and stay in session history until compaction. A short guidance section tells the model to prefer one-shot tools unless a terminal's persistent state or interactive stdin is genuinely needed.
 
 ## Table of Contents
 
@@ -41,12 +41,12 @@ Enable these tools when the composition mounts a terminal backend and the model 
 ### Composition
 
 ```yaml
-- name: '@deepseek-ai/dsh-terminal'
-- name: '@deepseek-ai/dsh-terminal-bash'
-- name: '@deepseek-ai/dsh-tool-terminal'
+- name: '@greeneek/gnk-terminal'
+- name: '@greeneek/gnk-terminal-bash'
+- name: '@greeneek/gnk-tool-terminal'
 ```
 
-The tools need `ctx.terminals` — a backend must be mounted — and the system-prompt service for the guidance section. Background sends additionally require the jobs service and its model-facing controller (`@deepseek-ai/dsh-tool-jobs`).
+The tools need `ctx.terminals` — a backend must be mounted — and the system-prompt service for the guidance section. Background sends additionally require the jobs service and its model-facing controller (`@greeneek/gnk-tool-jobs`).
 
 ### Configuration
 
@@ -55,7 +55,7 @@ The tools need `ctx.terminals` — a backend must be mounted — and the system-
 | `enableRunInBackground` | `true` | Expose and accept `run_in_background`; `false` removes the schema field and rejects the argument |
 | `maxResultBytes` | `262144` | UTF-8 cap (minimum `64`) for each complete terminal result after wait, session, pagination, truncation, and job-status metadata |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-tool-terminal) and [tool catalog](../../../docs/tool-catalog.md#deepseek-aidsh-tool-terminal) are the exhaustive sources for config fields and schemas.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-tool-terminal) and [tool catalog](../../../docs/tool-catalog.md#greeneekgnk-tool-terminal) are the exhaustive sources for config fields and schemas.
 
 ### Background sends
 
@@ -103,7 +103,7 @@ Foreground sends use terminal call and result cards; background sends and the ot
 
 Read these pages when the package-level contract is not enough. They move from the generated schemas to the service contract, the backend, and the background-job surface.
 
-- [Tool catalog](../../../docs/tool-catalog.md#deepseek-aidsh-tool-terminal) — the six generated schemas and result shapes.
+- [Tool catalog](../../../docs/tool-catalog.md#greeneekgnk-tool-terminal) — the six generated schemas and result shapes.
 - [Terminal subsystem reference](../../../docs/subsystems/terminal.md) — the service contract and shared types behind the tools.
 - [terminal service](../terminal/README.md) — session operations, owner fencing, and cleanup semantics.
 - [terminal-bash backend](../terminal-bash/README.md) — the shipped shell backend that provides sessions.
@@ -139,7 +139,7 @@ Prefix-stable while the registration scope and guidance text are unchanged.
 
 #### What the model sees
 
-The six generated schemas are listed in the [`dsh-tool-terminal` catalog section](../../../docs/tool-catalog.md#deepseek-aidsh-tool-terminal). Their fixed schema tokens are present whenever this plugin is active; agent-scoped tool filtering may hide them.
+The six generated schemas are listed in the [`gnk-tool-terminal` catalog section](../../../docs/tool-catalog.md#greeneekgnk-tool-terminal). Their fixed schema tokens are present whenever this plugin is active; agent-scoped tool filtering may hide them.
 
 #### Token effect
 
@@ -171,7 +171,7 @@ Append-only; new results follow the reusable request prefix.
 These limits define the model-facing surface that is absent. They are current package constraints, not a task backlog.
 
 - **No TUI or key-sequence surface** — named key sequences, full-screen TUI interaction, BEL, resize, and auto-start are not exposed in any schema.
-- **Background mode requires the jobs surface** — `run_in_background` needs both `@deepseek-ai/dsh-jobs` and its model-facing controller (`@deepseek-ai/dsh-tool-jobs`); without them the argument is rejected.
+- **Background mode requires the jobs surface** — `run_in_background` needs both `@greeneek/gnk-jobs` and its model-facing controller (`@greeneek/gnk-tool-jobs`); without them the argument is rejected.
 
 <a id="dev-note"></a>
 ### Dev Note

@@ -2,12 +2,12 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { runLoaderSmoke } from '@deepseek-ai/dsh-loader-smoke'
+import { runLoaderSmoke } from '@greeneek/gnk-loader-smoke'
 
 const binScript = fileURLToPath(new URL('../../../../../../packages/test-support/loader-smoke/tests/fixtures/headless-driver.ts', import.meta.url))
 const configPath = fileURLToPath(new URL('../real-model.patch.yml', import.meta.url))
 const tsconfigPath = fileURLToPath(new URL('../../../../../../tsconfig.json', import.meta.url))
-const hasKey = Boolean(process.env.DEEPSEEK_API_KEY)
+const hasKey = Boolean(process.env.GREENEEK_API_KEY)
 
 describe.skipIf(!hasKey)('headless-agent with real model', () => {
   it('modifies a temporary workspace and verifies the file outside the agent', async () => {

@@ -6,10 +6,10 @@
  * deferral — the stage follows list.current), binding identity, breadcrumb
  * projection, create.
  */
-import { Context } from '@deepseek-ai/cordis'
+import { Context } from '@greeneek/cordis'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import type { SessionId } from '@deepseek-ai/dsh-api-remotes/client'
-import { RemoteError } from '@deepseek-ai/dsh-typert-protocol'
+import type { SessionId } from '@greeneek/gnk-api-remotes/client'
+import { RemoteError } from '@greeneek/gnk-typert-protocol'
 import { ClientSessions, SessionCreateError } from '../src/client/sessions/service.ts'
 import { scopeOf } from '../src/client/scope.ts'
 import type { SessionFollowFrame } from '../src/types.ts'
@@ -430,7 +430,7 @@ describe('current selection (migrated from ui-layout, arbitrated into the list s
     const b = bench()
     await feedList(b, [{ id: 's1' }])
     b.svc.open(sid('s1'))
-    expect(storage.get('dsh.sessions.current')).toContain('s1')
+    expect(storage.get('gnk.sessions.current')).toContain('s1')
     b.svc.clear()
     expect(b.svc.list.getSnapshot().current).toBeUndefined()
     // Persisted wipe: a fresh service with the same storage stays on empty.
@@ -449,7 +449,7 @@ describe('current selection (migrated from ui-layout, arbitrated into the list s
     expect(b.svc.list.getSnapshot().current).toBe('s1')
   })
 
-  it('persists the selection under dsh.sessions.current and rehydrates it into a fresh service', async () => {
+  it('persists the selection under gnk.sessions.current and rehydrates it into a fresh service', async () => {
     const storage = new Map<string, string>()
     vi.stubGlobal('localStorage', {
       getItem: (k: string) => storage.get(k) ?? null,
@@ -458,7 +458,7 @@ describe('current selection (migrated from ui-layout, arbitrated into the list s
     const first = bench()
     await feedList(first, [{ id: 's1' }])
     first.svc.open(sid('s1'))
-    expect(storage.get('dsh.sessions.current')).toContain('s1')
+    expect(storage.get('gnk.sessions.current')).toContain('s1')
     // A fresh boot (same storage) recovers the selection once the list holds the session.
     const second = bench()
     await feedList(second, [{ id: 's1' }])
@@ -500,7 +500,7 @@ describe('binding and stage lifecycle', () => {
 
   it('startup restore: a persisted selection validated by the first projection opens its window unprompted', async () => {
     const storage = new Map<string, string>([
-      ['dsh.sessions.current', JSON.stringify({ sessionId: 's1' })],
+      ['gnk.sessions.current', JSON.stringify({ sessionId: 's1' })],
     ])
     vi.stubGlobal('localStorage', {
       getItem: (k: string) => storage.get(k) ?? null,

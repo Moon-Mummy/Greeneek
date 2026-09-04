@@ -2,7 +2,7 @@
 
 English | [中文](translation-rules.zh.md)
 
-How to translate between the two sides of a documentation pair in this repo. Both languages carry equal authority ([README.md](README.md)): a change is authored in either language, and that side is the source for that update — these rules govern producing or updating the counterpart. They bind humans and agents equally. Routine agent work translates the changed content directly in one terminology-guided pass; the extended [.agents/skills/dsh-translate-docs](../../.agents/skills/dsh-translate-docs/SKILL.md) workflow runs only when the user explicitly invokes it. Rule levels follow RFC 2119 usage: **MUST** / **MUST NOT** are gate- or review-blocking; **SHOULD** needs a stated reason to deviate; **MAY** is discretionary.
+How to translate between the two sides of a documentation pair in this repo. Both languages carry equal authority ([README.md](README.md)): a change is authored in either language, and that side is the source for that update — these rules govern producing or updating the counterpart. They bind humans and agents equally. Routine agent work translates the changed content directly in one terminology-guided pass; the extended [.agents/skills/gnk-translate-docs](../../.agents/skills/gnk-translate-docs/SKILL.md) workflow runs only when the user explicitly invokes it. Rule levels follow RFC 2119 usage: **MUST** / **MUST NOT** are gate- or review-blocking; **SHOULD** needs a stated reason to deviate; **MAY** is discretionary.
 
 ## Faithfulness
 
@@ -47,7 +47,7 @@ These rules govern the Chinese side; the English side follows the repo's normal 
 - Chinese prose *SHOULD* prefer colons, periods, commas, or parentheses over em dashes. Keep an em dash only when no other punctuation preserves the sentence naturally.
 - Enumeration commas: a Chinese list of parallel items uses 顿号（、）, not commas.
 - MUST NOT use full-width digits or full-width Latin letters — `１２３` never, `123` always.
-- Proper nouns keep their canonical casing: GitHub, TypeScript, DeepSeek — never `github`/`Github` unless quoting code.
+- Proper nouns keep their canonical casing: GitHub, TypeScript, Greeneek — never `github`/`Github` unless quoting code.
 - Second person is 你, not 您 (matches the Vue and Kubernetes Chinese conventions and this repo's direct voice).
 - Emphasis markers (`**bold**`, `*italic*`) stay on the same spans as the source; Chinese has no italics, so the rendered emphasis may look identical — do not substitute quotation marks or other decoration.
 

@@ -1,20 +1,20 @@
 import { describe, expect, it } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import Loader from '@deepseek-ai/cordis-plugin-loader'
+import { Context } from '@greeneek/cordis'
+import Loader from '@greeneek/cordis-plugin-loader'
 import { chmodSync, existsSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { PassThrough, type Readable } from 'node:stream'
 import { fileURLToPath } from 'node:url'
-import SubagentRuntime from '@deepseek-ai/dsh-subagent'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import type { Agent } from '@deepseek-ai/dsh-agent'
-import { MAX_TIMER_DELAY_MS } from '@deepseek-ai/dsh-timeout'
-import type { SubprocessHandle, SubprocessOutcome } from '@deepseek-ai/dsh-subprocess'
+import SubagentRuntime from '@greeneek/gnk-subagent'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import type { Agent } from '@greeneek/gnk-agent'
+import { MAX_TIMER_DELAY_MS } from '@greeneek/gnk-timeout'
+import type { SubprocessHandle, SubprocessOutcome } from '@greeneek/gnk-subprocess'
 import * as acp from '../src/index.ts'
 import { acpStopReason, acpContentText, DEFAULT_DISPOSE_EOF_GRACE_MS, DEFAULT_DISPOSE_GRACE_MS, disposeAcpChild, startAcpRun, toAcpPrompt, type AcpRunSpec } from '../src/run.ts'
-import LocalSubprocessRuntime from '@deepseek-ai/dsh-subprocess-local'
-import { spawnSubprocess } from '@deepseek-ai/dsh-subprocess-local/src/spawn.ts'
+import LocalSubprocessRuntime from '@greeneek/gnk-subprocess-local'
+import { spawnSubprocess } from '@greeneek/gnk-subprocess-local/src/spawn.ts'
 
 /**
  * Keyless integration tests for the ACP subagent backend. Each spawns a REAL
@@ -221,12 +221,12 @@ describe('child env layering (through the subprocess seam)', () => {
           process.execPath,
           '--input-type=module',
           '--eval',
-          'process.stdout.write(JSON.stringify([process.env.ACP_TEST_AMBIENT_SECRET_TOKEN ?? "absent", process.env.DEEPSEEK_API_KEY]))',
+          'process.stdout.write(JSON.stringify([process.env.ACP_TEST_AMBIENT_SECRET_TOKEN ?? "absent", process.env.GREENEEK_API_KEY]))',
         ],
         cwd: process.cwd(),
         stdio: { stdin: 'ignore', stdout: { maxBytes: 1000 }, stderr: { maxBytes: 1000 } },
         graceMs: 1000,
-        env: { DEEPSEEK_API_KEY: 'explicit' },
+        env: { GREENEEK_API_KEY: 'explicit' },
       })
       await running.done
       expect(running.collected.stdout!.readFrom(0).text).toBe('["absent","explicit"]')
@@ -235,11 +235,11 @@ describe('child env layering (through the subprocess seam)', () => {
     }
   })
 
-  it('forwards explicit DSH_* config entries to the child', async () => {
-    // A deployment sets child-harness facts like DSH_PERMISSION_MODE in
+  it('forwards explicit GNK_* config entries to the child', async () => {
+    // A deployment sets child-harness facts like GNK_PERMISSION_MODE in
     // config.env; the seam's scrub drops only the AMBIENT namesakes, so the
     // explicit entry merges after it and the child must see the value.
-    const ctx = await setup({ MOCK_ECHO_ENV: 'DSH_ACP_TEST_FACT', DSH_ACP_TEST_FACT: 'managed' })
+    const ctx = await setup({ MOCK_ECHO_ENV: 'GNK_ACP_TEST_FACT', GNK_ACP_TEST_FACT: 'managed' })
     const parent = { id: 'parent', session: { header: { cwd: process.cwd() } } } as unknown as Agent
     const run = await ctx.subagents.start('acp', {
       label: 'p', prompt: [{ type: 'text' as const, text: 'p' }], parent, signal: new AbortController().signal,
@@ -297,7 +297,7 @@ describe('disposeAcpChild (the backend-owned teardown ladder over seam verbs)', 
   it('observes a spawn-level rejection and returns without a process to reap', async () => {
     const child = spawnSubprocess({
       argv: [process.execPath, '--input-type=module', '--eval', ''],
-      cwd: '/nonexistent-dir-dsh-acp-ladder-test',
+      cwd: '/nonexistent-dir-gnk-acp-ladder-test',
       stdio: { stdin: 'ignore', stdout: { maxBytes: 1000 }, stderr: { maxBytes: 1000 } },
       graceMs: 200,
     })
@@ -374,7 +374,7 @@ describe('cwd resolution', () => {
 
   it('resolves a relative config cwd against the launch directory at load', async () => {
     // The child process AND its announced ACP session cwd must both get the
-    // ABSOLUTE form — DSH's own ACP server rejects a relative session cwd, and
+    // ABSOLUTE form — GNK's own ACP server rejects a relative session cwd, and
     // deferring resolution to spawn would hide the launch-dir dependency.
     const relative = 'packages/subagent/subagent-acp'
     const absolute = resolve(relative)
@@ -499,7 +499,7 @@ describe('cwd resolution', () => {
   })
 })
 
-describe('dsh-subagent-acp', () => {
+describe('gnk-subagent-acp', () => {
   it('drives child processes with parent-unique run ids and returns streamed output', async () => {
     const ctx = await setup({ MOCK_TEXT: 'hello from acp child', MOCK_STOP: 'end_turn', MOCK_SESSION_ID: 'acp-child-session' })
     const run = await ctx.subagents.start('acp', request('do X'))

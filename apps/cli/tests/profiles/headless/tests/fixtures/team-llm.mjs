@@ -1,6 +1,6 @@
 /** Deterministic keyless Agent Teams adapter shared by profile snapshot and CLI e2e. */
 
-import { ToolCallId, LlmAdapter } from '@deepseek-ai/dsh-llm'
+import { ToolCallId, LlmAdapter } from '@greeneek/gnk-llm'
 
 let nextCall = 0
 
@@ -196,5 +196,5 @@ export const inject = ['llm']
 
 /** Register the keyless adapter on the shipped default provider route. */
 export function apply(ctx) {
-  ctx.llm.registerAdapter(['deepseek-official'], new TeamFixtureAdapter())
+  ctx.llm.registerAdapter(['greeneek-official'], new TeamFixtureAdapter())
 }

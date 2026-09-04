@@ -3,13 +3,13 @@ description: "面向用户与维护者的重试执行器说明：在持久 agent
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-llm-retry
+# @greeneek/gnk-llm-retry
 
 [English](README.md) | 中文
 
 ## 概述
 
-`@deepseek-ai/dsh-llm-retry` 是失败模型请求的重试执行器：它在 agent loop 的打开步骤 `agent/request-error` 扩展点上应用各提供方解析后的重试策略，因此每次重试都会在同一个打开的轮次内重跑同一个步骤（基于同一份持久历史）。它不包装流式调用本身——每次适配器调用仍是一次提供方尝试，直接 `ctx.llm.stream()` 消费方仍是单次尝试。重试调度是持久的：插件在等待之前就把 `llm/retry` 事件追加进会话日志，退避期间取消会让日志保持一致。normal mode 以指数退避重试一组有界的失败 code，最多 `maxRetries` 次；always mode 先询问下游恢复，然后无尝试上限地重试每个失败。
+`@greeneek/gnk-llm-retry` 是失败模型请求的重试执行器：它在 agent loop 的打开步骤 `agent/request-error` 扩展点上应用各提供方解析后的重试策略，因此每次重试都会在同一个打开的轮次内重跑同一个步骤（基于同一份持久历史）。它不包装流式调用本身——每次适配器调用仍是一次提供方尝试，直接 `ctx.llm.stream()` 消费方仍是单次尝试。重试调度是持久的：插件在等待之前就把 `llm/retry` 事件追加进会话日志，退避期间取消会让日志保持一致。normal mode 以指数退避重试一组有界的失败 code，最多 `maxRetries` 次；always mode 先询问下游恢复，然后无尝试上限地重试每个失败。
 
 ## 目录
 
@@ -29,14 +29,14 @@ kind: "package-reference"
 
 ### 何时选择
 
-当组合运行 agent loop 并需要持久请求恢复时选择它。本插件是无配置的函数插件；`dsh-llm-deepseek` 与 `dsh-llm-pi-ai` 等提供方适配器拥有各自路由的 `retryPolicy`，多提供方适配器把它放进每个 provider profile。当调用不经 agent loop、直接走 `ctx.llm.stream()` 时跳过它：这些消费方仍是单次尝试，因为原始流无法持久地区分已发出的分片。
+当组合运行 agent loop 并需要持久请求恢复时选择它。本插件是无配置的函数插件；`gnk-llm-greeneek` 与 `gnk-llm-pi-ai` 等提供方适配器拥有各自路由的 `retryPolicy`，多提供方适配器把它放进每个 provider profile。当调用不经 agent loop、直接走 `ctx.llm.stream()` 时跳过它：这些消费方仍是单次尝试，因为原始流无法持久地区分已发出的分片。
 
 ### 最小配置
 
 ```yaml
-- name: '@deepseek-ai/dsh-llm-deepseek'
+- name: '@greeneek/gnk-llm-greeneek'
   config:
-    apiKeyEnv: DEEPSEEK_API_KEY
+    apiKeyEnv: GREENEEK_API_KEY
     retryPolicy:
       mode: always
       backoff:
@@ -44,7 +44,7 @@ kind: "package-reference"
         maxDelayMs: 30000
         jitterRatio: 0.2
 
-- name: '@deepseek-ai/dsh-llm-retry'
+- name: '@greeneek/gnk-llm-retry'
 ```
 
 省略 `retryPolicy` 时使用 normal mode：对 `EMPTY_RESPONSE`、`RATE_LIMIT`、`SERVER`、`TIMEOUT` 与 `TRANSPORT` 最多重试五次，退避从 500 毫秒到 10 秒、带 10% 抖动。normal mode 可以更改其有界预算、合格 code 与退避；always mode 先询问下游恢复，然后无尝试上限地重试每个模型请求失败，只在成功、取消或插件释放时停止。
@@ -97,8 +97,8 @@ kind: "package-reference"
 
 当包级约定不够用时阅读以下页面。它们从服务约定逐步进入拥有重试策略的适配器。
 
-- [dsh-llm 服务](../llm/README.zh.md)——其适配器拥有 `retryPolicy` 的提供方无关服务。
-- [llm-deepseek 适配器](../llm-deepseek/README.zh.md)——带路由级 `retryPolicy` 的提供方适配器。
+- [gnk-llm 服务](../llm/README.zh.md)——其适配器拥有 `retryPolicy` 的提供方无关服务。
+- [llm-greeneek 适配器](../llm-greeneek/README.zh.md)——带路由级 `retryPolicy` 的提供方适配器。
 - [llm-pi-ai 适配器](../llm-pi-ai/README.zh.md)——带逐 profile `retryPolicy` 的多提供方适配器。
 - [LLM 流终止失败](../../../.agents/notes/implemented/architecture/2026-07-29-terminal-llm-stream-failures.zh.md)——失败如何以终止分片到达服务边界。
 - [LLM 流式子系统](../../../docs/subsystems/llm-streaming.zh.md)——`StreamChunk` 协议与适配器约定。

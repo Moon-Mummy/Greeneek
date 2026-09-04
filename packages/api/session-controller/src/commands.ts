@@ -1,22 +1,22 @@
 /** Session commands whose activation policy is explicit at each Remote method. */
 
 import { randomUUID } from 'node:crypto'
-import type { Context } from '@deepseek-ai/cordis'
-import { brandString } from '@deepseek-ai/dsh-brand'
-import type { Agent, ModelSelection as AgentModelSelection } from '@deepseek-ai/dsh-agent'
-import { AttachmentError, admitPromptContent } from '@deepseek-ai/dsh-attachment'
-import type { ImageAttachmentRef } from '@deepseek-ai/dsh-attachment'
+import type { Context } from '@greeneek/cordis'
+import { brandString } from '@greeneek/gnk-brand'
+import type { Agent, ModelSelection as AgentModelSelection } from '@greeneek/gnk-agent'
+import { AttachmentError, admitPromptContent } from '@greeneek/gnk-attachment'
+import type { ImageAttachmentRef } from '@greeneek/gnk-attachment'
 import {
   ReasoningEffortId, createUserMessage, freezeMessage,
-} from '@deepseek-ai/dsh-llm'
-import type { MessageSource } from '@deepseek-ai/dsh-llm'
-import { SessionLogOffset, SessionSeq } from '@deepseek-ai/dsh-session'
-import type { SessionEvent, SessionHeader, SessionId, UserMessage } from '@deepseek-ai/dsh-session'
-import { SessionQueryError, type SessionObservation } from '@deepseek-ai/dsh-session-query'
-import { SessionTitleInvalidError } from '@deepseek-ai/dsh-session-title'
-import { canonicalClientTimeZone } from '@deepseek-ai/dsh-util-time'
-import { RemoteError, remoteErrorOf } from '@deepseek-ai/dsh-typert-protocol'
-import type { Workspace } from '@deepseek-ai/dsh-workspace'
+} from '@greeneek/gnk-llm'
+import type { MessageSource } from '@greeneek/gnk-llm'
+import { SessionLogOffset, SessionSeq } from '@greeneek/gnk-session'
+import type { SessionEvent, SessionHeader, SessionId, UserMessage } from '@greeneek/gnk-session'
+import { SessionQueryError, type SessionObservation } from '@greeneek/gnk-session-query'
+import { SessionTitleInvalidError } from '@greeneek/gnk-session-title'
+import { canonicalClientTimeZone } from '@greeneek/gnk-util-time'
+import { RemoteError, remoteErrorOf } from '@greeneek/gnk-typert-protocol'
+import type { Workspace } from '@greeneek/gnk-workspace'
 import {
   ApiSessionAgentController,
   ApiSessionCwdConflict,

@@ -3,13 +3,13 @@ description: "面向模型的持久 pwsh 工具，供选择、配置或排查跨
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tool-pwsh-persistent
+# @greeneek/gnk-tool-pwsh-persistent
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-tool-pwsh-persistent` 为 agent 提供 `pwsh` 工具，其 PowerShell 状态对拥有它的 agent 跨调用保留：cwd、`$env:` 变量、函数与后台任务都会在命令之间存活。它是 `dsh-tool-bash-persistent` 的 Windows 对应物——相同的持久状态契约，PowerShell 方言。每个 agent 都有自己由按所有者隔离、带 pwsh 方言后端的 PTY 会话支撑的 shell，同一 agent 的命令逐个串行执行。配置选择后端与单条命令的墙钟上限；超时或显式 `exit` 会关闭 shell，下一次调用从全新状态开始。请与 pwsh 方言 terminal 后端（Windows ConPTY 或 POSIX pwsh）以及 `ctx.terminals` 服务一起挂载。
+`gnk-tool-pwsh-persistent` 为 agent 提供 `pwsh` 工具，其 PowerShell 状态对拥有它的 agent 跨调用保留：cwd、`$env:` 变量、函数与后台任务都会在命令之间存活。它是 `gnk-tool-bash-persistent` 的 Windows 对应物——相同的持久状态契约，PowerShell 方言。每个 agent 都有自己由按所有者隔离、带 pwsh 方言后端的 PTY 会话支撑的 shell，同一 agent 的命令逐个串行执行。配置选择后端与单条命令的墙钟上限；超时或显式 `exit` 会关闭 shell，下一次调用从全新状态开始。请与 pwsh 方言 terminal 后端（Windows ConPTY 或 POSIX pwsh）以及 `ctx.terminals` 服务一起挂载。
 
 ## 目录
 
@@ -25,22 +25,22 @@ kind: "package-reference"
 <a id="use-this-package"></a>
 ## 使用本包
 
-在 agent 需要在命令之间保持 PowerShell 状态的任何组合中加载本插件——它是 `dsh-tool-pwsh` 的持久对应物，用于依赖跨调用状态的工作。它注册 `pwsh` 工具，需要 `ctx.tools` 与 `ctx.terminals` 服务，并在执行时需要拥有者 agent 会话。
+在 agent 需要在命令之间保持 PowerShell 状态的任何组合中加载本插件——它是 `gnk-tool-pwsh` 的持久对应物，用于依赖跨调用状态的工作。它注册 `pwsh` 工具，需要 `ctx.tools` 与 `ctx.terminals` 服务，并在执行时需要拥有者 agent 会话。
 
 ### 何时选择
 
-当工作依赖跨调用 PowerShell 状态时选择持久工具；当每条命令都应从已知、干净的环境开始时选择 `dsh-tool-pwsh`。这里不支持需要交互 stdin 的命令——读取输入的前台子进程会一直阻塞到命令超时，随后重置 shell——因此交互工作属于 terminal 工具。
+当工作依赖跨调用 PowerShell 状态时选择持久工具；当每条命令都应从已知、干净的环境开始时选择 `gnk-tool-pwsh`。这里不支持需要交互 stdin 的命令——读取输入的前台子进程会一直阻塞到命令超时，随后重置 shell——因此交互工作属于 terminal 工具。
 
 ### 最小配置
 
-默认的 `shell` 后端通过配置了 `shellDialect: pwsh` 的 `dsh-terminal-bash` 实例启动 PowerShell shell；部署方可以注册其他 pwsh 方言 PTY 后端并按名称选择。
+默认的 `shell` 后端通过配置了 `shellDialect: pwsh` 的 `gnk-terminal-bash` 实例启动 PowerShell shell；部署方可以注册其他 pwsh 方言 PTY 后端并按名称选择。
 
 ```yaml
-- name: '@deepseek-ai/dsh-terminal'
-- name: '@deepseek-ai/dsh-terminal-bash'
+- name: '@greeneek/gnk-terminal'
+- name: '@greeneek/gnk-terminal-bash'
   config:
     shellDialect: pwsh
-- name: '@deepseek-ai/dsh-tool-pwsh-persistent'
+- name: '@greeneek/gnk-tool-pwsh-persistent'
 ```
 
 | 字段 | 默认值 | 含义 |
@@ -50,7 +50,7 @@ kind: "package-reference"
 | `maxOutputChars` | `16,000` | 保留的命令输出字符上限；固定诊断信息在其后追加 |
 | `description` | `Run commands in a persistent PowerShell shell. State, including the current directory and exported environment variables, persists across calls for this agent.` | 面向模型的环境约定；部署方可描述自己的环境 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-pwsh-persistent)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-tool-pwsh-persistent)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### agent 可以依赖什么
 
@@ -72,7 +72,7 @@ kind: "package-reference"
 
 ### 设计理念
 
-- **`dsh-tool-bash-persistent` 的刻意孪生。** 会话注册表、轮询循环与重置约定按设计镜像持久 bash 工具（[pwsh 持久 PTY Agent Note](../../../.agents/notes/implemented/architecture/2026-08-11-pwsh-persistent-pty.zh.md)）。
+- **`gnk-tool-bash-persistent` 的刻意孪生。** 会话注册表、轮询循环与重置约定按设计镜像持久 bash 工具（[pwsh 持久 PTY Agent Note](../../../.agents/notes/implemented/architecture/2026-08-11-pwsh-persistent-pty.zh.md)）。
 - **prompt 函数就绪。** 工具安装自己的 `prompt` 函数，打印 BEL 结尾的 OSC 标记加可打印提示词；OSC 标记携带最后的退出码，可打印提示词让每条命令都能结算，因此模型重定义 `prompt` 会把就绪降级到静默层级。
 - **PSReadLine 回显靠锚定剥离。** PowerShell 会把提交的输入渲染回流中；标记锚定提取与包装源码剥离移除回显，而跨终端宽度换行的包装可能在部分输出结果中留下部分回显。
 - **重置，而非修复。** 任何不确定状态——显式 `exit`、超时、发送失败、中止——都会关闭 shell 并让下一次调用从全新状态开始。
@@ -102,8 +102,8 @@ kind: "package-reference"
 - [terminal-bash 后端](../../terminal/terminal-bash/README.zh.md)——默认后端，配置 `shellDialect: pwsh`。
 - [pwsh 持久 PTY Agent Note](../../../.agents/notes/implemented/architecture/2026-08-11-pwsh-persistent-pty.zh.md)——pwsh 侧会话设计及其理由。
 - [持久 PTY 会话 Agent Note](../../../.agents/notes/implemented/feature/2026-07-16-persistent-pty-sessions.zh.md)——按所有者会话的设计及其理由。
-- [生成的工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-pwsh-persistent)——`pwsh` 参数 schema 的确切内容。
-- [生成的配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-pwsh-persistent)——每个受支持配置字段及其源声明。
+- [生成的工具目录](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-pwsh-persistent)——`pwsh` 参数 schema 的确切内容。
+- [生成的配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-tool-pwsh-persistent)——每个受支持配置字段及其源声明。
 
 -----
 
@@ -114,7 +114,7 @@ kind: "package-reference"
 
 #### 模型看到什么
 
-生成的 [`pwsh` schema](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-pwsh-persistent)，包括配置的 `description`。本插件不贡献独立的系统提示词区段；人设与环境指引由部署方负责。
+生成的 [`pwsh` schema](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-pwsh-persistent)，包括配置的 `description`。本插件不贡献独立的系统提示词区段；人设与环境指引由部署方负责。
 
 #### Token 影响
 

@@ -1,10 +1,10 @@
 /** Browser attachment plugin: fills conversation's composer and image slots. */
-import type { Context as ClientContext } from '@deepseek-ai/cordis'
-import type {} from '@deepseek-ai/dsh-client-ui-chat/client'
-import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
-import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
-import type {} from '@deepseek-ai/dsh-client-ui-tool/client'
-import type {} from '@deepseek-ai/dsh-client-ui-trajectory/client'
+import type { Context as ClientContext } from '@greeneek/cordis'
+import type {} from '@greeneek/gnk-client-ui-chat/client'
+import type {} from '@greeneek/gnk-client-ui-conversation/client'
+import type {} from '@greeneek/gnk-client-ui-renderer/client'
+import type {} from '@greeneek/gnk-client-ui-tool/client'
+import type {} from '@greeneek/gnk-client-ui-trajectory/client'
 import { ComposerAttachments } from './ComposerAttachments.tsx'
 import { MessageImages } from './MessageImages.tsx'
 

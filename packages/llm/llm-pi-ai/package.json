@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-llm-pi-ai",
-  "description": "pi-ai-backed DeepSeek adapter for the DeepSeek Harness LLM seam (design-verification twin of dsh-llm-deepseek)",
+  "name": "@greeneek/gnk-llm-pi-ai",
+  "description": "pi-ai-backed Greeneek adapter for the Greeneek Harness LLM seam (design-verification twin of gnk-llm-greeneek)",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/llm/llm-pi-ai"
   },
   "type": "module",
@@ -27,32 +27,33 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-attachment": "workspace:^",
-    "@deepseek-ai/dsh-authorization": "workspace:^",
-    "@deepseek-ai/dsh-credentials": "workspace:^",
-    "@deepseek-ai/dsh-fs": "workspace:^",
-    "@deepseek-ai/dsh-launch-environment": "workspace:^",
-    "@deepseek-ai/dsh-llm": "workspace:^",
-    "@deepseek-ai/dsh-settings": "workspace:^",
-    "@deepseek-ai/dsh-timeout": "workspace:^"
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-attachment": "workspace:^",
+    "@greeneek/gnk-authorization": "workspace:^",
+    "@greeneek/gnk-credentials": "workspace:^",
+    "@greeneek/gnk-fs": "workspace:^",
+    "@greeneek/gnk-launch-environment": "workspace:^",
+    "@greeneek/gnk-llm": "workspace:^",
+    "@greeneek/gnk-settings": "workspace:^",
+    "@greeneek/gnk-timeout": "workspace:^"
   },
   "dependencies": {
-    "@deepseek-ai/dsh-brand": "workspace:^",
-    "@deepseek-ai/dsh-util-values": "workspace:^",
-    "@deepseek-ai/schemastery": "workspace:^",
-    "@earendil-works/pi-ai": "^0.84.2"
+    "@greeneek/gnk-brand": "workspace:^",
+    "@greeneek/gnk-util-values": "workspace:^",
+    "@greeneek/schemastery": "workspace:^",
+    "@earendil-works/pi-ai": "^0.84.2",
+    "@greeneek/gnk-egress": "workspace:^"
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-attachment": "workspace:^",
-    "@deepseek-ai/dsh-authorization": "workspace:^",
-    "@deepseek-ai/dsh-credentials": "workspace:^",
-    "@deepseek-ai/dsh-fs": "workspace:^",
-    "@deepseek-ai/dsh-launch-environment": "workspace:^",
-    "@deepseek-ai/dsh-llm": "workspace:^",
-    "@deepseek-ai/dsh-llm-deepseek": "workspace:^",
-    "@deepseek-ai/dsh-settings": "workspace:^",
-    "@deepseek-ai/dsh-timeout": "workspace:^"
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-attachment": "workspace:^",
+    "@greeneek/gnk-authorization": "workspace:^",
+    "@greeneek/gnk-credentials": "workspace:^",
+    "@greeneek/gnk-fs": "workspace:^",
+    "@greeneek/gnk-launch-environment": "workspace:^",
+    "@greeneek/gnk-llm": "workspace:^",
+    "@greeneek/gnk-llm-greeneek": "workspace:^",
+    "@greeneek/gnk-settings": "workspace:^",
+    "@greeneek/gnk-timeout": "workspace:^"
   }
 }

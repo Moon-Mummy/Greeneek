@@ -1,19 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import Loader from '@deepseek-ai/cordis-plugin-loader'
-import { agentEvents } from '@deepseek-ai/dsh-agent'
-import AgentLoop from '@deepseek-ai/dsh-agent-loop'
-import { mountAgentLoopTestDependencies } from '@deepseek-ai/dsh-agent-loop-testkit'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import { ToolCallId } from '@deepseek-ai/dsh-llm'
-import { SessionLogOffset, SessionId } from '@deepseek-ai/dsh-session'
-import type { SessionEvent, SessionHeader } from '@deepseek-ai/dsh-session'
+import { Context } from '@greeneek/cordis'
+import Loader from '@greeneek/cordis-plugin-loader'
+import { agentEvents } from '@greeneek/gnk-agent'
+import AgentLoop from '@greeneek/gnk-agent-loop'
+import { mountAgentLoopTestDependencies } from '@greeneek/gnk-agent-loop-testkit'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import { ToolCallId } from '@greeneek/gnk-llm'
+import { SessionLogOffset, SessionId } from '@greeneek/gnk-session'
+import type { SessionEvent, SessionHeader } from '@greeneek/gnk-session'
 import {
   SessionPersistence,
   SessionPersistenceNotFoundError,
   SessionPersistenceRevision,
-} from '@deepseek-ai/dsh-session-persistence'
-import type { SessionAccess, SessionHandle, SessionPersistenceSnapshot } from '@deepseek-ai/dsh-session-persistence'
+} from '@greeneek/gnk-session-persistence'
+import type { SessionAccess, SessionHandle, SessionPersistenceSnapshot } from '@greeneek/gnk-session-persistence'
 import * as toolSchedule from '../src/index.ts'
 
 interface StoredProbeSession {

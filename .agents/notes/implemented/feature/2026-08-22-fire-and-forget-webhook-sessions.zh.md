@@ -6,19 +6,19 @@ Status: implemented
 
 ## Problem
 
-外部仓库事件需要启动普通 DSH 工作，同时不能让每个提供方适配器都理解 Agent preset、Workspace 附加、标题、权限与回调 teardown。GitHub pull request 变为 ready for review 是第一个用途：签名事件可以创建一个评审 Session，用户能在仓库 Workspace 下浏览它。
+外部仓库事件需要启动普通 GNK 工作，同时不能让每个提供方适配器都理解 Agent preset、Workspace 附加、标题、权限与回调 teardown。GitHub pull request 变为 ready for review 是第一个用途：签名事件可以创建一个评审 Session，用户能在仓库 Workspace 下浏览它。
 
 如果把它变成持久自动化引擎，就会在 Session 旁引入第二套生命周期：交付记录、执行状态、重试与去重策略、崩溃恢复，以及 HTTP 接受、提示词接纳、Agent idle 或模型输出中究竟哪个表示完成。所请求能力不需要其中任何含义。
 
 ## Decision
 
-`@deepseek-ai/dsh-webhook` 拥有只有两个操作的 Host runtime：规则通过 `register()` 注册，已验证身份的提供方适配器调用 `dispatch()`。每个匹配回调都作为任意受信任代码独立运行，并返回 `null` 或一个基于 Workspace 的 Session 请求。dispatch 会在回调结算前返回，而 effect disposer 只中止并排空自己拥有的调用。
+`@greeneek/gnk-webhook` 拥有只有两个操作的 Host runtime：规则通过 `register()` 注册，已验证身份的提供方适配器调用 `dispatch()`。每个匹配回调都作为任意受信任代码独立运行，并返回 `null` 或一个基于 Workspace 的 Session 请求。dispatch 会在回调结算前返回，而 effect disposer 只中止并排空自己拥有的调用。
 
 runtime 不存储提供方交付或执行记录。它不重试、不去重、不恢复回调工作、不观察 Agent 状态，也不收集结果。重复交付可能创建另一个 Session。`WebhookDeliveryId` 仍可供有意通过自有状态实现幂等性的规则使用。
 
 ## Provider adapters
 
-身份验证属于提供方适配器。`@deepseek-ai/dsh-webhook-github` 会在注入的 WebServer 上注册一条精确路由，限制未改动的 UTF-8 body，为每次请求解析密钥引用，在解析前验证 `X-Hub-Signature-256`，并把签名无损 JSON 对象交给 runtime。`202` 只表示已验证的内存分发；它先于规则匹配、外部调用和 Session 创建。
+身份验证属于提供方适配器。`@greeneek/gnk-webhook-github` 会在注入的 WebServer 上注册一条精确路由，限制未改动的 UTF-8 body，为每次请求解析密钥引用，在解析前验证 `X-Hub-Signature-256`，并把签名无损 JSON 对象交给 runtime。`202` 只表示已验证的内存分发；它先于规则匹配、外部调用和 Session 创建。
 
 普通 Web 组合保持其 UI/API WebServer 独立。GitHub 示例会把另一个 WebServer 及其适配器挂载到只隔离 `webServer` 的 group 中，因此反向代理可以暴露 webhook 端口，而不暴露 `/api`、WebSocket 或前端文件。
 
@@ -46,7 +46,7 @@ Patch 加载会把插入行中的相对插件名锚定到 patch 文件。因而�
 
 包级测试固定独立回调执行、fire-and-forget HTTP 时序、取消与静止态释放、请求验证、提示词接纳前的 Workspace 附加、rollback、GitHub HMAC 与 body 限制、凭据轮换和精确 Loader 组合。组装 Web 示例会向隔离的第二监听器发送签名 ready-for-review 交付，并记录所得普通 Workspace 对话。
 
-真实 API e2e 测试会通过带 webhook overlay 与隔离监听器的构建产物启动 `dsh web` CLI（命令行界面），只合成带签名的入站 GitHub 交付，通过公开 Web API 观察 Workspace 附加与持久来源信息，并等待真实 DeepSeek 响应。测试不会用 test double 替换任何 DSH 服务、模型适配器或提供方调用。
+真实 API e2e 测试会通过带 webhook overlay 与隔离监听器的构建产物启动 `gnk web` CLI（命令行界面），只合成带签名的入站 GitHub 交付，通过公开 Web API 观察 Workspace 附加与持久来源信息，并等待真实 Greeneek 响应。测试不会用 test double 替换任何 GNK 服务、模型适配器或提供方调用。
 
 源码审计会保持执行记录、重试 timer、去重 map、完成事件与 Agent 状态监听器不存在。
 

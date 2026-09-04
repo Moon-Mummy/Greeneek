@@ -7,42 +7,42 @@
  * `permissions` session projection; the write side ships as the
  * `/permission` command.
  *
- * @module dsh-permission-presets
+ * @module gnk-permission-presets
  */
 
-import { Context, Service } from '@deepseek-ai/cordis'
-import z from '@deepseek-ai/schemastery'
+import { Context, Service } from '@greeneek/cordis'
+import z from '@greeneek/schemastery'
 import { z as zod } from 'zod'
-import type { Session, SessionEvent } from '@deepseek-ai/dsh-session'
-import type { SandboxMode } from '@deepseek-ai/dsh-sandbox'
-import { SANDBOX_MODES, setSandboxMode } from '@deepseek-ai/dsh-sandbox-policy'
+import type { Session, SessionEvent } from '@greeneek/gnk-session'
+import type { SandboxMode } from '@greeneek/gnk-sandbox'
+import { SANDBOX_MODES, setSandboxMode } from '@greeneek/gnk-sandbox-policy'
 // Side-effect type import: declaration-merges `ctx.shell` (the capability fact
 // `sandboxMode` this service reads), without a value dependency on the seam.
-import type {} from '@deepseek-ai/dsh-shell'
-import type { ApprovalPolicy } from '@deepseek-ai/dsh-user-approval'
-import { APPROVAL_POLICIES, setApprovalPolicy } from '@deepseek-ai/dsh-user-approval'
-import type {} from '@deepseek-ai/dsh-settings'
+import type {} from '@greeneek/gnk-shell'
+import type { ApprovalPolicy } from '@greeneek/gnk-user-approval'
+import { APPROVAL_POLICIES, setApprovalPolicy } from '@greeneek/gnk-user-approval'
+import type {} from '@greeneek/gnk-settings'
 // Type-only: resolves the optional projection and command children.
-import type {} from '@deepseek-ai/dsh-session-projection'
-import type {} from '@deepseek-ai/dsh-commands'
+import type {} from '@greeneek/gnk-session-projection'
+import type {} from '@greeneek/gnk-commands'
 import type { PermissionSelect, PresetOption } from './types.ts'
 
 export type * from './types.ts'
 
-declare module '@deepseek-ai/cordis' {
+declare module '@greeneek/cordis' {
   interface Context {
     permissionPresets: PermissionPresetService
   }
 }
 
-declare module '@deepseek-ai/dsh-session-projection/types' {
+declare module '@greeneek/gnk-session-projection/types' {
   interface SessionProjectionStateMap {
     /** Latest logged permission overrides and constructor-seed provenance. */
     permissions: PermissionProjectionState
   }
 }
 
-declare module '@deepseek-ai/dsh-session/types' {
+declare module '@greeneek/gnk-session/types' {
   interface SessionEventMap {
     /**
      * Records the selected preset as durable, log-only user intent. The knob

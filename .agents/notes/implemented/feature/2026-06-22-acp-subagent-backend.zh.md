@@ -10,7 +10,7 @@ subagent seam（[seam Agent Note](2026-06-21-subagent-capability-seam.zh.md)）�
 
 ## 决策
 
-`@deepseek-ai/dsh-subagent-acp` 注册一个 `SubagentProvider`，将每个子 agent 运行在一个通过 spawn 启动的子进程中，并以 ACP *客户端*身份驱动它。它是现有服务端桥接 `@deepseek-ai/dsh-acp`（ACP *agent*）的方向反转孪生体：桥接应答 `initialize`/`newSession`/`prompt`；本后端调用它们并实现 `Client` 回调（`sessionUpdate`、`requestPermission`）。将配置的 spawn 命令指向 `acp-agent` 示例，即可让 harness 与自身进程通信。
+`@greeneek/gnk-subagent-acp` 注册一个 `SubagentProvider`，将每个子 agent 运行在一个通过 spawn 启动的子进程中，并以 ACP *客户端*身份驱动它。它是现有服务端桥接 `@greeneek/gnk-acp`（ACP *agent*）的方向反转孪生体：桥接应答 `initialize`/`newSession`/`prompt`；本后端调用它们并实现 `Client` 回调（`sessionUpdate`、`requestPermission`）。将配置的 spawn 命令指向 `acp-agent` 示例，即可让 harness 与自身进程通信。
 
 ### 每次运行启动全新进程
 
@@ -34,7 +34,7 @@ ACP `StopReason` → harness `SubagentStopReason`：`end_turn`→`completed`、`
 
 ### 安全：清洗子进程环境
 
-子 agent 是独立进程，因此会继承环境变量。形如凭证的环境变量（`/KEY|PASSWORD|SECRET|TOKEN/i`）默认不转发——父 harness 自身的密钥不得隐式泄露到 spawn 启动的进程中（与 bash 执行器采用的策略相同）。子 agent 自己的凭证（它需要模型密钥）通过 `config.env` 显式提供，在清洗之后叠加，因此有意传入的 `DEEPSEEK_API_KEY` 得以保留，而偶然存在的 `AWS_SECRET_ACCESS_KEY` 则不会。子进程的 stderr 继承到父进程的 stderr（诊断信息自然浮现）；spawn 级别的 `error` 事件（如命令不存在时的 ENOENT）被捕获并与 ACP 驱动竞速，因此错误命令的结果为 `error` 而非以未处理错误崩溃父进程。
+子 agent 是独立进程，因此会继承环境变量。形如凭证的环境变量（`/KEY|PASSWORD|SECRET|TOKEN/i`）默认不转发——父 harness 自身的密钥不得隐式泄露到 spawn 启动的进程中（与 bash 执行器采用的策略相同）。子 agent 自己的凭证（它需要模型密钥）通过 `config.env` 显式提供，在清洗之后叠加，因此有意传入的 `GREENEEK_API_KEY` 得以保留，而偶然存在的 `AWS_SECRET_ACCESS_KEY` 则不会。子进程的 stderr 继承到父进程的 stderr（诊断信息自然浮现）；spawn 级别的 `error` 事件（如命令不存在时的 ENOENT）被捕获并与 ACP 驱动竞速，因此错误命令的结果为 `error` 而非以未处理错误崩溃父进程。
 
 ## 测试
 

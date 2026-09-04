@@ -3,13 +3,13 @@ description: "面向模型的 workflow 工具：运行扇出 subagent 的 JavaSc
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tool-workflow
+# @greeneek/gnk-tool-workflow
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-tool-workflow` 把 `workflow` 工具交给模型：以 JavaScript 编排脚本、身份块与可选参数调用它，它会在 `ctx.workflowEngine` 上运行脚本，把工作扇出到多个 subagent，直到脚本的最终值返回。该工具拥有模型侧 schema、系统提示词中的使用指导与结果包络；脚本解析、执行、上限与取消位于引擎之后。执行为前台：父级轮次会阻塞到整个工作流结算，非正常结束是错误，绝不是部分输出。仅当用户明确要求工作流式或大型多 agent 编排时选择它；一两项委派时优先使用普通 subagent 调用。
+`gnk-tool-workflow` 把 `workflow` 工具交给模型：以 JavaScript 编排脚本、身份块与可选参数调用它，它会在 `ctx.workflowEngine` 上运行脚本，把工作扇出到多个 subagent，直到脚本的最终值返回。该工具拥有模型侧 schema、系统提示词中的使用指导与结果包络；脚本解析、执行、上限与取消位于引擎之后。执行为前台：父级轮次会阻塞到整个工作流结算，非正常结束是错误，绝不是部分输出。仅当用户明确要求工作流式或大型多 agent 编排时选择它；一两项委派时优先使用普通 subagent 调用。
 
 ## 目录
 
@@ -44,7 +44,7 @@ kind: "package-reference"
 | `toolName` | `workflow` | 要注册的面向模型工具名称。 |
 | `maxResultChars` | `50000` | 渲染结果上限；更长的 JSON 会被截断并附上提示。 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-workflow)是每个受支持字段的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-tool-workflow)是每个受支持字段的穷尽式真源。
 
 -----
 
@@ -125,7 +125,7 @@ Use the <toolName> tool ONLY when the user explicitly asks for a workflow or for
 
 #### 模型看到什么
 
-工具可见时，已生成的默认 [`workflow` schema](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-workflow) 包含完整的 JavaScript 钩子与元数据约定；`toolName` 可以重命名该定义，模型会提交脚本、元数据与可选 args。
+工具可见时，已生成的默认 [`workflow` schema](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-workflow) 包含完整的 JavaScript 钩子与元数据约定；`toolName` 可以重命名该定义，模型会提交脚本、元数据与可选 args。
 
 #### Token 影响
 

@@ -3,13 +3,13 @@ description: "本次运行环境的不可变快照，记住每个值来自哪一
 kind: "package-library"
 ---
 
-# @deepseek-ai/dsh-launch-environment
+# @greeneek/gnk-launch-environment
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-launch-environment` 在启动时把本次运行的环境冻结为一份不可变快照，并记录每个值来自哪一层。解析一个名字会按可信度从高到低搜索各层——继承的进程环境、调用目录的 `.env`、然后是 Harness 主目录的 `.env`——因此胜出的值总是携带其来源。调用方也可以只从命名的层子集中解析，这是拒绝而非降级：无论之后信任顺序如何变化，被省略的层都不可达。这些值仍会进入 `process.env` 供配置表达式与第三方库使用，但 harness 解析任何内容都不把那份压平视图当作依据。它是一个零依赖库，由产品包直接导入；`cordis.yml` 无法加载它。
+`gnk-launch-environment` 在启动时把本次运行的环境冻结为一份不可变快照，并记录每个值来自哪一层。解析一个名字会按可信度从高到低搜索各层——继承的进程环境、调用目录的 `.env`、然后是 Harness 主目录的 `.env`——因此胜出的值总是携带其来源。调用方也可以只从命名的层子集中解析，这是拒绝而非降级：无论之后信任顺序如何变化，被省略的层都不可达。这些值仍会进入 `process.env` 供配置表达式与第三方库使用，但 harness 解析任何内容都不把那份压平视图当作依据。它是一个零依赖库，由产品包直接导入；`cordis.yml` 无法加载它。
 
 ## 目录
 
@@ -29,10 +29,10 @@ kind: "package-library"
 ### 解析一个值
 
 ```ts
-import { launchEnvironmentOf } from '@deepseek-ai/dsh-launch-environment'
+import { launchEnvironmentOf } from '@greeneek/gnk-launch-environment'
 
-declare const ctx: import('@deepseek-ai/cordis').Context
-const endpoint = launchEnvironmentOf(ctx).get('DEEPSEEK_BASE_URL')?.value
+declare const ctx: import('@greeneek/cordis').Context
+const endpoint = launchEnvironmentOf(ctx).get('GREENEEK_BASE_URL')?.value
 ```
 
 `get(name)` 按可信度从高到低搜索所有层。`getFrom(name, sources)` 只搜索指定的层，不改变这一可信顺序——绝不能接受某一层的调用方不把它列进去，因此后续任何重新排序都无法让它回来。
@@ -43,9 +43,9 @@ const endpoint = launchEnvironmentOf(ctx).get('DEEPSEEK_BASE_URL')?.value
 |---|---|
 | 继承的进程环境 | 启动 shell、CI 任务或容器传入的内容——本次运行的明确意图 |
 | `<invocation cwd>/.env` | harness 被启动于其中的项目；产品信任它配置自己的 agent（智能体） |
-| `$DSH_HOME/.env` | 用户自己的机器级默认值 |
+| `$GNK_HOME/.env` | 用户自己的机器级默认值 |
 
-变量名按平台自身的规则匹配：POSIX 上精确匹配，Windows 上不区分大小写。在 Windows 上做大小写敏感的查找会选错层——shell 里的 `deepseek_api_key` 与项目 `.env` 里的 `DEEPSEEK_API_KEY` 对操作系统而言是同一个变量。
+变量名按平台自身的规则匹配：POSIX 上精确匹配，Windows 上不区分大小写。在 Windows 上做大小写敏感的查找会选错层——shell 里的 `greeneek_api_key` 与项目 `.env` 里的 `GREENEEK_API_KEY` 对操作系统而言是同一个变量。
 
 ### 没有启动器引导这棵树时
 
@@ -87,7 +87,7 @@ const endpoint = launchEnvironmentOf(ctx).get('DEEPSEEK_BASE_URL')?.value
 
 - [boot 包](../../boot/app-boot/README.zh.md)——在任何配置项挂载之前填充 `ctx.launchEnvironment` 的启动器。
 - [凭据存储](../../credentials/credentials-local/README.zh.md)——针对快照各层解析已存储的凭据。
-- [DeepSeek 提供方](../../llm/llm-deepseek/README.zh.md)——通过启动环境读取提供方配置。
+- [Greeneek 提供方](../../llm/llm-greeneek/README.zh.md)——通过启动环境读取提供方配置。
 
 -----
 
@@ -98,7 +98,7 @@ const endpoint = launchEnvironmentOf(ctx).get('DEEPSEEK_BASE_URL')?.value
 
 这些限制说明快照何时不是安全边界。它们是当前包约束，不是任务积压。
 
-- **快照不是子进程边界**——每一层同样会被物化进 `process.env`，因此项目里的普通变量会按 [`dsh-subprocess`](../../subprocess/subprocess/README.zh.md) 的清洗规则抵达子进程；产品启动器的 [`.env` 约定](../../boot/app-boot/README.zh.md) 会在物化之前拒绝 bootstrap 变量。
+- **快照不是子进程边界**——每一层同样会被物化进 `process.env`，因此项目里的普通变量会按 [`gnk-subprocess`](../../subprocess/subprocess/README.zh.md) 的清洗规则抵达子进程；产品启动器的 [`.env` 约定](../../boot/app-boot/README.zh.md) 会在物化之前拒绝 bootstrap 变量。
 - **没有按工作区划分的层**——项目层是调用目录，在启动时固定；之后在 Web UI 中选择的工作区不贡献任何内容，这是刻意的，因为跟随它等于让模型自己的工作区在会话中途改变 harness 环境。
 
 <a id="dev-note"></a>

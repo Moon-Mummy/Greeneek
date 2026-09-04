@@ -16,7 +16,7 @@ Status: implemented
 
 编辑器比「可触达」更糟——它是破坏性的。它读到的是脱敏后的 descriptor，后者按构造省略了 `role('secret')` 字段。清空其中一个字段，会用这份脱敏副本重建整个用户分节并发出 `settings.replace`，于是一个协议从未回传过的已存字面 `apiKey` 被顺带删除。这一点被直接复现：输入 `{baseURL, reasoning}`，输出时 `apiKey` 消失。删除整行走的是同一条路径。而且没有任何东西携带版本，因此两个标签页编辑同一个 namespace 会静默互相覆盖；seam 的逐 namespace 写队列只排定写入次序，分辨不出一个持有新鲜快照的写方与一个重放陈旧快照的写方。
 
-另有三个较小的缺陷与之并列。`llm/adapters-updated` 的文档写着观察者失败会被收容，却只捕获同步失败，于是异步 listener 的 rejection 作为 unhandled rejection 逃逸。llm-deepseek 更换重试策略时，先对其注册执行 dispose（资源释放）、再重新注册，在两者之间发布了一个空路由集——观察者会看到该提供方消失又回来，尽管注释宣称不存在这样的空窗。还有，页面做凭据增强时的传输层 rejection 会逃出 `load()`，把页面卡在 `loading` 且不显示任何错误。
+另有三个较小的缺陷与之并列。`llm/adapters-updated` 的文档写着观察者失败会被收容，却只捕获同步失败，于是异步 listener 的 rejection 作为 unhandled rejection 逃逸。llm-greeneek 更换重试策略时，先对其注册执行 dispose（资源释放）、再重新注册，在两者之间发布了一个空路由集——观察者会看到该提供方消失又回来，尽管注释宣称不存在这样的空窗。还有，页面做凭据增强时的传输层 rejection 会逃出 `load()`，把页面卡在 `loading` 且不显示任何错误。
 
 ## 决策
 

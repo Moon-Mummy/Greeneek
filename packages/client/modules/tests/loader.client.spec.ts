@@ -1,19 +1,19 @@
 // @vitest-environment jsdom
-import { Context } from '@deepseek-ai/cordis'
+import { Context } from '@greeneek/cordis'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   apply, createClientModuleSystem, parseBootManifest,
   type BootModuleRow, type ClientBundleRegistration, type ClientModuleCreateOptions,
-  type ClientModuleLoader, type ClientModuleLoaderTarget, type DshWindow,
+  type ClientModuleLoader, type ClientModuleLoaderTarget, type GnkWindow,
 } from '../src/client/index.ts'
 
-const MODULES_ID = '@deepseek-ai/dsh-client-modules'
+const MODULES_ID = '@greeneek/gnk-client-modules'
 
 const comboUrl = (ids: readonly string[], rev: string): string =>
   `/plugins/??${ids.map(id => `${id}/client.js`).join(',')}&rev=${rev}`
 const BOOTSTRAP_URL = comboUrl([MODULES_ID], 'bootstrap')
 const APPLICATION_URL = comboUrl(['a', 'b'], 'application')
-const win = globalThis as DshWindow
+const win = globalThis as GnkWindow
 const bootstrapExports = { apply, createClientModuleSystem }
 
 type Factory = ClientBundleRegistration['factory']
@@ -86,7 +86,7 @@ function bench(
       : url === APPLICATION_URL
         ? entries.filter(entry => entry.initialUrl === APPLICATION_URL).map(entry => entry.id)
         : undefined
-    const parsed = new URL(url, 'http://dsh.invalid')
+    const parsed = new URL(url, 'http://gnk.invalid')
     const combo = parsed.search.startsWith('??') ? parsed.search.slice(2).split('&', 1)[0] : undefined
     const singleId = combo?.split(',').length === 1 && combo.endsWith('/client.js')
       ? combo.slice(0, -'/client.js'.length)

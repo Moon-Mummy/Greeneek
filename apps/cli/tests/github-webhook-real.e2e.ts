@@ -1,4 +1,4 @@
-/** Real CLI and DeepSeek evidence for a GitHub webhook-created Session. */
+/** Real CLI and Greeneek evidence for a GitHub webhook-created Session. */
 
 import type { ChildProcess } from 'node:child_process'
 import { spawn } from 'node:child_process'
@@ -11,7 +11,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { setTimeout as delay } from 'node:timers/promises'
 import { fileURLToPath } from 'node:url'
-import { decodeStorageRecord } from '@deepseek-ai/dsh-session/chunk-rows'
+import { decodeStorageRecord } from '@greeneek/gnk-session/chunk-rows'
 import { describe, expect, it } from 'vitest'
 import WebSocket from 'ws'
 
@@ -23,7 +23,7 @@ const OVERLAY = fileURLToPath(new URL(
 ))
 const SECRET = 'github-webhook-real-e2e-secret'
 const DELIVERY = 'github-webhook-real-e2e-delivery'
-const MARKER = 'DSH_GITHUB_WEBHOOK_REAL_E2E_OK'
+const MARKER = 'GNK_GITHUB_WEBHOOK_REAL_E2E_OK'
 const TITLE = 'GitHub webhook real e2e'
 const authenticatedCookies = new Map<string, Promise<{ origin: string; cookie: string }>>()
 
@@ -35,7 +35,7 @@ function authenticatedWeb(launchUrl: string): Promise<{ origin: string; cookie: 
     const response = await fetch(launchUrl, { redirect: 'manual' })
     const setCookie = response.headers.get('set-cookie')
     if (response.status !== 303 || setCookie === null) {
-      throw new Error(`dsh web authentication returned HTTP ${String(response.status)}`)
+      throw new Error(`gnk web authentication returned HTTP ${String(response.status)}`)
     }
     return { origin: new URL(launchUrl).origin, cookie: setCookie.split(';', 1)[0]! }
   })()
@@ -97,12 +97,12 @@ function observeProcess(child: ChildProcess): ProcessObservation {
     rejectReady = reject
   })
   const timer = setTimeout(() => {
-    if (!settled) rejectReady(new Error(`dsh web did not become ready within 90s:\n${output}`))
+    if (!settled) rejectReady(new Error(`gnk web did not become ready within 90s:\n${output}`))
   }, 90_000)
   timer.unref()
   const append = (chunk: Buffer | string): void => {
     output = `${output}${String(chunk)}`.slice(-100_000)
-    const match = /dsh web: (http:\/\/[^\s]+)/u.exec(output)
+    const match = /gnk web: (http:\/\/[^\s]+)/u.exec(output)
     if (settled || match?.[1] === undefined) return
     settled = true
     clearTimeout(timer)
@@ -114,7 +114,7 @@ function observeProcess(child: ChildProcess): ProcessObservation {
     if (!settled) rejectReady(error)
   })
   child.once('exit', (code) => {
-    if (!settled) rejectReady(new Error(`dsh web exited before readiness (code ${String(code)}):\n${output}`))
+    if (!settled) rejectReady(new Error(`gnk web exited before readiness (code ${String(code)}):\n${output}`))
   })
   return { ready, text: () => output }
 }
@@ -284,7 +284,7 @@ async function eventually<T>(
   let lastError: unknown
   while (Date.now() < deadline) {
     if (child.exitCode !== null) {
-      throw new Error(`dsh web exited while waiting for ${label} (code ${String(child.exitCode)}):\n${processOutput()}`)
+      throw new Error(`gnk web exited while waiting for ${label} (code ${String(child.exitCode)}):\n${processOutput()}`)
     }
     try {
       lastValue = await probe()
@@ -343,10 +343,10 @@ async function sendGitHubDelivery(origin: string): Promise<Response> {
   const body = JSON.stringify({
     action: 'ready_for_review',
     number: 4242,
-    repository: { full_name: 'deepseek-harness/deepseek-harness' },
+    repository: { full_name: 'greeneek-harness/greeneek-harness' },
     pull_request: {
       title: 'Real CLI webhook e2e',
-      html_url: 'https://github.com/deepseek-harness/deepseek-harness/pull/4242',
+      html_url: 'https://github.com/greeneek/greeneek-harness/pull/4242',
       draft: false,
       user: { login: 'octocat' },
       base: { ref: 'master', sha: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' },
@@ -366,10 +366,10 @@ async function sendGitHubDelivery(origin: string): Promise<Response> {
   })
 }
 
-describe.skipIf(!process.env.DEEPSEEK_API_KEY)('GitHub webhook through the real dsh CLI and model', () => {
+describe.skipIf(!process.env.GREENEEK_API_KEY)('GitHub webhook through the real gnk CLI and model', () => {
   it('creates, attaches, prompts, and completes a Workspace Session', async () => {
     expect(existsSync(BUILT_BIN), `missing built CLI ${BUILT_BIN}; run pnpm run build:official`).toBe(true)
-    const root = await mkdtemp(join(tmpdir(), 'dsh-github-webhook-real-'))
+    const root = await mkdtemp(join(tmpdir(), 'gnk-github-webhook-real-'))
     const workspacePath = join(root, 'workspace')
     await mkdir(workspacePath)
     const canonicalWorkspacePath = await realpath(workspacePath)
@@ -385,13 +385,13 @@ describe.skipIf(!process.env.DEEPSEEK_API_KEY)('GitHub webhook through the real 
       cwd: root,
       env: {
         ...process.env,
-        DSH_AGENTS_HOME: join(root, '.agents'),
-        DSH_GITHUB_E2E_MARKER: MARKER,
-        DSH_GITHUB_E2E_WORKSPACE: workspacePath,
-        DSH_GITHUB_WEBHOOK_PORT: String(webhookPort),
-        DSH_GITHUB_WEBHOOK_SECRET: SECRET,
-        DSH_HOME: join(root, '.dsh'),
-        DSH_TELEMETRY_DISABLED: '1',
+        GNK_AGENTS_HOME: join(root, '.agents'),
+        GNK_GITHUB_E2E_MARKER: MARKER,
+        GNK_GITHUB_E2E_WORKSPACE: workspacePath,
+        GNK_GITHUB_WEBHOOK_PORT: String(webhookPort),
+        GNK_GITHUB_WEBHOOK_SECRET: SECRET,
+        GNK_HOME: join(root, '.gnk'),
+        GNK_TELEMETRY_DISABLED: '1',
       },
       stdio: ['ignore', 'pipe', 'pipe'],
     })
@@ -469,7 +469,7 @@ describe.skipIf(!process.env.DEEPSEEK_API_KEY)('GitHub webhook through the real 
       const completed = await eventually(
         child,
         observation.text,
-        'a real DeepSeek assistant response',
+        'a real Greeneek assistant response',
         async () => await history(baseUrl, sessionId),
         page => assistantText(page).includes(MARKER),
         150_000,

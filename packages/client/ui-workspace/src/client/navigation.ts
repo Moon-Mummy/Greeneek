@@ -1,15 +1,15 @@
 /** Workspace archive and directory UI capability. */
 
-import { Service, type Context } from '@deepseek-ai/cordis'
-import type { ClientRemote, DirectoryListing, RemoteFailure } from '@deepseek-ai/dsh-api-remotes/client'
+import { Service, type Context } from '@greeneek/cordis'
+import type { ClientRemote, DirectoryListing, RemoteFailure } from '@greeneek/gnk-api-remotes/client'
 import type {
   ISessions,
   SessionListState,
-} from '@deepseek-ai/dsh-api-session-controller/client'
+} from '@greeneek/gnk-api-session-controller/client'
 import type {
   IWorkspaces, WorkspaceId, WorkspaceView,
-} from '@deepseek-ai/dsh-api-workspace-controller/client'
-import type { SessionId } from '@deepseek-ai/dsh-session/types'
+} from '@greeneek/gnk-api-workspace-controller/client'
+import type { SessionId } from '@greeneek/gnk-session/types'
 
 /** Workspace archive and directory operations consumed by Client UI domains. */
 export interface UiWorkspace {
@@ -50,7 +50,7 @@ export interface UiWorkspace {
   createDirectory(path: string, name: string): Promise<string>
 }
 
-declare module '@deepseek-ai/cordis' {
+declare module '@greeneek/cordis' {
   interface Context {
     /** Cross-Controller Workspace navigation and directory UI capability. */
     uiWorkspace: UiWorkspace

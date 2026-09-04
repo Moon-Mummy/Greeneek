@@ -3,13 +3,13 @@ description: "面向 Host 与浏览器 Client Cordis 运行时的实验性 Chrom
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-experimental-inspector
+# @greeneek/gnk-experimental-inspector
 
 [English](README.md) | 中文
 
 ## 概述
 
-使用这个实验性 Inspector，可以在 Chrome DevTools 中检查一个运行中的 dsh Host 及其浏览器 Client。它提供 Host 与 Client Console context、Host Sources 与调试、Host fetch 采集和共享 Cordis 树，并让 Worker 独占全部 CDP 状态。
+使用这个实验性 Inspector，可以在 Chrome DevTools 中检查一个运行中的 gnk Host 及其浏览器 Client。它提供 Host 与 Client Console context、Host Sources 与调试、Host fetch 采集和共享 Cordis 树，并让 Worker 独占全部 CDP 状态。
 
 本包为私有包，不进入正式发布。Worker 不访问实时 Cordis 对象；共享 Host/Client collector 会在传输前把它们投影成已验证 snapshot。Cordis 还负责插件组合、注册 `ctx.inspector`、注入 bootstrap 和资源释放。
 
@@ -30,7 +30,7 @@ kind: "package-reference"
 <a id="runtime-layout"></a>
 ## 运行时布局
 
-Host 插件启动 Worker 并连接专用 `MessagePort`。Client 插件读取注入的 `globalThis.__DSH_INSPECTOR__` bootstrap，直接向 Worker 打开一条独立、带鉴权的 WebSocket。Chrome DevTools 连接 Worker 的 CDP WebSocket。每条 DevTools 连接在 Worker 中独占一个连接 Host 主线程的 `node:inspector.Session`，因此 Host JavaScript 暂停时，Host Console 求值、Sources、断点和 resume 仍然可用。
+Host 插件启动 Worker 并连接专用 `MessagePort`。Client 插件读取注入的 `globalThis.__GNK_INSPECTOR__` bootstrap，直接向 Worker 打开一条独立、带鉴权的 WebSocket。Chrome DevTools 连接 Worker 的 CDP WebSocket。每条 DevTools 连接在 Worker 中独占一个连接 Host 主线程的 `node:inspector.Session`，因此 Host JavaScript 暂停时，Host Console 求值、Sources、断点和 resume 仍然可用。
 
 源码树遵循这些执行环境：`client/` 与 `host/` 提供镜像的 adapter entry path，`worker/` 只包含 Worker thread orchestration 与 Chrome protocol 状态，`shared/` 包含与环境无关的 Cordis 和 network model、规范化 realm backend interface 及内部 bridge protocol。Worker 侧 Client 与 Host adapter 镜像放在 `worker/realms/` 下；其中的 Client adapter 仍然在 Worker 中执行。
 
@@ -72,7 +72,7 @@ Host 插件注入 `webServer`，接受以下字段：
 | `maxCordisNodes` | `2048` | 一个 realm snapshot 截断前允许的 Context 与 Fiber 节点数 |
 | `maxDisconnectedCordisTrees` | `8` | 作为非实时 snapshot 保留的最近断联 realm 树数量 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-experimental-inspector)是全部已接受字段及其声明的详尽来源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-experimental-inspector)是全部已接受字段及其声明的详尽来源。
 
 Worker 监听后，Host 会记录一个 `devtools://` URL。同一个 Worker 提供 `/json`、`/json/list`、`/json/version`、`/devtools/page/<id>` target WebSocket 和 `/ingest` Client source。
 
@@ -82,8 +82,8 @@ Worker 监听后，Host 会记录一个 `devtools://` URL。同一个 Worker 提
 两个插件面都提供同一个服务：
 
 ```ts
-import type { Context } from '@deepseek-ai/cordis'
-import type { InspectorJsonValue } from '@deepseek-ai/dsh-experimental-inspector'
+import type { Context } from '@greeneek/cordis'
+import type { InspectorJsonValue } from '@greeneek/gnk-experimental-inspector'
 
 declare const ctx: Context
 declare const topic: string
@@ -100,7 +100,7 @@ await ctx.inspector.cordis.getTree()
 
 Elements document 包含固定的 `<host>` 与 `<clients>` 容器。`<host>` 包含 Host root Context；`<clients>` 为每个 Client source 包含一个 `<client>`，每个 `<client>` 再包含该 realm 的 root Context。Cordis root Fiber 不显示。其他 Fiber 都是 `fiber.parent` 的子节点，并包含唯一一个表示 `fiber.ctx` 的 Context 子节点；Fiber 只携带 `uid="<Cordis Fiber.uid>"`，Context element 不携带 attribute。只有 Context 的 `extend()`、`isolate()` 与 `intercept()` 层仍然是直接 Context 后代。
 
-Host 与 Client 发布同一种嵌套 `CordisTreeSnapshot` 类型。Context 与 Fiber 节点携带用于 realm-local 对象查询的不透明 object handle；Fiber 还携带 Cordis `uid`。Worker 把这些 realm snapshot 组合成一棵 `{ host, clients }` inspection tree。Worker 按 source generation 分配 `BackendNodeId`；每条 DevTools 连接分配自己的 `NodeId`；`DOM.resolveNode` 请求所属 Host 或 Client Runtime 生成连接本地 `RemoteObjectId`。`DOM.requestNode` 把该 object id 映射回同一个 Elements 节点。`ctx.inspector.cordis.getTree()` 与 `DSHInspector.getCordisTree` 读取不含 routing handle 或 CDP id 的 detached consumer-neutral tree。
+Host 与 Client 发布同一种嵌套 `CordisTreeSnapshot` 类型。Context 与 Fiber 节点携带用于 realm-local 对象查询的不透明 object handle；Fiber 还携带 Cordis `uid`。Worker 把这些 realm snapshot 组合成一棵 `{ host, clients }` inspection tree。Worker 按 source generation 分配 `BackendNodeId`；每条 DevTools 连接分配自己的 `NodeId`；`DOM.resolveNode` 请求所属 Host 或 Client Runtime 生成连接本地 `RemoteObjectId`。`DOM.requestNode` 把该 object id 映射回同一个 Elements 节点。`ctx.inspector.cordis.getTree()` 与 `GNKInspector.getCordisTree` 读取不含 routing handle 或 CDP id 的 detached consumer-neutral tree。
 
 节点按 DevTools 连接做深度受限下发：调用方省略 `depth` 时 `DOM.getDocument` 提供三层 document，被扣留的层级通过 `childNodeCount` 声明数量，展开时经 `DOM.requestChildNodes` 获取（`depth: -1` 取整棵子树）。经 `DOM.performSearch`、`DOM.requestNode` 或 `DOM.pushNodesByBackendIdsToFrontend` 流出的 NodeId 会先把尚未下发的祖先层级以 `DOM.setChildNodes` event 推送出去。
 

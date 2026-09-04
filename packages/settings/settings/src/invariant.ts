@@ -1,13 +1,13 @@
 /**
- * Package-owned invariant companion for `@deepseek-ai/dsh-settings`.
- * @module @deepseek-ai/dsh-settings/invariant
+ * Package-owned invariant companion for `@greeneek/gnk-settings`.
+ * @module @greeneek/gnk-settings/invariant
  */
 
-import type { Context } from '@deepseek-ai/cordis'
-import type { InvariantFailure, InvariantInstaller } from '@deepseek-ai/dsh-invariants'
-import { deepEqualJson } from '@deepseek-ai/dsh-util-values'
+import type { Context } from '@greeneek/cordis'
+import type { InvariantFailure, InvariantInstaller } from '@greeneek/gnk-invariants'
+import { deepEqualJson } from '@greeneek/gnk-util-values'
 
-const PACKAGE_NAME = '@deepseek-ai/dsh-settings'
+const PACKAGE_NAME = '@greeneek/gnk-settings'
 
 /** Cordis companion plugin name. */
 export const name = 'settings-invariant'

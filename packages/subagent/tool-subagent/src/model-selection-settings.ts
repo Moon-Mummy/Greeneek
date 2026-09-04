@@ -1,15 +1,15 @@
 /** Host-owned opt-in setting for model-selectable subagent delegation. */
 
-import { Context, Service } from '@deepseek-ai/cordis'
-import z from '@deepseek-ai/schemastery'
-import type {} from '@deepseek-ai/dsh-settings'
+import { Context, Service } from '@greeneek/cordis'
+import z from '@greeneek/schemastery'
+import type {} from '@greeneek/gnk-settings'
 import {
   AllowedModelRouteSchema,
   assertAllowedModelRoutes,
   type AllowedModelRoute,
 } from './model-selection.ts'
 
-declare module '@deepseek-ai/cordis' {
+declare module '@greeneek/cordis' {
   interface Context {
     /** User preference sampled when a new Agent receives its delegation tools. */
     subagentModelSelection: SubagentModelSelectionConfig

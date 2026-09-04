@@ -1,13 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import { Session, SessionId } from '@deepseek-ai/dsh-session'
-import AgentRegistry, { agentEvents, Inbox, type Agent } from '@deepseek-ai/dsh-agent'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import { createUserMessage } from '@deepseek-ai/dsh-llm'
-import { ShellExecutor } from '@deepseek-ai/dsh-shell'
-import type { ShellExecRequest, ShellExecSpec, ShellProcess, ShellRunResult } from '@deepseek-ai/dsh-shell'
-import * as tmuxContext from '@deepseek-ai/dsh-tmux-context'
-import type { Config } from '@deepseek-ai/dsh-tmux-context'
+import { Context } from '@greeneek/cordis'
+import { Session, SessionId } from '@greeneek/gnk-session'
+import AgentRegistry, { agentEvents, Inbox, type Agent } from '@greeneek/gnk-agent'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import { createUserMessage } from '@greeneek/gnk-llm'
+import { ShellExecutor } from '@greeneek/gnk-shell'
+import type { ShellExecRequest, ShellExecSpec, ShellProcess, ShellRunResult } from '@greeneek/gnk-shell'
+import * as tmuxContext from '@greeneek/gnk-tmux-context'
+import type { Config } from '@greeneek/gnk-tmux-context'
 
 const SIGNAL = new AbortController().signal
 

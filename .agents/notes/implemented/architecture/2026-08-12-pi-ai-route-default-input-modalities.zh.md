@@ -10,7 +10,7 @@ Status: implemented
 
 Harness 把缺失的模态当作否定能力，并有三个准入点在构造任何请求之前就依据它行动：模型选择拒绝切换进已含图片的会话，prompt 准入拒绝图片，`read_image` 拒绝读取。它们的诊断让用户去选一个支持图片的模型——这条建议没有可达的指向对象，因为没有任何配置键能让手写模型变得支持图片。这条路封死在元数据上而非能力上：请求转换器和每种 pi-ai 线路协议都能携带图片，`llm-pi-ai` 自身的流前置检查才是唯一会拦下它的东西。
 
-源码中把这一假定论证为适配器的真实能力而非部署选择，而 [[2026-08-03-pi-ai-declared-provider-catalog]] 在决定配置面公开哪些 `Model` 字段时记录了同一套论证（「没有任何读取方：…… `context.ts` 只保留文本块」）。该论证描述的是 DeepSeek chat-completions 适配器——它的序列化器确实拒绝 image block——对 pi-ai 路由从来就不成立。本 note 仅在模态一项上取代那一条；定价在那里依然因其自身、仍然成立的理由保持关闭。
+源码中把这一假定论证为适配器的真实能力而非部署选择，而 [[2026-08-03-pi-ai-declared-provider-catalog]] 在决定配置面公开哪些 `Model` 字段时记录了同一套论证（「没有任何读取方：…… `context.ts` 只保留文本块」）。该论证描述的是 Greeneek chat-completions 适配器——它的序列化器确实拒绝 image block——对 pi-ai 路由从来就不成立。本 note 仅在模态一项上取代那一条；定价在那里依然因其自身、仍然成立的理由保持关闭。
 
 ## 决策
 
@@ -24,7 +24,7 @@ Harness 把缺失的模态当作否定能力，并有三个准入点在构造任
 
 **没有任何配置界面编辑 `input`。** 它和 `compat`、`reasoningEfforts`、`thinkingBudgets`、`headers` 一样是 settings 文档字段，而模型列表编辑器仍是一张只覆盖 id、名称和两个容量的手写表单。这不会带来持久代价，因为那张卡片本来就是按“承载自己并不编辑的字段”建造的：它的行 patch 会先展开已存储的行再应用改动，而采纳候选时已有行优先于重新发现的候选，因此手写的 `input` 在两条路径上都能存活。
 
-DeepSeek 直接适配器拥有独立的精确模型目录。支持视觉的条目声明图片输入，纯文本模型和未列出的透传 ID 保持纯文本。
+Greeneek 直接适配器拥有独立的精确模型目录。支持视觉的条目声明图片输入，纯文本模型和未列出的透传 ID 保持纯文本。
 
 ## 备选方案
 
@@ -50,4 +50,4 @@ DeepSeek 直接适配器拥有独立的精确模型目录。支持视觉的条�
 
 `config.spec.ts` 负责 schema 边界：两个层级上的未知模态拒绝、路由空列表被 schema 接受而由 settings seam 真正运行的命名空间校验器拒绝，以及继承规则所倚赖的「缺省数组物化为 `[]`」这一事实。
 
-没有任何无密钥 snapshot 通道会跑 pi-ai 路由：录制会话语料驱动的是 `dsh-llm-replay`，它在自己的配置里直接声明模态，而 pi-ai 路由需要一个真实端点，其端口是静态 `cordis.yml` 无法写出的。本次变更所供给的准入点由 [`read-image`](../../../../snapshots/session/read-image/) 与 [`read-image-text-route`](../../../../snapshots/session/read-image-text-route/)覆盖且不受影响——改变的是某个适配器报告什么，而非门禁如何读取它。
+没有任何无密钥 snapshot 通道会跑 pi-ai 路由：录制会话语料驱动的是 `gnk-llm-replay`，它在自己的配置里直接声明模态，而 pi-ai 路由需要一个真实端点，其端口是静态 `cordis.yml` 无法写出的。本次变更所供给的准入点由 [`read-image`](../../../../snapshots/session/read-image/) 与 [`read-image-text-route`](../../../../snapshots/session/read-image-text-route/)覆盖且不受影响——改变的是某个适配器报告什么，而非门禁如何读取它。

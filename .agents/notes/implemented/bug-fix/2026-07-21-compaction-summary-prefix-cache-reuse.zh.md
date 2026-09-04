@@ -18,7 +18,7 @@ Status: implemented
 
 ### 指令是一条尾部 user 消息
 
-`COMPACTION_INSTRUCTION` 以 "You are now acting as a compaction engine…" 开头，指示模型浓缩*上方的对话*。它保留先前检查点的结构化标题，并在其新位置上新增了两条前置系统提示词此前不需要的规则：不要提及摘要请求，以及只输出检查点文本而不调用任何工具。被遮蔽区域总是结束在工具配对平衡的边界上，因此在其后追加一条 `user` 消息，对 OpenAI 兼容适配器和 DeepSeek 适配器而言是合法的消息排序。
+`COMPACTION_INSTRUCTION` 以 "You are now acting as a compaction engine…" 开头，指示模型浓缩*上方的对话*。它保留先前检查点的结构化标题，并在其新位置上新增了两条前置系统提示词此前不需要的规则：不要提及摘要请求，以及只输出检查点文本而不调用任何工具。被遮蔽区域总是结束在工具配对平衡的边界上，因此在其后追加一条 `user` 消息，对 OpenAI 兼容适配器和 Greeneek 适配器而言是合法的消息排序。
 
 ### 缓存复用是尽力而为，正确性则有保证
 
@@ -33,9 +33,9 @@ Status: implemented
 
 ## 后果
 
-- **`dsh-compaction-basic`** 拥有 `SummarizationInput`；受保护的 `summarize(input, agent, signal?)` 钩子签名发生变化（发布前可接受），并且 `region.ts` 新增了 `buildSummarizationInput`，它在 header 前缀之后对被遮蔽的 seq 折叠 `deriveEventMessage`。
-- **移除无用的渲染表面。** 旧的拍平路径（`renderTranscript` / `renderContentBlocks` 及其在 `dsh-compaction` 中的 spec）已无消费方，连同其导出一并删除。
-- **README 的 Model Experience** 现在把 `dsh-compaction-basic` 的辅助请求记述为回放的前缀加上一条尾部压缩指令消息，并把其 KV Cache 效果记述为复用已预热的对话前缀。
+- **`gnk-compaction-basic`** 拥有 `SummarizationInput`；受保护的 `summarize(input, agent, signal?)` 钩子签名发生变化（发布前可接受），并且 `region.ts` 新增了 `buildSummarizationInput`，它在 header 前缀之后对被遮蔽的 seq 折叠 `deriveEventMessage`。
+- **移除无用的渲染表面。** 旧的拍平路径（`renderTranscript` / `renderContentBlocks` 及其在 `gnk-compaction` 中的 spec）已无消费方，连同其导出一并删除。
+- **README 的 Model Experience** 现在把 `gnk-compaction-basic` 的辅助请求记述为回放的前缀加上一条尾部压缩指令消息，并把其 KV Cache 效果记述为复用已预热的对话前缀。
 - **带框架的检查点输出未改变**，因此落地的 `user/message` 和每个对话请求快照都不受影响；只有辅助请求的形状发生了变化。
 
 ## 测试

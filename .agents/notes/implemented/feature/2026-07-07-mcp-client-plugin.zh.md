@@ -8,13 +8,13 @@ Status: implemented
 
 harness 此前无法消费 MCP（Model Context Protocol）生态中的工具。MCP 是工具服务器的新兴标准——GitHub、文件系统、数据库、代码搜索以及数百个社区服务器都通过 MCP 暴露工具。用户希望将 harness 指向一个或多个 MCP 服务器，让其工具以原生的模型可见工具形式出现，而无需为每个服务器编写胶水代码。
 
-`ToolRuntime` 已经接受原始 JSON Schema 工具定义（`dsh-tools` README 中有记录：「Raw JSON-Schema tool definitions (from MCP servers) are still accepted by `ToolRuntime.register()` directly」），扩展实操手册（cookbook）也勾勒了预期模式（「MCP | one plugin per server: discover tools → `ctx.tools.register()`」）。基础设施已就绪，缺的是桥接插件。
+`ToolRuntime` 已经接受原始 JSON Schema 工具定义（`gnk-tools` README 中有记录：「Raw JSON-Schema tool definitions (from MCP servers) are still accepted by `ToolRuntime.register()` directly」），扩展实操手册（cookbook）也勾勒了预期模式（「MCP | one plugin per server: discover tools → `ctx.tools.register()`」）。基础设施已就绪，缺的是桥接插件。
 
 ## 决策
 
 ### 包
 
-单个包 `@deepseek-ai/dsh-mcp-client`，位于 `packages/mcp/mcp-client/`。不做能力 seam 的三包拆分——可预见范围内不会有第二种 MCP 客户端实现，且约定是「不要预防性拆分」（[能力 seam Agent Note](../architecture/2026-06-13-capability-seams.zh.md)）。
+单个包 `@greeneek/gnk-mcp-client`，位于 `packages/mcp/mcp-client/`。不做能力 seam 的三包拆分——可预见范围内不会有第二种 MCP 客户端实现，且约定是「不要预防性拆分」（[能力 seam Agent Note](../architecture/2026-06-13-capability-seams.zh.md)）。
 
 ### SDK
 
@@ -26,7 +26,7 @@ harness 此前无法消费 MCP（Model Context Protocol）生态中的工具。M
 
 ### 插件形态
 
-命名空间插件（具名导出 `name`/`inject`/`Config`/`apply`，无 `export default`）。`inject: ['tools']`。每个 MCP 服务器对应 `cordis.yml` 中的一个插件实例——同一个包以不同配置加载 N 次，与 `dsh-tool-subagent` 相同。
+命名空间插件（具名导出 `name`/`inject`/`Config`/`apply`，无 `export default`）。`inject: ['tools']`。每个 MCP 服务器对应 `cordis.yml` 中的一个插件实例——同一个包以不同配置加载 N 次，与 `gnk-tool-subagent` 相同。
 
 ### 配置
 
@@ -60,7 +60,7 @@ type Config = StdioConfig | StreamableHttpConfig
 
 ```yaml
 - id: mcp-github
-  name: '@deepseek-ai/dsh-mcp-client'
+  name: '@greeneek/gnk-mcp-client'
   config:
     serverName: github
     transport: stdio
@@ -70,7 +70,7 @@ type Config = StdioConfig | StreamableHttpConfig
       GITHUB_TOKEN: !!js process.env.GITHUB_TOKEN
 
 - id: mcp-web
-  name: '@deepseek-ai/dsh-mcp-client'
+  name: '@greeneek/gnk-mcp-client'
   config:
     serverName: web
     transport: streamable-http
@@ -104,7 +104,7 @@ type Config = StdioConfig | StreamableHttpConfig
 
 ### 公开名称规范化
 
-MCP 允许工具名最长 128 字符且可包含 `.`；DeepSeek 的函数名约定允许 `[A-Za-z0-9_-]` 且最多 64 字符。公开名称按确定性规则规范化：非法字符替换为 `_`，当替换或截断改变了名称时，追加 `(serverName, rawName)` 标识的 12 位十六进制 SHA-256 hash，确保不同的 MCP 标识永远不会坍缩为同一个公开名称：
+MCP 允许工具名最长 128 字符且可包含 `.`；Greeneek 的函数名约定允许 `[A-Za-z0-9_-]` 且最多 64 字符。公开名称按确定性规则规范化：非法字符替换为 `_`，当替换或截断改变了名称时，追加 `(serverName, rawName)` 标识的 12 位十六进制 SHA-256 hash，确保不同的 MCP 标识永远不会坍缩为同一个公开名称：
 
 ```typescript
 function publicToolName(serverName: string, rawName: string): string {
@@ -131,7 +131,7 @@ MCP 仅保证工具名在[单个服务器内](https://modelcontextprotocol.io/sp
 ### 命名不变式
 
 1. 每个 MCP 工具拥有稳定标识 `(serverName, rawName)`；每个活跃标识恰好对应一个公开名称。
-2. 公开名称是确定性的、全局唯一的，且满足 DeepSeek 64 字符 `[A-Za-z0-9_-]` 约定。
+2. 公开名称是确定性的、全局唯一的，且满足 Greeneek 64 字符 `[A-Za-z0-9_-]` 约定。
 3. MCP `tools/call` 始终接收原始的 raw name。
 4. 连接、断开或重新同步不相关的服务器永远不会重命名已有工具。
 5. 注册顺序永远不决定哪个工具可用。
@@ -149,7 +149,7 @@ MCP 仅保证工具名在[单个服务器内](https://modelcontextprotocol.io/sp
 
 ### 子进程环境（stdio 传输）
 
-以子进程服务边界共享的 `scrubbedParentEnv()` 为基础构建子进程环境；该基础环境会移除环境中匹配 `/KEY|PASSWORD|SECRET|TOKEN/i` 的名称以及 `DSH_*` 名称，然后在其上合并 `config.env`。显式配置的 env 覆盖在清洗后仍会保留。
+以子进程服务边界共享的 `scrubbedParentEnv()` 为基础构建子进程环境；该基础环境会移除环境中匹配 `/KEY|PASSWORD|SECRET|TOKEN/i` 的名称以及 `GNK_*` 名称，然后在其上合并 `config.env`。显式配置的 env 覆盖在清洗后仍会保留。
 
 ### 断连 / 崩溃
 
@@ -187,7 +187,7 @@ MCP 仅保证工具名在[单个服务器内](https://modelcontextprotocol.io/sp
 
 ### 在工具结果中保留多个 TextBlock
 
-否决。DeepSeek 序列化器中的 `flattenText()` 在将 `ContentBlock[]` 扁平化为协议格式（wire format）时使用 `join('')`（无分隔符）。多个 text 块会静默丢失块间边界——这是正确性缺陷。所有现有工具返回单个 TextBlock；MCP 桥接遵循同一做法。
+否决。Greeneek 序列化器中的 `flattenText()` 在将 `ContentBlock[]` 扁平化为协议格式（wire format）时使用 `join('')`（无分隔符）。多个 text 块会静默丢失块间边界——这是正确性缺陷。所有现有工具返回单个 TextBlock；MCP 桥接遵循同一做法。
 
 ### 用核心 `ContentBlock[]` 替换规范 MCP 结果
 

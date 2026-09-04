@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
-import { MessageText } from '@deepseek-ai/dsh-client-ui-primitives'
+import { MessageText } from '@greeneek/gnk-client-ui-primitives'
 import { JsonBlock, MarkdownText } from './markdown-test-components.tsx'
 import { cjkFriendlyStrong } from '../src/markdown/cjkFriendlyStrong.ts'
 import { mathCompatibility } from '../src/markdown/mathCompatibility.ts'
@@ -45,7 +45,7 @@ describe('MarkdownText', () => {
       'const answer = 42',
       '```',
       '',
-      '<https://deepseek.com>',
+      '<https://greeneek.dev>',
     ].join('\n')
     const { container } = render(<MarkdownText text={markdown} />)
 
@@ -66,7 +66,7 @@ describe('MarkdownText', () => {
     expect(screen.getByRole('button', { name: '复制' })).toBeTruthy()
     expect(container.querySelector('br')).not.toBeNull()
     expect(screen.getByRole('link', { name: 'safe' }).getAttribute('target')).toBe('_blank')
-    expect(screen.getByRole('link', { name: 'https://deepseek.com' })).toBeTruthy()
+    expect(screen.getByRole('link', { name: 'https://greeneek.dev' })).toBeTruthy()
   })
 
   it('closes punctuation-terminated strong emphasis before adjacent CJK text', () => {

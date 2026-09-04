@@ -3,13 +3,13 @@ description: "面向开发者的浏览器客户端插件热重载说明：重建
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-client-hmr
+# @greeneek/gnk-client-hmr
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-client-hmr` 会在浏览器客户端插件的 bundle 重建后原地重载该插件，让编辑插件源码的开发者无需整页刷新即可看到变更。如果没有重建 watcher，整条链路保持空闲：只有 `pnpm run dev:web` 之类的进程重写客户端 bundle 时才会产生它所响应的重建。每次重载只替换一个插件并携带全新组件状态，而数据层（connection、runtime 与 Session 对象）保持不变。这里的一切都是浏览器侧的开发机制；模型永远看不到它。
+`gnk-client-hmr` 会在浏览器客户端插件的 bundle 重建后原地重载该插件，让编辑插件源码的开发者无需整页刷新即可看到变更。如果没有重建 watcher，整条链路保持空闲：只有 `pnpm run dev:web` 之类的进程重写客户端 bundle 时才会产生它所响应的重建。每次重载只替换一个插件并携带全新组件状态，而数据层（connection、runtime 与 Session 对象）保持不变。这里的一切都是浏览器侧的开发机制；模型永远看不到它。
 
 ## 目录
 
@@ -41,7 +41,7 @@ kind: "package-reference"
 |---|---|---|
 | `pollIntervalMs` | `500` | bundle stat 轮询间隔，单位为毫秒 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-client-hmr)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-client-hmr)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### 观察成功
 
@@ -93,7 +93,7 @@ fiber 的激活 epoch 会串联其服务提供方的 uid，因此替换提供方
 - [客户端模块系统](../modules/README.zh.md)——本驱动器驱动的惰性 CJS 模块表与 `invalidate`/`prefetch` 钩子。
 - [Web 启动内核](../web/README.zh.md)——启动插件树并展示 entry 状态的外壳。
 - [客户端组地图](../README.zh.md)——本包重载的浏览器半侧。
-- [生成配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-client-hmr)——每个受支持配置字段及其源声明。
+- [生成配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-client-hmr)——每个受支持配置字段及其源声明。
 
 -----
 

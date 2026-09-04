@@ -3,13 +3,13 @@ description: "Opt-in per-step clock context with the current time, browser zone,
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-time-context
+# @greeneek/gnk-time-context
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-time-context` gives the model a clock: on eligible steps it appends a durable, source-attributed reading with the current time, the browser zone attached to the open request, and the elapsed time since the preceding model-visible message. It helps the model interpret otherwise-unqualified dates and times in the user's browser zone, and tells it to ask when zone provenance is mixed or missing. The plugin is opt-in: default compositions leave it disabled, and the Schedule Web overlay mounts it. A positive `refreshIntervalMs` reduces how often readings accumulate; omission or `0` injects at every eligible step.
+`gnk-time-context` gives the model a clock: on eligible steps it appends a durable, source-attributed reading with the current time, the browser zone attached to the open request, and the elapsed time since the preceding model-visible message. It helps the model interpret otherwise-unqualified dates and times in the user's browser zone, and tells it to ask when zone provenance is mixed or missing. The plugin is opt-in: default compositions leave it disabled, and the Schedule Web overlay mounts it. A positive `refreshIntervalMs` reduces how often readings accumulate; omission or `0` injects at every eligible step.
 
 ## Table of Contents
 
@@ -36,7 +36,7 @@ Each injected reading has three lines: an ISO-shaped timestamp with numeric offs
 The minimal mount needs no configuration. A positive `refreshIntervalMs` suppresses injections that fall within that many milliseconds of the latest one; omission or `0` injects at every eligible entering pre-step whose signal is not already aborted.
 
 ```yaml
-- name: '@deepseek-ai/dsh-time-context'
+- name: '@greeneek/gnk-time-context'
   config:
     timeZone: Asia/Shanghai
 ```
@@ -46,7 +46,7 @@ The minimal mount needs no configuration. A positive `refreshIntervalMs` suppres
 | `timeZone` | process zone | Fallback display zone when the open turn has no unique browser zone |
 | `refreshIntervalMs` | `0` (every eligible step) | Minimum milliseconds between durable injections in one session |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-time-context) is the exhaustive source for every accepted field and its JSDoc.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-time-context) is the exhaustive source for every accepted field and its JSDoc.
 
 ### Choosing the zone
 
@@ -91,7 +91,7 @@ Read these pages when the package-level contract is not enough. They move from t
 - [Durable per-step time-context decision record](../../../.agents/notes/implemented/feature/2026-07-16-durable-per-step-time-context.md) — design rationale for the durable reading.
 - [Schedule user guide](../../../docs/user/guide/schedule.md) — the official configuration path for mounting this plugin.
 - [Context group map](../README.md) — sibling request-context packages.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-time-context) — every accepted config field and its source declaration.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-time-context) — every accepted config field and its source declaration.
 
 -----
 

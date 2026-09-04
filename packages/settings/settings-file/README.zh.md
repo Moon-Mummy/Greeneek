@@ -3,13 +3,13 @@ description: "面向用户与维护者的文件型设置提供方：选择、配
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-settings-file
+# @greeneek/gnk-settings-file
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-settings-file` 把所有 namespace 的用户设置保存在一个 YAML 或 JSON 文档中，默认是 harness home 下的 `settings.yaml`：用户可以直接编辑文档——变更实时生效——也可以经服务写入，后者会安全合并并发编辑。YAML 写入保留每个未触碰节点上的注释、锚点与排版，未加载插件所拥有的分节也绝不会被丢弃。启动时非法文档直接报错；运行中失败的热重载保留最后可用分节并告警，而不是拖垮进程。
+`gnk-settings-file` 把所有 namespace 的用户设置保存在一个 YAML 或 JSON 文档中，默认是 harness home 下的 `settings.yaml`：用户可以直接编辑文档——变更实时生效——也可以经服务写入，后者会安全合并并发编辑。YAML 写入保留每个未触碰节点上的注释、锚点与排版，未加载插件所拥有的分节也绝不会被丢弃。启动时非法文档直接报错；运行中失败的热重载保留最后可用分节并告警，而不是拖垮进程。
 
 ## 目录
 
@@ -34,7 +34,7 @@ kind: "package-reference"
 ### 最小配置
 
 ```yaml
-- name: '@deepseek-ai/dsh-settings-file'
+- name: '@greeneek/gnk-settings-file'
   config:
     path: /absolute/path/to/settings.yaml
 ```
@@ -42,11 +42,11 @@ kind: "package-reference"
 | 字段 | 默认值 | 含义 |
 |---|---|---|
 | `path` | `<harness home>/settings.yaml` | 设置文档路径；扩展名决定格式（`.yaml`、`.yml` 或 `.json`） |
-| `dshHome` | `$DSH_HOME` 或 `~/.dsh` | `path` 省略时使用的 harness home |
+| `gnkHome` | `$GNK_HOME` 或 `~/.gnk` | `path` 省略时使用的 harness home |
 | `watch` | `true` | 监听文档并热发布外部编辑 |
 | `debounceMs` | `100` | watcher 写入稳定窗口（毫秒） |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-settings-file)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-settings-file)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### 编辑文档
 
@@ -90,7 +90,7 @@ kind: "package-reference"
 | 文件 | 职责 |
 |---|---|
 | [`src/index.ts`](src/index.ts) | 提供方：spec 解析、加载/解析、写锁下的读-改-写、watcher 生命周期、YAML/JSON 渲染 |
-| — | 不发布运行时不变式伴生入口；文件往返、watcher 时序与原子写入行为由包测试证明，进程内提交关系归 `dsh-settings` 所有。 |
+| — | 不发布运行时不变式伴生入口；文件往返、watcher 时序与原子写入行为由包测试证明，进程内提交关系归 `gnk-settings` 所有。 |
 
 ### 文档生命周期
 
@@ -113,8 +113,8 @@ YAML 渲染把缓存文本解析成可变的保留注释树，再对一个 names
 - [设置子系统参考](../../../docs/subsystems/settings.zh.md)——namespace、解析顺序、descriptor 与变更提交。
 - [设置包映射](../README.zh.md)——用户设置能力的两个包。
 - [原子写入](../../util/atomic-write/README.zh.md)——每次写入都使用的写锁与原子替换。
-- [主目录路径](../../util/home-paths/README.zh.md)——`$DSH_HOME` 解析与规范化监听路径。
-- [生成配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-settings-file)——每个受支持配置字段及其源声明。
+- [主目录路径](../../util/home-paths/README.zh.md)——`$GNK_HOME` 解析与规范化监听路径。
+- [生成配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-settings-file)——每个受支持配置字段及其源声明。
 
 -----
 

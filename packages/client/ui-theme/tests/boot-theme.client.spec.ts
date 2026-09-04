@@ -22,7 +22,7 @@ afterEach(() => {
   vi.unstubAllGlobals()
   document.documentElement.style.removeProperty('color-scheme')
   document.body.removeAttribute(DARK_ATTRIBUTE)
-  document.body.style.removeProperty('--dsh-content-font-size')
+  document.body.style.removeProperty('--gnk-content-font-size')
 })
 
 describe('theme bootstrap row', () => {
@@ -63,8 +63,8 @@ describe('theme bootstrap row', () => {
   it('writes the durable content font size and defaults it to 14px', () => {
     mockSystemDark(false)
     executeBootstrap('light', 17)
-    expect(document.body.style.getPropertyValue('--dsh-content-font-size')).toBe('17px')
+    expect(document.body.style.getPropertyValue('--gnk-content-font-size')).toBe('17px')
     executeBootstrap('light')
-    expect(document.body.style.getPropertyValue('--dsh-content-font-size')).toBe('14px')
+    expect(document.body.style.getPropertyValue('--gnk-content-font-size')).toBe('14px')
   })
 })

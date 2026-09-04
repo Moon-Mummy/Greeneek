@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
+import { Context } from '@greeneek/cordis'
 import { credentialRef, isCredentialKeySegment } from '../src/index.ts'
 import type { CredentialRef } from '../src/index.ts'
 import { MemoryCredentials } from './memory.ts'
 
-const REF = credentialRef('DEEPSEEK_API_KEY')
+const REF = credentialRef('GREENEEK_API_KEY')
 
 async function boot(seed: Record<string, string> = {}): Promise<Context> {
   const ctx = new Context()
@@ -14,7 +14,7 @@ async function boot(seed: Record<string, string> = {}): Promise<Context> {
 
 describe('credentialRef', () => {
   it('brands POSIX shell identifiers', () => {
-    expect(credentialRef('DEEPSEEK_API_KEY')).toBe('DEEPSEEK_API_KEY')
+    expect(credentialRef('GREENEEK_API_KEY')).toBe('GREENEEK_API_KEY')
     expect(credentialRef('_private')).toBe('_private')
     expect(credentialRef('lower_case9')).toBe('lower_case9')
   })
@@ -41,13 +41,13 @@ describe('isCredentialKeySegment', () => {
 
 describe('the credentials seam through the memory provider', () => {
   it('mounts as ctx.credentials and resolves a seeded reference with its source', async () => {
-    const ctx = await boot({ DEEPSEEK_API_KEY: 'sk-seeded' })
+    const ctx = await boot({ GREENEEK_API_KEY: 'sk-seeded' })
     expect(await ctx.credentials.resolve(REF)).toEqual({ value: 'sk-seeded', source: 'memory' })
     expect(await ctx.credentials.describe(REF)).toEqual({ configured: true, source: 'memory', writable: true })
   })
 
   it('treats an empty stored value as absent everywhere', async () => {
-    const ctx = await boot({ DEEPSEEK_API_KEY: '' })
+    const ctx = await boot({ GREENEEK_API_KEY: '' })
     expect(await ctx.credentials.resolve(REF)).toBeUndefined()
     expect(await ctx.credentials.describe(REF)).toEqual({ configured: false, writable: true })
   })

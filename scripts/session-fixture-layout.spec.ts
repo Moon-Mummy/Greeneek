@@ -1,7 +1,7 @@
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { SessionSeq, type SessionEvent } from '@deepseek-ai/dsh-session'
-import { parseSessionLog } from '@deepseek-ai/dsh-llm-replay'
+import { SessionSeq, type SessionEvent } from '@greeneek/gnk-session'
+import { parseSessionLog } from '@greeneek/gnk-llm-replay'
 import {
   canonicalSessionFixture,
   inspectSessionFixtureLayouts,
@@ -78,7 +78,7 @@ describe('canonicalSessionFixture', () => {
 describe('isPhysicalSessionFixture', () => {
   it('recognizes fixtures that preserve physical persistence encoding', () => {
     expect(isPhysicalSessionFixture(
-      'packages/experimental/webworker-runtime/tests/fixtures/vfs-example/home/sessions/--dsh-workspace--/main/session.jsonl',
+      'packages/experimental/webworker-runtime/tests/fixtures/vfs-example/home/sessions/--gnk-workspace--/main/session.jsonl',
     )).toBe(true)
     expect(isPhysicalSessionFixture(
       'scripts/snapshots/python-sdk-single-exe/advanced/session.1.jsonl',

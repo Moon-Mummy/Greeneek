@@ -6,13 +6,13 @@ Status: implemented
 
 ## 问题
 
-当消费方忙碌时，长期存在的流队列可能积累数千个帧。在观测到的 V8 路径上，使用 `Array.prototype.shift()` 移除每个帧会移动剩余数组区间，因此排空 `N` 个排队帧会执行二次方级别的引用移动，并延迟同一事件循环上的无关工作。[Issue #3270](https://github.com/deepseek-harness/deepseek-harness/issues/3270) 记录了把 `ArrayShift`、`MoveRange` 和 `memmove` 识别为主要堆栈的生产采样。
+当消费方忙碌时，长期存在的流队列可能积累数千个帧。在观测到的 V8 路径上，使用 `Array.prototype.shift()` 移除每个帧会移动剩余数组区间，因此排空 `N` 个排队帧会执行二次方级别的引用移动，并延迟同一事件循环上的无关工作。[Issue #3270](https://github.com/greeneek/greeneek-harness/issues/3270) 记录了把 `ArrayShift`、`MoveRange` 和 `memmove` 识别为主要堆栈的生产采样。
 
 受影响的流具有不同的唤醒、失败、取消和 disposal 行为。它们的共同要求是保持 FIFO 顺序、同时不替它们作出这些生命周期决策的存储。
 
 ## 决策
 
-`@deepseek-ai/dsh-deque` 为 Host 和浏览器消费方拥有一个零依赖环形数组。`pushBack()`、`pushFront()` 和 `popFront()` 改变索引，而不移动存活区间。移除会立即清空对应槽位。后备数组在满载时翻倍，在非空双端队列达到四分之一容量时减半，因此扩容和压缩的复制工作保持摊销常数时间，且交错队列使用期间的空闲存储保持有界。
+`@greeneek/gnk-deque` 为 Host 和浏览器消费方拥有一个零依赖环形数组。`pushBack()`、`pushFront()` 和 `popFront()` 改变索引，而不移动存活区间。移除会立即清空对应槽位。后备数组在满载时翻倍，在非空双端队列达到四分之一容量时减半，因此扩容和压缩的复制工作保持摊销常数时间，且交错队列使用期间的空闲存储保持有界。
 
 该包没有消费方之间共享的 singleton 状态、符号或类身份。每个消费方都会构造并独占自己的双端队列，因此 npm 中存在重复包副本不会改变运行时行为，发布依赖策略也会把 `Deque` 视为安全的 Host 导出。Client bundle purity 规则同样把该包视为可内联库。Gateway 浏览器产物携带其双端队列实现，而不引入 module-table 条目或 Cordis 服务。
 

@@ -1,12 +1,12 @@
 import { describe, expect, expectTypeOf, it } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import { createUserMessage, ToolCallId, createMessage } from '@deepseek-ai/dsh-llm'
-import type { ContentBlock, Message, TokenUsage } from '@deepseek-ai/dsh-llm'
-import SessionStore, { Session, SessionId, SessionSeq, canonicalHeader } from '@deepseek-ai/dsh-session'
-import type { EpochHeader, SessionEvent, SessionSeq as SessionSeqType } from '@deepseek-ai/dsh-session'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import TokenMeter from '@deepseek-ai/dsh-token-meter'
-import type { TokenMeasurement, TokenMeterConfig } from '@deepseek-ai/dsh-token-meter'
+import { Context } from '@greeneek/cordis'
+import { createUserMessage, ToolCallId, createMessage } from '@greeneek/gnk-llm'
+import type { ContentBlock, Message, TokenUsage } from '@greeneek/gnk-llm'
+import SessionStore, { Session, SessionId, SessionSeq, canonicalHeader } from '@greeneek/gnk-session'
+import type { EpochHeader, SessionEvent, SessionSeq as SessionSeqType } from '@greeneek/gnk-session'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import TokenMeter from '@greeneek/gnk-token-meter'
+import type { TokenMeasurement, TokenMeterConfig } from '@greeneek/gnk-token-meter'
 
 function header(model: string, extras: Omit<EpochHeader, 'config'> = {}): EpochHeader {
   return canonicalHeader({ config: { provider: 'mock', model }, ...extras })
@@ -212,7 +212,7 @@ describe('TokenMeter pricing', () => {
       content: [{ type: 'text', text: 'question' }],
       source: { kind: 'user' },
     }), { surfaceOp: 'append' })
-    appendHeader(session, header('deepseek-v4-flash', {
+    appendHeader(session, header('greeneek-v4-flash', {
       system: 'system',
       tools: [{ name: 'read', description: 'read', parameters: { type: 'object' } }],
     }))
@@ -258,7 +258,7 @@ describe('replay anchors and surface folds', () => {
       content: [{ type: 'text', text: 'before' }],
       source: { kind: 'user' },
     }), { surfaceOp: 'append' })
-    appendSuccessfulCall(session, header('deepseek-v4-flash'), {
+    appendSuccessfulCall(session, header('greeneek-v4-flash'), {
       providerText: 'short',
       durableText: 'a much longer rewritten durable assistant answer',
       usage: USAGE,
@@ -276,7 +276,7 @@ describe('replay anchors and surface folds', () => {
     const service = meter()
     const session = Session.create(SessionId('low-usage-anchor'))
     const system = 'system context'
-    const requestHeader = header('deepseek-v4-flash', { system })
+    const requestHeader = header('greeneek-v4-flash', { system })
     appendSuccessfulCall(session, requestHeader, {
       providerText: 'abcd'.repeat(512),
       usage: { inputTokens: 20, outputTokens: 7 },
@@ -305,7 +305,7 @@ describe('replay anchors and surface folds', () => {
   it('uses an estimated anchor when provider usage is absent', () => {
     const service = meter()
     const session = Session.create(SessionId('missing-usage'))
-    appendSuccessfulCall(session, header('deepseek-v4-flash', { system: 's' }), {
+    appendSuccessfulCall(session, header('greeneek-v4-flash', { system: 's' }), {
       providerText: 'provider',
       durableText: 'rewritten',
     })
@@ -323,13 +323,13 @@ describe('replay anchors and surface folds', () => {
   it('distinguishes an explicit empty source-event list from an absent legacy list', () => {
     const explicit = Session.create(SessionId('explicit-empty'))
     const legacy = Session.create(SessionId('legacy-absent'))
-    appendSuccessfulCall(explicit, header('deepseek-v4-flash'), {
+    appendSuccessfulCall(explicit, header('greeneek-v4-flash'), {
       durableText: 'listener injected text',
       providerText: '',
       usage: USAGE,
       provenance: 'empty',
     })
-    appendSuccessfulCall(legacy, header('deepseek-v4-flash'), {
+    appendSuccessfulCall(legacy, header('greeneek-v4-flash'), {
       durableText: 'listener injected text',
       providerText: '',
       usage: USAGE,
@@ -364,12 +364,12 @@ describe('replay anchors and surface folds', () => {
   it('invalidates usage for any canonical envelope change or explicit override', () => {
     const service = meter()
     const session = Session.create(SessionId('envelope'))
-    const anchoredHeader = header('deepseek-v4-flash', { system: 'one' })
+    const anchoredHeader = header('greeneek-v4-flash', { system: 'one' })
     appendSuccessfulCall(session, anchoredHeader, { usage: USAGE })
     expect(service.measure(session, { ...anchoredHeader, tools: [] }).baseline.kind).toBe('usage')
-    expect(service.measure(session, header('deepseek-v4-flash', { system: 'two' })).baseline.kind)
+    expect(service.measure(session, header('greeneek-v4-flash', { system: 'two' })).baseline.kind)
       .toBe('estimated')
-    expect(service.measure(session, header('deepseek-v4-pro', { system: 'one' })).baseline.kind)
+    expect(service.measure(session, header('greeneek-v4-pro', { system: 'one' })).baseline.kind)
       .toBe('estimated')
     expect(service.measure(session, {
       ...anchoredHeader,
@@ -383,9 +383,9 @@ describe('replay anchors and surface folds', () => {
 
   it('folds the latest full header snapshot into the effective envelope', () => {
     const session = Session.create(SessionId('header-snapshot'))
-    appendHeader(session, header('deepseek-v4-flash'))
+    appendHeader(session, header('greeneek-v4-flash'))
     session.append('request/header', {
-      header: header('deepseek-v4-pro'),
+      header: header('greeneek-v4-pro'),
       reason: 'change',
     })
     const result = meter().measure(session)
@@ -396,7 +396,7 @@ describe('replay anchors and surface folds', () => {
   it('replays seeded append and replace operations with signed deltas', () => {
     const service = meter()
     const original = Session.create(SessionId('surface-original'))
-    appendSuccessfulCall(original, header('deepseek-v4-flash'), {
+    appendSuccessfulCall(original, header('greeneek-v4-flash'), {
       usage: USAGE,
       providerText: 'long provider answer '.repeat(100),
     })
@@ -431,7 +431,7 @@ describe('replay anchors and surface folds', () => {
 
   it('prices an empty assistant surface anchor as zero', () => {
     const session = Session.create(SessionId('empty-assistant'))
-    appendSuccessfulCall(session, header('deepseek-v4-flash'), {
+    appendSuccessfulCall(session, header('greeneek-v4-flash'), {
       providerText: '',
       durableText: '',
       provenance: 'empty',
@@ -452,7 +452,7 @@ describe('malformed replay and listener lifecycle', () => {
 
   it('rejects an assistant without its step boundary transactionally', () => {
     const session = Session.create(SessionId('bad-step'))
-    appendHeader(session, header('deepseek-v4-flash'))
+    appendHeader(session, header('greeneek-v4-flash'))
     session.append('assistant/message', {
       turn: 1,
       step: 1,
@@ -461,7 +461,7 @@ describe('malformed replay and listener lifecycle', () => {
         content: [{ type: 'text', text: 'bad' }],
         source: {
           kind: 'model',
-          ...{ provider: 'mock', model: 'deepseek-v4-flash' },
+          ...{ provider: 'mock', model: 'greeneek-v4-flash' },
         },
       }),
     }, { surfaceOp: 'append', sourceEventSeqs: [] })
@@ -472,7 +472,7 @@ describe('malformed replay and listener lifecycle', () => {
     // A valid append plan whose anchor validation throws: only commit
     // ordering keeps the surface from double-counting across retries.
     const session = Session.create(SessionId('bad-step-surface'))
-    appendHeader(session, header('deepseek-v4-flash'))
+    appendHeader(session, header('greeneek-v4-flash'))
     session.append('assistant/message', {
       turn: 1,
       step: 1,
@@ -481,7 +481,7 @@ describe('malformed replay and listener lifecycle', () => {
         content: [{ type: 'text', text: 'planned but never committed' }],
         source: {
           kind: 'model',
-          ...{ provider: 'mock', model: 'deepseek-v4-flash' },
+          ...{ provider: 'mock', model: 'greeneek-v4-flash' },
         },
       }),
     }, { surfaceOp: 'append', sourceEventSeqs: [] })
@@ -506,7 +506,7 @@ describe('malformed replay and listener lifecycle', () => {
 
     const late = Session.create(SessionId('late-assistant'))
     late.append('step/start', { turn: 1, step: 1 })
-    appendHeader(late, header('deepseek-v4-flash'))
+    appendHeader(late, header('greeneek-v4-flash'))
     late.append('step/end', { turn: 1, step: 1 })
     late.append('assistant/message', {
       turn: 1,
@@ -516,7 +516,7 @@ describe('malformed replay and listener lifecycle', () => {
         content: [],
         source: {
           kind: 'model',
-          ...{ provider: 'mock', model: 'deepseek-v4-flash' },
+          ...{ provider: 'mock', model: 'greeneek-v4-flash' },
         },
       }),
     }, { surfaceOp: 'append', sourceEventSeqs: [] })
@@ -567,7 +567,7 @@ describe('malformed replay and listener lifecycle', () => {
     for (const testCase of cases) {
       const session = Session.create(SessionId(`bad-source-${testCase.name}`))
       session.append('step/start', { turn: 1, step: 1 })
-      appendHeader(session, header('deepseek-v4-flash'))
+      appendHeader(session, header('greeneek-v4-flash'))
       const sourceEventSeqs = testCase.appendSource(session)
       session.append('assistant/message', {
         turn: 1,
@@ -577,7 +577,7 @@ describe('malformed replay and listener lifecycle', () => {
           content: [{ type: 'text', text: 'bad' }],
           source: {
             kind: 'model',
-            ...{ provider: 'mock', model: 'deepseek-v4-flash' },
+            ...{ provider: 'mock', model: 'greeneek-v4-flash' },
           },
         }),
         usage: { inputTokens: 1, outputTokens: 1 },
@@ -589,7 +589,7 @@ describe('malformed replay and listener lifecycle', () => {
   it('rejects repeated and non-earlier assistant source-event references', () => {
     const duplicate = Session.create(SessionId('duplicate-source'))
     duplicate.append('step/start', { turn: 1, step: 1 })
-    appendHeader(duplicate, header('deepseek-v4-flash'))
+    appendHeader(duplicate, header('greeneek-v4-flash'))
     const source = duplicate.append('assistant/chunk', {
       turn: 1,
       step: 1,
@@ -607,7 +607,7 @@ describe('malformed replay and listener lifecycle', () => {
           content: [],
           source: {
             kind: 'model',
-            ...{ provider: 'mock', model: 'deepseek-v4-flash' },
+            ...{ provider: 'mock', model: 'greeneek-v4-flash' },
           },
         }),
         usage: { inputTokens: 1, outputTokens: 0 },
@@ -619,7 +619,7 @@ describe('malformed replay and listener lifecycle', () => {
 
     const future = Session.create(SessionId('future-source'))
     future.append('step/start', { turn: 1, step: 1 })
-    appendHeader(future, header('deepseek-v4-flash'))
+    appendHeader(future, header('greeneek-v4-flash'))
     appendUnchecked(future, {
       type: 'assistant/message',
       seq: SessionSeq(future.seq),
@@ -632,7 +632,7 @@ describe('malformed replay and listener lifecycle', () => {
           content: [],
           source: {
             kind: 'model',
-            ...{ provider: 'mock', model: 'deepseek-v4-flash' },
+            ...{ provider: 'mock', model: 'greeneek-v4-flash' },
           },
         }),
         usage: { inputTokens: 1, outputTokens: 0 },
@@ -649,7 +649,7 @@ describe('malformed replay and listener lifecycle', () => {
       content: [{ type: 'text', text: 'head' }],
       source: { kind: 'user' },
     }), { surfaceOp: 'append' })
-    appendHeader(session, header('deepseek-v4-flash'))
+    appendHeader(session, header('greeneek-v4-flash'))
     const head = session.snapshotEvents()[0]!.seq
     session.append('assistant/message', {
       turn: 1,
@@ -659,7 +659,7 @@ describe('malformed replay and listener lifecycle', () => {
         content: [{ type: 'text', text: 'replacement' }],
         source: {
           kind: 'model',
-          ...{ provider: 'mock', model: 'deepseek-v4-flash' },
+          ...{ provider: 'mock', model: 'greeneek-v4-flash' },
         },
       }),
     }, { surfaceOp: { op: 'replace', start: head, end: head }, sourceEventSeqs: [head] })

@@ -3,11 +3,11 @@
  * pure context-breakdown projection, so both surfaces price identical content
  * to identical numbers.
  *
- * @module @deepseek-ai/dsh-token-meter/estimate
+ * @module @greeneek/gnk-token-meter/estimate
  */
 
-import type { ContentBlock, Message } from '@deepseek-ai/dsh-llm'
-import type { EpochHeader } from '@deepseek-ai/dsh-session'
+import type { ContentBlock, Message } from '@greeneek/gnk-llm'
+import type { EpochHeader } from '@greeneek/gnk-session'
 
 /** Fixed text-density estimate used until exact tokenization is needed. */
 const CHARS_PER_TOKEN = 4

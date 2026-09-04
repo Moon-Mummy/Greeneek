@@ -24,9 +24,9 @@ const packageDir = fileURLToPath(new URL('..', import.meta.url))
 const repoRoot = fileURLToPath(new URL('../../../..', import.meta.url))
 const nativeDir = join(repoRoot, 'native/landlock-run')
 const sourceLauncher = join(nativeDir, 'packages', `linux-${process.arch}`, 'bin', 'landlock-run')
-const platformPackageName = `@deepseek-ai/node-addon-landlock-run-linux-${process.arch}`
+const platformPackageName = `@greeneek/node-addon-landlock-run-linux-${process.arch}`
 
-const NATIVE_PACKAGE_PREFIX = '@deepseek-ai/node-addon-landlock-run'
+const NATIVE_PACKAGE_PREFIX = '@greeneek/node-addon-landlock-run'
 
 /** ELF `e_machine` (offset 18, LE) for this host: x86-64 = 62, AArch64 = 183. */
 const E_MACHINE = { x64: 62, arm64: 183 }[process.arch as 'x64' | 'arm64']
@@ -53,9 +53,9 @@ let verdict: {
 
 describe.skipIf(!packable)('sandbox-local: packed-tarball distribution (publish-path rehearsal)', () => {
   beforeAll(async () => {
-    const packDest = mkdtempSync(join(tmpdir(), 'dsh-pack-'))
-    consumerDir = mkdtempSync(join(tmpdir(), 'dsh-packed-consumer-'))
-    workDir = mkdtempSync(join(tmpdir(), 'dsh-packed-work-'))
+    const packDest = mkdtempSync(join(tmpdir(), 'gnk-pack-'))
+    consumerDir = mkdtempSync(join(tmpdir(), 'gnk-packed-consumer-'))
+    workDir = mkdtempSync(join(tmpdir(), 'gnk-packed-work-'))
 
     const nativePackDest = join(packDest, 'native')
     const nativePack = spawnSync('node', ['./scripts/pack-release.mjs', nativePackDest, '--current-platform-only'], {
@@ -73,7 +73,7 @@ describe.skipIf(!packable)('sandbox-local: packed-tarball distribution (publish-
     // Derive the current runtime closure so a newly introduced workspace
     // dependency cannot fall through to an unpublished registry version.
     const workspaceClosure = packedWorkspaceClosure(
-      '@deepseek-ai/dsh-sandbox-local',
+      '@greeneek/gnk-sandbox-local',
       readWorkspacePackages(repoRoot),
     ).filter(member => !member.name.startsWith(NATIVE_PACKAGE_PREFIX))
 
@@ -93,7 +93,7 @@ describe.skipIf(!packable)('sandbox-local: packed-tarball distribution (publish-
 
     // Peer ranges resolve to the tarballs, the framework peer included. Do not omit optional
     // dependencies because the launcher selects its OS/CPU package through one.
-    writeFileSync(join(consumerDir, 'package.json'), JSON.stringify({ name: 'dsh-packed-consumer', private: true, type: 'module' }))
+    writeFileSync(join(consumerDir, 'package.json'), JSON.stringify({ name: 'gnk-packed-consumer', private: true, type: 'module' }))
     const install = spawnSync('npm', ['install', '--no-audit', '--no-fund', ...tarballs], {
       cwd: consumerDir,
       encoding: 'utf8',
@@ -108,9 +108,9 @@ describe.skipIf(!packable)('sandbox-local: packed-tarball distribution (publish-
     writeFileSync(join(consumerDir, 'consumer.mjs'), `
       import { spawnSync } from 'node:child_process'
       import { existsSync } from 'node:fs'
-      import { Context } from '@deepseek-ai/cordis'
-      import { launcherPath } from '@deepseek-ai/node-addon-landlock-run'
-      import { LocalSandboxProvider } from '@deepseek-ai/dsh-sandbox-local'
+      import { Context } from '@greeneek/cordis'
+      import { launcherPath } from '@greeneek/node-addon-landlock-run'
+      import { LocalSandboxProvider } from '@greeneek/gnk-sandbox-local'
       const ctx = new Context()
       await ctx.plugin(LocalSandboxProvider, {})
       const sandbox = ctx.sandbox

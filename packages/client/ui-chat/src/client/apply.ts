@@ -1,19 +1,19 @@
 /** Register the Chat Conversation target, renderers, stats, and details surface. */
-import type { Context } from '@deepseek-ai/cordis'
-import type { ImageAttachmentRef } from '@deepseek-ai/dsh-attachment'
-import type {} from '@deepseek-ai/dsh-api-remotes/client'
-import type { SessionBinding } from '@deepseek-ai/dsh-api-session-controller/client'
-import type { BoundActions, ObservableSnapshot } from '@deepseek-ai/dsh-client-store'
-import type { SessionId } from '@deepseek-ai/dsh-session/types'
-import { resolveWorkspacePath } from '@deepseek-ai/dsh-util-workspace-path'
+import type { Context } from '@greeneek/cordis'
+import type { ImageAttachmentRef } from '@greeneek/gnk-attachment'
+import type {} from '@greeneek/gnk-api-remotes/client'
+import type { SessionBinding } from '@greeneek/gnk-api-session-controller/client'
+import type { BoundActions, ObservableSnapshot } from '@greeneek/gnk-client-store'
+import type { SessionId } from '@greeneek/gnk-session/types'
+import { resolveWorkspacePath } from '@greeneek/gnk-util-workspace-path'
 // Type-only service and declaration merges used by the apply world.
-import type {} from '@deepseek-ai/dsh-client-locale/client'
-import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
-import type {} from '@deepseek-ai/dsh-client-ui-layout/client'
-import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
-import type {} from '@deepseek-ai/dsh-client-ui-session/client'
-import type {} from '@deepseek-ai/dsh-client-ui-settings/client'
-import type {} from '@deepseek-ai/dsh-client-ui-workspace/client'
+import type {} from '@greeneek/gnk-client-locale/client'
+import type {} from '@greeneek/gnk-client-ui-conversation/client'
+import type {} from '@greeneek/gnk-client-ui-layout/client'
+import type {} from '@greeneek/gnk-client-ui-renderer/client'
+import type {} from '@greeneek/gnk-client-ui-session/client'
+import type {} from '@greeneek/gnk-client-ui-settings/client'
+import type {} from '@greeneek/gnk-client-ui-workspace/client'
 import type {
   ChatNodeTurnDataInjected, ChatScrollPosition, ChatViewInjected, DetailsInjected,
   TurnTailOwnerProps,

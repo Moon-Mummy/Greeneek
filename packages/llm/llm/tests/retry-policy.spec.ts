@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest'
 import {
   resolveRetryPolicy,
   RetryPolicySchema,
-} from '@deepseek-ai/dsh-llm'
-import type { RetryPolicyConfig } from '@deepseek-ai/dsh-llm'
-import { MAX_TIMER_DELAY_MS } from '@deepseek-ai/dsh-timeout'
+} from '@greeneek/gnk-llm'
+import type { RetryPolicyConfig } from '@greeneek/gnk-llm'
+import { MAX_TIMER_DELAY_MS } from '@greeneek/gnk-timeout'
 
 describe('provider retry policy', () => {
   it('resolves immutable normal defaults', () => {

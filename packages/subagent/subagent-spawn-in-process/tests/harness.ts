@@ -1,19 +1,19 @@
-import { Context } from '@deepseek-ai/cordis'
-import type { Agent } from '@deepseek-ai/dsh-agent'
-import AgentLoop from '@deepseek-ai/dsh-agent-loop'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import { mountAgentLoopTestDependencies } from '@deepseek-ai/dsh-agent-loop-testkit'
-import { LocalBashExecutor } from '@deepseek-ai/dsh-bash-local'
-import * as BashEnvPlugin from '@deepseek-ai/dsh-shell-env'
-import LocalSubprocessRuntime from '@deepseek-ai/dsh-subprocess-local'
-import * as ToolBash from '@deepseek-ai/dsh-tool-bash'
-import * as LlmDeepSeek from '@deepseek-ai/dsh-llm-deepseek'
-import SubagentRuntime from '@deepseek-ai/dsh-subagent'
+import { Context } from '@greeneek/cordis'
+import type { Agent } from '@greeneek/gnk-agent'
+import AgentLoop from '@greeneek/gnk-agent-loop'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import { mountAgentLoopTestDependencies } from '@greeneek/gnk-agent-loop-testkit'
+import { LocalBashExecutor } from '@greeneek/gnk-bash-local'
+import * as BashEnvPlugin from '@greeneek/gnk-shell-env'
+import LocalSubprocessRuntime from '@greeneek/gnk-subprocess-local'
+import * as ToolBash from '@greeneek/gnk-tool-bash'
+import * as LlmGreeneek from '@greeneek/gnk-llm-greeneek'
+import SubagentRuntime from '@greeneek/gnk-subagent'
 import * as Spawn from '../src/index.ts'
-import * as ToolSubagent from '@deepseek-ai/dsh-tool-subagent'
+import * as ToolSubagent from '@greeneek/gnk-tool-subagent'
 
 /**
- * Shared harness for the spawn-backend e2e: the full real stack (DeepSeek
+ * Shared harness for the spawn-backend e2e: the full real stack (Greeneek
  * adapter + real bash tool + the subagent tool bound to the spawn backend), so
  * a real parent agent can delegate to a real in-process child that does real
  * work (writes a file). Lives outside the *.e2e.ts pattern so importing it never
@@ -30,7 +30,7 @@ export async function spawnHarness(workdir: string): Promise<Context> {
     systemPrompt: { persona: 'You are a coding agent. Report only when the requested work is done.' },
   })
   await ctx.plugin(AgentLoop, { agents: [] })
-  await ctx.plugin(LlmDeepSeek)
+  await ctx.plugin(LlmGreeneek)
   await ctx.plugin(LocalSubprocessRuntime)
   await ctx.plugin(BashEnvPlugin)
   await ctx.plugin(LocalBashExecutor, { cwd: workdir, timeoutMs: 30_000 })

@@ -10,8 +10,8 @@ import { join } from 'node:path'
 import type { Browser, Page } from 'playwright'
 import { chromium } from 'playwright'
 import { afterEach, describe, expect, it, onTestFailed } from 'vitest'
-import { deriveReplayScript, parseSessionLog, type ReplayEntry } from '@deepseek-ai/dsh-llm-replay'
-import type { SessionEvent } from '@deepseek-ai/dsh-session'
+import { deriveReplayScript, parseSessionLog, type ReplayEntry } from '@greeneek/gnk-llm-replay'
+import type { SessionEvent } from '@greeneek/gnk-session'
 import {
   assertFixtureInventory, captureExpandedTurnProcessAria, captureStableAria, compareOrRefreshGolden,
   launchWebScaffold, watchConsole, webSnapshotMode, type WebScaffold,
@@ -63,7 +63,7 @@ describe('web e2e: queue row actions', () => {
   })
 
   it.skipIf(MODE === 'record')('edits and removes exact occurrences and preserves Queue across stop', async () => {
-    overrideDir = await mkdtemp(join(tmpdir(), 'dsh-web-queue-actions-'))
+    overrideDir = await mkdtemp(join(tmpdir(), 'gnk-web-queue-actions-'))
     const readyFile = join(overrideDir, '.hang-ready')
     const overridePath = join(overrideDir, 'replay.override.json')
     const recorded = deriveReplayScript(parseSessionLog(await readFile(FIXTURE, 'utf8')))
@@ -127,7 +127,7 @@ describe('web e2e: queue row actions', () => {
     const composerMetrics = await page.locator('[data-composer-card]').evaluate((element) => {
       const style = getComputedStyle(element)
       return {
-        dockInset: Number.parseFloat(style.getPropertyValue('--dsh-composer-dock-inset')),
+        dockInset: Number.parseFloat(style.getPropertyValue('--gnk-composer-dock-inset')),
       }
     })
     expect(queueLeftInset).toBeCloseTo(composerMetrics.dockInset, 1)
@@ -189,7 +189,7 @@ describe('web e2e: queue row actions', () => {
   }, 120_000)
 
   it.skipIf(MODE === 'record')('orders Todo before Goal and Queue on one responsive card column', async () => {
-    overrideDir = await mkdtemp(join(tmpdir(), 'dsh-web-context-layout-'))
+    overrideDir = await mkdtemp(join(tmpdir(), 'gnk-web-context-layout-'))
     const readyFile = join(overrideDir, '.hang-ready')
     const overridePath = join(overrideDir, 'replay.override.json')
     await writeFile(overridePath, JSON.stringify([{ kind: 'hang', readyFile } satisfies ReplayEntry]))

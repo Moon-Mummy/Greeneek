@@ -21,7 +21,7 @@
 
 - insert:
     - id: logger-console
-      name: '@deepseek-ai/cordis-plugin-logger-console'
+      name: '@greeneek/cordis-plugin-logger-console'
       config:
         colors: false
         levels:

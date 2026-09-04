@@ -3,13 +3,13 @@ description: "面向组合压缩的部署方的工具输出修剪：选择大小
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-compaction-tool-result-pruner
+# @greeneek/gnk-compaction-tool-result-pruner
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-compaction-tool-result-pruner` 防止上下文窗口被超大工具输出填满。压缩即将运行时，它会把每个超出预算的工具结果修剪为长度受限的头部、简短的「middle pruned」标记与长度受限的尾部，同时完整原始结果仍保留在会话日志中，可供精确回放与检查。修剪不发起模型调用，并可能自行清除 token 压力，因此压缩可能完全跳过摘要。它只在压缩触发条件满足后运行——低于压力的对话绝不会被触碰。字符预算只是启发式；token meter 负责判定压力是否真的得到缓解。
+`gnk-compaction-tool-result-pruner` 防止上下文窗口被超大工具输出填满。压缩即将运行时，它会把每个超出预算的工具结果修剪为长度受限的头部、简短的「middle pruned」标记与长度受限的尾部，同时完整原始结果仍保留在会话日志中，可供精确回放与检查。修剪不发起模型调用，并可能自行清除 token 压力，因此压缩可能完全跳过摘要。它只在压缩触发条件满足后运行——低于压力的对话绝不会被触碰。字符预算只是启发式；token meter 负责判定压力是否真的得到缓解。
 
 ## 目录
 
@@ -25,16 +25,16 @@ kind: "package-reference"
 <a id="use-this-package"></a>
 ## 使用本包
 
-当工具输出经常主导对话窗口时，在 `dsh-compaction-basic` 旁挂载本包。修剪会改变模型看到的内容——更短的结果——并让压缩有更少的历史需要压缩。
+当工具输出经常主导对话窗口时，在 `gnk-compaction-basic` 旁挂载本包。修剪会改变模型看到的内容——更短的结果——并让压缩有更少的历史需要压缩。
 
 ### 最小可用组合
 
 按此顺序挂载 token 测量、本包与后端：
 
 ```yaml
-- name: '@deepseek-ai/dsh-token-meter'
-- name: '@deepseek-ai/dsh-compaction-tool-result-pruner'
-- name: '@deepseek-ai/dsh-compaction-basic'
+- name: '@greeneek/gnk-token-meter'
+- name: '@greeneek/gnk-compaction-tool-result-pruner'
+- name: '@greeneek/gnk-compaction-basic'
 ```
 
 有了这些配置行，超大工具结果会在压缩过程中自动被修剪。你可以通过检查后续请求是否显示修剪后的结果来确认成功；完整原始内容仍保留在会话日志中。
@@ -45,7 +45,7 @@ kind: "package-reference"
 
 ### 设置大小限制
 
-所有设置都可选；默认会把文本超过 8,192 个字符的结果修剪为其前 4,096 加后 1,024 个字符，并用标记连接。生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-compaction-tool-result-pruner)是穷尽式真源。
+所有设置都可选；默认会把文本超过 8,192 个字符的结果修剪为其前 4,096 加后 1,024 个字符，并用标记连接。生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-compaction-tool-result-pruner)是穷尽式真源。
 
 | 字段 | 默认值 | 含义 |
 |---|---|---|
@@ -57,7 +57,7 @@ kind: "package-reference"
 
 ### 修剪何时运行
 
-修剪只在压缩触发条件满足后运行：`dsh-compaction-basic` 在压力或溢出确认后、选择要压缩的内容之前调用它。低于压力时不会修剪任何内容，修剪本身也不发起模型调用。
+修剪只在压缩触发条件满足后运行：`gnk-compaction-basic` 在压力或溢出确认后、选择要压缩的内容之前调用它。低于压力时不会修剪任何内容，修剪本身也不发起模型调用。
 
 -----
 
@@ -103,7 +103,7 @@ kind: "package-reference"
 - [压缩 seam](../compaction/README.zh.md)——本包接入的压缩约定。
 - [压缩子系统参考](../../../docs/subsystems/compaction.zh.md)——压缩词汇、结果与服务行为。
 - [Token meter](../../llm/token-meter/README.zh.md)——判定修剪是否缓解压力的测量服务。
-- [生成配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-compaction-tool-result-pruner)——每个受支持配置字段及其源声明。
+- [生成配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-compaction-tool-result-pruner)——每个受支持配置字段及其源声明。
 
 -----
 

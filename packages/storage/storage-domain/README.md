@@ -3,13 +3,13 @@ description: "Domain data form (ctx.storageDomain) for hosts and maintainers cho
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-storage-domain
+# @greeneek/gnk-storage-domain
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-storage-domain` is the typed way to use the storage family: an owning package declares a domain once — its name, format version, and zod record schemas — and host consumers open it over a routed backend and read and write records through `ctx.storageDomain`. Reads are synchronous from authoritative in-memory state; every write is durable before it resolves and emits a `domain/changed` event, so reads never diverge from the stored medium. It is the only consumer of the backend contract — product packages never touch backends directly. The layer is host-side only: it registers no tools, injects no prompts, and appends no session events, so the model and the agent loop never see it.
+`gnk-storage-domain` is the typed way to use the storage family: an owning package declares a domain once — its name, format version, and zod record schemas — and host consumers open it over a routed backend and read and write records through `ctx.storageDomain`. Reads are synchronous from authoritative in-memory state; every write is durable before it resolves and emits a `domain/changed` event, so reads never diverge from the stored medium. It is the only consumer of the backend contract — product packages never touch backends directly. The layer is host-side only: it registers no tools, injects no prompts, and appends no session events, so the model and the agent loop never see it.
 
 ## Table of Contents
 
@@ -66,7 +66,7 @@ The domain plugin's configuration decides which backend serves which domain — 
 | `backend` | required | Default backend name for every domain without an explicit route |
 | `routes` | `{}` | Per-domain overrides: domain name → backend name |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-storage-domain) is the exhaustive source for every accepted field and its JSDoc.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-storage-domain) is the exhaustive source for every accepted field and its JSDoc.
 
 ### Observable behavior and failures
 

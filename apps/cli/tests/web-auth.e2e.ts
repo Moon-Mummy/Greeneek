@@ -1,4 +1,4 @@
-/** Real `dsh web` authentication against a temporary Harness home. */
+/** Real `gnk web` authentication against a temporary Harness home. */
 
 import type { ChildProcess } from 'node:child_process'
 import { spawn } from 'node:child_process'
@@ -14,7 +14,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
 const REPO_ROOT = fileURLToPath(new URL('../../..', import.meta.url))
-const DSH_SOURCE_BIN = join(REPO_ROOT, 'apps/cli/src/bin.ts')
+const GNK_SOURCE_BIN = join(REPO_ROOT, 'apps/cli/src/bin.ts')
 const TSX_LOADER = pathToFileURL(createRequire(join(REPO_ROOT, 'package.json')).resolve('tsx')).href
 
 interface RunningWeb {
@@ -49,14 +49,14 @@ async function freePort(): Promise<number> {
   return port
 }
 
-function cleanEnvironment(root: string, dshHome: string): NodeJS.ProcessEnv {
+function cleanEnvironment(root: string, gnkHome: string): NodeJS.ProcessEnv {
   const env = Object.fromEntries(Object.entries(process.env).filter(([name]) =>
     !/(?:KEY|SECRET|TOKEN|PASSWORD)/iu.test(name)))
   return {
     ...env,
-    DSH_AGENTS_HOME: join(root, '.agents'),
-    DSH_HOME: dshHome,
-    DSH_TELEMETRY_DISABLED: '1',
+    GNK_AGENTS_HOME: join(root, '.agents'),
+    GNK_HOME: gnkHome,
+    GNK_TELEMETRY_DISABLED: '1',
     NODE_NO_WARNINGS: '1',
     SSH_CONNECTION: '',
     SSH_TTY: '',
@@ -65,16 +65,16 @@ function cleanEnvironment(root: string, dshHome: string): NodeJS.ProcessEnv {
 }
 
 /** Start the public source CLI and wait for its authenticated readiness URL. */
-async function startWeb(root: string, dshHome: string, port: number): Promise<RunningWeb> {
+async function startWeb(root: string, gnkHome: string, port: number): Promise<RunningWeb> {
   const child = spawn(process.execPath, [
     '--import', TSX_LOADER,
-    DSH_SOURCE_BIN,
+    GNK_SOURCE_BIN,
     'web',
     '--no-open',
     '--port', String(port),
   ], {
     cwd: root,
-    env: cleanEnvironment(root, dshHome),
+    env: cleanEnvironment(root, gnkHome),
     stdio: ['ignore', 'pipe', 'pipe'],
   })
   let output = ''
@@ -87,11 +87,11 @@ async function startWeb(root: string, dshHome: string, port: number): Promise<Ru
       reject(error)
     }
     const timer = setTimeout(() => {
-      fail(new Error(`dsh web did not become ready:\n${redact(output)}`))
+      fail(new Error(`gnk web did not become ready:\n${redact(output)}`))
     }, 90_000)
     const append = (chunk: Buffer | string): void => {
       output = `${output}${String(chunk)}`.slice(-100_000)
-      const match = /dsh web: (http:\/\/[^\s]+)/u.exec(output)
+      const match = /gnk web: (http:\/\/[^\s]+)/u.exec(output)
       if (settled || match?.[1] === undefined) return
       settled = true
       clearTimeout(timer)
@@ -103,7 +103,7 @@ async function startWeb(root: string, dshHome: string, port: number): Promise<Ru
       fail(error)
     })
     child.once('exit', (code) => {
-      fail(new Error(`dsh web exited before readiness (${String(code)}):\n${redact(output)}`))
+      fail(new Error(`gnk web exited before readiness (${String(code)}):\n${redact(output)}`))
     })
   })
   return { child, launchUrl, output: () => output }
@@ -151,15 +151,15 @@ function describeSettings(port: number, host: string, cookie?: string): Promise<
   })
 }
 
-describe('dsh web authentication through the real CLI', () => {
+describe('gnk web authentication through the real CLI', () => {
   it('rejects a forged loopback Host and preserves the browser cookie across restart', { timeout: 180_000 }, async () => {
-    const root = await mkdtemp(join(tmpdir(), 'dsh-web-auth-real-cli-'))
-    const dshHome = join(root, '.dsh')
+    const root = await mkdtemp(join(tmpdir(), 'gnk-web-auth-real-cli-'))
+    const gnkHome = join(root, '.gnk')
     const port = await freePort()
     let first: RunningWeb | undefined
     let second: RunningWeb | undefined
     try {
-      first = await startWeb(root, dshHome, port)
+      first = await startWeb(root, gnkHome, port)
       const firstUrl = new URL(first.launchUrl)
       expect(firstUrl.origin).toBe(`http://127.0.0.1:${String(port)}`)
       expect(firstUrl.pathname).toBe('/')
@@ -191,12 +191,12 @@ describe('dsh web authentication through the real CLI', () => {
 
       await stopWeb(first)
       first = undefined
-      second = await startWeb(root, dshHome, port)
+      second = await startWeb(root, gnkHome, port)
       const secondUrl = new URL(second.launchUrl)
       expect(secondUrl.searchParams.get('token')).not.toBe(firstUrl.searchParams.get('token'))
       expect((await describeSettings(port, secondUrl.host, cookie)).status).toBe(200)
 
-      const credentialMode = (await stat(join(dshHome, '.credentials.yaml'))).mode & 0o777
+      const credentialMode = (await stat(join(gnkHome, '.credentials.yaml'))).mode & 0o777
       expect(credentialMode).toBe(0o600)
     } catch (error) {
       const evidence = [first?.output(), second?.output()].filter(value => value !== undefined).join('\n')

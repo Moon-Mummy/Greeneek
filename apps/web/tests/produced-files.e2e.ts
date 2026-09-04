@@ -7,9 +7,9 @@ import { fileURLToPath } from 'node:url'
 import type { Browser, Page } from 'playwright'
 import { chromium } from 'playwright'
 import { afterAll, beforeAll, describe, expect, it, onTestFailed, vi } from 'vitest'
-import { ToolCallId, createAssistantMessage, createToolResultMessage, createUserMessage } from '@deepseek-ai/dsh-llm'
-import { SESSION_FORMAT_VERSION, Session, SessionId } from '@deepseek-ai/dsh-session'
-import type {} from '@deepseek-ai/dsh-session-title'
+import { ToolCallId, createAssistantMessage, createToolResultMessage, createUserMessage } from '@greeneek/gnk-llm'
+import { SESSION_FORMAT_VERSION, Session, SessionId } from '@greeneek/gnk-session'
+import type {} from '@greeneek/gnk-session-title'
 import {
   launchWebScaffold, seedSession, watchConsole, webSnapshotMode, type WebScaffold,
 } from './scaffold.ts'
@@ -62,7 +62,7 @@ function producedFixture(): string {
         name: 'write',
         arguments: call.args,
       })),
-      source: { provider: 'deepseek-official', model: 'deepseek-v4-flash' },
+      source: { provider: 'greeneek-official', model: 'greeneek-v4-flash' },
     }),
   }, { surfaceOp: 'append' })
   for (const call of calls) {
@@ -85,7 +85,7 @@ function producedFixture(): string {
     step: 2,
     message: createAssistantMessage({
       content: [{ type: 'text', text: `Created the site.\n\n${DONE}` }],
-      source: { provider: 'deepseek-official', model: 'deepseek-v4-flash' },
+      source: { provider: 'greeneek-official', model: 'greeneek-v4-flash' },
     }),
   }, { surfaceOp: 'append' })
   session.append('step/end', { turn: 1, step: 2 })

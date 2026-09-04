@@ -3,13 +3,13 @@ description: "面向用户与维护者的日志会话标题说明，用于选择
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-session-title
+# @greeneek/gnk-session-title
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-session-title` 为每个会话提供客户端可以显示的标题：来自第一条符合条件用户消息的确定性回退、一个可选异步提供方（例如模型支持的提供方），或显式用户重命名。每个已接受的修订都是仅写入日志的 `session/title` 事件，因此标题像任何其他会话事件一样在回放、恢复与分页中存活，且绝不进入模型可见面。服务拥有调度与接受；可选提供方负责生成。自动工作绝不会延迟主 agent 响应，较新的修订会取代旧工作。配置与标题来源在前；实现内部细节放在下方可折叠的开发者章节中。
+`gnk-session-title` 为每个会话提供客户端可以显示的标题：来自第一条符合条件用户消息的确定性回退、一个可选异步提供方（例如模型支持的提供方），或显式用户重命名。每个已接受的修订都是仅写入日志的 `session/title` 事件，因此标题像任何其他会话事件一样在回放、恢复与分页中存活，且绝不进入模型可见面。服务拥有调度与接受；可选提供方负责生成。自动工作绝不会延迟主 agent 响应，较新的修订会取代旧工作。配置与标题来源在前；实现内部细节放在下方可折叠的开发者章节中。
 
 ## 目录
 
@@ -36,8 +36,8 @@ kind: "package-reference"
 所有上限都是必填项；该库不提供默认值。以三个上限挂载服务：
 
 ```yaml
-- name: '@deepseek-ai/dsh-session'
-- name: '@deepseek-ai/dsh-session-title'
+- name: '@greeneek/gnk-session'
+- name: '@greeneek/gnk-session-title'
   config:
     fallbackMaxWords: 8
     fallbackMaxBytes: 96
@@ -50,7 +50,7 @@ kind: "package-reference"
 | `fallbackMaxBytes` | 必填 | 回退允许的最大 UTF-8 字节数；不得超过 `maxTitleBytes` |
 | `maxTitleBytes` | 必填 | 接受任何来源标题的最大 UTF-8 字节数 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-session-title)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-session-title)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### 添加提供方
 

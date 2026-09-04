@@ -1,16 +1,16 @@
 import { describe, expect, it } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import { SessionId } from '@deepseek-ai/dsh-session'
-import AgentLoop from '@deepseek-ai/dsh-agent-loop'
-import { mountAgentLoopTestDependencies } from '@deepseek-ai/dsh-agent-loop-testkit'
-import InvariantRegistry from '@deepseek-ai/dsh-invariants'
-import * as SessionInvariant from '@deepseek-ai/dsh-session/invariant'
-import * as AgentInvariant from '@deepseek-ai/dsh-agent/invariant'
-import * as AgentLoopInvariant from '@deepseek-ai/dsh-agent-loop/invariant'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import SubagentRuntime from '@deepseek-ai/dsh-subagent'
-import * as spawn from '@deepseek-ai/dsh-subagent-spawn-in-process'
-import { STRUCTURED_OUTPUT_TOOL } from '@deepseek-ai/dsh-subagent-in-process-driver'
+import { Context } from '@greeneek/cordis'
+import { SessionId } from '@greeneek/gnk-session'
+import AgentLoop from '@greeneek/gnk-agent-loop'
+import { mountAgentLoopTestDependencies } from '@greeneek/gnk-agent-loop-testkit'
+import InvariantRegistry from '@greeneek/gnk-invariants'
+import * as SessionInvariant from '@greeneek/gnk-session/invariant'
+import * as AgentInvariant from '@greeneek/gnk-agent/invariant'
+import * as AgentLoopInvariant from '@greeneek/gnk-agent-loop/invariant'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import SubagentRuntime from '@greeneek/gnk-subagent'
+import * as spawn from '@greeneek/gnk-subagent-spawn-in-process'
+import { STRUCTURED_OUTPUT_TOOL } from '@greeneek/gnk-subagent-in-process-driver'
 import { MockAdapter, textResponse, toolCallResponse } from '../../../core/agent-loop/tests/mock-adapter.ts'
 import WorkerThreadWorkflowEngine from '../src/index.ts'
 
@@ -46,7 +46,7 @@ async function setup(script: Script) {
   return { ctx, parent, adapter }
 }
 
-describe('dsh-workflow-worker-thread over the real in-process stack', () => {
+describe('gnk-workflow-worker-thread over the real in-process stack', () => {
   it('runs a two-stage workflow: a plain child, then a schema child through the structured runtime', async () => {
     const { ctx, parent } = await setup([
       textResponse('the file list is a.ts'),

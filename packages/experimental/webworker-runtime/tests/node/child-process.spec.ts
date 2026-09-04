@@ -13,25 +13,25 @@
  * liveness through it, and on a test host those pids belong to real processes.
  */
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
-import { MemoryVfs } from '@deepseek-ai/dsh-experimental-webworker-runtime/src/storage/memory.ts'
-import { setActiveVfs } from '@deepseek-ai/dsh-experimental-webworker-runtime/src/storage/active.ts'
-import { spawn, spawnSync } from '@deepseek-ai/dsh-experimental-webworker-runtime/src/node/builtin_modules/implemented/child_process.ts'
+import { MemoryVfs } from '@greeneek/gnk-experimental-webworker-runtime/src/storage/memory.ts'
+import { setActiveVfs } from '@greeneek/gnk-experimental-webworker-runtime/src/storage/active.ts'
+import { spawn, spawnSync } from '@greeneek/gnk-experimental-webworker-runtime/src/node/builtin_modules/implemented/child_process.ts'
 import {
   LAUNCHER_FAILURE_EXIT, grantArgs, launcherPath, probe,
-} from '@deepseek-ai/node-addon-landlock-run'
-import { processAlive, signalProcess } from '@deepseek-ai/dsh-experimental-webworker-runtime/src/node/process-table.ts'
-import { hostFileSystem } from '@deepseek-ai/dsh-experimental-webworker-runtime/src/shell/fs-access.ts'
+} from '@greeneek/node-addon-landlock-run'
+import { processAlive, signalProcess } from '@greeneek/gnk-experimental-webworker-runtime/src/node/process-table.ts'
+import { hostFileSystem } from '@greeneek/gnk-experimental-webworker-runtime/src/shell/fs-access.ts'
 import {
   LANDLOCK_EXECUTABLE, landlockFileSystem, parseLandlockArguments,
-} from '@deepseek-ai/dsh-experimental-webworker-runtime/src/shell/process/landlock.ts'
-import { spawnSubprocess } from '@deepseek-ai/dsh-subprocess-local/src/spawn.ts'
+} from '@greeneek/gnk-experimental-webworker-runtime/src/shell/process/landlock.ts'
+import { spawnSubprocess } from '@greeneek/gnk-subprocess-local/src/spawn.ts'
 
 vi.mock('node:child_process', async () =>
-  await import('@deepseek-ai/dsh-experimental-webworker-runtime/src/node/builtin_modules/implemented/child_process.ts'))
+  await import('@greeneek/gnk-experimental-webworker-runtime/src/node/builtin_modules/implemented/child_process.ts'))
 
-const WORKSPACE = '/dsh/workspace'
-const HOME = '/dsh/home'
-const TMP = '/dsh/tmp'
+const WORKSPACE = '/gnk/workspace'
+const HOME = '/gnk/home'
+const TMP = '/gnk/tmp'
 
 let vfs: MemoryVfs
 
@@ -128,10 +128,10 @@ it('keeps the native Landlock package API and CLI failure contract', async () =>
     stderr: 'landlock-run: usage error: --rw requires a path\n',
     code: 125,
   })
-  const missingGrant = spawn(launcherPath(), ['--rw', '/dsh/missing', '--', 'touch', `${WORKSPACE}/never`], { cwd: WORKSPACE })
+  const missingGrant = spawn(launcherPath(), ['--rw', '/gnk/missing', '--', 'touch', `${WORKSPACE}/never`], { cwd: WORKSPACE })
   expect(await collect(missingGrant)).toEqual({
     stdout: '',
-    stderr: 'landlock-run: cannot open rule path: /dsh/missing: No such file or directory\n',
+    stderr: 'landlock-run: cannot open rule path: /gnk/missing: No such file or directory\n',
     code: 125,
   })
   expect(vfs.existsSync(`${WORKSPACE}/never`)).toBe(false)

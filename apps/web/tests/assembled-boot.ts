@@ -13,9 +13,9 @@ import { dirname, join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { act, cleanup } from '@testing-library/react'
 import { afterEach, beforeEach, vi } from 'vitest'
-import { bootInjections, orderByModuleGraph } from '@deepseek-ai/dsh-client-modules'
-import type { ClientModuleLoaderTarget, WebBootEntry, WebBootGraph } from '@deepseek-ai/dsh-client-modules/client'
-import { AppWebEntry } from '@deepseek-ai/dsh-client-web'
+import { bootInjections, orderByModuleGraph } from '@greeneek/gnk-client-modules'
+import type { ClientModuleLoaderTarget, WebBootEntry, WebBootGraph } from '@greeneek/gnk-client-modules/client'
+import { AppWebEntry } from '@greeneek/gnk-client-web'
 
 interface AssembledPlugin extends WebBootEntry {
   /** Absolute path to the built client artifact declared by this package. */
@@ -30,7 +30,7 @@ interface AssembledBootOptions {
 interface ClientPackageManifest {
   name?: string
   exports?: Record<string, string | { default?: string }>
-  dsh?: {
+  gnk?: {
     client?: {
       platform?: string
       inject?: string[]
@@ -70,7 +70,7 @@ const workspacePackageManifests = new Map(globSync('packages/*/*/package.json', 
   if (pkg.name === undefined) throw new Error(`assembled boot: workspace package has no name: ${path}`)
   return [pkg.name, path]
 }))
-const appBoot = await import(pathToFileURL(webBundleResolver.resolve('@deepseek-ai/dsh-app-boot')).href) as unknown as BootComposition
+const appBoot = await import(pathToFileURL(webBundleResolver.resolve('@greeneek/gnk-app-boot')).href) as unknown as BootComposition
 
 function resolvePackageManifest(specifier: string): string | undefined {
   return workspacePackageManifests.get(specifier)
@@ -80,7 +80,7 @@ function resolveClientExport(packagePath: string, pkg: ClientPackageManifest): s
   const declared = pkg.exports?.['./client']
   const relative = typeof declared === 'string' ? declared : declared?.default
   if (relative === undefined) {
-    throw new Error(`assembled boot: ${pkg.name ?? packagePath} declares dsh.client without a ./client export`)
+    throw new Error(`assembled boot: ${pkg.name ?? packagePath} declares gnk.client without a ./client export`)
   }
   return resolve(dirname(packagePath), relative)
 }
@@ -88,7 +88,7 @@ function resolveClientExport(packagePath: string, pkg: ClientPackageManifest): s
 const comboUrl = (ids: readonly string[], rev: string): string =>
   `/plugins/??${ids.map(id => `${id}/client.js`).join(',')}&rev=${rev}`
 
-/** Derive the assembled browser graph from the same bundle patches and package declarations as `dsh web`. */
+/** Derive the assembled browser graph from the same bundle patches and package declarations as `gnk web`. */
 function loadAssembledPlugins(): readonly AssembledPlugin[] {
   const entries = appBoot.composeEntries(BUNDLE_LAYERS.map(layer =>
     appBoot.loadOverlayPatches('assembled boot', layer.patch)))
@@ -98,7 +98,7 @@ function loadAssembledPlugins(): readonly AssembledPlugin[] {
     const packagePath = resolvePackageManifest(entry.name)
     if (packagePath === undefined) continue
     const pkg = JSON.parse(readFileSync(packagePath, 'utf8')) as ClientPackageManifest
-    const declaration = pkg.dsh?.client
+    const declaration = pkg.gnk?.client
     if (declaration?.platform !== 'web') continue
     if (pkg.name !== entry.name) {
       throw new Error(`assembled boot: ${entry.name} resolved package ${pkg.name ?? '<unnamed>'}`)
@@ -123,7 +123,7 @@ function loadAssembledPlugins(): readonly AssembledPlugin[] {
 
 const PLUGINS = loadAssembledPlugins()
 
-const BOOTSTRAP_IDS = ['@deepseek-ai/dsh-client-modules'] as const
+const BOOTSTRAP_IDS = ['@greeneek/gnk-client-modules'] as const
 
 /** Build the fixture graph after applying per-scenario package exclusions. */
 function bootGraph(plugins: readonly AssembledPlugin[]): WebBootGraph {
@@ -172,7 +172,7 @@ function bundleTable(graph: WebBootGraph, plugins: readonly AssembledPlugin[]): 
 }
 
 interface FixtureWindow extends Window {
-  __DSH_BOOT__?: WebBootGraph
+  __GNK_BOOT__?: WebBootGraph
   __ModuleLoader__?: ClientModuleLoaderTarget
 }
 
@@ -219,7 +219,7 @@ export function installAssembledBootEnv(): void {
     // English here.
     Object.defineProperty(navigator, 'languages', { value: ['en-US'], configurable: true })
     Object.defineProperty(navigator, 'language', { value: 'en-US', configurable: true })
-    document.title = 'DeepSeek Harness'
+    document.title = 'Greeneek Harness'
     vi.stubGlobal('ResizeObserver', ResizeObserverStub)
     vi.stubGlobal('EventSource', EventSourceStub)
     vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) =>
@@ -231,7 +231,7 @@ export function installAssembledBootEnv(): void {
     await act(async () => { await unmount?.() })
     unmount = undefined
     cleanup()
-    delete win.__DSH_BOOT__
+    delete win.__GNK_BOOT__
     delete win.__ModuleLoader__
     document.body.innerHTML = ''
     document.head.querySelectorAll('style[data-plugin]').forEach((style) => { style.remove() })
@@ -261,8 +261,8 @@ export function mountAssembledApp(search = '?fixture', options: AssembledBootOpt
   document.body.appendChild(root)
   const graph = bootGraph(plugins)
   const bundles = bundleTable(graph, plugins)
-  win.__DSH_BOOT__ = graph
-  const [facadeRow] = bootInjections(win.__DSH_BOOT__)
+  win.__GNK_BOOT__ = graph
+  const [facadeRow] = bootInjections(win.__GNK_BOOT__)
   if (facadeRow?.kind !== 'script') throw new Error('missing injected ModuleLoader facade row')
   ;(0, eval)(facadeRow.text)
   // Mirror the blocking Host-injected bootstrap batch before the Vite entry calls create().
@@ -299,7 +299,7 @@ export function hasClass(el: Element, name: string): boolean {
 
 /**
  * Whether this run rewrites its golden instead of comparing against it, set by
- * the snapshot gate's `DSH_SNAPSHOT` mode (`record` re-runs the scenarios from
+ * the snapshot gate's `GNK_SNAPSHOT` mode (`record` re-runs the scenarios from
  * scratch, `refresh` re-derives the expected text from the existing ones).
  */
-export const REFRESHING_GOLDEN = process.env.DSH_SNAPSHOT === 'record' || process.env.DSH_SNAPSHOT === 'refresh'
+export const REFRESHING_GOLDEN = process.env.GNK_SNAPSHOT === 'record' || process.env.GNK_SNAPSHOT === 'refresh'

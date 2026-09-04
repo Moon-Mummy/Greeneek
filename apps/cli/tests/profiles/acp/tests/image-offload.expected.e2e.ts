@@ -6,7 +6,7 @@ import { expect, it } from 'vitest'
 import {
   runScenario,
   type InputScript,
-} from '@deepseek-ai/dsh-session-snapshot'
+} from '@greeneek/gnk-session-snapshot'
 
 const AGENT = {
   binScript: fileURLToPath(new URL('../../../../src/bin.ts', import.meta.url)),
@@ -18,7 +18,7 @@ const IMAGE_OFFLOAD_CONFIG = fileURLToPath(new URL('./fixtures/image-offload.cor
 const SNAPSHOTS_DIR = fileURLToPath(new URL('../../../../../../snapshots/acp/', import.meta.url))
 const READ_IMAGE_WORKSPACE = fileURLToPath(new URL('../../../../../../snapshots/session/read-image/workspace/', import.meta.url))
 
-it('pins native DeepSeek Files offload and inline fallback in assembled requests', async () => {
+it('pins native Greeneek Files offload and inline fallback in assembled requests', async () => {
   const requests: Record<string, unknown>[] = []
   const fileRequests: Array<{ method: string; path: string; bytes: number }> = []
   let rejectFiles = false
@@ -52,7 +52,7 @@ it('pins native DeepSeek Files offload and inline fallback in assembled requests
             object: 'file',
             bytes: file.size,
             created_at: createdAt,
-            filename: 'dsh-snapshot.png',
+            filename: 'gnk-snapshot.png',
             purpose: 'user_data',
             expires_at: createdAt + Number(form.get('expires_after[seconds]')),
           }))
@@ -114,8 +114,8 @@ it('pins native DeepSeek Files offload and inline fallback in assembled requests
       fixtureFile: join(SNAPSHOTS_DIR, 'image-offload-request', 'session.jsonl'),
       workspaceDir: READ_IMAGE_WORKSPACE,
       env: {
-        DSH_SNAPSHOT_API_KEY: 'snapshot-key',
-        DSH_SNAPSHOT_BASE_URL: `http://127.0.0.1:${address.port}`,
+        GNK_SNAPSHOT_API_KEY: 'snapshot-key',
+        GNK_SNAPSHOT_BASE_URL: `http://127.0.0.1:${address.port}`,
       },
     })
     expect(result.stderr).toBe('')
@@ -126,7 +126,7 @@ it('pins native DeepSeek Files offload and inline fallback in assembled requests
     const accessText = (cwd: string): string => {
       const attachmentPath = join(
         cwd,
-        '.dsh',
+        '.gnk',
         'attachments',
         'v1',
         'objects',
@@ -175,7 +175,7 @@ it('pins native DeepSeek Files offload and inline fallback in assembled requests
       {
         role: 'user',
         content: 'Current runtime context. This snapshot supersedes earlier runtime-context snapshots.\n\n'
-          + 'Current DSH file policy: danger-full-access. The DSH file sandbox does not restrict file modifications by available operations.\n\n'
+          + 'Current GNK file policy: danger-full-access. The GNK file sandbox does not restrict file modifications by available operations.\n\n'
           + 'Approval prompts are disabled in this session: actions that require approval are rejected automatically — do not request sandbox escalation (do not set `sandbox_permissions`).',
       },
       {
@@ -210,8 +210,8 @@ it('pins native DeepSeek Files offload and inline fallback in assembled requests
       fixtureFile: join(SNAPSHOTS_DIR, 'image-offload-request', 'session.jsonl'),
       workspaceDir: READ_IMAGE_WORKSPACE,
       env: {
-        DSH_SNAPSHOT_API_KEY: 'snapshot-fallback-key',
-        DSH_SNAPSHOT_BASE_URL: `http://127.0.0.1:${address.port}`,
+        GNK_SNAPSHOT_API_KEY: 'snapshot-fallback-key',
+        GNK_SNAPSHOT_BASE_URL: `http://127.0.0.1:${address.port}`,
       },
     })
     expect(fallback.stderr).toBe('')

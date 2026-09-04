@@ -1,24 +1,24 @@
 import { describe, expect, it } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import Loader from '@deepseek-ai/cordis-plugin-loader'
-import AgentRegistry, { agentEvents, Inbox } from '@deepseek-ai/dsh-agent'
-import type { Agent, AgentStatus } from '@deepseek-ai/dsh-agent'
-import { turnBoundaryProjectionDefinition } from '@deepseek-ai/dsh-agent-loop'
-import GoalService, { GoalId } from '@deepseek-ai/dsh-goal'
-import type { GoalRef } from '@deepseek-ai/dsh-goal'
-import { createUserMessage, ToolCallId } from '@deepseek-ai/dsh-llm'
-import type { MessageSource } from '@deepseek-ai/dsh-llm'
+import { Context } from '@greeneek/cordis'
+import Loader from '@greeneek/cordis-plugin-loader'
+import AgentRegistry, { agentEvents, Inbox } from '@greeneek/gnk-agent'
+import type { Agent, AgentStatus } from '@greeneek/gnk-agent'
+import { turnBoundaryProjectionDefinition } from '@greeneek/gnk-agent-loop'
+import GoalService, { GoalId } from '@greeneek/gnk-goal'
+import type { GoalRef } from '@greeneek/gnk-goal'
+import { createUserMessage, ToolCallId } from '@greeneek/gnk-llm'
+import type { MessageSource } from '@greeneek/gnk-llm'
 import {
   SESSION_FORMAT_VERSION,
   Session,
   SessionId,
   SessionLogOffset,
-} from '@deepseek-ai/dsh-session'
-import SystemPrompt from '@deepseek-ai/dsh-system-prompt'
-import ToolRuntime from '@deepseek-ai/dsh-tools'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import type { ToolExecutionResult } from '@deepseek-ai/dsh-tools'
-import * as toolGoal from '@deepseek-ai/dsh-tool-goal'
+} from '@greeneek/gnk-session'
+import SystemPrompt from '@greeneek/gnk-system-prompt'
+import ToolRuntime from '@greeneek/gnk-tools'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import type { ToolExecutionResult } from '@greeneek/gnk-tools'
+import * as toolGoal from '@greeneek/gnk-tool-goal'
 
 const testToolSignal = new AbortController().signal
 

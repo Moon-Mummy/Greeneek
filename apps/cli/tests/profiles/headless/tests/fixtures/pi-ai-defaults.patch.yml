@@ -5,18 +5,18 @@
 - id: headless-runner
   disabled: true
 
-- id: llm-deepseek
+- id: llm-greeneek
   disabled: true
 
 - id: llm-pi-ai
   config:
     providers:
-      deepseek:
-        apiKeyEnv: DEEPSEEK_API_KEY
-        baseURL: !!js process.env.DSH_SNAPSHOT_BASE_URL
+      greeneek:
+        apiKeyEnv: GREENEEK_API_KEY
+        baseURL: !!js process.env.GNK_SNAPSHOT_BASE_URL
         reasoning: low
         modelOverrides:
-          deepseek-v4-flash:
+          greeneek-v4-flash:
             maxTokens: 1024
         streamIdleTimeoutMs: 1000
 
@@ -24,8 +24,8 @@
   config:
     agents:
       - id: main
-        provider: deepseek
-        model: deepseek-v4-flash
+        provider: greeneek
+        model: greeneek-v4-flash
         cwd: !!js process.cwd()
 
 - id: agent-instructions

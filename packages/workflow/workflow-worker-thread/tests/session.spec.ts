@@ -130,14 +130,14 @@ describe('runWorkerSession over an in-process MessageChannel', () => {
   it('agent({schema}) forwards the schema on the start request and returns the structured value', async () => {
     const host = fakeHost({ reply: () => ({ output: [], structured: { files: ['x.ts'] }, stopReason: 'completed' }) })
     void runWorkerSession(host.port, init(`
-      const found = await agent('list files', { schema: { type: 'object', properties: { files: { type: 'array', items: { type: 'string' } } } }, model: 'deepseek-v4-pro' })
+      const found = await agent('list files', { schema: { type: 'object', properties: { files: { type: 'array', items: { type: 'string' } } } }, model: 'greeneek-v4-pro' })
       return { first: found.files[0] }
     `))
     const result = await host.result()
     expect(result.value).toEqual({ first: 'x.ts' })
     const start = host.ofType(WorkerToHostType.ChildStart)[0]!
     expect(start.request.schema).toEqual({ type: 'object', properties: { files: { type: 'array', items: { type: 'string' } } } })
-    expect(start.request.model).toBe('deepseek-v4-pro')
+    expect(start.request.model).toBe('greeneek-v4-pro')
     host.close()
   })
 

@@ -3,19 +3,19 @@ import { spawnSync } from 'node:child_process'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import { Session, SessionId } from '@deepseek-ai/dsh-session'
-import AgentRegistry, { Inbox } from '@deepseek-ai/dsh-agent'
-import type { Agent } from '@deepseek-ai/dsh-agent'
-import TerminalSessionService from '@deepseek-ai/dsh-terminal'
-import type { TerminalSendOperation } from '@deepseek-ai/dsh-terminal'
-import SandboxProvider from '@deepseek-ai/dsh-sandbox'
-import type { ConfinedArgv, SandboxPolicy } from '@deepseek-ai/dsh-sandbox'
-import SandboxPolicyService from '@deepseek-ai/dsh-sandbox-policy'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import LocalSubprocessRuntime from '@deepseek-ai/dsh-subprocess-local'
-import { resolvePwshPath } from '@deepseek-ai/dsh-pwsh-local/src/resolve.ts'
-import * as ptyLocal from '@deepseek-ai/dsh-terminal-bash'
+import { Context } from '@greeneek/cordis'
+import { Session, SessionId } from '@greeneek/gnk-session'
+import AgentRegistry, { Inbox } from '@greeneek/gnk-agent'
+import type { Agent } from '@greeneek/gnk-agent'
+import TerminalSessionService from '@greeneek/gnk-terminal'
+import type { TerminalSendOperation } from '@greeneek/gnk-terminal'
+import SandboxProvider from '@greeneek/gnk-sandbox'
+import type { ConfinedArgv, SandboxPolicy } from '@greeneek/gnk-sandbox'
+import SandboxPolicyService from '@greeneek/gnk-sandbox-policy'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import LocalSubprocessRuntime from '@greeneek/gnk-subprocess-local'
+import { resolvePwshPath } from '@greeneek/gnk-pwsh-local/src/resolve.ts'
+import * as ptyLocal from '@greeneek/gnk-terminal-bash'
 
 const roots: string[] = []
 const contexts: Context[] = []
@@ -54,7 +54,7 @@ async function harness(
   timing: { idleSilenceMs?: number; handoffGraceMs?: number; timeoutMs?: number } = {},
   dialect: 'bash' | 'pwsh' = 'bash',
 ) {
-  const root = mkdtempSync(join(tmpdir(), 'dsh-pty-local-'))
+  const root = mkdtempSync(join(tmpdir(), 'gnk-pty-local-'))
   roots.push(root)
   const ctx = new Context()
   contexts.push(ctx)
@@ -135,24 +135,24 @@ function canReadLinuxProcessSyscall(pid: number): boolean {
 // Windows has no bash, and its pwsh counterpart lives in the describe below.
 describe.skipIf(process.platform === 'win32')('terminal-bash real shell', () => {
   it('persists cwd and environment across sends, scrubs secrets, and closes', async () => {
-    const previous = process.env.DSH_TEST_SECRET
-    process.env.DSH_TEST_SECRET = 'must-not-leak'
+    const previous = process.env.GNK_TEST_SECRET
+    process.env.GNK_TEST_SECRET = 'must-not-leak'
     try {
       const { ctx, root, agent } = await harness('danger-full-access')
       const created = await ctx.terminals.spawn(agent, { type: 'shell', name: 'main', cwd: root })
-      expect(created.motd).toContain('dsh> ')
+      expect(created.motd).toContain('gnk> ')
 
       const first = ctx.terminals.startSend(agent, created.sessionId, { text: 'export KEEP=ok; cd /', submit: true })
       expect((await first.done).waitReason).toBe('stdin_read')
-      const second = ctx.terminals.startSend(agent, created.sessionId, { text: 'printf "cwd=%s keep=%s secret=%s\\n" "$PWD" "$KEEP" "${DSH_TEST_SECRET-unset}"', submit: true })
+      const second = ctx.terminals.startSend(agent, created.sessionId, { text: 'printf "cwd=%s keep=%s secret=%s\\n" "$PWD" "$KEEP" "${GNK_TEST_SECRET-unset}"', submit: true })
       expect((await second.done).viewport).toContain('cwd=/ keep=ok secret=unset')
 
       expect(ctx.terminals.read(agent, created.sessionId, { offset: 0, count: 20 }).text).toContain('cwd=/ keep=ok secret=unset')
       expect(await ctx.terminals.kill(agent, created.sessionId)).toBe(true)
       expect(ctx.terminals.list(agent)).toEqual([])
     } finally {
-      if (previous === undefined) delete process.env.DSH_TEST_SECRET
-      else process.env.DSH_TEST_SECRET = previous
+      if (previous === undefined) delete process.env.GNK_TEST_SECRET
+      else process.env.GNK_TEST_SECRET = previous
     }
   }, 10_000)
 
@@ -172,7 +172,7 @@ describe.skipIf(process.platform === 'win32')('terminal-bash real shell', () => 
     const after = ctx.terminals.startSend(agent, created.sessionId, { text: 'printf "healed=[%s]\\n" "$PS1"', submit: true })
     const result = await after.done
     expect(result.waitReason).toBe('stdin_read')
-    expect(result.viewport).toContain('healed=[dsh> ]')
+    expect(result.viewport).toContain('healed=[gnk> ]')
     await ctx.terminals.kill(agent, created.sessionId)
   }, 20_000)
 
@@ -185,7 +185,7 @@ describe.skipIf(process.platform === 'win32')('terminal-bash real shell', () => 
     const readerPidFile = join(root, 'tty-reader.pid')
 
     const waiting = ctx.terminals.startSend(agent, created.sessionId, {
-      text: `bash -c 'exec </dev/tty; printf "%s" "$BASHPID" > "$1"; printf "WAITING\\n"; read -r answer; printf "ANSWER=%s\\n" "$answer"' dsh "${readerPidFile}"`,
+      text: `bash -c 'exec </dev/tty; printf "%s" "$BASHPID" > "$1"; printf "WAITING\\n"; read -r answer; printf "ANSWER=%s\\n" "$answer"' gnk "${readerPidFile}"`,
       submit: true,
     })
     await waitForOutput(waiting, 'WAITING')
@@ -243,7 +243,7 @@ describe.skipIf(process.platform === 'win32')('terminal-bash real shell', () => 
     let pid: number | undefined
     try {
       const background = ctx.terminals.startSend(agent, created.sessionId, {
-        text: `sh -c 'trap "" TERM; printf "%s" "$$" > "$1"; sleep 60' dsh "${pidFile}" & disown`,
+        text: `sh -c 'trap "" TERM; printf "%s" "$$" > "$1"; sleep 60' gnk "${pidFile}" & disown`,
         submit: true,
       })
       await background.done
@@ -319,8 +319,8 @@ const hasPwsh = spawnSync(
 
 describe.skipIf(!hasPwsh)('terminal-bash pwsh real shell', () => {
   it('bootstraps a persistent pwsh, persists state, and scrubs secrets', async () => {
-    const previous = process.env.DSH_TEST_SECRET
-    process.env.DSH_TEST_SECRET = 'must-not-leak'
+    const previous = process.env.GNK_TEST_SECRET
+    process.env.GNK_TEST_SECRET = 'must-not-leak'
     try {
       const { ctx, root, agent } = await harness('danger-full-access', {
         idleSilenceMs: 300,
@@ -328,7 +328,7 @@ describe.skipIf(!hasPwsh)('terminal-bash pwsh real shell', () => {
         timeoutMs: 8_000,
       }, 'pwsh')
       const created = await ctx.terminals.spawn(agent, { type: 'shell', name: 'main', cwd: root })
-      expect(created.motd).toContain('dsh> ')
+      expect(created.motd).toContain('gnk> ')
 
       const first = ctx.terminals.startSend(agent, created.sessionId, {
         text: '$env:KEEP = "ok"; Set-Location /',
@@ -336,7 +336,7 @@ describe.skipIf(!hasPwsh)('terminal-bash pwsh real shell', () => {
       })
       expect((await first.done).waitReason).toBe('stdin_read')
       const second = ctx.terminals.startSend(agent, created.sessionId, {
-        text: 'Write-Output "keep=$env:KEEP secret=$env:DSH_TEST_SECRET"',
+        text: 'Write-Output "keep=$env:KEEP secret=$env:GNK_TEST_SECRET"',
         submit: true,
       })
       const result = await second.done
@@ -348,8 +348,8 @@ describe.skipIf(!hasPwsh)('terminal-bash pwsh real shell', () => {
       expect(await ctx.terminals.kill(agent, created.sessionId)).toBe(true)
       expect(ctx.terminals.list(agent)).toEqual([])
     } finally {
-      if (previous === undefined) delete process.env.DSH_TEST_SECRET
-      else process.env.DSH_TEST_SECRET = previous
+      if (previous === undefined) delete process.env.GNK_TEST_SECRET
+      else process.env.GNK_TEST_SECRET = previous
     }
   }, 30_000)
 

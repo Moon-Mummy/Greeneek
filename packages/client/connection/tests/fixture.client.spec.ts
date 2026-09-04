@@ -7,9 +7,9 @@ import type {
   SessionId,
 } from '../src/client/api.ts'
 import { RpcId } from '../src/client/api.ts'
-import { decodeStorageRecord } from '@deepseek-ai/dsh-session/chunk-rows'
-import type { ChunkRow } from '@deepseek-ai/dsh-session/chunk-rows'
-import { SessionSeq } from '@deepseek-ai/dsh-session/types'
+import { decodeStorageRecord } from '@greeneek/gnk-session/chunk-rows'
+import type { ChunkRow } from '@greeneek/gnk-session/chunk-rows'
+import { SessionSeq } from '@greeneek/gnk-session/types'
 import {
   createFixtureConnectionRpc,
   createFixtureFaces,
@@ -18,9 +18,9 @@ import {
 import type {
   ClientConnectionRpc, ConnectionRpcResult,
 } from '../src/rpc.ts'
-import type { DirectoryListing } from '@deepseek-ai/dsh-host-directory-picker/types'
-import type { ModelCatalog } from '@deepseek-ai/dsh-api-session-controller/types'
-import type { ModelSelection } from '@deepseek-ai/dsh-api-session-controller/types'
+import type { DirectoryListing } from '@greeneek/gnk-host-directory-picker/types'
+import type { ModelCatalog } from '@greeneek/gnk-api-session-controller/types'
+import type { ModelSelection } from '@greeneek/gnk-api-session-controller/types'
 
 const sid = (id: string): SessionId => id as SessionId
 type WorkspaceId = string & { readonly __fixtureWorkspaceId: 'WorkspaceId' }
@@ -720,10 +720,10 @@ describe('createFixtureApi', () => {
     const webSearch = results.find(event => event.data.turn === 70)
     expect(webSearch).toHaveProperty('data.meta.truncated', true)
     expect(webSearch).toHaveProperty('data.meta.sources', expect.arrayContaining([
-      expect.objectContaining({ url: 'https://github.com/deepseek-ai/deepseek-harness' }),
+      expect.objectContaining({ url: 'https://github.com/greeneek/greeneek-harness' }),
     ]))
     expect(results.find(event => event.data.turn === 71)).toMatchObject({
-      data: { meta: { url: 'https://www.deepseek.com/blog/harness-architecture', statusCode: 200 } },
+      data: { meta: { url: 'https://www.greeneek.dev/blog/harness-architecture', statusCode: 200 } },
     })
     const terminal = results.find(event => event.data.turn === 66)
     expect(terminal).toHaveProperty('data.message.content.0.content.0.type', 'text')
@@ -738,9 +738,9 @@ describe('createFixtureApi', () => {
     const sessionId = sid('fx-alpha')
     const catalog = await api.sessionRemote.modelCatalog()
     if (!catalog.ok) throw new Error('models failed')
-    expect(catalog.value.groups.map(group => group.name)).toEqual(['DeepSeek', 'OpenAI'])
+    expect(catalog.value.groups.map(group => group.name)).toEqual(['Greeneek', 'OpenAI'])
     expect(catalog.value.groups[0]?.models.map(model => model.id))
-      .toEqual(['deepseek-v4-flash', 'deepseek-v4-pro'])
+      .toEqual(['greeneek-v4-flash', 'greeneek-v4-pro'])
 
     const selected = await api.sessions.selectModel(req({
       sessionId,
@@ -764,18 +764,18 @@ describe('createFixtureApi', () => {
     expect(JSON.stringify(after.result.value.records)).toContain('openai/gpt-5')
   })
 
-  it('serves configured DeepSeek readiness and keeps credential values write-only', async () => {
+  it('serves configured Greeneek readiness and keeps credential values write-only', async () => {
     const api = createFixtureApi()
     const settings = await api.settingsRemote.describe()
     if (!settings.ok) throw new Error('settings describe failed')
     expect((settings.value as { namespaces: unknown[] }).namespaces).toMatchObject([{
-      ns: 'llm-deepseek',
-      value: { apiKeyEnv: 'DEEPSEEK_API_KEY' },
+      ns: 'llm-greeneek',
+      value: { apiKeyEnv: 'GREENEEK_API_KEY' },
       secrets: [{ path: ['apiKey'], set: false }],
     }])
     for (const result of [
-      await api.settingsRemote.update('llm-deepseek', {}, undefined),
-      await api.settingsRemote.replace('llm-deepseek', {}, undefined),
+      await api.settingsRemote.update('llm-greeneek', {}, undefined),
+      await api.settingsRemote.replace('llm-greeneek', {}, undefined),
     ]) {
       expect(result).toMatchObject({
         ok: false,
@@ -788,8 +788,8 @@ describe('createFixtureApi', () => {
       if (!result.ok) throw new Error('credential describe failed')
       return result.value as Record<string, unknown>
     }
-    expect(await describe(['DEEPSEEK_API_KEY', 'TEST_API_KEY'])).toEqual({
-      DEEPSEEK_API_KEY: { configured: true, source: 'file', writable: true },
+    expect(await describe(['GREENEEK_API_KEY', 'TEST_API_KEY'])).toEqual({
+      GREENEEK_API_KEY: { configured: true, source: 'file', writable: true },
       TEST_API_KEY: { configured: false, writable: true },
     })
     await api.credentialRemote.set('TEST_API_KEY', 'write-only-fixture-secret')

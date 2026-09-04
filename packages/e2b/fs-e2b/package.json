@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-fs-e2b",
-  "description": "E2B filesystem implementation for DeepSeek Harness",
+  "name": "@greeneek/gnk-fs-e2b",
+  "description": "E2B filesystem implementation for Greeneek Harness",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/e2b/fs-e2b"
   },
   "type": "module",
@@ -27,13 +27,13 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/dsh-e2b": "workspace:^",
-    "@deepseek-ai/dsh-fs": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-e2b": "workspace:^",
+    "@greeneek/gnk-fs": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-e2b": "workspace:^",
-    "@deepseek-ai/dsh-fs": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-e2b": "workspace:^",
+    "@greeneek/gnk-fs": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   }
 }

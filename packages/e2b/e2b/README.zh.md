@@ -3,13 +3,13 @@ description: "E2B 文件与命令工作的共享远程 Linux 沙箱：配置、�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-e2b
+# @greeneek/gnk-e2b
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-e2b` 为 E2B 提供方家族提供一个共享的远程 Linux 沙箱：agent（智能体）的文件操作、shell 命令与终端都在这个沙箱内运行，而不是在你的机器上。家族启动时沙箱会自动创建，并在配置的生命周期到期或应用关闭时自动删除——其中保存的一切都会随之消失。你需要配置三件事：API 密钥、远程工作目录与沙箱生命周期。请与 `dsh-fs-e2b`、`dsh-subprocess-e2b` 一起使用；单独挂载它不会带来任何用户可见的功能。这里的一切都不会触及模型，而且任何已发布的组合都不会默认启用本家族。
+`gnk-e2b` 为 E2B 提供方家族提供一个共享的远程 Linux 沙箱：agent（智能体）的文件操作、shell 命令与终端都在这个沙箱内运行，而不是在你的机器上。家族启动时沙箱会自动创建，并在配置的生命周期到期或应用关闭时自动删除——其中保存的一切都会随之消失。你需要配置三件事：API 密钥、远程工作目录与沙箱生命周期。请与 `gnk-fs-e2b`、`gnk-subprocess-e2b` 一起使用；单独挂载它不会带来任何用户可见的功能。这里的一切都不会触及模型，而且任何已发布的组合都不会默认启用本家族。
 
 ## 目录
 
@@ -36,14 +36,14 @@ kind: "package-reference"
 三个设置很重要：API 密钥（或 `E2B_API_KEY` 环境变量）、绝对远程工作目录与沙箱生命周期。密钥错误、相对工作目录或无效生命周期都会在任何远程工作开始前拒绝启动。
 
 ```yaml
-- name: '@deepseek-ai/dsh-e2b'
+- name: '@greeneek/gnk-e2b'
   config:
     apiKey: <E2B API key>
     cwd: /home/user/workspace
     timeoutMs: 300000
 
-- name: '@deepseek-ai/dsh-subprocess-e2b'
-- name: '@deepseek-ai/dsh-fs-e2b'
+- name: '@greeneek/gnk-subprocess-e2b'
+- name: '@greeneek/gnk-fs-e2b'
 ```
 
 | 字段 | 默认值 | 含义 |
@@ -52,7 +52,7 @@ kind: "package-reference"
 | `cwd` | `/home/user/workspace` | 家族共享的远程工作目录；必须是绝对 POSIX 路径 |
 | `timeoutMs` | `300,000` | 沙箱生命周期（毫秒）；到期后沙箱被删除 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-e2b)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-e2b)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### 你能得到什么
 
@@ -105,7 +105,7 @@ kind: "package-reference"
 - [E2B 提供方家族地图](../README.zh.md)——三个包与可选组合。
 - [子进程子系统](../../../docs/subsystems/subprocess.zh.md)——子进程 seam 约定与生成的 Cordis 表面，包括 `ctx.e2b`。
 - [可移植执行世界决策](../../../.agents/notes/implemented/architecture/2026-07-28-portable-execution-world-consumers.zh.md)——消费方为何委托给 `ctx.fs` 与 `ctx.subprocess`，以及留在宿主中的内容。
-- [生成配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-e2b)——每个受支持配置字段及其源声明。
+- [生成配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-e2b)——每个受支持配置字段及其源声明。
 
 -----
 

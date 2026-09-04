@@ -7,12 +7,12 @@
  * must be the same copy of `src/storage/memory.ts`.
  */
 import { beforeEach, describe, expect, it } from 'vitest'
-import { MemoryVfs } from '@deepseek-ai/dsh-experimental-webworker-runtime/src/storage/memory.ts'
-import { setActiveVfs } from '@deepseek-ai/dsh-experimental-webworker-runtime/src/storage/active.ts'
-import { runShellCommand } from '@deepseek-ai/dsh-experimental-webworker-runtime/src/shell/interpret.ts'
-import type { ShellRunOutcome } from '@deepseek-ai/dsh-experimental-webworker-runtime/src/shell/types.ts'
+import { MemoryVfs } from '@greeneek/gnk-experimental-webworker-runtime/src/storage/memory.ts'
+import { setActiveVfs } from '@greeneek/gnk-experimental-webworker-runtime/src/storage/active.ts'
+import { runShellCommand } from '@greeneek/gnk-experimental-webworker-runtime/src/shell/interpret.ts'
+import type { ShellRunOutcome } from '@greeneek/gnk-experimental-webworker-runtime/src/shell/types.ts'
 
-const WORKSPACE = '/dsh/workspace'
+const WORKSPACE = '/gnk/workspace'
 
 let vfs: MemoryVfs
 
@@ -20,7 +20,7 @@ let vfs: MemoryVfs
 async function run(command: string, options: { stdin?: string; cwd?: string } = {}): Promise<ShellRunOutcome> {
   return await runShellCommand(command, {
     cwd: options.cwd ?? WORKSPACE,
-    env: { HOME: '/dsh/home', PWD: WORKSPACE, GREETING: 'hello world' },
+    env: { HOME: '/gnk/home', PWD: WORKSPACE, GREETING: 'hello world' },
     stdin: options.stdin,
   })
 }

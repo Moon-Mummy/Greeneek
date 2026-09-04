@@ -3,13 +3,13 @@ description: "`ctx.fs` 的宿主文件系统后端：面向选择或排查本地
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-fs-local
+# @greeneek/gnk-fs-local
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-fs-local` 在宿主文件系统上实现 `ctx.fs` 文件系统约定（[`dsh-fs`](../fs/README.zh.md)）：把它作为插件加载后，`ctx.fs` 就拥有真实的文件访问能力——针对本机文件的解析、读取、列出、原子写入与字面量编辑。相对路径从可配置的基准目录解析，经不同路径或符号链接到达的同一文件共享一个身份。由于本后端共享宿主文件系统，它还可以把绝对宿主路径映射为此执行世界使用的进程路径。写入是原子的并保留文件权限；可选版本防护让陈旧覆盖失败而不是静默覆盖。当进程需要直接、不受约束地访问宿主文件时选择它；需要约束变更时选择 `fs-sandbox`，文件状态属于远程执行世界时选择 `fs-e2b`。
+`gnk-fs-local` 在宿主文件系统上实现 `ctx.fs` 文件系统约定（[`gnk-fs`](../fs/README.zh.md)）：把它作为插件加载后，`ctx.fs` 就拥有真实的文件访问能力——针对本机文件的解析、读取、列出、原子写入与字面量编辑。相对路径从可配置的基准目录解析，经不同路径或符号链接到达的同一文件共享一个身份。由于本后端共享宿主文件系统，它还可以把绝对宿主路径映射为此执行世界使用的进程路径。写入是原子的并保留文件权限；可选版本防护让陈旧覆盖失败而不是静默覆盖。当进程需要直接、不受约束地访问宿主文件时选择它；需要约束变更时选择 `fs-sandbox`，文件状态属于远程执行世界时选择 `fs-e2b`。
 
 ## 目录
 
@@ -25,7 +25,7 @@ kind: "package-reference"
 <a id="use-this-package"></a>
 ## 使用本包
 
-当组合需要由真实宿主文件系统支撑的 `ctx.fs`、且可以接受进程本地实现时，挂载此后端。常用路径是显式的：加载后端、给出基准目录，然后面向模型的工具（`dsh-tool-fs`）或你自己的插件即可读取、写入和编辑文件。
+当组合需要由真实宿主文件系统支撑的 `ctx.fs`、且可以接受进程本地实现时，挂载此后端。常用路径是显式的：加载后端、给出基准目录，然后面向模型的工具（`gnk-tool-fs`）或你自己的插件即可读取、写入和编辑文件。
 
 ### 何时选择
 
@@ -36,7 +36,7 @@ kind: "package-reference"
 加载后端并给出基准目录；相对路径以它为基准解析，绝对路径忽略它。
 
 ```yaml
-- name: '@deepseek-ai/dsh-fs-local'
+- name: '@greeneek/gnk-fs-local'
   config:
     cwd: /absolute/path/to/workspace
 ```
@@ -46,7 +46,7 @@ kind: "package-reference"
 | `cwd` | `process.cwd()` | 相对路径的基准目录 |
 | `diffBasisMaxBytes` | `10 MiB` | 每次覆写 diff 一侧的 UTF-8 字节上限；更大的覆写返回 `before: null` |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-fs-local)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-fs-local)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### 你能做什么
 
@@ -102,7 +102,7 @@ kind: "package-reference"
 当包级约定不够用时阅读以下页面。它们从约定逐步进入相邻的后端、工具与策略。
 
 - [文件系统子系统](../../../docs/subsystems/filesystem.zh.md)——穷尽式提供方约定、策略事件与错误分类体系。
-- [dsh-fs](../fs/README.zh.md)——本后端实现的 `ctx.fs` 约定。
+- [gnk-fs](../fs/README.zh.md)——本后端实现的 `ctx.fs` 约定。
 - [fs-sandbox](../fs-sandbox/README.zh.md)——扩展本后端的沙箱强制后端。
 - [tool-fs](../tool-fs/README.zh.md)——消费 `ctx.fs` 的面向模型工具。
 - [fs-observation-policy](../fs-observation-policy/README.zh.md)——通过 `fs/*` 事件防护变更的策略插件。
@@ -113,7 +113,7 @@ kind: "package-reference"
 <a id="model-experience"></a>
 ## 模型体验
 
-通过 `dsh-tool-fs` 间接产生影响；该消费方把本提供方带行窗口的 UTF-8 内容、变更确认与提供方消息原文渲染为有保留上限的结果，而版本、原子写入机制与目录元数据仍属内部细节。
+通过 `gnk-tool-fs` 间接产生影响；该消费方把本提供方带行窗口的 UTF-8 内容、变更确认与提供方消息原文渲染为有保留上限的结果，而版本、原子写入机制与目录元数据仍属内部细节。
 
 #### KV Cache 影响
 

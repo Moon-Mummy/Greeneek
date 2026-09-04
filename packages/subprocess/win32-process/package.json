@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-win32-process",
-  "description": "Low-level Win32 process, stdio, and Job Object primitives for the DeepSeek Harness Windows sandbox",
+  "name": "@greeneek/gnk-win32-process",
+  "description": "Low-level Win32 process, stdio, and Job Object primitives for the Greeneek Harness Windows sandbox",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/subprocess/win32-process"
   },
   "type": "module",
@@ -27,12 +27,12 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/cordis": "workspace:^"
   },
   "dependencies": {
     "koffi": "^3.1.0"
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/cordis": "workspace:^"
   }
 }

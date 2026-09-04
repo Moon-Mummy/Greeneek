@@ -3,13 +3,13 @@ description: "The model-facing ralph tool: a fixed foreground fresh-agent loop t
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tool-ralph
+# @greeneek/gnk-tool-ralph
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-tool-ralph` gives the model the `ralph` tool: a fixed foreground workflow that hands one immutable objective to a sequence of fresh child agents, each starting with no conversation seed and carrying only the previous bounded report. It is a specialized orchestration policy built on the workflow and subagent capabilities — no Ralph mode is added to the agent loop, and the same-session goal domain stays independent. The call returns when a worker reports completion or a concrete blocker, or at the round limit; completion and blockers are worker reports, not independent certification. Use it only when the direct human explicitly asks for a Ralph loop or fresh-agent iterative execution; ordinary long-running objectives belong to goal tools, and bounded delegation belongs to subagents or workflows.
+`gnk-tool-ralph` gives the model the `ralph` tool: a fixed foreground workflow that hands one immutable objective to a sequence of fresh child agents, each starting with no conversation seed and carrying only the previous bounded report. It is a specialized orchestration policy built on the workflow and subagent capabilities — no Ralph mode is added to the agent loop, and the same-session goal domain stays independent. The call returns when a worker reports completion or a concrete blocker, or at the round limit; completion and blockers are worker reports, not independent certification. Use it only when the direct human explicitly asks for a Ralph loop or fresh-agent iterative execution; ordinary long-running objectives belong to goal tools, and bounded delegation belongs to subagents or workflows.
 
 ## Table of Contents
 
@@ -44,7 +44,7 @@ Each child receives only the immutable objective, its current round and cap, a s
 | `maxHandoffChars` | `16384` | Maximum serialized characters in one round report. |
 | `maxResultChars` | `16384` | Maximum characters in the complete successful parent result. |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-tool-ralph) is the exhaustive source for every accepted field. The configured provider must exist, support structured output, and report `inheritsParentContext: false`; a call against a provider that violates this fails loud before any round starts.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-tool-ralph) is the exhaustive source for every accepted field. The configured provider must exist, support structured output, and report `inheritsParentContext: false`; a call against a provider that violates this fails loud before any round starts.
 
 -----
 
@@ -128,7 +128,7 @@ Prefix-stable while the plugin scope and guidance text are unchanged. Activation
 
 #### What the model sees
 
-The generated [`ralph` schema](../../../docs/tool-catalog.md#deepseek-aidsh-tool-ralph) exposes one required `objective` string and one optional `maxRounds` number. Provider choice, handoff size, report schema, workflow script, and orchestration behavior are deployment-owned and absent from the call schema.
+The generated [`ralph` schema](../../../docs/tool-catalog.md#greeneekgnk-tool-ralph) exposes one required `objective` string and one optional `maxRounds` number. Provider choice, handoff size, report schema, workflow script, and orchestration behavior are deployment-owned and absent from the call schema.
 
 #### Token effect
 

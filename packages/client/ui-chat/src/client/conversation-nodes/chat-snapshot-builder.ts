@@ -1,9 +1,9 @@
-import type { Context } from '@deepseek-ai/cordis'
-import { notifySubscribers } from '@deepseek-ai/dsh-client-store'
+import type { Context } from '@greeneek/cordis'
+import { notifySubscribers } from '@greeneek/gnk-client-store'
 import type {
   ConversationLocation, ConversationTimelineSnapshot, ConversationViewBuilder,
   ConversationViewDefinition,
-} from '@deepseek-ai/dsh-client-ui-conversation/client'
+} from '@greeneek/gnk-client-ui-conversation/client'
 import type { ChatConversationViewNode, ChatNode } from '../contract/chat-nodes.ts'
 import { isRunningTool } from '../contract/chat-nodes.ts'
 import type {

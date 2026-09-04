@@ -3,13 +3,13 @@ description: "面向模型的 ralph 工具：面向一个不可变目标的固�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tool-ralph
+# @greeneek/gnk-tool-ralph
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-tool-ralph` 把 `ralph` 工具交给模型：一个固定的前台工作流，把一个不可变目标依次交给多个全新子 agent（智能体），每个子 agent 都没有对话种子，只携带上一份有界报告。它是构建在工作流与 subagent 能力之上的专用编排策略——不会向 agent loop 添加 Ralph 模式，同会话的 goal 领域也保持独立。调用在 worker 报告完成或具体阻塞、或达到 Round 上限时返回；完成与阻塞都是 worker 报告，不是独立认证。仅当直接用户明确要求 Ralph 循环或全新 agent 迭代执行时使用它；普通的长期同会话目标属于 goal 工具，有界委派属于 subagent 或工作流。
+`gnk-tool-ralph` 把 `ralph` 工具交给模型：一个固定的前台工作流，把一个不可变目标依次交给多个全新子 agent（智能体），每个子 agent 都没有对话种子，只携带上一份有界报告。它是构建在工作流与 subagent 能力之上的专用编排策略——不会向 agent loop 添加 Ralph 模式，同会话的 goal 领域也保持独立。调用在 worker 报告完成或具体阻塞、或达到 Round 上限时返回；完成与阻塞都是 worker 报告，不是独立认证。仅当直接用户明确要求 Ralph 循环或全新 agent 迭代执行时使用它；普通的长期同会话目标属于 goal 工具，有界委派属于 subagent 或工作流。
 
 ## 目录
 
@@ -44,7 +44,7 @@ kind: "package-reference"
 | `maxHandoffChars` | `16384` | 一份 Round 报告序列化后的最大字符数。 |
 | `maxResultChars` | `16384` | 返回给父级的完整成功结果最大字符数。 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-ralph)是每个受支持字段的穷尽式真源。配置的提供方必须存在、支持结构化输出，并报告 `inheritsParentContext: false`；针对违反此要求的提供方的调用会在任何 Round 开始前响亮失败。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-tool-ralph)是每个受支持字段的穷尽式真源。配置的提供方必须存在、支持结构化输出，并报告 `inheritsParentContext: false`；针对违反此要求的提供方的调用会在任何 Round 开始前响亮失败。
 
 -----
 
@@ -128,7 +128,7 @@ Use the ralph tool ONLY when the direct human explicitly asks for a Ralph loop o
 
 #### 模型看到什么
 
-已生成的 [`ralph` schema](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-ralph) 公开一个必填 `objective` 字符串与一个可选 `maxRounds` 数字。提供方选择、交接大小、报告 schema、工作流脚本与编排行为均由部署侧控制，不在调用 schema 中。
+已生成的 [`ralph` schema](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-ralph) 公开一个必填 `objective` 字符串与一个可选 `maxRounds` 数字。提供方选择、交接大小、报告 schema、工作流脚本与编排行为均由部署侧控制，不在调用 schema 中。
 
 #### Token 影响
 

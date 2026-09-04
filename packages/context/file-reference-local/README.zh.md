@@ -3,13 +3,13 @@ description: "面向用户与维护者的本地工作区 @file 补全提供方�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-file-reference-local
+# @greeneek/gnk-file-reference-local
 
 [English](README.md) | 中文
 
 ## 概述
 
-agent（智能体）及其宿主 UI 获得 `@file` mention 的排序路径候选，范围限定在各自 agent 的工作区，并有界以保证大型仓库依然响应迅速。`dsh-file-reference-local` 在本地文件系统上实现 `ctx.fileReferences`：它为每个 agent 维护一个可复用的搜索索引，在工具结果后于后台重建索引，让补全反映工作区变化而不发生停顿，且从不跟随目录符号链接。当指定 agent 可以调用 `read` 时，它还会向系统提示词安装一句稳定指引。当 agent 的 `read` 工具作用于 Harness 宿主文件系统时选择它；远程或虚拟命名空间需要发现能力与工具一致的提供方。
+agent（智能体）及其宿主 UI 获得 `@file` mention 的排序路径候选，范围限定在各自 agent 的工作区，并有界以保证大型仓库依然响应迅速。`gnk-file-reference-local` 在本地文件系统上实现 `ctx.fileReferences`：它为每个 agent 维护一个可复用的搜索索引，在工具结果后于后台重建索引，让补全反映工作区变化而不发生停顿，且从不跟随目录符号链接。当指定 agent 可以调用 `read` 时，它还会向系统提示词安装一句稳定指引。当 agent 的 `read` 工具作用于 Harness 宿主文件系统时选择它；远程或虚拟命名空间需要发现能力与工具一致的提供方。
 
 ## 目录
 
@@ -32,7 +32,7 @@ agent（智能体）及其宿主 UI 获得 `@file` mention 的排序路径候选
 默认设置适合典型工作区，因此最小挂载无需任何配置：
 
 ```yaml
-- name: '@deepseek-ai/dsh-file-reference-local'
+- name: '@greeneek/gnk-file-reference-local'
   config:
     maxResults: 20
 ```
@@ -88,7 +88,7 @@ agent（智能体）及其宿主 UI 获得 `@file` mention 的排序路径候选
 
 - [文件引用 seam](../file-reference/README.zh.md)——本提供方所实现的服务约定与 `@file` 语法。
 - [会话引用子系统](../../../docs/subsystems/session-reference.zh.md)——宿主 UI 背后的共享文件引用约定。
-- [文件系统工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-fs)——发现能力必须匹配其命名空间的 `read` 工具。
+- [文件系统工具目录](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-fs)——发现能力必须匹配其命名空间的 `read` 工具。
 - [context 组地图](../README.zh.md)——相邻的请求上下文包。
 
 -----

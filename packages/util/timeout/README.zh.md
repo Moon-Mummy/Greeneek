@@ -3,13 +3,13 @@ description: "共享超时运算、截止时间融合与超时/取消分类，�
 kind: "package-library"
 ---
 
-# @deepseek-ai/dsh-timeout
+# @greeneek/gnk-timeout
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-timeout` 让能力在调用方可见的超时下运行一个工作单元，之后能把超时与取消区分开。调用方的可选提示会按后端默认值补齐、并按后端上限封顶，上游取消与截止时间融合为一个 `AbortSignal`。deadline 信号只负责通知——停止工作的机制由各能力自己拥有，因此没有任何共享层需要知道如何停止任何东西。对于流式传输，空闲 watchdog 只在提供方读取尚未完成时启动超时，因此消费方的思考时间绝不计入空闲。`timeoutMs` 为 0 是后端自有后台工作使用的内部「无超时」哨兵值，绝不是公开的禁用开关；这个零依赖库由 bash、web、subprocess 与 tool-timeout-policy 消费方共享。
+`gnk-timeout` 让能力在调用方可见的超时下运行一个工作单元，之后能把超时与取消区分开。调用方的可选提示会按后端默认值补齐、并按后端上限封顶，上游取消与截止时间融合为一个 `AbortSignal`。deadline 信号只负责通知——停止工作的机制由各能力自己拥有，因此没有任何共享层需要知道如何停止任何东西。对于流式传输，空闲 watchdog 只在提供方读取尚未完成时启动超时，因此消费方的思考时间绝不计入空闲。`timeoutMs` 为 0 是后端自有后台工作使用的内部「无超时」哨兵值，绝不是公开的禁用开关；这个零依赖库由 bash、web、subprocess 与 tool-timeout-policy 消费方共享。
 
 ## 目录
 
@@ -30,7 +30,7 @@ kind: "package-library"
 ### 限制超时提示
 
 ```ts
-import { clampTimeout } from '@deepseek-ai/dsh-timeout'
+import { clampTimeout } from '@greeneek/gnk-timeout'
 
 declare const requested: number | undefined
 declare const DEFAULT_TIMEOUT_MS: number
@@ -44,7 +44,7 @@ const timeoutMs = clampTimeout(requested, DEFAULT_TIMEOUT_MS, MAX_TIMEOUT_MS, 'b
 ### 在 deadline 下运行工作
 
 ```text
-import { deadline, timeoutOf } from '@deepseek-ai/dsh-timeout'
+import { deadline, timeoutOf } from '@greeneek/gnk-timeout'
 
 using d = deadline(upstream, timeoutMs, 'BASH_TIMEOUT')
 const outcome = await runWork({ signal: d.signal })   // work listens on d.signal and terminates itself
@@ -61,7 +61,7 @@ const aborted = d.signal.aborted && !timedOut
 ### 用空闲 watchdog 处理流式传输
 
 ```ts
-import { idleWatchdog } from '@deepseek-ai/dsh-timeout'
+import { idleWatchdog } from '@greeneek/gnk-timeout'
 
 declare const upstream: AbortSignal | undefined
 declare const idleMs: number
@@ -104,7 +104,7 @@ timer 只在某个迭代器 `next()` 尚未完成时启动，并会因不产生�
 
 ### 空闲 watchdog 为何重新启动
 
-`idleWatchdog` 保持一个稳定的融合信号，只在 `next()` 尚未完成时启动 timer；完成后停止，后续需求或 `pulse()` 重新启动，dispose（资源释放）时清除，并发需求被拒绝。只有传输层观察该信号，因此提供方的真实读取必须监听它——DeepSeek 与 pi-ai 适配器会在中止时关闭响应正文或 SDK 请求。
+`idleWatchdog` 保持一个稳定的融合信号，只在 `next()` 尚未完成时启动 timer；完成后停止，后续需求或 `pulse()` 重新启动，dispose（资源释放）时清除，并发需求被拒绝。只有传输层观察该信号，因此提供方的真实读取必须监听它——Greeneek 与 pi-ai 适配器会在中止时关闭响应正文或 SDK 请求。
 
 </details>
 

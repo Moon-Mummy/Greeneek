@@ -19,12 +19,12 @@
  * that it cannot be interrogated so the surface falls back to hand-entry
  * rather than guessing a response shape.
  *
- * @module dsh-llm-pi-ai/discovery
+ * @module gnk-llm-pi-ai/discovery
  */
 
-import { INVALID_CREDENTIAL_CODE, LlmError, normalizeApiKey } from '@deepseek-ai/dsh-llm'
-import type { LlmDiscoveredModel, LlmModelDiscoveryOperation } from '@deepseek-ai/dsh-llm'
-import { attributionHeaders } from '@deepseek-ai/dsh-llm'
+import { INVALID_CREDENTIAL_CODE, LlmError, normalizeApiKey } from '@greeneek/gnk-llm'
+import type { LlmDiscoveredModel, LlmModelDiscoveryOperation } from '@greeneek/gnk-llm'
+import { attributionHeaders } from '@greeneek/gnk-llm'
 import { catalogModels } from './catalog.ts'
 
 /**
@@ -43,7 +43,7 @@ const LISTABLE_PROTOCOLS: ReadonlySet<string> = new Set([
 /**
  * Endpoint replies larger than this are refused. The endpoint is whatever URL
  * the user typed, so the ceiling holds on the bytes actually read rather than
- * on the length the server claims — the same two-stage shape `dsh-web-fetch`
+ * on the length the server claims — the same two-stage shape `gnk-web-fetch`
  * uses for its own caller-supplied URLs, except that a truncated model listing
  * is not parseable, so overflow rejects instead of truncating.
  */

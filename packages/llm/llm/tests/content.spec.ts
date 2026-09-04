@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { AttachmentId, ImageVariantId } from '@deepseek-ai/dsh-attachment'
-import type { AttachmentStore, ImageMediaType } from '@deepseek-ai/dsh-attachment'
+import { AttachmentId, ImageVariantId } from '@greeneek/gnk-attachment'
+import type { AttachmentStore, ImageMediaType } from '@greeneek/gnk-attachment'
 import {
   ToolCallId,
   createUserMessage,
@@ -201,7 +201,7 @@ describe('model-facing image access', () => {
       height: 1536,
       name: 'source "map".png',
     }
-    const access = { readonlyPath: '/tmp/.dsh/attachments/v1/objects/bb/object' }
+    const access = { readonlyPath: '/tmp/.gnk/attachments/v1/objects/bb/object' }
     const version = {
       variantId: ImageVariantId(`sha256:${'c'.repeat(64)}`),
       attachment,
@@ -216,7 +216,7 @@ describe('model-facing image access', () => {
     }
     expect(requestImageHandleText(attachment, version, access)).toBe(
       `Image "source \\"map\\".png" (${attachment.attachmentId}); request preview 923x692px.`
-      + ' Normalized copy (read-only; may be resized or re-encoded): "/tmp/.dsh/attachments/v1/objects/bb/object" (2048x1536px, image/png).'
+      + ' Normalized copy (read-only; may be resized or re-encoded): "/tmp/.gnk/attachments/v1/objects/bb/object" (2048x1536px, image/png).'
       + ' Source dimensions, format, and byte size may differ.'
       + ' Copy to a writable path ending in .png before editing.',
     )
@@ -225,9 +225,9 @@ describe('model-facing image access', () => {
   it('bridges a provider host object only through the mounted filesystem mapping', () => {
     const attachment = image(1).attachment
     const attachments = {
-      imageHostPath: () => '/host/.dsh/attachments/object',
+      imageHostPath: () => '/host/.gnk/attachments/object',
     } as unknown as AttachmentStore
-    const mapped = (hostPath: string): string | undefined => hostPath === '/host/.dsh/attachments/object'
+    const mapped = (hostPath: string): string | undefined => hostPath === '/host/.gnk/attachments/object'
       ? '/workspace/.attachments/object'
       : undefined
     expect(resolveImageAttachmentAccess(

@@ -12,13 +12,13 @@
 
 以 Bash 执行能力为例：
 
-- **Service Definition** (`dsh-shell`)：定义 Cordis 服务以及 Bash 请求和结果类型
-- **Service Provider** (`dsh-bash-local`)：在本地计算机上执行命令
-- **Consumer** (`dsh-tool-bash`)：将该能力公开为模型可调用的工具
+- **Service Definition** (`gnk-shell`)：定义 Cordis 服务以及 Bash 请求和结果类型
+- **Service Provider** (`gnk-bash-local`)：在本地计算机上执行命令
+- **Consumer** (`gnk-tool-bash`)：将该能力公开为模型可调用的工具
 
 ```
 ┌─────────────┐     ┌──────────────────┐     ┌──────────────┐
-│  dsh-shell   │────▶│  dsh-bash-local  │     │ dsh-tool-bash│
+│  gnk-shell   │────▶│  gnk-bash-local  │     │ gnk-tool-bash│
 │(definition) │     │    (provider)     │     │(consumer/tool)│
 └─────────────┘     └──────────────────┘     └──────────────┘
        ▲                                            │
@@ -34,7 +34,7 @@
 
 ```yaml
 # Local execution
-- name: '@deepseek-ai/dsh-bash-local'
+- name: '@greeneek/gnk-bash-local'
 
 # Replace this row with another package that provides the same service.
 ```
@@ -61,9 +61,9 @@
 
 ```ts ignore-check
 // packages/my-cap/my-cap/src/index.ts
-import { Service, type Context } from '@deepseek-ai/cordis'
+import { Service, type Context } from '@greeneek/cordis'
 
-declare module '@deepseek-ai/cordis' {
+declare module '@greeneek/cordis' {
   interface Context {
     myCap: MyCapService
   }
@@ -91,8 +91,8 @@ export interface MyCapResult {
 
 ```ts ignore-check
 // packages/my-cap/my-cap-local/src/index.ts
-import type { Context } from '@deepseek-ai/cordis'
-import { MyCapService, type MyCapRequest, type MyCapResult } from '@deepseek-ai/dsh-my-cap'
+import type { Context } from '@greeneek/cordis'
+import { MyCapService, type MyCapRequest, type MyCapResult } from '@greeneek/gnk-my-cap'
 
 class MyCapLocal extends MyCapService {
   async execute(request: MyCapRequest): Promise<MyCapResult> {
@@ -112,8 +112,8 @@ export function apply(ctx: Context) {
 
 ```ts ignore-check
 // packages/my-cap/tool-my-cap/src/index.ts
-import type { Context } from '@deepseek-ai/cordis'
-import { defineTool } from '@deepseek-ai/dsh-tools'
+import type { Context } from '@greeneek/cordis'
+import { defineTool } from '@greeneek/gnk-tools'
 
 export const name = 'tool-my-cap'
 export const inject = ['tools', 'myCap']
@@ -140,8 +140,8 @@ export function apply(ctx: Context) {
 ### 在 cordis.yml 中组合
 
 ```yaml
-- name: '@deepseek-ai/dsh-my-cap-local'
-- name: '@deepseek-ai/dsh-tool-my-cap'
+- name: '@greeneek/gnk-my-cap-local'
+- name: '@greeneek/gnk-tool-my-cap'
 ```
 
 ## 设计要点

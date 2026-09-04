@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { SessionId } from '@deepseek-ai/dsh-session'
-import { SessionSearchCursor, type SessionQueryErrorCode } from '@deepseek-ai/dsh-session-query'
+import { SessionId } from '@greeneek/gnk-session'
+import { SessionSearchCursor, type SessionQueryErrorCode } from '@greeneek/gnk-session-query'
 import {
   buildEventWhere,
   buildSessionWhere,

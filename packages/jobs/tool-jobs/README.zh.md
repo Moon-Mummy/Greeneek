@@ -3,13 +3,13 @@ description: "面向模型的背景任务控制，供选择、配置或排查 jo
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tool-jobs
+# @greeneek/gnk-tool-jobs
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-tool-jobs` 为 agent 提供三个与 kind 无关的后台工作工具——`job_output`、`job_list` 与 `job_kill`——因此 agent 启动的任何任务，无论是后台命令、PTY 发送还是 subagent，都可以通过同一套控制读取、列出和取消。任务完成时，拥有它的 agent 会在会话内收到通知：繁忙的 agent 在下一步收到通知，空闲的 agent 则被一个 follow-up 轮次唤醒，两者均按所有者设限。加载插件还会附加让生产方能够启动后台工作的任务控制器。这些工具是基于 `ctx.jobs` 的通用 UI 卡片；配置用于调节等待超时与完成投递。
+`gnk-tool-jobs` 为 agent 提供三个与 kind 无关的后台工作工具——`job_output`、`job_list` 与 `job_kill`——因此 agent 启动的任何任务，无论是后台命令、PTY 发送还是 subagent，都可以通过同一套控制读取、列出和取消。任务完成时，拥有它的 agent 会在会话内收到通知：繁忙的 agent 在下一步收到通知，空闲的 agent 则被一个 follow-up 轮次唤醒，两者均按所有者设限。加载插件还会附加让生产方能够启动后台工作的任务控制器。这些工具是基于 `ctx.jobs` 的通用 UI 卡片；配置用于调节等待超时与完成投递。
 
 ## 目录
 
@@ -46,7 +46,7 @@ kind: "package-reference"
 不带配置加载插件是常用路径；`waitTimeoutMs` 高于 `maxWaitTimeoutMs` 时会在加载时失败。
 
 ```yaml
-- name: '@deepseek-ai/dsh-tool-jobs'
+- name: '@greeneek/gnk-tool-jobs'
 ```
 
 | 字段 | 默认值 | 含义 |
@@ -56,7 +56,7 @@ kind: "package-reference"
 | `completionDelivery` | `wakeup` | `wakeup` 为空闲所有者开启一轮；`quiet` 让通知继续待领 |
 | `maxConsecutiveWakes` | `3` | 一个所有者可由唤醒开启的轮数，超出后通知降级为注入 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-jobs)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-tool-jobs)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### 可能出什么问题
 
@@ -106,8 +106,8 @@ kind: "package-reference"
 - [jobs 组映射](../README.zh.md)——同级组页面及其包表格。
 - [注册表约定](../jobs/README.zh.md)——工具背后的抽象 `ctx.jobs` 服务。
 - [进程本地注册表](../jobs-local/README.zh.md)——任务在本进程中的运行位置。
-- [生成的工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-jobs)——`job_output`、`job_list` 与 `job_kill` 的确切 schema。
-- [生成的配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-jobs)——每个受支持配置字段及其源声明。
+- [生成的工具目录](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-jobs)——`job_output`、`job_list` 与 `job_kill` 的确切 schema。
+- [生成的配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-tool-jobs)——每个受支持配置字段及其源声明。
 - [任务注册表 seam Agent Note](../../../.agents/notes/implemented/architecture/2026-07-26-job-registry-seam.zh.md)——按所有者隔离的注册表约定及其理由。
 
 -----
@@ -139,7 +139,7 @@ Track every background job id you start. You are notified in-session when a job 
 
 #### 模型看到什么
 
-该工具集可见时，会看到生成的 [`job_output`、`job_list` 和 `job_kill` schema](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-jobs)。
+该工具集可见时，会看到生成的 [`job_output`、`job_list` 和 `job_kill` schema](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-jobs)。
 
 #### Token 影响
 

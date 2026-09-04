@@ -1,9 +1,9 @@
 /** The SDK app command provider and stdin shutdown binding. */
 
 import { EventEmitter } from 'node:events'
-import { Context } from '@deepseek-ai/cordis'
+import { Context } from '@greeneek/cordis'
 import { afterEach, describe, expect, it } from 'vitest'
-import { internals, provideCmdline } from '@deepseek-ai/dsh-cmdline'
+import { internals, provideCmdline } from '@greeneek/gnk-cmdline'
 import { apply, type Config, SDK_APP_STARTUP_SERVICE } from '../src/index.ts'
 
 /** Controllable stdin for one startup invocation. */
@@ -56,7 +56,7 @@ describe('SDK app startup', () => {
 
   it('prints app help without publishing readiness or binding stdin', () => {
     const { ctx, exits, out, stdin } = start(['--help'])
-    expect(out()).toContain('dsh --profile sdk')
+    expect(out()).toContain('gnk --profile sdk')
     expect(ctx.get(SDK_APP_STARTUP_SERVICE)).toBeUndefined()
     expect(exits).toEqual([0])
     stdin.end()
@@ -65,7 +65,7 @@ describe('SDK app startup', () => {
 
   it('renders the selected SDK profile name in help', () => {
     const { out } = start(['--help'], { profile: 'sdk-minimal' })
-    expect(out()).toContain('Usage: dsh --profile sdk-minimal')
-    expect(out()).toContain('dsh --profile sdk-minimal')
+    expect(out()).toContain('Usage: gnk --profile sdk-minimal')
+    expect(out()).toContain('gnk --profile sdk-minimal')
   })
 })

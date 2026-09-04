@@ -2,27 +2,27 @@
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render } from '@testing-library/react'
-import { createSnapshotStore } from '@deepseek-ai/dsh-client-store'
+import { createSnapshotStore } from '@greeneek/gnk-client-store'
 import type {
   ChatSnapshot, ConversationNode, RunningToolCall, SelectionTarget, ToolResultNode,
-} from '@deepseek-ai/dsh-client-ui-chat/client'
-import type { SessionListState } from '@deepseek-ai/dsh-api-session-controller/client'
-import type { SessionId } from '@deepseek-ai/dsh-session/types'
+} from '@greeneek/gnk-client-ui-chat/client'
+import type { SessionListState } from '@greeneek/gnk-api-session-controller/client'
+import type { SessionId } from '@greeneek/gnk-session/types'
 import {
   bindSnapshotSelector, conversationSnapshot, sessionSnapshot, workspaceSnapshot,
-} from '@deepseek-ai/dsh-client-test-runtime'
-import type { ToolCallOwnerProps } from '@deepseek-ai/dsh-client-ui-tool/client'
-import { IconGlobeOutline14 } from '@deepseek-ai/dsh-client-ui-primitives'
+} from '@greeneek/gnk-client-test-runtime'
+import type { ToolCallOwnerProps } from '@greeneek/gnk-client-ui-tool/client'
+import { IconGlobeOutline14 } from '@greeneek/gnk-client-ui-primitives'
 import { webCardModel } from '../src/client/tool/models/web-card-model.ts'
-import { createChatStore } from '@deepseek-ai/dsh-client-ui-chat/src/client/stores.ts'
+import { createChatStore } from '@greeneek/gnk-client-ui-chat/src/client/stores.ts'
 import { GenericToolCard } from '../src/client/tool/toolviews/GenericToolCard.tsx'
-import { DetailsPanel } from '@deepseek-ai/dsh-client-ui-chat/src/client/details/DetailsPanel.tsx'
+import { DetailsPanel } from '@greeneek/gnk-client-ui-chat/src/client/details/DetailsPanel.tsx'
 import { WebRow, webToolview } from '../src/client/tool/toolviews/web-row.tsx'
 import { renderToolDetails, toolChatSnapshot, useEmptyTrajectory } from './tool-details-render.client.tsx'
-import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
-import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts'
-import { zh } from '@deepseek-ai/dsh-client-ui-conversation/src/client/locales.ts'
-import { zh as chatZh } from '@deepseek-ai/dsh-client-ui-chat/src/client/locale.ts'
+import { makeTranslate } from '@greeneek/gnk-client-test-runtime'
+import { zh as commonZh } from '@greeneek/gnk-client-locale/src/locales/zh.ts'
+import { zh } from '@greeneek/gnk-client-ui-conversation/src/client/locales.ts'
+import { zh as chatZh } from '@greeneek/gnk-client-ui-chat/src/client/locale.ts'
 
 afterEach(cleanup)
 
@@ -31,7 +31,7 @@ const SID = 's1' as SessionId
 const t = makeTranslate(zh, commonZh)
 const chatT = makeTranslate(chatZh, commonZh)
 
-const SEARCH_ARGS = '{"queries":["deepseek harness"]}'
+const SEARCH_ARGS = '{"queries":["greeneek harness"]}'
 const FETCH_ARGS = '{"url":"https://example.com/page"}'
 
 interface SearchMeta {
@@ -125,7 +125,7 @@ describe('webCardModel', () => {
 
   it('accepts open-root extensions while validating declared web arguments', () => {
     expect(webCardModel(settledSearch({
-      call: { name: 'web_search', argsRaw: '{"queries":["deepseek"],"extension":1}' },
+      call: { name: 'web_search', argsRaw: '{"queries":["greeneek"],"extension":1}' },
     }))).not.toBeNull()
     expect(webCardModel(settledSearch({
       call: { name: 'web_search', argsRaw: '{"queries":[7]}' },
@@ -309,7 +309,7 @@ describe('web toolview registration', () => {
           return () => {}
         },
       },
-    } as unknown as import('@deepseek-ai/cordis').Context
+    } as unknown as import('@greeneek/cordis').Context
     webToolview.apply(ctx)
     expect(registered.map(r => r.key)).toEqual(['web_search', 'web_fetch'])
     // Both keys claim the conversation locale seat ToolRow's body copy needs.

@@ -1,0 +1,62 @@
+{
+  "name": "@greeneek/gnk-plugin-package-inventory-greeneek",
+  "description": "Active Loader-backed plugin package inventory for official Greeneek LLM API requests",
+  "version": "0.1.2-alpha.5",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
+    "directory": "packages/llm/plugin-package-inventory-greeneek"
+  },
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/types/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./types": {
+      "types": "./lib/types/types.d.ts",
+      "default": "./lib/types/types.js"
+    },
+    "./src/*": "./src/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/index.js",
+    "lib/types/**/*.js",
+    "lib/types/**/*.d.ts"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@greeneek/gnk-brand": "workspace:^",
+    "@greeneek/schemastery": "workspace:^"
+  },
+  "peerDependencies": {
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/cordis-plugin-loader": "workspace:^",
+    "@greeneek/gnk-agent": "workspace:^",
+    "@greeneek/gnk-agent-presets": "workspace:^",
+    "@greeneek/gnk-greeneek-llm-api-extensions": "workspace:^",
+    "@greeneek/gnk-session": "workspace:^"
+  },
+  "peerDependenciesMeta": {
+    "@greeneek/gnk-agent-presets": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/cordis-plugin-include": "workspace:^",
+    "@greeneek/cordis-plugin-loader": "workspace:^",
+    "@greeneek/gnk-agent": "workspace:^",
+    "@greeneek/gnk-agent-presets": "workspace:^",
+    "@greeneek/gnk-greeneek-llm-api-extensions": "workspace:^",
+    "@greeneek/gnk-scope": "workspace:^",
+    "@greeneek/gnk-session": "workspace:^",
+    "@greeneek/gnk-session-projection": "workspace:^"
+  }
+}

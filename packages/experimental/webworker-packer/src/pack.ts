@@ -10,7 +10,7 @@
  * This module holds no repository knowledge: paths, globs, and the composition come
  * in as parameters, so the same library packs a different tree by being called
  * differently. Locating those inputs is the CLI's job.
- * @module @deepseek-ai/dsh-experimental-webworker-packer/src/pack
+ * @module @greeneek/gnk-experimental-webworker-packer/src/pack
  */
 import { existsSync, readFileSync, readdirSync, realpathSync } from 'node:fs'
 import { dirname, join, relative } from 'node:path'
@@ -20,16 +20,16 @@ import {
   lowerModuleSource, MemoryVfs, packTar, WorkerModuleLoader,
   DEFAULT_ROOT, IMAGE_CONFIG_PATH, IMAGE_EMPTY_DIRECTORIES, IMAGE_MANIFEST_PATH,
   IMAGE_OVERLAY_DIRECTORIES,
-} from '@deepseek-ai/dsh-experimental-webworker-runtime'
+} from '@greeneek/gnk-experimental-webworker-runtime'
 import picomatch from 'picomatch'
 import yaml from 'js-yaml'
-import { entryListSchema } from '@deepseek-ai/cordis-plugin-include'
-import { REPLACED_EXTERNAL_PACKAGES } from '@deepseek-ai/dsh-experimental-webworker-runtime/src/node/external_packages/replaced-externals.ts'
-import { MODULE_PROXIES, MODULE_PROXY_PREFIXES } from '@deepseek-ai/dsh-experimental-webworker-runtime/src/module-proxies.ts'
+import { entryListSchema } from '@greeneek/cordis-plugin-include'
+import { REPLACED_EXTERNAL_PACKAGES } from '@greeneek/gnk-experimental-webworker-runtime/src/node/external_packages/replaced-externals.ts'
+import { MODULE_PROXIES, MODULE_PROXY_PREFIXES } from '@greeneek/gnk-experimental-webworker-runtime/src/module-proxies.ts'
 import { WRAPPER_CONTRACT, type ImageFiles, type TransformOutcome } from './transform-image.ts'
 import { EXCLUDE, EXCLUDE_WORKSPACE, IMAGE_ENTRY_SEEDS, PAGE_ASSETS } from './rules.ts'
 
-export { DEFAULT_ROOT } from '@deepseek-ai/dsh-experimental-webworker-runtime'
+export { DEFAULT_ROOT } from '@greeneek/gnk-experimental-webworker-runtime'
 
 /** Image path of the manifest; the layout contract's name, re-exported for callers. */
 export const MANIFEST_PATH: string = IMAGE_MANIFEST_PATH
@@ -412,7 +412,7 @@ function sweepImage(
       // philosophy instead — platform-dispatch branches the worker never
       // evaluates may request node-only modules, and such a request fails loud
       // at require time if it ever runs.
-      const external = importer.startsWith('node_modules/') && !importer.startsWith('node_modules/@deepseek-ai/')
+      const external = importer.startsWith('node_modules/') && !importer.startsWith('node_modules/@greeneek/')
       // A meta-resolve request is a URL mapping, not a load: a missing target
       // is tolerable from any importer — the call throws if it ever runs.
       if (external || entry.meta === true) tolerated.add(`${importer}: "${specifier}"`)
@@ -541,7 +541,7 @@ function materialize(
       // package the consumer is the page (react behind the prebuilt client
       // bundles), so its peer edges never bind the worker. Workspace and
       // vendored packages declare real runtime seams as peers
-      // (@deepseek-ai/cordis is a peerDependency of every harness package),
+      // (@greeneek/cordis is a peerDependency of every harness package),
       // so their peer edges stay on the chain.
       if (field === 'peerDependencies' && !options.workspaces.has(name)) continue
       const dependencies = manifest[field]

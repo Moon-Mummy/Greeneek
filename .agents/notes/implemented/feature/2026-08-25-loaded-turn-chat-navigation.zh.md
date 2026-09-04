@@ -16,7 +16,7 @@ Chat snapshot 构建层为当前已加载且含可见 transcript node 的每个 
 
 导航轨道以 10px 自然间距渲染完整的已加载 Turn 集合，永不显示省略号或未加载历史占位。集合较小时轨道随内容收缩；已加载集合超过可用高度后，百分比位置会把所有刻度压缩到设定上限内。更早一页到达后，已有 Turn 的 key 和 DOM 元素保持不变，最终位置随之变化；CSS transition 为这次重排添加动画。如果一个 Turn 被分页边界截断，预览最初显示其 Turn 编号与已加载的助手回复，上一页补齐后再显示用户问题。
 
-轨道紧贴滚动视口右缘，并在粘性输入区之外的可见区间内垂直居中。该区间等于滚动视口自身高度减去输入区高度，因此 ConversationRoot 在同一元素上除已有的 `--dsh-composer-height` 外再发布 `--dsh-conversation-viewport-height`，轨道按两者之差居中，而不是按忽略 Session 头部的视口高度居中。
+轨道紧贴滚动视口右缘，并在粘性输入区之外的可见区间内垂直居中。该区间等于滚动视口自身高度减去输入区高度，因此 ConversationRoot 在同一元素上除已有的 `--gnk-composer-height` 外再发布 `--gnk-conversation-viewport-height`，轨道按两者之差居中，而不是按忽略 Session 头部的视口高度居中。
 
 活跃刻度跟随共享 Chat 滚动区顶部附近的阅读线。跟随底部的 frame 会先按滚动距离选中最后一个已加载 Turn，不读取任何行几何；流式输出及其他被 observer 捕获的高度变化因此无需命中测试或扫描即可追随底部。离开底部后，每个滚动 frame 用一次命中测试解析阅读线所属 Turn，布局无法作答时退化为一次行扫描，成本不随刻度数量增长。不产生滚动事件却让行跨过阅读线的高度变化通过既有的 column observer 重新同步。滚动更新由 `requestAnimationFrame` 合并。激活刻度会在现有滚动坐标系中计算目标 node 的位置，移动同一个滚动区，并记录由此产生的 Chat 滚动恢复锚点。
 

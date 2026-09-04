@@ -1,9 +1,9 @@
 /** Test-only direct Remote face over the Session Controller's internal controllers. */
 
-import { SessionLogOffset } from '@deepseek-ai/dsh-session'
-import type { Context } from '@deepseek-ai/cordis'
-import type { ModelSelection as AgentModelSelection } from '@deepseek-ai/dsh-agent'
-import type { SessionEvent, SessionHeader, SessionId } from '@deepseek-ai/dsh-session'
+import { SessionLogOffset } from '@greeneek/gnk-session'
+import type { Context } from '@greeneek/cordis'
+import type { ModelSelection as AgentModelSelection } from '@greeneek/gnk-agent'
+import type { SessionEvent, SessionHeader, SessionId } from '@greeneek/gnk-session'
 import {
   SessionPersistenceNotFoundError,
   SessionPersistenceRevision,
@@ -15,15 +15,15 @@ import {
   type SessionPersistenceOpenOptions,
   type SessionPersistenceSnapshot,
   type SessionPersistenceStatOptions,
-} from '@deepseek-ai/dsh-session-persistence'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import SessionQueryEngine from '@deepseek-ai/dsh-session-query'
+} from '@greeneek/gnk-session-persistence'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import SessionQueryEngine from '@greeneek/gnk-session-query'
 import { vi } from 'vitest'
 import {
   RemoteError,
   remoteErrorOf,
   type RemoteResult,
-} from '@deepseek-ai/dsh-typert-protocol'
+} from '@greeneek/gnk-typert-protocol'
 import SessionController from '../src/index.ts'
 import type {
   ModelCatalog,

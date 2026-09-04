@@ -19,10 +19,10 @@
 - button "Thought for a while" [expanded]:
   - text: Thought for a while
   - img
-- button "Context injection @deepseek-ai/dsh-system-prompt":
+- button "Context injection @greeneek/gnk-system-prompt":
   - img
   - img
-  - text: Context injection @deepseek-ai/dsh-system-prompt
+  - text: Context injection @greeneek/gnk-system-prompt
 - button "Context injection user-invoke-demo":
   - img
   - img
@@ -44,8 +44,8 @@
 - button "Commands":
   - img
 - 'button "Access mode, current: Workspace Write"': Workspace Write
-- button "Select model, current DeepSeek-V4-Flash":
-  - text: DeepSeek-V4-Flash
+- button "Select model, current Greeneek-V4-Flash":
+  - text: Greeneek-V4-Flash
   - img
 - button "0% of context used"
 - button "Send message" [disabled]

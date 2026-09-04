@@ -16,7 +16,7 @@ Published ownership must be mechanically complete. Without a repository rule, a 
 
 ### One registry service, package-owned contributions
 
-`@deepseek-ai/dsh-invariants` is a product-independent Cordis service plugin that registers `ctx.invariants`. It owns configuration, registration uniqueness, child-fiber lifecycle, and package-attributed failures. It imports no session, agent, scope, or agent-loop package and contains none of their checks.
+`@greeneek/gnk-invariants` is a product-independent Cordis service plugin that registers `ctx.invariants`. It owns configuration, registration uniqueness, child-fiber lifecycle, and package-attributed failures. It imports no session, agent, scope, or agent-loop package and contains none of their checks.
 
 A workspace package publishes a `./invariant` companion plugin only when it owns an independently observable event or mutable-data relationship. The companion registers its exact full npm name. Packages without such a relationship omit the companion and publication wiring and record the reason in their README; generated placeholders, empty installers, and synthetic API-shape assertions are forbidden by the [runtime-contract Agent Note](2026-07-19-package-invariant-runtime-contracts.md) and [omission decision](../simplification/2026-08-28-omit-unneeded-invariant-companions.md). Package root entrypoints do not import or register diagnostics implicitly, so loading a root package does not change runtime checking or require the invariant service.
 
@@ -59,10 +59,10 @@ The former functional-plugin entry point and one-argument `InvariantError` const
 
 | Companion entry | Registration name | Owned checks |
 |---|---|---|
-| `@deepseek-ai/dsh-session/invariant` | `@deepseek-ai/dsh-session` | session sequence, turn/step enclosure, and same-step call/result trace |
-| `@deepseek-ai/dsh-agent/invariant` | `@deepseek-ai/dsh-agent` | agent-status transitions |
-| `@deepseek-ai/dsh-scope/invariant` | `@deepseek-ai/dsh-scope` | scoped-event carrier presence and subject consistency |
-| `@deepseek-ai/dsh-agent-loop/invariant` | `@deepseek-ai/dsh-agent-loop` | model-request reconstruction |
+| `@greeneek/gnk-session/invariant` | `@greeneek/gnk-session` | session sequence, turn/step enclosure, and same-step call/result trace |
+| `@greeneek/gnk-agent/invariant` | `@greeneek/gnk-agent` | agent-status transitions |
+| `@greeneek/gnk-scope/invariant` | `@greeneek/gnk-scope` | scoped-event carrier presence and subject consistency |
+| `@greeneek/gnk-agent-loop/invariant` | `@greeneek/gnk-agent-loop` | model-request reconstruction |
 
 These four owners supplied the initial stateful checks. Later owners add companions for real event or mutable-data relationships, while packages without one omit the companion and document why. Every published companion is a separately bundled `./invariant` export with its own declarations and Loader-safe namespace plugin shape.
 
@@ -70,11 +70,11 @@ These four owners supplied the initial stateful checks. Later owners add compani
 
 ### Scoped-event semantic map
 
-The generated scoped-event subject resolver lives in `dsh-scope`, beside the contract and invariant that consume it. `gen-scoped-events` uses the root TypeScript Program to enumerate `this: Scoped<Base>` declarations, infer routing-key types from real `scopeTarget(base, key)` calls, and require one unambiguous payload subject or an explicit unsupported marker. The committed runtime map imports no event-owner package, so semantic completeness does not expand either the service or scope package's runtime closure.
+The generated scoped-event subject resolver lives in `gnk-scope`, beside the contract and invariant that consume it. `gen-scoped-events` uses the root TypeScript Program to enumerate `this: Scoped<Base>` declarations, infer routing-key types from real `scopeTarget(base, key)` calls, and require one unambiguous payload subject or an explicit unsupported marker. The committed runtime map imports no event-owner package, so semantic completeness does not expand either the service or scope package's runtime closure.
 
 ### Example composition and SDK output
 
-The `dsh-sdk-minimal` patch mounts the service and all four stateful companion subpaths as explicit rows. A subpath entry adds its installable root npm package rather than treating the subpath as a package name. The shipped base-backed config trees omit the service and companions under the [shipped-config decision](../simplification/2026-08-03-omit-invariants-from-shipped-config.md).
+The `gnk-sdk-minimal` patch mounts the service and all four stateful companion subpaths as explicit rows. A subpath entry adds its installable root npm package rather than treating the subpath as a package name. The shipped base-backed config trees omit the service and companions under the [shipped-config decision](../simplification/2026-08-03-omit-invariants-from-shipped-config.md).
 
 Workspace constraints recognize the separate invariant bundle, and package exports, project references, build configuration, dependency declarations, and the lockfile describe the same publication metadata. Generated config catalogs, module graphs, and API documentation derive from those sources.
 
@@ -88,7 +88,7 @@ Every Vitest configuration loads a test host that mounts an explicitly enabled s
 
 ## Alternatives considered
 
-- **Keep all checks in `dsh-invariants`.** Rejected because the registry would continue importing every checked product domain, owner changes would require central edits, and package tests would remain detached from the contracts they protect.
+- **Keep all checks in `gnk-invariants`.** Rejected because the registry would continue importing every checked product domain, owner changes would require central edits, and package tests would remain detached from the contracts they protect.
 - **Let root package entrypoints register checks implicitly when `ctx.invariants` happens to exist.** Rejected because root behavior would depend on composition order and optional service presence, diagnostics could not be selected independently, and package loading would hide a registration effect outside an explicit companion.
 - **Discover every `invariant.ts` file automatically at runtime.** Rejected because filesystem/package discovery is not a runtime ownership contract, makes bundled publication ambiguous, and cannot express explicit Cordis load order or dependency installation. Build-time generation, verification, and the test host may enumerate the source tree because they validate repository completeness rather than composing a shipped deployment.
 - **Validate allow/block entries against the currently loaded package set.** Rejected because a zero-match pattern can intentionally target a later or HMR-loaded contribution; current load order must not determine config validity.

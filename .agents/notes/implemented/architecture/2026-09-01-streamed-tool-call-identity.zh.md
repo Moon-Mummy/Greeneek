@@ -6,7 +6,7 @@ Status: implemented
 
 ## 问题
 
-DeepSeek SSE 翻译器对每个携带该字段的工具调用分片都直接赋值 `id` 与 `name`，因此续传分片把其中任一字段重复发送为空串时，会抹掉该调用首个分片已建立的身份。组装出的块带着空名字进入循环，工具注册表以 `unknown tool ""` 拒绝它，受影响的模型上任何工具都跑不起来。把这些字段填成 `null` 的网关会造成同样的抹除，而 `WireToolCallDelta` 把两者都声明为 `string | undefined`，让实际观察到的 `null` 落在编译器视野之外。
+Greeneek SSE 翻译器对每个携带该字段的工具调用分片都直接赋值 `id` 与 `name`，因此续传分片把其中任一字段重复发送为空串时，会抹掉该调用首个分片已建立的身份。组装出的块带着空名字进入循环，工具注册表以 `unknown tool ""` 拒绝它，受影响的模型上任何工具都跑不起来。把这些字段填成 `null` 的网关会造成同样的抹除，而 `WireToolCallDelta` 把两者都声明为 `string | undefined`，让实际观察到的 `null` 落在编译器视野之外。
 
 空身份还会活过本轮。`appendToolCall` 与 `appendToolResult` 原样写入块的 id 且没有任何写入路径校验它，而 `adoptSessionEvent` 拒绝 `callId` 为空的 `tool/result`，持久化协调器于是把该拒绝包装成 `SessionPersistenceCorruptionError`。记录过一次这种调用的会话可写但不再可读。
 

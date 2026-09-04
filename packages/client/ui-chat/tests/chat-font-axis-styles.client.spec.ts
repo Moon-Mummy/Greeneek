@@ -2,7 +2,7 @@
  * The chat flow's font-size-axis adoption as CSS text. jsdom has no layout,
  * so these read the declarations that make think text, compaction rows, the
  * message clock, and the icon-action buttons follow the Settings font-size
- * preference through --dsh-content-font-size / --dsh-content-font-delta.
+ * preference through --gnk-content-font-size / --gnk-content-font-delta.
  */
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -23,22 +23,22 @@ describe('chat flow font-size axis', () => {
     const css = read('ReasoningRow.module.css')
     for (const selector of ['.summary', '.thinkBody']) {
       expect(declarationsFrom(css, selector)).toEqual(expect.arrayContaining([
-        'font-size: var(--dsh-content-font-size-secondary, 13px)',
-        'line-height: calc(20px + var(--dsh-content-font-delta-secondary, 0px))',
+        'font-size: var(--gnk-content-font-size-secondary, 13px)',
+        'line-height: calc(20px + var(--gnk-content-font-delta-secondary, 0px))',
       ]))
     }
   })
 
   it('command and context summaries read the secondary tier on the shared row line', () => {
     expect(declarationsFrom(read('GenericCommandCard.module.css'), '.summary')).toEqual(expect.arrayContaining([
-      'font-size: var(--dsh-content-font-size-secondary, 13px)',
-      'line-height: calc(24px + var(--dsh-content-font-delta, 0px))',
+      'font-size: var(--gnk-content-font-size-secondary, 13px)',
+      'line-height: calc(24px + var(--gnk-content-font-delta, 0px))',
     ]))
     const context = read('ContextInjectionRow.module.css')
     for (const selector of ['.source', '.summary']) {
       expect(declarationsFrom(context, selector)).toEqual(expect.arrayContaining([
-        'font-size: var(--dsh-content-font-size-secondary, 13px)',
-        'line-height: calc(24px + var(--dsh-content-font-delta, 0px))',
+        'font-size: var(--gnk-content-font-size-secondary, 13px)',
+        'line-height: calc(24px + var(--gnk-content-font-delta, 0px))',
       ]))
     }
   })
@@ -49,14 +49,14 @@ describe('chat flow font-size axis', () => {
     // (the whole-line usage trigger) and the user row's clock stay one step
     // under the body size so the two rows match.
     expect(declarationsFrom(actions, '.timeStart')).toEqual(expect.arrayContaining([
-      'font-size: var(--dsh-content-font-size-secondary, 13px)',
+      'font-size: var(--gnk-content-font-size-secondary, 13px)',
     ]))
     expect(declarationsFrom(actions, '.timeEnd')).toEqual(expect.arrayContaining([
-      'font-size: var(--dsh-content-font-size-secondary, 13px)',
+      'font-size: var(--gnk-content-font-size-secondary, 13px)',
     ]))
     expect(declarationsFrom(actions, '.action svg')).toEqual(expect.arrayContaining([
-      'width: calc(15px + var(--dsh-content-font-delta, 0px))',
-      'height: calc(15px + var(--dsh-content-font-delta, 0px))',
+      'width: calc(15px + var(--gnk-content-font-delta, 0px))',
+      'height: calc(15px + var(--gnk-content-font-delta, 0px))',
     ]))
   })
 
@@ -64,20 +64,20 @@ describe('chat flow font-size axis', () => {
     const css = read('MessageItem.module.css')
     for (const selector of ['.compactionTitle', '.compactionSummary', '.compactionBody']) {
       expect(declarationsFrom(css, selector)).toEqual(expect.arrayContaining([
-        'font-size: var(--dsh-content-font-size-secondary, 13px)',
-        'line-height: calc(24px + var(--dsh-content-font-delta, 0px))',
+        'font-size: var(--gnk-content-font-size-secondary, 13px)',
+        'line-height: calc(24px + var(--gnk-content-font-delta, 0px))',
       ]))
     }
     expect(declarationsFrom(css, '.compactionLeading svg')).toEqual(expect.arrayContaining([
-      'width: calc(14px + var(--dsh-content-font-delta, 0px))',
-      'height: calc(14px + var(--dsh-content-font-delta, 0px))',
+      'width: calc(14px + var(--gnk-content-font-delta, 0px))',
+      'height: calc(14px + var(--gnk-content-font-delta, 0px))',
     ]))
   })
 
   it('expanded bodies indent by 22px + delta so content stays under the shifted title start', () => {
     // The DisclosureRow title starts at leading (16 + delta) + gap 6; a fixed
     // 22px indent would misalign at every non-default size.
-    const indent = 'calc(22px + var(--dsh-content-font-delta, 0px))'
+    const indent = 'calc(22px + var(--gnk-content-font-delta, 0px))'
     expect(declarationsFrom(read('ReasoningRow.module.css'), '.thinkBody'))
       .toEqual(expect.arrayContaining([`padding: 4px 0 4px ${indent}`]))
     expect(declarationsFrom(read('MessageItem.module.css'), '.compactionBody'))
@@ -89,8 +89,8 @@ describe('chat flow font-size axis', () => {
   it('the usage-details trigger reads the secondary tier like its clock label', () => {
     const css = read('TurnUsagePanel.module.css')
     expect(declarationsFrom(css, '.trigger')).toEqual(expect.arrayContaining([
-      'font-size: var(--dsh-content-font-size-secondary, 13px)',
-      'line-height: calc(24px + var(--dsh-content-font-delta, 0px))',
+      'font-size: var(--gnk-content-font-size-secondary, 13px)',
+      'line-height: calc(24px + var(--gnk-content-font-delta, 0px))',
     ]))
   })
 
@@ -100,13 +100,13 @@ describe('chat flow font-size axis', () => {
     // stays one height at every font size.
     const css = read('TurnUsagePanel.module.css')
     expect(declarationsFrom(css, '.trigger')).toEqual(expect.arrayContaining([
-      'height: calc(28px + var(--dsh-content-font-delta, 0px))',
+      'height: calc(28px + var(--gnk-content-font-delta, 0px))',
       'white-space: nowrap',
       'min-width: 0',
     ]))
     expect(declarationsFrom(css, '.trigger svg')).toEqual(expect.arrayContaining([
-      'width: calc(15px + var(--dsh-content-font-delta, 0px))',
-      'height: calc(15px + var(--dsh-content-font-delta, 0px))',
+      'width: calc(15px + var(--gnk-content-font-delta, 0px))',
+      'height: calc(15px + var(--gnk-content-font-delta, 0px))',
     ]))
     // A narrow column trims the pill label to an ellipsis instead of letting
     // it overflow or widen the chat column.
@@ -125,7 +125,7 @@ describe('chat flow font-size axis', () => {
     const css = read('TurnUsagePanel.module.css')
     const narrow = /@media \(max-width: 480px\) \{([\s\S]*?)\n\}/.exec(css)?.[1] ?? ''
     expect(narrow).toMatch(/\.trigger \{[^}]*justify-content: center/)
-    expect(narrow).toMatch(/\.trigger \{[^}]*width: calc\(28px \+ var\(--dsh-content-font-delta, 0px\)\)/)
+    expect(narrow).toMatch(/\.trigger \{[^}]*width: calc\(28px \+ var\(--gnk-content-font-delta, 0px\)\)/)
     expect(narrow).toMatch(/\.trigger \{[^}]*padding: 6px/)
     expect(narrow).toMatch(/\.trigger \.label \{[^}]*display: none/)
     expect(narrow).toMatch(/\.root \+ \.root \{[^}]*margin-left: 0/)

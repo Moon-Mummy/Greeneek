@@ -12,8 +12,8 @@
       #text "upper kept"
     #text "."
   <p>
-    <a href="https://deepseek.com" rel="noopener noreferrer" target="_blank">
-      #text "https://deepseek.com"
+    <a href="https://greeneek.dev" rel="noopener noreferrer" target="_blank">
+      #text "https://greeneek.dev"
     #text " and bare autolink "
     <a href="https://autolink.example.com" rel="noopener noreferrer" target="_blank">
       #text "https://autolink.example.com"

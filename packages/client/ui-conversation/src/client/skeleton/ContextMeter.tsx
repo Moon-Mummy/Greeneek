@@ -5,10 +5,10 @@
  * capacity. */
 
 import { useEffect, useRef, useState } from 'react'
-import type { UseProjection } from '@deepseek-ai/dsh-api-session-controller/client'
+import type { UseProjection } from '@greeneek/gnk-api-session-controller/client'
 // Type-only: the `contextPressure` / `contextBreakdown` projection key merges.
-import type {} from '@deepseek-ai/dsh-token-meter/client'
-import { Tooltip } from '@deepseek-ai/dsh-client-ui-primitives'
+import type {} from '@greeneek/gnk-token-meter/client'
+import { Tooltip } from '@greeneek/gnk-client-ui-primitives'
 import type { ComposerBarProps } from '../contract/slots.ts'
 import { contextOccupancy } from '../context-occupancy.ts'
 import css from './ContextMeter.module.css'

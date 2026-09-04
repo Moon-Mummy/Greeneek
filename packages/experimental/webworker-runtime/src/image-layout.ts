@@ -6,7 +6,7 @@
  */
 
 /** Default virtual root; the runtime mounts the image here unless told otherwise. */
-export const DEFAULT_ROOT = '/dsh'
+export const DEFAULT_ROOT = '/gnk'
 
 /**
  * Leaf name of the packed base image: one gzip member holding the ustar archive.
@@ -21,7 +21,7 @@ export const IMAGE_CONFIG_PATH = 'config/cordis.yml'
 /** Image path of the manifest the runtime reads before it wraps a single module. */
 export const IMAGE_MANIFEST_PATH = 'config/vfs-manifest.json'
 
-/** Home directory under the root; the process shim's `DSH_HOME`/`HOME` default. */
+/** Home directory under the root; the process shim's `GNK_HOME`/`HOME` default. */
 export const IMAGE_HOME_DIRECTORY = 'home'
 
 /** Working directories the host tree expects to exist, empty. */
@@ -39,7 +39,7 @@ export const IMAGE_OVERLAY_DIRECTORIES: readonly string[] = ['home', 'workspace'
  * would otherwise run against newer wrapper semantics. Bump on any change to
  * emitted code or to {@link WRAPPER_PARAMS}.
  */
-export const LOWERING_VERSION = 'dsh-worker-transform/1'
+export const LOWERING_VERSION = 'gnk-worker-transform/1'
 
 /**
  * Free variables a lowered body expects from its wrapper, in order.
@@ -49,5 +49,5 @@ export const LOWERING_VERSION = 'dsh-worker-transform/1'
  * worker binds them, with no compiler in the worker bundle to agree with.
  */
 export const WRAPPER_PARAMS = [
-  'exports', 'require', 'module', '__filename', '__dirname', '__dsh$meta', '__als',
+  'exports', 'require', 'module', '__filename', '__dirname', '__gnk$meta', '__als',
 ] as const

@@ -4,16 +4,16 @@ import { writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { Context } from '@deepseek-ai/cordis'
-import type { EntryOptions } from '@deepseek-ai/cordis-plugin-loader'
-import type { PatchOptions } from '@deepseek-ai/cordis-plugin-include'
+import type { Context } from '@greeneek/cordis'
+import type { EntryOptions } from '@greeneek/cordis-plugin-loader'
+import type { PatchOptions } from '@greeneek/cordis-plugin-include'
 import {
   boot,
   healProfilesModuleFallback,
   loadOverlayPatches,
   loadProfile,
   type ProfileLayer,
-} from '@deepseek-ai/dsh-app-boot'
+} from '@greeneek/gnk-app-boot'
 
 const installAnchor = fileURLToPath(new URL('../../../../../apps/cli/package.json', import.meta.url))
 

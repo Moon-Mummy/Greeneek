@@ -3,13 +3,13 @@ description: "Cross-session snapshot references and durable untrusted model cont
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-session-reference
+# @greeneek/gnk-session-reference
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-session-reference` lets a conversation reference other sessions: a host turns a `@label` mention into a canonical URI, and the service prepares a bounded, read-only snapshot of each referenced session as durable, untrusted background context for the model. Candidate discovery ranks other sessions by working-directory affinity and labels them with their latest titles. Snapshots are immutable after capture and carry a fixed warning that forbids following instructions, permission claims, or tool requests inside them. It is an opt-in service for hosts that support cross-session mentions; it consumes `ctx.sessionQuery` and needs no SQLite FTS.
+`gnk-session-reference` lets a conversation reference other sessions: a host turns a `@label` mention into a canonical URI, and the service prepares a bounded, read-only snapshot of each referenced session as durable, untrusted background context for the model. Candidate discovery ranks other sessions by working-directory affinity and labels them with their latest titles. Snapshots are immutable after capture and carry a fixed warning that forbids following instructions, permission claims, or tool requests inside them. It is an opt-in service for hosts that support cross-session mentions; it consumes `ctx.sessionQuery` and needs no SQLite FTS.
 
 ## Table of Contents
 
@@ -29,7 +29,7 @@ Enable this service when hosts should let a user mention another session and giv
 
 ### Mention syntax
 
-A canonical mention is `@[label](dsh-session:<base64url-encoded-id>)` in Markdown, or the bare `dsh-session:` URI; every JavaScript string session id round-trips exactly. The service rewrites mentions into readable `@label` text in the message and returns the structured references. Explicit Markdown mentions reject malformed URIs; empty or punctuation-only scheme mentions stay ordinary discussion text.
+A canonical mention is `@[label](gnk-session:<base64url-encoded-id>)` in Markdown, or the bare `gnk-session:` URI; every JavaScript string session id round-trips exactly. The service rewrites mentions into readable `@label` text in the message and returns the structured references. Explicit Markdown mentions reject malformed URIs; empty or punctuation-only scheme mentions stay ordinary discussion text.
 
 ### What the agent gets
 
@@ -47,7 +47,7 @@ A message that cites other sessions is followed immediately by a `## Referenced 
 | `candidateLimit` | `50` | Default candidate count returned to a host |
 | `maxReferenceBytes` | `65536` | Maximum serialized JSON bytes for one reference object |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-session-reference) is the exhaustive source for every accepted field and its JSDoc.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-session-reference) is the exhaustive source for every accepted field and its JSDoc.
 
 -----
 
@@ -69,7 +69,7 @@ Preparation reads each referenced session's current surface exactly once, when t
 |---|---|
 | [`src/index.ts`](src/index.ts) | `SessionReferenceResolver`: pre-step listener, candidate discovery, preparation |
 | [`src/config.ts`](src/config.ts) | `Config` schema, `SessionReferenceError` taxonomy |
-| [`src/uri.ts`](src/uri.ts) | `dsh-session:` URI codec, mention formatting and parsing |
+| [`src/uri.ts`](src/uri.ts) | `gnk-session:` URI codec, mention formatting and parsing |
 | [`src/projection.ts`](src/projection.ts) | Current-surface projection and byte-budget retention |
 | [`src/serialization.ts`](src/serialization.ts) | Tag-safe JSON escaping for snapshot payloads |
 | [`src/types.ts`](src/types.ts) | `SessionReferenceInput`/`Candidate` and source types |
@@ -92,7 +92,7 @@ Read these pages when the package-level contract is not enough. They move from t
 - [Cross-session references decision record](../../../.agents/notes/implemented/feature/2026-07-21-cross-session-references.md) — design rationale for the reference contract.
 - [Session-query subsystem](../../../docs/subsystems/session-query.md) — the read service that supplies session surfaces.
 - [Context group map](../README.md) — sibling request-context packages.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-session-reference) — every accepted config field and its source declaration.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-session-reference) — every accepted config field and its source declaration.
 
 -----
 

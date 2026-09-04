@@ -3,13 +3,13 @@ description: "skill 提供方注册表，供选择、配置或排查来自任意
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-skill
+# @greeneek/gnk-skill
 
 [English](README.md) | 中文
 
 ## 概述
 
-agent（智能体）和用户可以通过单一查找使用可复用的任务专项指令，无论指令来自何处：任意提供方都可以从本地目录、嵌入式插件数据或远程服务贡献 skill（技能），每个消费方都会收到一份合并目录——每个名称对应胜出的 skill——并能按需加载任一 skill 的完整指令。当组合需要从多个来源或非文件系统来源加载 skill 时，请挂载本插件；当组合完全不加载 skill 时，请跳过。它自身不携带任何 skill 内容——请至少搭配一个提供方（随附的 `dsh-skill-filesystem`）；需要 agent 加载 skill 时，再搭配 `dsh-tool-skill`。
+agent（智能体）和用户可以通过单一查找使用可复用的任务专项指令，无论指令来自何处：任意提供方都可以从本地目录、嵌入式插件数据或远程服务贡献 skill（技能），每个消费方都会收到一份合并目录——每个名称对应胜出的 skill——并能按需加载任一 skill 的完整指令。当组合需要从多个来源或非文件系统来源加载 skill 时，请挂载本插件；当组合完全不加载 skill 时，请跳过。它自身不携带任何 skill 内容——请至少搭配一个提供方（随附的 `gnk-skill-filesystem`）；需要 agent 加载 skill 时，再搭配 `gnk-tool-skill`。
 
 ## 目录
 
@@ -29,21 +29,21 @@ agent（智能体）和用户可以通过单一查找使用可复用的任务专
 
 ### 何时选择
 
-当 agent 需要通过同一个接口从多个来源加载 skill，或 skill 来源并非本地文件系统时，选择 `dsh-skill`。当组合完全不需要加载 skill 时，请避免使用——插件会增加一个服务以及每次查找的发现成本。随附的本地提供方（`dsh-skill-filesystem`）和面向模型的消费方（`dsh-tool-skill`）是独立包；部署需要本地 skill 和模型访问时，请一并挂载。
+当 agent 需要通过同一个接口从多个来源加载 skill，或 skill 来源并非本地文件系统时，选择 `gnk-skill`。当组合完全不需要加载 skill 时，请避免使用——插件会增加一个服务以及每次查找的发现成本。随附的本地提供方（`gnk-skill-filesystem`）和面向模型的消费方（`gnk-tool-skill`）是独立包；部署需要本地 skill 和模型访问时，请一并挂载。
 
 ### 挂载与配置
 
 像任何 Cordis 插件一样加载即可。唯一配置项限制内存中保留的已完成提供方目录数量；其余都是提供方行为。
 
 ```yaml
-- name: '@deepseek-ai/dsh-skill'
+- name: '@greeneek/gnk-skill'
 ```
 
 | 字段 | 默认值 | 含义 |
 |---|---|---|
 | `collectCacheMaxEntries` | `128` | 内存中保留的已完成 cwd/提供方目录数 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-skill)是每个受支持字段的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-skill)是每个受支持字段的穷尽式真源。
 
 ### 注册表提供什么
 
@@ -112,7 +112,7 @@ agent（智能体）和用户可以通过单一查找使用可复用的任务专
 - [skill 子系统参考](../../../docs/subsystems/skills.zh.md)——注册表、提供方约定与本地发现优先级。
 - [skill-filesystem 包](../skill-filesystem/README.zh.md)——从磁盘发现 skill 的随附本地提供方。
 - [tool-skill 包](../tool-skill/README.zh.md)——渲染会话目录与 `skill` 工具的消费方。
-- [生成配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-skill)——每个配置字段及其源声明。
+- [生成配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-skill)——每个配置字段及其源声明。
 - [skill 调用策略 Agent Note](../../../.agents/notes/implemented/feature/2026-07-28-skill-invocation-policy.zh.md)——模型与用户调用控制的依据。
 
 -----
@@ -120,7 +120,7 @@ agent（智能体）和用户可以通过单一查找使用可复用的任务专
 <a id="model-experience"></a>
 ## 模型体验
 
-通过 `dsh-tool-skill` 间接影响模型；该包将提供方摘要渲染到持久的初始目录或替换目录消息中，并将加载的指令正文渲染到已保留的工具结果中。
+通过 `gnk-tool-skill` 间接影响模型；该包将提供方摘要渲染到持久的初始目录或替换目录消息中，并将加载的指令正文渲染到已保留的工具结果中。
 
 #### KV Cache 影响
 

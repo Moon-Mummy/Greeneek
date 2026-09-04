@@ -4,18 +4,18 @@
  * producers. It also delivers unreported completions to the owning agent:
  * injected into a busy owner's next step, or opening a turn on an idle one
  * under the default `wakeup` delivery, bounded per owner.
- * @module @deepseek-ai/dsh-tool-jobs
+ * @module @greeneek/gnk-tool-jobs
  */
 
-import type { Context } from '@deepseek-ai/cordis'
-import z from '@deepseek-ai/schemastery'
-import { boundContextSummary, createUserMessage, type ContentBlock } from '@deepseek-ai/dsh-llm'
-import { TextRetainer } from '@deepseek-ai/dsh-output-retention'
-import { defineTool } from '@deepseek-ai/dsh-tools'
-import type { GenericCallView, ToolDefinition, ToolExecution } from '@deepseek-ai/dsh-tools'
-import { JobId } from '@deepseek-ai/dsh-jobs'
-import type { JobSnapshot } from '@deepseek-ai/dsh-jobs'
-import type { Agent } from '@deepseek-ai/dsh-agent'
+import type { Context } from '@greeneek/cordis'
+import z from '@greeneek/schemastery'
+import { boundContextSummary, createUserMessage, type ContentBlock } from '@greeneek/gnk-llm'
+import { TextRetainer } from '@greeneek/gnk-output-retention'
+import { defineTool } from '@greeneek/gnk-tools'
+import type { GenericCallView, ToolDefinition, ToolExecution } from '@greeneek/gnk-tools'
+import { JobId } from '@greeneek/gnk-jobs'
+import type { JobSnapshot } from '@greeneek/gnk-jobs'
+import type { Agent } from '@greeneek/gnk-agent'
 
 export const name = 'tool-jobs'
 export const inject = ['tools', 'jobs', 'systemPrompt']

@@ -3,13 +3,13 @@ description: "原子文件替换与跨进程写锁，供绝不允许在磁盘上
 kind: "package-library"
 ---
 
-# @deepseek-ai/dsh-atomic-write
+# @greeneek/gnk-atomic-write
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-atomic-write` 一步原子地替换文件内容：目标的读取方总是看到完整的旧内容或完整的新内容，绝不看到部分写入。它还通过写锁跨进程串行化读-渲染-提交循环，因此同一文件的并发写入方无法复活彼此替换掉的状态。调用方为每次替换声明权限位，全新 inode 会带着这些权限位走完交换，因此替换权限过宽的旧文件时会直接收窄，不存在 chmod 竞态。它是一个零依赖库，由用户设置文档与凭据存储这类文件型存储共享；`cordis.yml` 无法加载它，而且由于没有 `fsync`，崩溃持久性由调用方负责。
+`gnk-atomic-write` 一步原子地替换文件内容：目标的读取方总是看到完整的旧内容或完整的新内容，绝不看到部分写入。它还通过写锁跨进程串行化读-渲染-提交循环，因此同一文件的并发写入方无法复活彼此替换掉的状态。调用方为每次替换声明权限位，全新 inode 会带着这些权限位走完交换，因此替换权限过宽的旧文件时会直接收窄，不存在 chmod 竞态。它是一个零依赖库，由用户设置文档与凭据存储这类文件型存储共享；`cordis.yml` 无法加载它，而且由于没有 `fsync`，崩溃持久性由调用方负责。
 
 ## 目录
 
@@ -30,10 +30,10 @@ kind: "package-library"
 ### 原子写入文件
 
 ```ts
-import { writeFileAtomic } from '@deepseek-ai/dsh-atomic-write'
+import { writeFileAtomic } from '@greeneek/gnk-atomic-write'
 
 declare const text: string
-await writeFileAtomic('/home/u/.dsh/settings.yaml', text, { mode: 0o600 })
+await writeFileAtomic('/home/u/.gnk/settings.yaml', text, { mode: 0o600 })
 ```
 
 父目录会按需创建，读取方只会观察到旧内容或完整的新内容。在 Windows 上，报告为 `EACCES`、`EBUSY` 或 `EPERM` 的瞬时替换干扰会在有界时间内重试；任何剩余失败都会移除临时文件，并保持目标文件不变。
@@ -43,14 +43,14 @@ await writeFileAtomic('/home/u/.dsh/settings.yaml', text, { mode: 0o600 })
 对于单靠原子提交无法保证安全的读-渲染-提交循环，请在操作期间持有写锁：
 
 ```text
-import { withFileLock, writeFileAtomic } from '@deepseek-ai/dsh-atomic-write'
+import { withFileLock, writeFileAtomic } from '@greeneek/gnk-atomic-write'
 
 declare const render: (previous: string) => string
 declare const readCurrent: () => Promise<string>
 
-await withFileLock('/home/u/.dsh/settings.yaml', async () => {
+await withFileLock('/home/u/.gnk/settings.yaml', async () => {
   const previous = await readCurrent()
-  await writeFileAtomic('/home/u/.dsh/settings.yaml', render(previous), { mode: 0o600 })
+  await writeFileAtomic('/home/u/.gnk/settings.yaml', render(previous), { mode: 0o600 })
 })
 ```
 

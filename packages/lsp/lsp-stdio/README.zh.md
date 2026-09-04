@@ -3,13 +3,13 @@ description: "ctx.lsp 的 stdio 语言服务器提供方：配置好的服务器
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-lsp-stdio
+# @greeneek/gnk-lsp-stdio
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-lsp-stdio` 把配置好的本地语言服务器命令变成 `ctx.lsp` 上的提供方：给它一张服务器命令与扩展名到语言的映射表，agent 就能针对这些语言的文件获得由真实语言服务器服务的语义代码导航——定义、引用、实现与悬停。一个插件实例针对每个配置的服务器注册一个隔离的提供方；每个提供方按工作区惰性启动一个服务器进程，并在查询时临时打开文档，因此查询之间不会累积任何文档状态。服务器与源文件始终位于已挂载的文件系统与子进程执行世界中。它是通用主机，而不是语言服务器目录或安装器——部署需要显式配置命令。本包信任所配置的服务器，自身不提供任何沙箱。
+`gnk-lsp-stdio` 把配置好的本地语言服务器命令变成 `ctx.lsp` 上的提供方：给它一张服务器命令与扩展名到语言的映射表，agent 就能针对这些语言的文件获得由真实语言服务器服务的语义代码导航——定义、引用、实现与悬停。一个插件实例针对每个配置的服务器注册一个隔离的提供方；每个提供方按工作区惰性启动一个服务器进程，并在查询时临时打开文档，因此查询之间不会累积任何文档状态。服务器与源文件始终位于已挂载的文件系统与子进程执行世界中。它是通用主机，而不是语言服务器目录或安装器——部署需要显式配置命令。本包信任所配置的服务器，自身不提供任何沙箱。
 
 ## 目录
 
@@ -25,17 +25,17 @@ kind: "package-reference"
 <a id="use-this-package"></a>
 ## 使用本包
 
-当部署拥有本地语言服务器——例如 `typescript-language-server`——并希望 harness 通过它们导航代码时，挂载此提供方。它需要描述同一执行世界的文件系统与子进程提供方，以及 `dsh-lsp` seam；若要向模型开放，还需要 `dsh-tool-lsp`。
+当部署拥有本地语言服务器——例如 `typescript-language-server`——并希望 harness 通过它们导航代码时，挂载此提供方。它需要描述同一执行世界的文件系统与子进程提供方，以及 `gnk-lsp` seam；若要向模型开放，还需要 `gnk-tool-lsp`。
 
 ### 最小配置
 
 `servers` 记录把每个稳定的提供方 id 映射到一条服务器命令。提供方会在清理 credential 后于加载时解析每个可执行文件，因此一个坏配置项会阻止所有提供方注册；进程在第一次匹配查询时惰性启动。
 
 ```yaml
-- name: '@deepseek-ai/dsh-fs-local'
-- name: '@deepseek-ai/dsh-subprocess-local'
-- name: '@deepseek-ai/dsh-lsp'
-- name: '@deepseek-ai/dsh-lsp-stdio'
+- name: '@greeneek/gnk-fs-local'
+- name: '@greeneek/gnk-subprocess-local'
+- name: '@greeneek/gnk-lsp'
+- name: '@greeneek/gnk-lsp-stdio'
   config:
     servers:
       typescript:
@@ -43,7 +43,7 @@ kind: "package-reference"
         args: ['--stdio']
         extensionToLanguage:
           '.ts': typescript
-- name: '@deepseek-ai/dsh-tool-lsp'
+- name: '@greeneek/gnk-tool-lsp'
 ```
 
 | 字段 | 默认值 | 含义 |
@@ -51,7 +51,7 @@ kind: "package-reference"
 | `command` | 必填 | 要 spawn 的可执行文件——绝对路径，或在加载时从子进程 PATH 解析；不使用 shell 启动 |
 | `extensionToLanguage` | 必填 | 小写、以点开头的扩展名 → LSP language id（例如 `{ '.ts': 'typescript' }`） |
 | `args` | `[]` | 传给可执行文件的参数 |
-| `env` | `{}` | 合并到已清理 credential 的环境之上的额外 env；匹配 `KEY`／`PASSWORD`／`SECRET`／`TOKEN` 的变量以及所有 `DSH_*` 名称不会被转发 |
+| `env` | `{}` | 合并到已清理 credential 的环境之上的额外 env；匹配 `KEY`／`PASSWORD`／`SECRET`／`TOKEN` 的变量以及所有 `GNK_*` 名称不会被转发 |
 | `initializationOptions` | `null` | 转发给服务器的静态 `initialize` 选项 |
 | `configuration` | `null` | 每个 `workspace/configuration` 配置项的静态答案 |
 | `maxMessageBytes` | `16000000` | 从服务器接受的单条 framed 消息最大大小 |
@@ -60,7 +60,7 @@ kind: "package-reference"
 | `shutdownTimeoutMs` | `5000` | 升级前用于优雅 `shutdown`／`exit` 的预算 |
 | `killGraceMs` | `2000` | 请求取消及 SIGTERM→SIGKILL 升级的宽限期 |
 
-`servers` 必须至少包含一个配置项，每个 id 都必须非空；定时器预算必须是 Node 定时器范围内的正整数，字节上限必须为正。生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-lsp-stdio)是每个受支持字段的穷尽式真源。
+`servers` 必须至少包含一个配置项，每个 id 都必须非空；定时器预算必须是 Node 定时器范围内的正整数，字节上限必须为正。生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-lsp-stdio)是每个受支持字段的穷尽式真源。
 
 ### 查询做什么
 
@@ -123,8 +123,8 @@ kind: "package-reference"
 
 - [LSP 导航子系统](../../../docs/subsystems/lsp.zh.md)——操作、坐标、请求与结果，以及 `LspError` code。
 - [LSP 能力 seam Agent Note](../../../.agents/notes/implemented/architecture/2026-07-15-lsp-capability-seam.zh.md)——设计原理、备选方案与刻意推迟的 API。
-- [dsh-lsp](../lsp/README.zh.md)——本提供方注册到的 seam。
-- [dsh-tool-lsp](../tool-lsp/README.zh.md)——基于该 seam 的面向模型工具。
+- [gnk-lsp](../lsp/README.zh.md)——本提供方注册到的 seam。
+- [gnk-tool-lsp](../tool-lsp/README.zh.md)——基于该 seam 的面向模型工具。
 - [lsp 组地图](../README.zh.md)——三个包的家族及其相关文档。
 
 -----
@@ -132,11 +132,11 @@ kind: "package-reference"
 <a id="model-experience"></a>
 ## 模型体验
 
-通过 `dsh-tool-lsp` 间接影响；该工具呈现此提供方的规范化结果，本主机自身不贡献提示词或 schema。
+通过 `gnk-tool-lsp` 间接影响；该工具呈现此提供方的规范化结果，本主机自身不贡献提示词或 schema。
 
 #### KV Cache 影响
 
-不会直接失效；请求前缀变更由 `dsh-tool-lsp` 负责。
+不会直接失效；请求前缀变更由 `gnk-tool-lsp` 负责。
 
 ## 已知限制与延期工作
 

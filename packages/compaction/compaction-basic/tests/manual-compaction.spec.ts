@@ -1,37 +1,37 @@
 import { describe, expect, it, vi } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import AgentLoop from '@deepseek-ai/dsh-agent-loop'
-import { mountAgentLoopTestDependencies } from '@deepseek-ai/dsh-agent-loop-testkit'
-import InvariantRegistry from '@deepseek-ai/dsh-invariants'
-import { CommandId } from '@deepseek-ai/dsh-commands/brand'
-import * as SessionInvariant from '@deepseek-ai/dsh-session/invariant'
-import * as AgentInvariant from '@deepseek-ai/dsh-agent/invariant'
-import * as AgentLoopInvariant from '@deepseek-ai/dsh-agent-loop/invariant'
-import * as CompactionInvariant from '@deepseek-ai/dsh-compaction/invariant'
-import { BasicCompactionEngine } from '@deepseek-ai/dsh-compaction-basic'
-import { CompactionId, isCompactCheckpointSource, ManualCompactionError } from '@deepseek-ai/dsh-compaction'
-import type { CompactionResult } from '@deepseek-ai/dsh-compaction'
+import { Context } from '@greeneek/cordis'
+import AgentLoop from '@greeneek/gnk-agent-loop'
+import { mountAgentLoopTestDependencies } from '@greeneek/gnk-agent-loop-testkit'
+import InvariantRegistry from '@greeneek/gnk-invariants'
+import { CommandId } from '@greeneek/gnk-commands/brand'
+import * as SessionInvariant from '@greeneek/gnk-session/invariant'
+import * as AgentInvariant from '@greeneek/gnk-agent/invariant'
+import * as AgentLoopInvariant from '@greeneek/gnk-agent-loop/invariant'
+import * as CompactionInvariant from '@greeneek/gnk-compaction/invariant'
+import { BasicCompactionEngine } from '@greeneek/gnk-compaction-basic'
+import { CompactionId, isCompactCheckpointSource, ManualCompactionError } from '@greeneek/gnk-compaction'
+import type { CompactionResult } from '@greeneek/gnk-compaction'
 import {
   createAssistantMessage,
   createUserMessage,
   LlmAdapter,
-} from '@deepseek-ai/dsh-llm'
+} from '@greeneek/gnk-llm'
 import type {
   ContentBlock,
   LlmResolvedModelInfo,
   Message,
   StreamChunk,
   TokenUsage,
-} from '@deepseek-ai/dsh-llm'
-import SessionStore, { Session, SessionId, type SessionEvent } from '@deepseek-ai/dsh-session'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import LlmRuntime from '@deepseek-ai/dsh-llm'
-import TokenMeter from '@deepseek-ai/dsh-token-meter'
-import type { Agent } from '@deepseek-ai/dsh-agent'
+} from '@greeneek/gnk-llm'
+import SessionStore, { Session, SessionId, type SessionEvent } from '@greeneek/gnk-session'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import LlmRuntime from '@greeneek/gnk-llm'
+import TokenMeter from '@greeneek/gnk-token-meter'
+import type { Agent } from '@greeneek/gnk-agent'
 import type {
   SummarizationInput,
   SummaryResult,
-} from '@deepseek-ai/dsh-compaction-basic/src/summarizer.ts'
+} from '@greeneek/gnk-compaction-basic/src/summarizer.ts'
 
 const MODEL = 'mock'
 const SIGNAL = new AbortController().signal

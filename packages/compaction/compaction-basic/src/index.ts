@@ -1,22 +1,22 @@
 /**
  * Basic replay-aware compaction backend.
  *
- * @module @deepseek-ai/dsh-compaction-basic
+ * @module @greeneek/gnk-compaction-basic
  */
 
-import { Context } from '@deepseek-ai/cordis'
-import z from '@deepseek-ai/schemastery'
-import { CompactionEngine, ManualCompactionError } from '@deepseek-ai/dsh-compaction'
-import type { CompactionResult, CompactionTrigger } from '@deepseek-ai/dsh-compaction'
-import type { TokenMeter } from '@deepseek-ai/dsh-token-meter'
-import type { Session, SessionSeq } from '@deepseek-ai/dsh-session'
-import { CONTEXT_WINDOW_EXCEEDED_CODE } from '@deepseek-ai/dsh-llm'
-import type { LlmCallConfig } from '@deepseek-ai/dsh-llm'
-import { assertNever } from '@deepseek-ai/dsh-util-values'
-import type { Agent, PreStepDecision } from '@deepseek-ai/dsh-agent'
-import type { CommandId } from '@deepseek-ai/dsh-commands/brand'
+import { Context } from '@greeneek/cordis'
+import z from '@greeneek/schemastery'
+import { CompactionEngine, ManualCompactionError } from '@greeneek/gnk-compaction'
+import type { CompactionResult, CompactionTrigger } from '@greeneek/gnk-compaction'
+import type { TokenMeter } from '@greeneek/gnk-token-meter'
+import type { Session, SessionSeq } from '@greeneek/gnk-session'
+import { CONTEXT_WINDOW_EXCEEDED_CODE } from '@greeneek/gnk-llm'
+import type { LlmCallConfig } from '@greeneek/gnk-llm'
+import { assertNever } from '@greeneek/gnk-util-values'
+import type { Agent, PreStepDecision } from '@greeneek/gnk-agent'
+import type { CommandId } from '@greeneek/gnk-commands/brand'
 // Type-only: makes the optional sibling service available to `ctx.get()`.
-import type {} from '@deepseek-ai/dsh-compaction-tool-result-pruner'
+import type {} from '@greeneek/gnk-compaction-tool-result-pruner'
 import {
   resolveCompactSpec,
   resolveConfig,

@@ -12,20 +12,20 @@ import {
   launchAcpTestAgent,
   type AgentUnderTest,
   type LaunchedAcpTestAgent,
-} from '@deepseek-ai/dsh-session-snapshot'
-import { bwrapProfileArgs } from '@deepseek-ai/dsh-sandbox-local/src/profiles.ts'
+} from '@greeneek/gnk-session-snapshot'
+import { bwrapProfileArgs } from '@greeneek/gnk-sandbox-local/src/profiles.ts'
 import { cleanupAcpExampleTest } from './cleanup.ts'
 
 /**
  * The default ACP composition (`cordis.yml`) end to end.
  *
- * Keyless smoke: boot the real profile patch through `dsh --profile acp` as
+ * Keyless smoke: boot the real profile patch through `gnk --profile acp` as
  * an ACP subprocess and drive initialize + session/new — the real-Loader-path
  * guard (postmortem 0001) for THIS tree's exports, including the
  * sandbox executor AND the approval service. No prompt is sent, so neither the
  * model nor a sandbox runner is ever exercised.
  *
- * With-key escalation flow (self-skips without DEEPSEEK_API_KEY or a usable
+ * With-key escalation flow (self-skips without GREENEEK_API_KEY or a usable
  * platform runner): a scripted ACP client supplies machine policy. The subprocess
  * starts read-only, its first real bash write is denied, the model retries with
  * `sandbox_permissions` + `justification`, and the bridge prompts THIS client
@@ -84,8 +84,8 @@ function launchExampleAcpAgent(
     cwd,
     // A dummy key lets the adapter boot keylessly; live tests carry the real key.
     env: {
-      DEEPSEEK_API_KEY: process.env.DEEPSEEK_API_KEY ?? 'sk-dummy-for-boot',
-      DSH_PERMISSION_MODE: sandboxMode,
+      GREENEEK_API_KEY: process.env.GREENEEK_API_KEY ?? 'sk-dummy-for-boot',
+      GNK_PERMISSION_MODE: sandboxMode,
     },
     requestPermission(params) {
       permissionRequests.push(params)
@@ -137,7 +137,7 @@ describe('default sandbox composition keyless smoke (real cordis.yml via the Loa
 
 })
 
-describe.skipIf(!process.env.DEEPSEEK_API_KEY || !hasRunner)('default sandbox composition e2e: the live approval loop', () => {
+describe.skipIf(!process.env.GREENEEK_API_KEY || !hasRunner)('default sandbox composition e2e: the live approval loop', () => {
   it('denial → model escalation → machine allow-once → the retried write lands on disk', async () => {
     workdir = await mkdtemp(join(tmpdir(), 'sandbox-acp-e2e-'))
     spawned = launchExampleAcpAgent(workdir, 'allow-once', 'read-only')

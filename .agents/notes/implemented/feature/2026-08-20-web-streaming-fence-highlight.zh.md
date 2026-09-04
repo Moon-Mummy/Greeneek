@@ -6,7 +6,7 @@ Status: implemented
 
 ## Problem
 
-回复流式输出期间，`MarkdownText` 在 `CodeBlock` 看到围栏语言之前就把它剥掉，代码因此以无高亮的等宽纯文本呈现、语言横幅为空，直到定稿切换一次性重新着色整个回复（[#1499](https://github.com/deepseek-harness/deepseek-harness/issues/1499)）。纯文本臂是一道刻意的成本防线，记录于 [assistant-markdown 笔记](2026-07-23-web-assistant-markdown.zh.md)：shiki 从文档顶部开始 tokenize，朴素地高亮一个增长中的围栏意味着每个分片都重新 tokenize 整个围栏——随流式过程对围栏长度呈平方级，与[增量 markdown 解析器](../architecture/2026-08-06-web-markdown-incremental-ast-renderer.zh.md)为块解析消除的是同一类成本。修复必须在流式期间给出高亮，同时不重新引入该成本、不在 info string 尚在分片中途时以错误语法短暂着色、也不改变定稿渲染。
+回复流式输出期间，`MarkdownText` 在 `CodeBlock` 看到围栏语言之前就把它剥掉，代码因此以无高亮的等宽纯文本呈现、语言横幅为空，直到定稿切换一次性重新着色整个回复（[#1499](https://github.com/greeneek/greeneek-harness/issues/1499)）。纯文本臂是一道刻意的成本防线，记录于 [assistant-markdown 笔记](2026-07-23-web-assistant-markdown.zh.md)：shiki 从文档顶部开始 tokenize，朴素地高亮一个增长中的围栏意味着每个分片都重新 tokenize 整个围栏——随流式过程对围栏长度呈平方级，与[增量 markdown 解析器](../architecture/2026-08-06-web-markdown-incremental-ast-renderer.zh.md)为块解析消除的是同一类成本。修复必须在流式期间给出高亮，同时不重新引入该成本、不在 info string 尚在分片中途时以错误语法短暂着色、也不改变定稿渲染。
 
 ## Decision
 

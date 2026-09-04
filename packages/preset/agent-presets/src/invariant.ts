@@ -1,20 +1,20 @@
 /**
- * Package-owned invariant companion for `@deepseek-ai/dsh-agent-presets`.
- * @module @deepseek-ai/dsh-agent-presets/invariant
+ * Package-owned invariant companion for `@greeneek/gnk-agent-presets`.
+ * @module @greeneek/gnk-agent-presets/invariant
  */
 
-import type { Context } from '@deepseek-ai/cordis'
-import type { InvariantInstaller } from '@deepseek-ai/dsh-invariants'
+import type { Context } from '@greeneek/cordis'
+import type { InvariantInstaller } from '@greeneek/gnk-invariants'
 // Type-only: resolves the `system-prompt/assemble` waterfall this companion
-// joins, and the `agent` field `dsh-agent` merges into its context.
-import type {} from '@deepseek-ai/dsh-system-prompt'
-import type {} from '@deepseek-ai/dsh-agent'
+// joins, and the `agent` field `gnk-agent` merges into its context.
+import type {} from '@greeneek/gnk-system-prompt'
+import type {} from '@greeneek/gnk-agent'
 // Imported through the package name, not `./mount.ts`: a module shared between
 // the two build entry points becomes a third chunk that the published `files`
 // list does not carry, which `verify-built-package-invariants` rejects.
-import { leakedServices, livePresetMounts } from '@deepseek-ai/dsh-agent-presets'
+import { leakedServices, livePresetMounts } from '@greeneek/gnk-agent-presets'
 
-const PACKAGE_NAME = '@deepseek-ai/dsh-agent-presets'
+const PACKAGE_NAME = '@greeneek/gnk-agent-presets'
 
 /** Cordis companion plugin name. */
 export const name = 'agent-presets-invariant'

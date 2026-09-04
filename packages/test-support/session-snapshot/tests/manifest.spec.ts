@@ -43,7 +43,7 @@ describe('snapshot manifest', () => {
       'platform: posix',
       'permission: workspace-write',
       'environment:',
-      '  DSH_SNAPSHOT_FAILURE: enabled',
+      '  GNK_SNAPSHOT_FAILURE: enabled',
       'workspace:',
       '  setup: fixed-mtimes',
       '  final: true',
@@ -73,7 +73,7 @@ describe('snapshot manifest', () => {
       replay: { override: true },
       platform: 'posix',
       permission: 'workspace-write',
-      environment: { DSH_SNAPSHOT_FAILURE: 'enabled' },
+      environment: { GNK_SNAPSHOT_FAILURE: 'enabled' },
       workspace: { setup: 'fixed-mtimes', final: true, parent: 'home' },
       input: {
         task: 'Rejected before persistence.',

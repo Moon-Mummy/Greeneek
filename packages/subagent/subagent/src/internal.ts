@@ -1,17 +1,17 @@
 /**
  * Continuation integration markers and host adapters outside the public
  * Service Definition and model-facing Agent messaging contract.
- * @module @deepseek-ai/dsh-subagent/internal
+ * @module @greeneek/gnk-subagent/internal
  */
 
-import type { Agent } from '@deepseek-ai/dsh-agent'
-import type { ContentBlock, MessageId, MessageSource } from '@deepseek-ai/dsh-llm'
-import type { SessionId } from '@deepseek-ai/dsh-session'
-import type { ToolDefinition } from '@deepseek-ai/dsh-tools'
+import type { Agent } from '@greeneek/gnk-agent'
+import type { ContentBlock, MessageId, MessageSource } from '@greeneek/gnk-llm'
+import type { SessionId } from '@greeneek/gnk-session'
+import type { ToolDefinition } from '@greeneek/gnk-tools'
 import type SubagentRuntime from './index.ts'
 
 /** Process-stable identity carried only by the standard adjacent-Agent messaging tool. */
-export const adjacentAgentSendMessageTool = Symbol.for('dsh.subagent.adjacentAgentSendMessageTool')
+export const adjacentAgentSendMessageTool = Symbol.for('gnk.subagent.adjacentAgentSendMessageTool')
 
 /**
  * Mark the standard adjacent-Agent messaging tool without changing its model-visible schema.
@@ -38,7 +38,7 @@ export function isAdjacentAgentSendMessageTool(definition: ToolDefinition | unde
  * entry and this unbundled internal subpath.
  * @internal
  */
-export const deliverSubagentPrompt = Symbol.for('dsh.subagent.deliverPrompt')
+export const deliverSubagentPrompt = Symbol.for('gnk.subagent.deliverPrompt')
 
 /** Scheduling mode for one host-only direct-child prompt. */
 export type HostPromptDeliveryMode = 'queue' | 'steer'

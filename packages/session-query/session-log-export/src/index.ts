@@ -1,11 +1,11 @@
 /** Session-log download command and Host-owned streaming route. */
 
-import type { Context } from '@deepseek-ai/cordis'
-import Schema from '@deepseek-ai/schemastery'
-import { brandString } from '@deepseek-ai/dsh-brand'
-import type {} from '@deepseek-ai/dsh-attachment'
-import type { CommandResult } from '@deepseek-ai/dsh-commands'
-import type { SessionId } from '@deepseek-ai/dsh-session/types'
+import type { Context } from '@greeneek/cordis'
+import Schema from '@greeneek/schemastery'
+import { brandString } from '@greeneek/gnk-brand'
+import type {} from '@greeneek/gnk-attachment'
+import type { CommandResult } from '@greeneek/gnk-commands'
+import type { SessionId } from '@greeneek/gnk-session/types'
 import {
   DEFAULT_SESSION_LOG_COMPRESSION_LEVEL,
   flushLiveSessionLog,

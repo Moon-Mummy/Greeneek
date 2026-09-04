@@ -6,7 +6,7 @@ English | [中文](2026-07-20-remove-stdio-and-echo-agents.zh.md)
 
 ## Problem
 
-DeepSeek Harness exposed two redundant product agents beside the TUI and Headless coding agents. The line-oriented stdio agent duplicated terminal interaction and non-interactive execution with a mixed prompt/output protocol. Echo duplicated Headless as a network-free mock model plus one teaching tool, making a test fixture into a user-facing agent and the default quick-start path.
+Greeneek Harness exposed two redundant product agents beside the TUI and Headless coding agents. The line-oriented stdio agent duplicated terminal interaction and non-interactive execution with a mixed prompt/output protocol. Echo duplicated Headless as a network-free mock model plus one teaching tool, making a test fixture into a user-facing agent and the default quick-start path.
 
 Both agents carried support surfaces beyond their leaf configurations. Stdio owned a UI plugin, app package, SDK interface, REPL leaf, prompt protocol, and Loader tests. Echo owned a runnable command, mock adapter, tool, CI demo gate, graph entry, teaching references, and a shared test fixture. Keeping any of those product paths would preserve the redundant agent indirectly.
 
@@ -18,19 +18,19 @@ The stdio and Echo agents are removed without compatibility packages, modes, com
 
 The remaining application roles are explicit:
 
-- `@deepseek-ai/dsh-tui` owns terminal-interactive execution. It rejects non-TTY streams before Loader boot; `apps/cli/config/base.cordis.yml` plus the `tui.cordis.yml` overlay own the complete coding composition, with PTY plus terminal-snapshot coverage in `apps/cli/tests/`.
-- [`dsh --profile headless`](../../../../apps/cli/README.md) owns non-interactive execution. Its `headless` profile is the product composition; recorded sessions live under `snapshots/session/`, profile integration tests under `apps/cli/tests/profiles/headless/`, and shared Loader drivers under `packages/test-support/loader-smoke/tests/fixtures/`.
-- [`dsh --profile acp`](../../../../apps/cli/README.md) and `@deepseek-ai/dsh-sdk-jsonrpc-server` own their framed protocol integrations.
+- `@greeneek/gnk-tui` owns terminal-interactive execution. It rejects non-TTY streams before Loader boot; `apps/cli/config/base.cordis.yml` plus the `tui.cordis.yml` overlay own the complete coding composition, with PTY plus terminal-snapshot coverage in `apps/cli/tests/`.
+- [`gnk --profile headless`](../../../../apps/cli/README.md) owns non-interactive execution. Its `headless` profile is the product composition; recorded sessions live under `snapshots/session/`, profile integration tests under `apps/cli/tests/profiles/headless/`, and shared Loader drivers under `packages/test-support/loader-smoke/tests/fixtures/`.
+- [`gnk --profile acp`](../../../../apps/cli/README.md) and `@greeneek/gnk-sdk-jsonrpc-server` own their framed protocol integrations.
 
-The SDK project model that carried the `stdio` run-interface option is deleted by the [SDK project toolchain removal](2026-08-11-remove-sdk-project-toolchain.md). Repository-facing demo documentation requires a DeepSeek API key and leads with a current runnable product.
+The SDK project model that carried the `stdio` run-interface option is deleted by the [SDK project toolchain removal](2026-08-11-remove-sdk-project-toolchain.md). Repository-facing demo documentation requires a Greeneek API key and leads with a current runnable product.
 
-Keyless validation is test-owned. The Headless Loader smoke uses a fixture adapter to exercise a real tool round trip, the `dsh` built-bin suite pins the published one-shot entry and output, the product Headless snapshot pins persistence, and the Headless PTY shutdown e2e pins signal escalation. Package-specific Loader tests keep deterministic adapters beside their scenarios. None is exposed as a runnable mock agent.
+Keyless validation is test-owned. The Headless Loader smoke uses a fixture adapter to exercise a real tool round trip, the `gnk` built-bin suite pins the published one-shot entry and output, the product Headless snapshot pins persistence, and the Headless PTY shutdown e2e pins signal escalation. Package-specific Loader tests keep deterministic adapters beside their scenarios. None is exposed as a runnable mock agent.
 
 ## Verification
 
 TUI and Headless Loader coverage run the real app packages in source and built modes. PTY-driven subprocess coverage is reserved for the TUI lifecycle; other entry-point smokes use the one-shot pipe protocol. Headless proves its task/result and tool-call contracts. Generated graphs and repository searches reject stale package, command, leaf, SDK-interface, `createStdioChat`, and `StdioRuntime` references.
 
-The built `dsh` bin rejects a piped TUI launch before Loader boot and points at `dsh --profile headless`; `apps/cli/tests/built-bin.e2e.ts` pins the product one-shot entry under plain Node, including output and invalid arguments. `apps/cli/tests/profiles/headless/tests/headless.expected.e2e.ts` pins product persistence, while `apps/cli/tests/headless-shutdown.e2e.ts` owns bounded signal escalation. The headless expected-output test preserves assembled canonical events without creating a second CLI contract. PTC mode runs through the headless profile's `DSH_TOOLS_MODE=ptc` composition. Time-context integration uses its package-owned Loader composition for two ordered turns, while its package tests own finer elapsed-time behavior.
+The built `gnk` bin rejects a piped TUI launch before Loader boot and points at `gnk --profile headless`; `apps/cli/tests/built-bin.e2e.ts` pins the product one-shot entry under plain Node, including output and invalid arguments. `apps/cli/tests/profiles/headless/tests/headless.expected.e2e.ts` pins product persistence, while `apps/cli/tests/headless-shutdown.e2e.ts` owns bounded signal escalation. The headless expected-output test preserves assembled canonical events without creating a second CLI contract. PTC mode runs through the headless profile's `GNK_TOOLS_MODE=ptc` composition. Time-context integration uses its package-owned Loader composition for two ordered turns, while its package tests own finer elapsed-time behavior.
 
 ## Alternatives considered
 
@@ -43,7 +43,7 @@ The built `dsh` bin rejects a piped TUI launch before Loader boot and points at 
 ## Consequences
 
 - Interactive and non-interactive product execution each have one owner and one runnable coding leaf.
-- The repository has no keyless user-facing agent demo; local agent demos require `DEEPSEEK_API_KEY`.
+- The repository has no keyless user-facing agent demo; local agent demos require `GREENEEK_API_KEY`.
 - CI retains keyless real-entry coverage through test fixtures rather than a product command.
 - Existing stdio-agent configurations and Echo commands fail instead of being translated.
 - Piped multi-turn interaction in one process and the readline provider for non-TTY `ask_user_question` are intentionally gone; resume covers durable multi-turn work, and a non-TTY composition must supply its own interaction provider.

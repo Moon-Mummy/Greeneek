@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { jsonSchemaToTs, renderToolsSdk } from '@deepseek-ai/dsh-tools/src/ts-types.ts'
-import type { ToolSdkSchema } from '@deepseek-ai/dsh-tools/src/ts-types.ts'
-import type { JsonSchemaNode } from '@deepseek-ai/dsh-tools/src/json-schema.ts'
-import { parameterSchemaSpecToJsonSchema } from '@deepseek-ai/dsh-tools'
+import { jsonSchemaToTs, renderToolsSdk } from '@greeneek/gnk-tools/src/ts-types.ts'
+import type { ToolSdkSchema } from '@greeneek/gnk-tools/src/ts-types.ts'
+import type { JsonSchemaNode } from '@greeneek/gnk-tools/src/json-schema.ts'
+import { parameterSchemaSpecToJsonSchema } from '@greeneek/gnk-tools'
 
 describe('jsonSchemaToTs', () => {
   it('maps every unified schema construct', () => {

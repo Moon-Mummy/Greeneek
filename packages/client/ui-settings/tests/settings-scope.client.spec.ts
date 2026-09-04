@@ -1,12 +1,12 @@
-import { Context } from '@deepseek-ai/cordis'
-import z from '@deepseek-ai/schemastery'
+import { Context } from '@greeneek/cordis'
+import z from '@greeneek/schemastery'
 import { describe, expect, it, vi } from 'vitest'
 import type {
   SettingsNamespaceView, SettingsPathOpView,
-} from '@deepseek-ai/dsh-api-remotes/client'
-import { RemoteError, TestRemote } from '@deepseek-ai/dsh-client-test-runtime'
-import type { JsonValue } from '@deepseek-ai/dsh-util-values'
-import type { SettingsScope } from '@deepseek-ai/dsh-client-ui-settings/client'
+} from '@greeneek/gnk-api-remotes/client'
+import { RemoteError, TestRemote } from '@greeneek/gnk-client-test-runtime'
+import type { JsonValue } from '@greeneek/gnk-util-values'
+import type { SettingsScope } from '@greeneek/gnk-client-ui-settings/client'
 import { SettingsSchemaService } from '../src/client/schema.ts'
 import { SettingsScopeController, SettingsScopeBinder } from '../src/client/settings-scope.ts'
 import { SettingsDescribeMirror } from '../src/client/settings-mirror.ts'

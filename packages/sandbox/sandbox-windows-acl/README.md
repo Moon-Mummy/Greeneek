@@ -3,13 +3,13 @@ description: "The Windows write-restriction sandbox backend for users and mainta
 kind: "package-library"
 ---
 
-# @deepseek-ai/dsh-sandbox-windows-acl
+# @greeneek/gnk-sandbox-windows-acl
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-sandbox-windows-acl` confines Windows processes by write restriction: a child runs under a restricted token whose write access is limited to the workspace and a private temp directory, so `workspace-write` allows those writes and `read-only` allows none. It ships as the win32 rung of `dsh-sandbox-local`: mounting the local provider on Windows gives every confined bash or pwsh call this backend automatically. It can also be embedded directly through the `AclSandbox` API to spawn confined children with captured stdio. Every Win32 call is checked and failures throw, so a child is never spawned unrestricted. Enforcement is partial by design — the restricted token must retain Everyone for process initialization, and NTFS hard links can alias one file object across paths — so the backend reports `partial` and callers that need the absolute boundary can surface it.
+`gnk-sandbox-windows-acl` confines Windows processes by write restriction: a child runs under a restricted token whose write access is limited to the workspace and a private temp directory, so `workspace-write` allows those writes and `read-only` allows none. It ships as the win32 rung of `gnk-sandbox-local`: mounting the local provider on Windows gives every confined bash or pwsh call this backend automatically. It can also be embedded directly through the `AclSandbox` API to spawn confined children with captured stdio. Every Win32 call is checked and failures throw, so a child is never spawned unrestricted. Enforcement is partial by design — the restricted token must retain Everyone for process initialization, and NTFS hard links can alias one file object across paths — so the backend reports `partial` and callers that need the absolute boundary can surface it.
 
 ## Table of Contents
 
@@ -39,10 +39,10 @@ Choose it for Windows compositions that confine subprocess file effects under `r
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { AclSandbox, tempWriteSid, workspaceWriteSid } from '@deepseek-ai/dsh-sandbox-windows-acl'
+import { AclSandbox, tempWriteSid, workspaceWriteSid } from '@greeneek/gnk-sandbox-windows-acl'
 
 const workspaceRoot = process.cwd()
-const tempDir = mkdtempSync(join(tmpdir(), 'dsh-'))
+const tempDir = mkdtempSync(join(tmpdir(), 'gnk-'))
 
 // mode selects the token's restricting-SID list (see Modes below) and must
 // match the grant shape. workspace-write requires distinct workspace and
@@ -87,7 +87,7 @@ This section explains the restricted-token mechanism, the token lists, the runne
 
 ### Mechanism
 
-The caller's token is duplicated into a `WRITE_RESTRICTED` token whose restricting SIDs carry separate workspace and private-temp capabilities. Windows performs the access check twice — once against the normal SIDs, once against the restricting SIDs — and grants write-class access only where both checks pass. The workspace SID is derived deterministically from the canonical workspace path (`workspaceWriteSid`), so the workspace-root ACE materializes once per workspace per machine and every later session, call, or restart hits the exact-ACE skip. Each live session/workspace pair instead receives a random private temp directory and a SID derived from that path (`tempWriteSid`), so sessions share the intended workspace authority without inheriting one another's temp authority. Every policy-specific Win32 call and every process primitive from [`dsh-win32-process`](../../subprocess/win32-process/README.md) is checked; failures throw `Win32Error` carrying the API name, exact code, system text, and failing context — fail-closed by construction.
+The caller's token is duplicated into a `WRITE_RESTRICTED` token whose restricting SIDs carry separate workspace and private-temp capabilities. Windows performs the access check twice — once against the normal SIDs, once against the restricting SIDs — and grants write-class access only where both checks pass. The workspace SID is derived deterministically from the canonical workspace path (`workspaceWriteSid`), so the workspace-root ACE materializes once per workspace per machine and every later session, call, or restart hits the exact-ACE skip. Each live session/workspace pair instead receives a random private temp directory and a SID derived from that path (`tempWriteSid`), so sessions share the intended workspace authority without inheriting one another's temp authority. Every policy-specific Win32 call and every process primitive from [`gnk-win32-process`](../../subprocess/win32-process/README.md) is checked; failures throw `Win32Error` carrying the API name, exact code, system text, and failing context — fail-closed by construction.
 
 ### Modes and token lists
 
@@ -99,7 +99,7 @@ Authenticated Users is absent from both lists — the WMI namespace security che
 
 ### The confinement runner
 
-The seam-facing shape is the runner entry (`./runner`): an argv-prefix wrapper `dsh-sandbox-local` spawns in place of the caller's command, with the same architecture as bwrap/landlock-run/sandbox-exec. The runner creates the restricted token, spawns the wrapped argv under it with the caller's stdio passed straight through, wraps the child in a `KILL_ON_JOB_CLOSE` job, mirrors the child's exit code, and revokes its self-managed temp grant on exit. Every runner-side failure prints `windows-acl-run: <detail>` to stderr and exits 127 — the seam's runner-failure rules match that signature.
+The seam-facing shape is the runner entry (`./runner`): an argv-prefix wrapper `gnk-sandbox-local` spawns in place of the caller's command, with the same architecture as bwrap/landlock-run/sandbox-exec. The runner creates the restricted token, spawns the wrapped argv under it with the caller's stdio passed straight through, wraps the child in a `KILL_ON_JOB_CLOSE` job, mirrors the child's exit code, and revokes its self-managed temp grant on exit. Every runner-side failure prints `windows-acl-run: <detail>` to stderr and exits 127 — the seam's runner-failure rules match that signature.
 
 ```sh
 node runner.js --workspace <dir> --temp <dir> --mode <read-only|workspace-write> [--write-sid <S-1-4-…> --temp-write-sid <S-1-4-…>] -- <argv...>
@@ -121,7 +121,7 @@ The seam materializes the deterministic workspace SID's ACE standing (once per w
 
 ### Header verification and source map
 
-The sandbox-owned SID, ACL, token, file, and lock declarations are checked against Windows headers by [`verify/abi-probe.cpp`](verify/abi-probe.cpp). The shared process, stdio, and Job ABI is owned and verified by [`@deepseek-ai/dsh-win32-process`](../../subprocess/win32-process/README.md#header-verification).
+The sandbox-owned SID, ACL, token, file, and lock declarations are checked against Windows headers by [`verify/abi-probe.cpp`](verify/abi-probe.cpp). The shared process, stdio, and Job ABI is owned and verified by [`@greeneek/gnk-win32-process`](../../subprocess/win32-process/README.md#header-verification).
 
 | File | Role |
 |---|---|
@@ -151,7 +151,7 @@ Start with the subsystem reference for the shared vocabulary, then the provider 
 <a id="model-experience"></a>
 ## Model Experience
 
-Indirectly, through [`dsh-bash-sandbox`](../../shell/bash-sandbox/README.md), [`dsh-pwsh-sandbox`](../../shell/pwsh-sandbox/README.md), and their tools, which render this backend's partial-enforcement and denial facts (the confined stderr the tool layer classifies through `denialSignatures`) while the [`dsh-sandbox`](../sandbox/README.md) seam owns the `SANDBOX_UNAVAILABLE` text and `sandbox-local` owns runner selection.
+Indirectly, through [`gnk-bash-sandbox`](../../shell/bash-sandbox/README.md), [`gnk-pwsh-sandbox`](../../shell/pwsh-sandbox/README.md), and their tools, which render this backend's partial-enforcement and denial facts (the confined stderr the tool layer classifies through `denialSignatures`) while the [`gnk-sandbox`](../sandbox/README.md) seam owns the `SANDBOX_UNAVAILABLE` text and `sandbox-local` owns runner selection.
 
 #### KV Cache effect
 

@@ -2,26 +2,26 @@ import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { Context } from '@deepseek-ai/cordis'
-import Loader from '@deepseek-ai/cordis-plugin-loader'
-import Include from '@deepseek-ai/cordis-plugin-include'
-import Group from '@deepseek-ai/cordis-plugin-group'
-import LlmRuntime from '@deepseek-ai/dsh-llm'
-import SessionStore, { SessionId } from '@deepseek-ai/dsh-session'
-import SystemPrompt from '@deepseek-ai/dsh-system-prompt'
-import ToolRuntime from '@deepseek-ai/dsh-tools'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import AgentRegistry, { assembleContextFor, type Agent } from '@deepseek-ai/dsh-agent'
-import AgentLoop from '@deepseek-ai/dsh-agent-loop'
+import { Context } from '@greeneek/cordis'
+import Loader from '@greeneek/cordis-plugin-loader'
+import Include from '@greeneek/cordis-plugin-include'
+import Group from '@greeneek/cordis-plugin-group'
+import LlmRuntime from '@greeneek/gnk-llm'
+import SessionStore, { SessionId } from '@greeneek/gnk-session'
+import SystemPrompt from '@greeneek/gnk-system-prompt'
+import ToolRuntime from '@greeneek/gnk-tools'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import AgentRegistry, { assembleContextFor, type Agent } from '@greeneek/gnk-agent'
+import AgentLoop from '@greeneek/gnk-agent-loop'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import AgentPresets, {
   COMPOSITION_FILE, leakedServices, livePresetMounts, mountPreset, serviceForAgent,
-} from '@deepseek-ai/dsh-agent-presets'
-import type { Config } from '@deepseek-ai/dsh-agent-presets'
-import type {} from '@deepseek-ai/dsh-agent-presets/types'
-import { bindScopeParent, createScope, scopeOf } from '@deepseek-ai/dsh-scope'
+} from '@greeneek/gnk-agent-presets'
+import type { Config } from '@greeneek/gnk-agent-presets'
+import type {} from '@greeneek/gnk-agent-presets/types'
+import { bindScopeParent, createScope, scopeOf } from '@greeneek/gnk-scope'
 
-declare module '@deepseek-ai/cordis' {
+declare module '@greeneek/cordis' {
   interface Context {
     /** Published by the `isolated` fixture preset behind an entry-local realm. */
     fixtureIsolatedSvc: { label: string }
@@ -92,7 +92,7 @@ beforeEach(async () => {
 
 describe('composing an agent from a preset', () => {
   it('hands an absolute plugin path to Node as a file URL', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'dsh-preset-absolute-plugin-'))
+    const root = await mkdtemp(join(tmpdir(), 'gnk-preset-absolute-plugin-'))
     const presetDir = join(root, 'absolute')
     const plugin = join(FIXTURES, 'plugins', 'contribute.js')
     await mkdir(presetDir)
@@ -359,7 +359,7 @@ describe('the preset roster', () => {
 describe('composing from a broken preset', () => {
   /** A roster whose only user preset carries `composition`. */
   async function rosterWith(composition: string): Promise<Context> {
-    const root = await mkdtemp(join(tmpdir(), 'dsh-preset-broken-'))
+    const root = await mkdtemp(join(tmpdir(), 'gnk-preset-broken-'))
     await mkdir(join(root, 'damaged'))
     await writeFile(join(root, 'damaged', COMPOSITION_FILE), composition)
     return await harness({ default: 'damaged', roots: [{ path: root, trust: 'user' as const }], includeShippedRoot: false, includeUserRoot: false })
@@ -427,7 +427,7 @@ describe('the preset file is an input, never a persistence target', () => {
     // `write()` override the Loader REWRITES the composition it read, so a
     // committed fixture would be mutated by the very run that proves the bug
     // and every later run would compare against the damaged file and pass.
-    const root = await mkdtemp(join(tmpdir(), 'dsh-preset-write-'))
+    const root = await mkdtemp(join(tmpdir(), 'gnk-preset-write-'))
     const dir = join(root, 'self-disposing')
     await mkdir(dir)
     const path = join(dir, COMPOSITION_FILE)
@@ -624,7 +624,7 @@ describe('replacing a composition', () => {
   it('keeps the agent on its standing composition when a switch fails, even with the source deleted', async () => {
     // A preset root this test owns, so removing the composition mid-flight
     // cannot disturb the shipped fixtures.
-    const root = await mkdtemp(join(tmpdir(), 'dsh-preset-restore-'))
+    const root = await mkdtemp(join(tmpdir(), 'gnk-preset-restore-'))
     const seeded: [string, string][] = [['first', `- id: only\n  name: ${join(FIXTURES, 'plugins', 'contribute.js')}\n  config:\n    tool: only\n`], ['broken', `- id: nope\n  name: ${join(FIXTURES, 'plugins', 'throws.js')}\n  config:\n    message: refuses\n`]]
     for (const [id, body] of seeded) {
       await mkdir(join(root, id))
@@ -678,7 +678,7 @@ describe('editing a composition file', () => {
    * per-test because `livePresetMounts()` is a process-global registry.
    */
   async function editable(id: string): Promise<{ scoped: Context; path: string }> {
-    const root = await mkdtemp(join(tmpdir(), 'dsh-preset-edit-'))
+    const root = await mkdtemp(join(tmpdir(), 'gnk-preset-edit-'))
     await mkdir(join(root, id))
     const path = join(root, id, COMPOSITION_FILE)
     await writeFile(path, rowFor('before'))

@@ -89,7 +89,7 @@ describe('experimental Inspector real Worker', () => {
     await client.publish('client/probe', { value: 2 })
 
     await vi.waitFor(async () => {
-      const response = await cdp!.call('DSHInspector.getSources')
+      const response = await cdp!.call('GNKInspector.getSources')
       const sources = response.result?.sources as Array<{ kind: string; topics: Record<string, number> }>
       expect(sources.find(source => source.kind === 'host')?.topics).toEqual({ 'host/probe': 1 })
       expect(sources.find(source => source.kind === 'client')?.topics).toMatchObject({ 'client/probe': 1 })
@@ -616,8 +616,8 @@ describe('experimental Inspector real Worker', () => {
       && event.params?.requestId === requestId)).toBe(false)
     const body = await cdp.call('Network.getResponseBody', { requestId })
     expect(Buffer.from(String(body.result?.body), 'base64').toString('utf8')).toBe(eventStream)
-    expect(body.result?.dshInspectorTruncated).toBe(true)
-    expect(String(body.result?.dshInspectorCaptureError)).toContain('AbortError')
+    expect(body.result?.gnkInspectorTruncated).toBe(true)
+    expect(String(body.result?.gnkInspectorCaptureError)).toContain('AbortError')
   })
 })
 

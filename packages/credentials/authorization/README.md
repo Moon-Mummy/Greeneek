@@ -3,13 +3,13 @@ description: "The authorization flow registry for users and maintainers who obta
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-authorization
+# @greeneek/gnk-authorization
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-authorization` obtains credentials that configuration cannot supply by asking a human: a plugin registers one flow per credential, and a configuration UI or another surface runs an attempt whose notices and questions reach exactly the page that asked. A human signs in with one of the flow's methods, pastes a code, or answers a question; when the flow resolves, its credential record is committed to the `dsh-credentials` store, and an attempt only reports `authorized` when that commit was observed. A refusal or a withdrawn attempt settles as `cancelled` rather than an error, so a surface can tell "the human said no" from "the flow broke". Choose it when a credential must be obtained interactively: it builds on the credential-record half of the credential seam, needs that store mounted, and ships no flows of its own — your plugin registers them.
+`gnk-authorization` obtains credentials that configuration cannot supply by asking a human: a plugin registers one flow per credential, and a configuration UI or another surface runs an attempt whose notices and questions reach exactly the page that asked. A human signs in with one of the flow's methods, pastes a code, or answers a question; when the flow resolves, its credential record is committed to the `gnk-credentials` store, and an attempt only reports `authorized` when that commit was observed. A refusal or a withdrawn attempt settles as `cancelled` rather than an error, so a surface can tell "the human said no" from "the flow broke". Choose it when a credential must be obtained interactively: it builds on the credential-record half of the credential seam, needs that store mounted, and ships no flows of its own — your plugin registers them.
 
 ## Table of Contents
 
@@ -36,9 +36,9 @@ Use it whenever a credential can only be obtained by talking to a human — an O
 Your plugin declares one flow per credential it holds, keyed by the `<scope>/<id>` credential record the flow writes — the scope names your plugin, the id names one credential it owns:
 
 ```ts
-import type { Context } from '@deepseek-ai/cordis'
-import type { AuthorizationSession } from '@deepseek-ai/dsh-authorization'
-import { credentialKey } from '@deepseek-ai/dsh-credentials'
+import type { Context } from '@greeneek/cordis'
+import type { AuthorizationSession } from '@greeneek/gnk-authorization'
+import { credentialKey } from '@greeneek/gnk-credentials'
 
 declare const ctx: Context
 declare const exchangeCode: (code: string, signal: AbortSignal) => Promise<{ token: string }>

@@ -1,20 +1,20 @@
 /**
  * `LocalSpillStore`: the host-filesystem implementation of the
- * `@deepseek-ai/dsh-spill` storage seam. Persists a tool's oversized text to a
+ * `@greeneek/gnk-spill` storage seam. Persists a tool's oversized text to a
  * private, session-scoped file (see `./store.ts` for the traversal-safe naming
  * and exclusive owner-only write) and returns a path locator plus local
  * read/grep retrieval guidance. After activation it runs one best-effort
  * startup sweep that reclaims spill files older than `cleanupPeriodDays`.
  *
- * @module @deepseek-ai/dsh-spill-local
+ * @module @greeneek/gnk-spill-local
  */
 
-import { Context } from '@deepseek-ai/cordis'
+import { Context } from '@greeneek/cordis'
 import { resolve } from 'node:path'
 import { tmpdir } from 'node:os'
-import z from '@deepseek-ai/schemastery'
-import { SpillLocator, SpillStore } from '@deepseek-ai/dsh-spill'
-import type { SaveTextSpill, SpillRef } from '@deepseek-ai/dsh-spill'
+import z from '@greeneek/schemastery'
+import { SpillLocator, SpillStore } from '@greeneek/gnk-spill'
+import type { SaveTextSpill, SpillRef } from '@greeneek/gnk-spill'
 import { gatherSweepRoots, sweepSpillRoots } from './cleanup.ts'
 import type { SweepRoot, WarnFn } from './cleanup.ts'
 import { privateRoot, saveTextFile } from './store.ts'
@@ -118,7 +118,7 @@ export class LocalSpillStore extends SpillStore {
 
   /**
    * The roots the startup sweep covers: each discovered prior-default
-   * `dsh-spill-*` temp root (see {@link discoverDefaultRoots}), pruned when
+   * `gnk-spill-*` temp root (see {@link discoverDefaultRoots}), pruned when
    * emptied, plus the active/configured root, which is never itself pruned while
    * the live process may write into it. Empty session directories are pruned in
    * every root. Filesystem identity de-duplicates aliases before the active root
@@ -135,7 +135,7 @@ export class LocalSpillStore extends SpillStore {
   }
 
   /**
-   * The directory scanned for prior default `dsh-spill-*` roots — the OS tmpdir,
+   * The directory scanned for prior default `gnk-spill-*` roots — the OS tmpdir,
    * where {@link privateRoot} creates them (accumulation only happens there). A
    * test overrides this to point discovery at an isolated fixture instead of the
    * real tmpdir; it is a test seam, not a deployment knob.

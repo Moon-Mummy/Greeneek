@@ -9,7 +9,7 @@ kind: "package-group"
 
 ## 概述
 
-lsp 组为 agent 提供精确的、由语言服务器支撑的代码导航：转到符号的定义、查找其引用、跳转到其实现，或阅读悬停文档，而模型无需知道是哪个服务器在应答。该能力拆分为三个产品包：`dsh-lsp` seam（`ctx.lsp`）按文件扩展名选择提供方并规范化结果，`dsh-lsp-stdio` 提供方驱动配置好的本地语言服务器命令，面向模型的 `dsh-tool-lsp` 工具拥有 `lsp` 的 schema、提示词与呈现。只有提供方与工具在加载后才实际做事；部署需要显式配置服务器命令与扩展名映射，本组自身不随附任何语言服务器。
+lsp 组为 agent 提供精确的、由语言服务器支撑的代码导航：转到符号的定义、查找其引用、跳转到其实现，或阅读悬停文档，而模型无需知道是哪个服务器在应答。该能力拆分为三个产品包：`gnk-lsp` seam（`ctx.lsp`）按文件扩展名选择提供方并规范化结果，`gnk-lsp-stdio` 提供方驱动配置好的本地语言服务器命令，面向模型的 `gnk-tool-lsp` 工具拥有 `lsp` 的 schema、提示词与呈现。只有提供方与工具在加载后才实际做事；部署需要显式配置服务器命令与扩展名映射，本组自身不随附任何语言服务器。
 
 ## 目录
 
@@ -37,7 +37,7 @@ lsp 组为 agent 提供精确的、由语言服务器支撑的代码导航：转
 
 - [LSP 导航子系统](../../docs/subsystems/lsp.zh.md)——操作、坐标、请求与结果，以及 `LspError` code。
 - [LSP 能力 seam Agent Note](../../.agents/notes/implemented/architecture/2026-07-15-lsp-capability-seam.zh.md)——设计原理、备选方案与刻意推迟的 API。
-- [生成的工具目录](../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-lsp)——模型接收的 `lsp` schema。
+- [生成的工具目录](../../docs/tool-catalog.zh.md#greeneekgnk-tool-lsp)——模型接收的 `lsp` schema。
 
 -----
 

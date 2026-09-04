@@ -3,16 +3,16 @@
  * with logged model context without vetoing or rewriting calls. Configuration
  * and chain semantics live in the package README; rationale lives in the
  * repeat-tool-reminder Agent Note.
- * @module @deepseek-ai/dsh-repeat-tool-reminder
+ * @module @greeneek/gnk-repeat-tool-reminder
  */
 
-import type { Context } from '@deepseek-ai/cordis'
-import z from '@deepseek-ai/schemastery'
-import type { Agent, PreStepDecision } from '@deepseek-ai/dsh-agent'
-import { createUserMessage } from '@deepseek-ai/dsh-llm'
-import type { MessageSource } from '@deepseek-ai/dsh-llm'
-import type { UserMessage } from '@deepseek-ai/dsh-session'
-import type { PostToolDecision, ToolExecution } from '@deepseek-ai/dsh-tools'
+import type { Context } from '@greeneek/cordis'
+import z from '@greeneek/schemastery'
+import type { Agent, PreStepDecision } from '@greeneek/gnk-agent'
+import { createUserMessage } from '@greeneek/gnk-llm'
+import type { MessageSource } from '@greeneek/gnk-llm'
+import type { UserMessage } from '@greeneek/gnk-session'
+import type { PostToolDecision, ToolExecution } from '@greeneek/gnk-tools'
 
 export const name = 'repeat-tool-reminder'
 

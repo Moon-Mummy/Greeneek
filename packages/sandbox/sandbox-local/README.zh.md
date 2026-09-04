@@ -3,13 +3,13 @@ description: "面向 Linux、macOS 或 Windows 上选择、配置或排查进程
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-sandbox-local
+# @greeneek/gnk-sandbox-local
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-sandbox-local` 提供 `ctx.sandbox` 背后的平台隔离后端：Linux 在 `bwrap` 可用时用其运行命令，否则使用 Landlock launcher；macOS 使用 Seatbelt（`sandbox-exec`）；Windows 使用 ACL 受限令牌 runner。它每台主机选择一个 runner，因此每条命令及其派生的所有进程都在限制下运行。没有可用 runner 时，提供方以 `SANDBOX_UNAVAILABLE` 快速失败——命令绝不会静默无限制运行。每次包装都会报告后端对模式的强制执行完整度（`full` 或 `partial`）及后端的拒绝签名，因此消费方可以区分损坏的沙箱与被拒绝的命令。在 `ctx.sandbox` 后挂载它并配一个受限执行器，即可让每次 bash 或 pwsh 调用都有受限默认值。
+`gnk-sandbox-local` 提供 `ctx.sandbox` 背后的平台隔离后端：Linux 在 `bwrap` 可用时用其运行命令，否则使用 Landlock launcher；macOS 使用 Seatbelt（`sandbox-exec`）；Windows 使用 ACL 受限令牌 runner。它每台主机选择一个 runner，因此每条命令及其派生的所有进程都在限制下运行。没有可用 runner 时，提供方以 `SANDBOX_UNAVAILABLE` 快速失败——命令绝不会静默无限制运行。每次包装都会报告后端对模式的强制执行完整度（`full` 或 `partial`）及后端的拒绝签名，因此消费方可以区分损坏的沙箱与被拒绝的命令。在 `ctx.sandbox` 后挂载它并配一个受限执行器，即可让每次 bash 或 pwsh 调用都有受限默认值。
 
 ## 目录
 
@@ -37,7 +37,7 @@ kind: "package-reference"
 
 ```yaml
 - id: sandbox
-  name: '@deepseek-ai/dsh-sandbox-local'
+  name: '@greeneek/gnk-sandbox-local'
 ```
 
 | 字段 | 默认值 | 含义 |
@@ -46,7 +46,7 @@ kind: "package-reference"
 | `runnerFailureSignatures` | `[]` | 识别自定义 runner 自身失败方言的不区分大小写 stderr 子串；与 `runnerCommand` 搭配必需 |
 | `probeTimeoutMs` | `5,000` | 每次竞争 runner 候选功能探测的超时时间 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-sandbox-local)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-sandbox-local)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### 受限执行与强制执行
 
@@ -74,7 +74,7 @@ kind: "package-reference"
 
 bwrap profile 组合只读宿主根目录、全新 `/dev` 与私有 PID 命名空间中的 `/proc`——命令可管理其后代，但看不到宿主进程，因此 procfs 魔法链接无法绕过挂载；`workspace-write` 另加临时的 `/tmp` 与可写工作区绑定挂载。[私有 PID 笔记](../../../.agents/notes/implemented/bug-fix/2026-08-06-bwrap-private-pid-namespace.zh.md)记录该边界。
 
-Landlock launcher 以 npm 分发的原生插件（`@deepseek-ai/node-addon-landlock-run`）提供平台 launcher、功能探测与授权词汇；此提供方只做模式到授权的映射，把路径解析与探测解析保留在带版本的 binary 中。
+Landlock launcher 以 npm 分发的原生插件（`@greeneek/node-addon-landlock-run`）提供平台 launcher、功能探测与授权词汇；此提供方只做模式到授权的映射，把路径解析与探测解析保留在带版本的 binary 中。
 
 Seatbelt profile 默认允许，带 `(deny file-write*)` 与来自共享 `writableRoots` 辅助函数的写入 allow-list，因此恰好管辖模式承诺的文件操作；每个根目录都经过规范化，因为 Seatbelt 匹配解析后的路径（`/tmp` 就是 `/private/tmp`）。
 
@@ -112,7 +112,7 @@ Windows 档为每个工作区保留一个确定性写入 SID 和常驻 ACE，同
 <a id="model-experience"></a>
 ## 模型体验
 
-通过 [`dsh-bash-sandbox`](../../shell/bash-sandbox/README.zh.md) 和 [`dsh-tool-bash`](../../shell/tool-bash/README.zh.md) 间接影响；它们渲染此提供方的强制执行与拒绝事实，而 [`dsh-sandbox`](../sandbox/README.zh.md) seam 拥有 `SANDBOX_UNAVAILABLE` 文本、本提供方拥有 runner 选择，profile 不进入上下文。
+通过 [`gnk-bash-sandbox`](../../shell/bash-sandbox/README.zh.md) 和 [`gnk-tool-bash`](../../shell/tool-bash/README.zh.md) 间接影响；它们渲染此提供方的强制执行与拒绝事实，而 [`gnk-sandbox`](../sandbox/README.zh.md) seam 拥有 `SANDBOX_UNAVAILABLE` 文本、本提供方拥有 runner 选择，profile 不进入上下文。
 
 #### KV Cache 影响
 

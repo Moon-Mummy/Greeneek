@@ -21,7 +21,7 @@
       "path": "../../llm/llm"
     },
     {
-      "path": "../../llm/deepseek-llm-api-extensions"
+      "path": "../../llm/greeneek-llm-api-extensions"
     },
     {
       "path": "../../core/session"

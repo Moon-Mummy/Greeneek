@@ -3,13 +3,13 @@ description: "Local per-platform sandbox backends for users and maintainers choo
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-sandbox-local
+# @greeneek/gnk-sandbox-local
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-sandbox-local` provides the platform confinement backends behind `ctx.sandbox`: Linux runs commands under `bwrap` when that works, otherwise under the Landlock launcher; macOS uses Seatbelt (`sandbox-exec`); Windows uses the ACL restricted-token runner. It selects one runner per host, so every command — and everything it spawns — runs confined. When no runner is usable the provider fails closed with `SANDBOX_UNAVAILABLE` — a command never silently runs unconfined. Each wrap reports how completely the backend enforces the mode (`full` or `partial`) plus the backend's denial signatures, so consumers can tell a broken sandbox apart from a denied command. Mount it behind `ctx.sandbox` with a confined executor to give every bash or pwsh call a confined default.
+`gnk-sandbox-local` provides the platform confinement backends behind `ctx.sandbox`: Linux runs commands under `bwrap` when that works, otherwise under the Landlock launcher; macOS uses Seatbelt (`sandbox-exec`); Windows uses the ACL restricted-token runner. It selects one runner per host, so every command — and everything it spawns — runs confined. When no runner is usable the provider fails closed with `SANDBOX_UNAVAILABLE` — a command never silently runs unconfined. Each wrap reports how completely the backend enforces the mode (`full` or `partial`) plus the backend's denial signatures, so consumers can tell a broken sandbox apart from a denied command. Mount it behind `ctx.sandbox` with a confined executor to give every bash or pwsh call a confined default.
 
 ## Table of Contents
 
@@ -37,7 +37,7 @@ Load the sandbox service and mount the provider; the defaults below are the sele
 
 ```yaml
 - id: sandbox
-  name: '@deepseek-ai/dsh-sandbox-local'
+  name: '@greeneek/gnk-sandbox-local'
 ```
 
 | Field | Default | Meaning |
@@ -46,7 +46,7 @@ Load the sandbox service and mount the provider; the defaults below are the sele
 | `runnerFailureSignatures` | `[]` | Case-insensitive stderr substrings identifying the custom runner's own failure dialect; required with `runnerCommand` |
 | `probeTimeoutMs` | `5,000` | Timeout for each functional probe of a competing runner candidate |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-sandbox-local) is the exhaustive source for every accepted field and its JSDoc.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-sandbox-local) is the exhaustive source for every accepted field and its JSDoc.
 
 ### Confined execution and enforcement
 
@@ -74,7 +74,7 @@ Selection is by platform first, probes second: each platform has a runner chain 
 
 The bwrap profile combines a read-only host root, a fresh `/dev`, and `/proc` from a private PID namespace — commands manage their descendants but cannot see host processes, so procfs magic links cannot bypass the mounts; `workspace-write` adds an ephemeral `/tmp` and a writable workspace bind. The [private-PID note](../../../.agents/notes/implemented/bug-fix/2026-08-06-bwrap-private-pid-namespace.md) records the boundary.
 
-The Landlock launcher ships as an npm-distributed native addon (`@deepseek-ai/node-addon-landlock-run`) that supplies the platform launcher, functional probe, and grant vocabulary; this provider maps mode to grants only, keeping path resolution and probe parsing with the versioned binary.
+The Landlock launcher ships as an npm-distributed native addon (`@greeneek/node-addon-landlock-run`) that supplies the platform launcher, functional probe, and grant vocabulary; this provider maps mode to grants only, keeping path resolution and probe parsing with the versioned binary.
 
 The Seatbelt profile is allow-default with `(deny file-write*)` plus write allow-lists derived from the shared `writableRoots` helper, so exactly the mode's promised file effects are governed; every root is canonicalized because Seatbelt matches resolved paths (`/tmp` IS `/private/tmp`).
 
@@ -112,7 +112,7 @@ Start with the subsystem reference for the shared vocabulary, then the seam cont
 <a id="model-experience"></a>
 ## Model Experience
 
-Indirectly, through [`dsh-bash-sandbox`](../../shell/bash-sandbox/README.md) and [`dsh-tool-bash`](../../shell/tool-bash/README.md), which render this provider's enforcement and denial facts, while the [`dsh-sandbox`](../sandbox/README.md) seam owns the `SANDBOX_UNAVAILABLE` text and this provider owns runner selection, and profiles stay outside context.
+Indirectly, through [`gnk-bash-sandbox`](../../shell/bash-sandbox/README.md) and [`gnk-tool-bash`](../../shell/tool-bash/README.md), which render this provider's enforcement and denial facts, while the [`gnk-sandbox`](../sandbox/README.md) seam owns the `SANDBOX_UNAVAILABLE` text and this provider owns runner selection, and profiles stay outside context.
 
 #### KV Cache effect
 

@@ -1,10 +1,10 @@
 // Cross-instance and writer-lock behavior: two providers on one document are
-// the in-process equivalent of two dsh processes sharing a harness home —
+// the in-process equivalent of two gnk processes sharing a harness home —
 // neither knows the other's cache, so only the read-modify-write cycle under
 // the `<file>.lock` sibling keeps both namespaces alive on disk.
 import { afterEach, describe, expect, it } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import z from '@deepseek-ai/schemastery'
+import { Context } from '@greeneek/cordis'
+import z from '@greeneek/schemastery'
 import { chmod, mkdtemp, readFile, rm, utimes, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -20,7 +20,7 @@ afterEach(async () => {
 })
 
 async function tempDir(): Promise<string> {
-  const dir = await mkdtemp(join(tmpdir(), 'dsh-settings-lock-'))
+  const dir = await mkdtemp(join(tmpdir(), 'gnk-settings-lock-'))
   cleanups.push(() => rm(dir, { recursive: true, force: true }))
   return dir
 }

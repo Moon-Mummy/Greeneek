@@ -8,20 +8,20 @@
  * client half (see the contract module doc). Export discipline:
  * packages/client/AGENTS.md.
  */
-import type { Context } from '@deepseek-ai/cordis'
-import type { RemoteHostFacts } from '@deepseek-ai/dsh-api-remotes/client'
-import type { ISessions } from '@deepseek-ai/dsh-api-session-controller/client'
-import type { IWorkspaces, WorkspaceSnapshot } from '@deepseek-ai/dsh-api-workspace-controller/client'
-import type { HostObservable, SnapshotSelectorHook } from '@deepseek-ai/dsh-client-ui-slots'
+import type { Context } from '@greeneek/cordis'
+import type { RemoteHostFacts } from '@greeneek/gnk-api-remotes/client'
+import type { ISessions } from '@greeneek/gnk-api-session-controller/client'
+import type { IWorkspaces, WorkspaceSnapshot } from '@greeneek/gnk-api-workspace-controller/client'
+import type { HostObservable, SnapshotSelectorHook } from '@greeneek/gnk-client-ui-slots'
 // Type-only: pulls the Controller service merges.
-import type {} from '@deepseek-ai/dsh-api-session-controller/client'
-import type {} from '@deepseek-ai/dsh-api-workspace-controller/client'
+import type {} from '@greeneek/gnk-api-session-controller/client'
+import type {} from '@greeneek/gnk-api-workspace-controller/client'
 // Type-only: pulls the locale plugin's Context merge (ctx.locale).
-import type {} from '@deepseek-ai/dsh-client-locale/client'
+import type {} from '@greeneek/gnk-client-locale/client'
 // Type-only: pulls the SlotRegistry service merge (ctx.slots).
-import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
+import type {} from '@greeneek/gnk-client-ui-renderer/client'
 // Type-only: pulls the Session root standard-hook merge.
-import type {} from '@deepseek-ai/dsh-client-ui-session/client'
+import type {} from '@greeneek/gnk-client-ui-session/client'
 import type { WorkspaceBrowserInjected, WorkspacePickerInjected } from './contract/slots.ts'
 import { UiWorkspaceService } from './navigation.ts'
 import { createWorkspaceViewStore } from './stores.ts'
@@ -36,7 +36,7 @@ export type {
 } from './contract/slots.ts'
 export type { WorkspaceKey } from './locales.ts'
 
-declare module '@deepseek-ai/dsh-client-ui-slots' {
+declare module '@greeneek/gnk-client-ui-slots' {
   interface GlobalStandardProps {
     /** Selector hook over the pure Workspace Controller snapshot. */
     useWorkspaces: SnapshotSelectorHook<WorkspaceSnapshot>
@@ -54,7 +54,7 @@ const NS = 'workspace'
 /**
  * Required services (cordis fiber inject). The target slots are declared by
  * the ui-sidebar / ui-conversation applies, whose activation order relative
- * to this one is NOT constrained: dsh.client.inject edges are informational
+ * to this one is NOT constrained: gnk.client.inject edges are informational
  * (loading/prefetch metadata, never apply sequencing) and neither owner
  * provides a waitable service. apply therefore depends on each slot
  * declaration through `slots.inject()` instead of assuming order.

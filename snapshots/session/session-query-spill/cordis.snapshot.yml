@@ -1,28 +1,28 @@
 # Keyless session-query snapshot patch: replay plus the filesystem spill
 # settings inherited by this scenario. The ACP row re-pins the recorded flash model.
-- id: llm-deepseek
-  name: '@deepseek-ai/dsh-llm-deepseek'
+- id: llm-greeneek
+  name: '@greeneek/gnk-llm-greeneek'
   disabled: true
 
 - id: agent-default-model
-  name: '@deepseek-ai/dsh-agent-default-model'
+  name: '@greeneek/gnk-agent-default-model'
   config:
-    provider: deepseek-official
-    model: deepseek-v4-flash
+    provider: greeneek-official
+    model: greeneek-v4-flash
 
 - id: session-persistence-jsonl
-  name: '@deepseek-ai/dsh-session-persistence-jsonl'
+  name: '@greeneek/gnk-session-persistence-jsonl'
   config:
-    root: !!js dshHomePath('sessions')
+    root: !!js gnkHomePath('sessions')
     compression: none
 
 - id: agent-instructions
-  name: '@deepseek-ai/dsh-agent-instructions'
+  name: '@greeneek/gnk-agent-instructions'
   config:
     maxBytes: 65536
 
 - id: system-prompt
-  name: '@deepseek-ai/dsh-system-prompt'
+  name: '@greeneek/gnk-system-prompt'
   config:
     persona: |
       You are a coding assistant powered by the {{model}} model. Your working directory is {{cwd}}. Your bash tool runs under a file sandbox — a `[sandbox: file access denied …]` result is policy, not a command bug.
@@ -31,22 +31,22 @@
 
 - insert:
     - id: llm-replay
-      name: '@deepseek-ai/dsh-llm-replay'
+      name: '@greeneek/gnk-llm-replay'
       config:
         providers:
-          - id: deepseek-official
-            name: DeepSeek
+          - id: greeneek-official
+            name: Greeneek
             models:
-              - id: deepseek-v4-flash
-              - id: deepseek-v4-pro
+              - id: greeneek-v4-flash
+              - id: greeneek-v4-pro
 
 - id: spill-local
-  name: '@deepseek-ai/dsh-spill-local'
+  name: '@greeneek/gnk-spill-local'
   config:
-    root: !!js process.env.DSH_SNAPSHOT_SPILL_ROOT ?? './.spill'
+    root: !!js process.env.GNK_SNAPSHOT_SPILL_ROOT ?? './.spill'
 
 - id: spill-policy
-  name: '@deepseek-ai/dsh-spill-policy'
+  name: '@greeneek/gnk-spill-policy'
   config:
     maxInlineBytes: 800
 
@@ -54,7 +54,7 @@
 # supplies replay plus deterministic private spill storage and its byte limit.
 - insert:
     - id: tool-session-query
-      name: '@deepseek-ai/dsh-tool-session-query'
+      name: '@greeneek/gnk-tool-session-query'
 
 - id: timeout-policy
-  name: '@deepseek-ai/dsh-tool-call-timeout-policy'
+  name: '@greeneek/gnk-tool-call-timeout-policy'

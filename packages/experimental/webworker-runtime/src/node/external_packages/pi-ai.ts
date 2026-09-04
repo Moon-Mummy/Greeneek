@@ -29,7 +29,7 @@ export const isContextOverflow = notImplementedFail(MODULE, 'isContextOverflow')
 /** Builtin provider ids of pi-ai 0.84.2, in catalog order. */
 const BUILTIN_PROVIDER_IDS: readonly string[] = [
   'amazon-bedrock', 'ant-ling', 'anthropic', 'azure-openai-responses', 'baseten', 'cerebras',
-  'cloudflare-ai-gateway', 'cloudflare-workers-ai', 'deepseek', 'fireworks', 'github-copilot',
+  'cloudflare-ai-gateway', 'cloudflare-workers-ai', 'greeneek', 'fireworks', 'github-copilot',
   'google', 'google-vertex', 'groq', 'huggingface', 'kimi-coding', 'minimax', 'minimax-cn',
   'mistral', 'moonshotai', 'moonshotai-cn', 'nvidia', 'openai', 'openai-codex', 'opencode',
   'opencode-go', 'openrouter', 'qwen-token-plan', 'qwen-token-plan-cn',

@@ -18,13 +18,13 @@ function fixture(options: {
   invariantExport?: string
   runtimeChunk?: string
 } = {}): { root: string; loaderUrl: string } {
-  const root = mkdtempSync(join(tmpdir(), 'dsh-built-package-invariants-'))
+  const root = mkdtempSync(join(tmpdir(), 'gnk-built-package-invariants-'))
   roots.push(root)
   const packageDir = join(root, 'packages/core/probe')
   mkdirSync(join(packageDir, 'lib'), { recursive: true })
   const companion = options.companion ?? true
   writeFileSync(join(packageDir, 'package.json'), `${JSON.stringify({
-    name: '@deepseek-ai/dsh-probe',
+    name: '@greeneek/gnk-probe',
     type: 'module',
     files: companion ? ['lib/invariant.js'] : [],
     exports: companion ? {
@@ -84,7 +84,7 @@ describe('built package invariant verifier', () => {
     const brokenExport = fixture({ invariantExport: './lib/missing.js' })
     const exportResult = verify(brokenExport.root, brokenExport.loaderUrl)
     expect(exportResult.status).toBe(1)
-    expect(exportResult.stderr).toContain('@deepseek-ai/dsh-probe')
+    expect(exportResult.stderr).toContain('@greeneek/gnk-probe')
   })
 
   it('rejects an invariant bundle that needs an unstaged runtime chunk', () => {

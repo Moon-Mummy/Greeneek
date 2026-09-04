@@ -73,8 +73,8 @@ it('keeps scenario-owned snapshot spill root length stable across platforms', ()
   const fixtureFile = '/fixtures/scenario/session.jsonl'
   const posix = snapshotSpillRoot(fixtureFile, 'linux')
   const windows = snapshotSpillRoot(fixtureFile, 'win32')
-  expect(posix).toMatch(/^\/tmp\/dsh-acp-snap-[0-9a-f]{9}$/)
-  expect(windows).toMatch(/^\/t\/dsh-acp-snap-[0-9a-f]{9}$/)
+  expect(posix).toMatch(/^\/tmp\/gnk-acp-snap-[0-9a-f]{9}$/)
+  expect(windows).toMatch(/^\/t\/gnk-acp-snap-[0-9a-f]{9}$/)
   expect(windows.length + 2).toBe(posix.length)
 })
 
@@ -113,9 +113,9 @@ describe('runScenario', () => {
       cwd: dir,
       configPath: AGENT.configPath,
       env: {
-        DSH_SNAPSHOT: 'replay',
-        DSH_SNAPSHOT_FILE: fixtureFile,
-        DSH_SNAPSHOT_SESSIONS_ROOT: sessionsRoot,
+        GNK_SNAPSHOT: 'replay',
+        GNK_SNAPSHOT_FILE: fixtureFile,
+        GNK_SNAPSHOT_SESSIONS_ROOT: sessionsRoot,
       },
     })
     await launched.client.initialize({ protocolVersion: PROTOCOL_VERSION, clientCapabilities: {} })
@@ -151,7 +151,7 @@ describe('runScenario', () => {
     expect(exited).toBe(true)
   })
 
-  it('builds dsh profile argv and rebases relative modules in live and replay patches', async () => {
+  it('builds gnk profile argv and rebases relative modules in live and replay patches', async () => {
     const { dir, fixtureFile } = await scenario({})
     const patchDir = join(dir, 'patches')
     const basePatch = join(patchDir, 'base.cordis.yml')
@@ -198,18 +198,18 @@ describe('runScenario', () => {
       agent: profileAgent,
       cwd: dir,
       configPath: selectedPatch,
-      env: { DSH_SNAPSHOT: 'record', DSH_SNAPSHOT_FILE: fixtureFile },
+      env: { GNK_SNAPSHOT: 'record', GNK_SNAPSHOT_FILE: fixtureFile },
     })
     await live.spawned
     await live.close()
-    const materializedRoot = join(dir, '.dsh-profile-patches')
+    const materializedRoot = join(dir, '.gnk-profile-patches')
     const materialized = await readFile(await materializedPatch(materializedRoot, '0-base.cordis.yml'), 'utf8')
     expect(materialized).toContain(pathToFileURL(join(patchDir, 'plugin.mjs')).href)
     expect(materialized).toContain(pathToFileURL(join(dir, 'nested.mjs')).href)
     expect(materialized).toContain('example-package')
-    expect(await realpath(join(dir, '.dsh', 'profiles', 'node_modules', 'example-package')))
+    expect(await realpath(join(dir, '.gnk', 'profiles', 'node_modules', 'example-package')))
       .toBe(await realpath(packageDir))
-    expect(await realpath(join(dir, '.dsh', 'profiles', 'node_modules', '@fixture', 'example-package')))
+    expect(await realpath(join(dir, '.gnk', 'profiles', 'node_modules', '@fixture', 'example-package')))
       .toBe(await realpath(scopedPackageDir))
     expect(await readFile(await materializedPatch(materializedRoot, '1-selected.cordis.yml'), 'utf8')).toContain('[]')
 
@@ -217,7 +217,7 @@ describe('runScenario', () => {
       agent: profileAgent,
       cwd: dir,
       configPath: selectedPatch,
-      env: { DSH_SNAPSHOT: 'replay', DSH_SNAPSHOT_FILE: fixtureFile },
+      env: { GNK_SNAPSHOT: 'replay', GNK_SNAPSHOT_FILE: fixtureFile },
     })
     await replay.spawned
     await replay.close()
@@ -229,7 +229,7 @@ describe('runScenario', () => {
     const conflictPatch = join(dir, 'conflict.cordis.yml')
     const conflictPackage = join(dir, 'node_modules', 'conflict-package')
     const otherPackage = join(dir, 'other-conflict-package')
-    const conflictLink = join(dir, '.dsh', 'profiles', 'node_modules', 'conflict-package')
+    const conflictLink = join(dir, '.gnk', 'profiles', 'node_modules', 'conflict-package')
     await Promise.all([
       mkdir(conflictPackage, { recursive: true }),
       mkdir(otherPackage, { recursive: true }),
@@ -243,7 +243,7 @@ describe('runScenario', () => {
     expect(() => launchAcpTestAgent({
       agent: { ...profileAgent, configPath: conflictPatch },
       cwd: dir,
-      env: { DSH_SNAPSHOT: 'record', DSH_SNAPSHOT_FILE: fixtureFile },
+      env: { GNK_SNAPSHOT: 'record', GNK_SNAPSHOT_FILE: fixtureFile },
     })).toThrow('snapshot profile package conflict-package resolves to two directories')
 
     const invalidPatch = join(dir, 'invalid.cordis.yml')
@@ -251,7 +251,7 @@ describe('runScenario', () => {
     expect(() => launchAcpTestAgent({
       agent: { ...profileAgent, configPath: invalidPatch },
       cwd: dir,
-      env: { DSH_SNAPSHOT: 'record', DSH_SNAPSHOT_FILE: fixtureFile },
+      env: { GNK_SNAPSHOT: 'record', GNK_SNAPSHOT_FILE: fixtureFile },
     })).toThrow(`snapshot profile patch must be a top-level array: ${invalidPatch}`)
   })
 
@@ -260,7 +260,7 @@ describe('runScenario', () => {
     const launched = launchAcpTestAgent({
       agent: AGENT,
       cwd: dir,
-      env: { DSH_SNAPSHOT_FILE: fixtureFile },
+      env: { GNK_SNAPSHOT_FILE: fixtureFile },
     })
     await launched.client.initialize({ protocolVersion: PROTOCOL_VERSION, clientCapabilities: {} })
     await launched.client.newSession({ cwd: dir, mcpServers: [] })
@@ -439,7 +439,7 @@ describe('runScenario', () => {
     const launched = launchAcpTestAgent({
       agent: AGENT,
       cwd: dir,
-      env: { DSH_SNAPSHOT_FILE: fixtureFile },
+      env: { GNK_SNAPSHOT_FILE: fixtureFile },
       async requestPermission() {
         markPermissionStarted?.()
         await permissionReleased
@@ -474,7 +474,7 @@ describe('runScenario', () => {
 
   it('preserves launch-resolution errors when no child process exists', async () => {
     const { dir, fixtureFile } = await scenario({})
-    vi.stubEnv('DSH_EXAMPLE_MODE', 'lib')
+    vi.stubEnv('GNK_EXAMPLE_MODE', 'lib')
     try {
       await expect(runScenario(
         { steps: [] },

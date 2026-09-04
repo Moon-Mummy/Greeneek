@@ -2,7 +2,7 @@
 
 [English](slots.md) | 中文
 
-Slots 是 Web Client 的类型化 React 组合系统。[`dsh-client-ui-slots`](../../packages/client/ui-slots/README.zh.md)定义不依赖 React 的注册表与类型代数；[`dsh-client-ui-renderer`](../../packages/client/ui-renderer/README.zh.md)把可观测源绑定成钩子、渲染整棵树，并在内部拥有 React context。功能插件通过 `ctx.slots.register()` 贡献 UI，绝不导入其他功能插件的组件。
+Slots 是 Web Client 的类型化 React 组合系统。[`gnk-client-ui-slots`](../../packages/client/ui-slots/README.zh.md)定义不依赖 React 的注册表与类型代数；[`gnk-client-ui-renderer`](../../packages/client/ui-renderer/README.zh.md)把可观测源绑定成钩子、渲染整棵树，并在内部拥有 React context。功能插件通过 `ctx.slots.register()` 贡献 UI，绝不导入其他功能插件的组件。
 
 本文记录 slot 的所有权、组件输入、扩展 API 与当前层级。外围的启动、Remote、Client model 与 Conversation 数据通路见 [Web Client 架构](web-client.zh.md)。
 
@@ -17,10 +17,10 @@ Slots 是 Web Client 的类型化 React 组合系统。[`dsh-client-ui-slots`](.
 注册和声明遵循 Cordis effect 生命周期。销毁一个 entry 会移除其贡献，并递归折叠它声明的 child slots。因此，向其他包的 slot 贡献功能时使用 `ctx.slots.inject(key, callback)`：callback 会在每段声明生命周期内运行，owner 折叠时其 effect 随之移除，owner 再次挂载时则重新运行。
 
 ```tsx ignore-check
-import type { Context } from '@deepseek-ai/cordis'
-import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
-import type {} from '@deepseek-ai/dsh-client-ui-session/client'
-import type { PropsRuntime } from '@deepseek-ai/dsh-client-ui-slots'
+import type { Context } from '@greeneek/cordis'
+import type {} from '@greeneek/gnk-client-ui-conversation/client'
+import type {} from '@greeneek/gnk-client-ui-session/client'
+import type { PropsRuntime } from '@greeneek/gnk-client-ui-slots'
 
 type HeaderActionProps = PropsRuntime<'conversation.session.header.actions'>
 

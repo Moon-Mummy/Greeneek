@@ -3,13 +3,13 @@ description: "面向用户与维护者的一次性 Claude Code subagent 提供�
 kind: "package-bundle"
 ---
 
-# @deepseek-ai/dsh-subagent-claude-code
+# @greeneek/gnk-subagent-claude-code
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-subagent-claude-code` 注册由 Profile 命名、默认名称为 `claude-code` 的 Claude Code subagent 提供方，它在发起委派的会话工作区中通过官方 Agent SDK 运行真实的 Claude Code CLI 子 agent（智能体）。每次接受的运行提交一个自包含文本任务，并通过共享的 subagent 结果约定返回严格的最终答案——或独立的安全失败诊断。该提供方作为可选的 Profile Bundle 发布：安装会带入锁定的 Agent SDK 与一个兼容的平台 CLI 载荷，而注册的提供方在绑定工具调用前保持休眠。原生 Claude 设置与身份验证继续是权威来源，Profile 选择的 `permissionMode` 决定这个无人值守 query 如何处理权限检查。当子 agent 应该是与父 harness 完全隔离的真实 Claude Code 产品会话时，选择它。
+`gnk-subagent-claude-code` 注册由 Profile 命名、默认名称为 `claude-code` 的 Claude Code subagent 提供方，它在发起委派的会话工作区中通过官方 Agent SDK 运行真实的 Claude Code CLI 子 agent（智能体）。每次接受的运行提交一个自包含文本任务，并通过共享的 subagent 结果约定返回严格的最终答案——或独立的安全失败诊断。该提供方作为可选的 Profile Bundle 发布：安装会带入锁定的 Agent SDK 与一个兼容的平台 CLI 载荷，而注册的提供方在绑定工具调用前保持休眠。原生 Claude 设置与身份验证继续是权威来源，Profile 选择的 `permissionMode` 决定这个无人值守 query 如何处理权限检查。当子 agent 应该是与父 harness 完全隔离的真实 Claude Code 产品会话时，选择它。
 
 ## 目录
 
@@ -32,9 +32,9 @@ kind: "package-bundle"
 把包安装进目标 Profile，然后重启该 Profile。安装会把锁定的 Agent SDK 与一个兼容的平台 CLI 载荷带入 Profile；声明的 patch 层只注册休眠的提供方，不启动任何 Claude 进程。
 
 ```sh
-dsh plugin --profile <name> add @deepseek-ai/dsh-subagent-claude-code
-dsh plugin --profile <name> remove @deepseek-ai/dsh-subagent-claude-code
-dsh --profile <name>
+gnk plugin --profile <name> add @greeneek/gnk-subagent-claude-code
+gnk plugin --profile <name> remove @greeneek/gnk-subagent-claude-code
+gnk --profile <name>
 ```
 
 移除包后，下一次 Profile 启动会撤回提供方及其私有运行时闭包。安装决定 Host 可用性，而不是模型权限：模型只能通过你组合的委派工具行触达提供方。
@@ -57,7 +57,7 @@ dsh --profile <name>
 | `plan` | 使用原生规划模式，拒绝执行审批，并把完整计划作为最终答案返回 |
 | `bypassPermissions` | 显式设置 SDK 的危险确认并跳过权限检查 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-subagent-claude-code)是每个受支持字段及其 JSDoc 的穷尽式真源。已配置的 `model` 会原样传给该提供方实例的每次 query；省略时保留原生模型选择。具有凭证特征的环境变量会在显式 `env` 覆盖生效前被移除，因此供子进程使用的 API 密钥必须在该配置中显式提供。提供方省略 SDK 的 `settingSources` 选项，因此 Claude Code 会相对于父会话 cwd 读取宿主机常规的用户、项目与本地设置。它不会复制或过滤这些文件、创建或修改登录状态、检查 `PATH`，也不会回退到宿主 `claude` 可执行文件。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-subagent-claude-code)是每个受支持字段及其 JSDoc 的穷尽式真源。已配置的 `model` 会原样传给该提供方实例的每次 query；省略时保留原生模型选择。具有凭证特征的环境变量会在显式 `env` 覆盖生效前被移除，因此供子进程使用的 API 密钥必须在该配置中显式提供。提供方省略 SDK 的 `settingSources` 选项，因此 Claude Code 会相对于父会话 cwd 读取宿主机常规的用户、项目与本地设置。它不会复制或过滤这些文件、创建或修改登录状态、检查 `PATH`，也不会回退到宿主 `claude` 可执行文件。
 
 ### 暴露工具
 
@@ -65,11 +65,11 @@ dsh --profile <name>
 
 ```yaml
 - id: jobs
-  name: '@deepseek-ai/dsh-jobs-local'
+  name: '@greeneek/gnk-jobs-local'
 - id: tool-jobs
-  name: '@deepseek-ai/dsh-tool-jobs'
+  name: '@greeneek/gnk-tool-jobs'
 - id: tool-subagent-claude
-  name: '@deepseek-ai/dsh-tool-subagent'
+  name: '@greeneek/gnk-tool-subagent'
   config:
     provider: claude-code
     toolName: subagent_claude_code
@@ -126,10 +126,10 @@ dsh --profile <name>
 当包级约定不够用时阅读以下页面。它们从本提供方逐步进入它接入的 seam 与兄弟产品提供方。
 
 - [Subagent 子系统](../../../docs/subsystems/subagent.zh.md)——服务约定、提供方约定与终态结果语义。
-- [dsh-subagent seam](../subagent/README.zh.md)——本提供方注册于其上的注册表与启动 API。
+- [gnk-subagent seam](../subagent/README.zh.md)——本提供方注册于其上的注册表与启动 API。
 - [Codex subagent 提供方](../subagent-codex/README.zh.md)——经官方 app-server 协议的兄弟产品后端。
 - [Claude Code 与 Codex 后端](../../../.agents/notes/implemented/feature/2026-08-04-claude-code-and-codex-subagent-backends.zh.md)——产品提供方的设计记录。
-- [生成配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-subagent-claude-code)——每个受支持配置字段及其源声明。
+- [生成配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-subagent-claude-code)——每个受支持配置字段及其源声明。
 
 -----
 
@@ -154,7 +154,7 @@ Claude Code 子级会在一个全新的 SDK query 中接收独立文本任务。
 
 #### 模型看到什么
 
-通过 `dsh-tool-subagent`，前台调用会让父级模型看到符合严格成功条件的 Claude Code 最终答案；若结果未完成，错误中会包含终止原因和可选的安全诊断。该诊断可以区分粗粒度行动类别、生命周期阶段和已观测的进程结果，而不复制原始产品文本或版本专属 subtype 名称。后台调用会先返回 Job id；随后通用作业控制面会送达完成通知，通过 `job_output` 公开同一最终答案或失败状态 detail，并允许 `job_kill` 请求取消。Claude Code 的推理、工具活动、中间消息、stderr、工作区差异、用量信息、产品标识符、工具输入和原始协议载荷均不会复制到父会话。
+通过 `gnk-tool-subagent`，前台调用会让父级模型看到符合严格成功条件的 Claude Code 最终答案；若结果未完成，错误中会包含终止原因和可选的安全诊断。该诊断可以区分粗粒度行动类别、生命周期阶段和已观测的进程结果，而不复制原始产品文本或版本专属 subtype 名称。后台调用会先返回 Job id；随后通用作业控制面会送达完成通知，通过 `job_output` 公开同一最终答案或失败状态 detail，并允许 `job_kill` 请求取消。Claude Code 的推理、工具活动、中间消息、stderr、工作区差异、用量信息、产品标识符、工具输入和原始协议载荷均不会复制到父会话。
 
 #### Token 影响
 

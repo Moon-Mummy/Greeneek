@@ -1,20 +1,20 @@
 // @vitest-environment jsdom
 import { describe, expect, it, vi } from 'vitest'
-import type { ISession } from '@deepseek-ai/dsh-api-session-controller/client'
-import { LocaleRuntime } from '@deepseek-ai/dsh-client-locale/client'
-import type { ObservableSnapshot } from '@deepseek-ai/dsh-client-store'
+import type { ISession } from '@greeneek/gnk-api-session-controller/client'
+import { LocaleRuntime } from '@greeneek/gnk-client-locale/client'
+import type { ObservableSnapshot } from '@greeneek/gnk-client-store'
 import {
   SlotTestRuntime, stubSettingsScope, usePinnedBrowserLanguages,
-} from '@deepseek-ai/dsh-client-test-runtime'
-import type { SessionBehaviorOverrides } from '@deepseek-ai/dsh-client-test-runtime'
+} from '@greeneek/gnk-client-test-runtime'
+import type { SessionBehaviorOverrides } from '@greeneek/gnk-client-test-runtime'
 import {
   apply, inject, type ComposerBarInjected, type ConversationInjected,
   type ConversationSessionHeaderInjected, type ConversationSessionInjected, type ViewTab,
-} from '@deepseek-ai/dsh-client-ui-conversation/client'
-import type { SessionId } from '@deepseek-ai/dsh-session/types'
-import type { WorkspaceId } from '@deepseek-ai/dsh-workspace/types'
+} from '@greeneek/gnk-client-ui-conversation/client'
+import type { SessionId } from '@greeneek/gnk-session/types'
+import type { WorkspaceId } from '@greeneek/gnk-workspace/types'
 import { createConversationStore } from '../src/client/stores.ts'
-import { RemoteError } from '@deepseek-ai/dsh-client-test-runtime'
+import { RemoteError } from '@greeneek/gnk-client-test-runtime'
 
 usePinnedBrowserLanguages('zh-CN')
 
@@ -145,7 +145,7 @@ describe('Conversation inject API', () => {
     let removeCustom: (() => void) | undefined
     try {
       await b.runtime.flush()
-      localStorage.setItem(`dsh.conversation.${ROOT}`, JSON.stringify({
+      localStorage.setItem(`gnk.conversation.${ROOT}`, JSON.stringify({
         draft: '', view: 'custom', viewRequest: null,
       }))
 

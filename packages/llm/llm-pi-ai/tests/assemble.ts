@@ -1,3 +1,4 @@
+/* rebrand:ignore-start -- pi-ai adapter test harness default routes to pi-ai's own catalog provider id (B4, decisions.md D16) */
 /**
  * Test helper: drive `ctx.llm.stream()` through a `BlockAssembler` and return
  * the assembled message + usage + finish reason. This exercises the same
@@ -5,9 +6,9 @@
  * one-shot convenience method.
  */
 
-import { BlockAssembler } from '@deepseek-ai/dsh-llm'
-import type { Context } from '@deepseek-ai/cordis'
-import type { FinishReason, GenerateOptions, Message, TokenUsage } from '@deepseek-ai/dsh-llm'
+import { BlockAssembler } from '@greeneek/gnk-llm'
+import type { Context } from '@greeneek/cordis'
+import type { FinishReason, GenerateOptions, Message, TokenUsage } from '@greeneek/gnk-llm'
 
 export interface AssembledResult {
   message: Message
@@ -30,3 +31,4 @@ export async function assemble(ctx: Context, options: Omit<GenerateOptions, 'pro
     finish: assembler.finish,
   }
 }
+/* rebrand:ignore-end */

@@ -2,16 +2,16 @@
  * Remote namespaces the Session cluster calls. One parameter for one concept:
  * the generated surface a Session and its manager reach the Host through.
  *
- * @module @deepseek-ai/dsh-api-session-controller/client/sessions/remotes
+ * @module @greeneek/gnk-api-session-controller/client/sessions/remotes
  */
 
-import type { EncodedImageAttachment } from '@deepseek-ai/dsh-attachment/types'
-import type { ClientRemote } from '@deepseek-ai/dsh-api-gateway/client'
-import type { SessionId } from '@deepseek-ai/dsh-session/types'
+import type { EncodedImageAttachment } from '@greeneek/gnk-attachment/types'
+import type { ClientRemote } from '@greeneek/gnk-api-gateway/client'
+import type { SessionId } from '@greeneek/gnk-session/types'
 import type {
   SubagentCatalog, SubagentInterruptReceipt, SubagentPromptReceipt, SubagentPromptRequest,
-} from '@deepseek-ai/dsh-subagent/client'
-import type { RemoteResult } from '@deepseek-ai/dsh-typert-protocol'
+} from '@greeneek/gnk-subagent/client'
+import type { RemoteResult } from '@greeneek/gnk-typert-protocol'
 import type { SessionRemote } from '../transport.ts'
 
 /** Narrow Commands namespace consumed by a Client Session. */

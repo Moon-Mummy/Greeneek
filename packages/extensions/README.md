@@ -9,7 +9,7 @@ English | [中文](README.zh.md)
 
 ## Summary
 
-The extensions group lets a running agent modify the runtime it runs inside: the model can inspect the plugins and services loaded in the current DSH process, define a dynamic Cordis package (with a host half, a browser half, or both), run it, stop it, and remove it, and a browser panel operates every definition. Packages evolve by plugin: a plugin holds immutable package versions and can run or update between them. Definitions live only in process memory, so a DSH restart clears them and nothing here writes repository files or configuration. Four packages form the subsystem: the model-facing tools plus the host runner, and the browser runner plus the browser UI.
+The extensions group lets a running agent modify the runtime it runs inside: the model can inspect the plugins and services loaded in the current GNK process, define a dynamic Cordis package (with a host half, a browser half, or both), run it, stop it, and remove it, and a browser panel operates every definition. Packages evolve by plugin: a plugin holds immutable package versions and can run or update between them. Definitions live only in process memory, so a GNK restart clears them and nothing here writes repository files or configuration. Four packages form the subsystem: the model-facing tools plus the host runner, and the browser runner plus the browser UI.
 
 ## Table of Contents
 
@@ -35,8 +35,8 @@ The extensions group lets a running agent modify the runtime it runs inside: the
 ## Related documentation
 
 - [Extensions subsystem](../../docs/subsystems/extensions.md) — the generated `ctx.cordisInspect` and `ctx.dynamicCordisRunner` service API.
-- [Generated tool catalog](../../docs/tool-catalog.md#deepseek-aidsh-tool-cordis) — the seven model-facing tool schemas.
-- [Generated configuration catalog](../../docs/config-catalog.md#deepseek-aidsh-cordis-host-runner) — the runner's accepted config fields.
+- [Generated tool catalog](../../docs/tool-catalog.md#greeneekgnk-tool-cordis) — the seven model-facing tool schemas.
+- [Generated configuration catalog](../../docs/config-catalog.md#greeneekgnk-cordis-host-runner) — the runner's accepted config fields.
 - [Self-referential Cordis toolset Agent Note](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md) — design home for sandbox semantics, lifecycle, and composition.
 - [Client shells and dynamic packages Agent Note](../../.agents/notes/implemented/architecture/2026-08-15-client-shells-and-dynamic-packages.md) — package placement and build faces for the client halves.
 

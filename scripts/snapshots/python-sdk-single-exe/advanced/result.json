@@ -81,17 +81,17 @@
         "content": [
           {
             "type": "text",
-            "text": "Current runtime context. This snapshot supersedes earlier runtime-context snapshots.\n\nCurrent DSH file policy: danger-full-access. The DSH file sandbox does not restrict file modifications by available operations.\n\nApproval prompts are disabled in this session: actions that require approval are rejected automatically — do not request sandbox escalation (do not set `sandbox_permissions`)."
+            "text": "Current runtime context. This snapshot supersedes earlier runtime-context snapshots.\n\nCurrent GNK file policy: danger-full-access. The GNK file sandbox does not restrict file modifications by available operations.\n\nApproval prompts are disabled in this session: actions that require approval are rejected automatically — do not request sandbox escalation (do not set `sandbox_permissions`)."
           }
         ],
         "source": {
           "kind": "plugin",
-          "plugin": "@deepseek-ai/dsh-system-prompt",
+          "plugin": "@greeneek/gnk-system-prompt",
           "form": "snapshot",
           "sections": [
             {
               "name": "sandbox:policy",
-              "text": "Current DSH file policy: danger-full-access. The DSH file sandbox does not restrict file modifications by available operations."
+              "text": "Current GNK file policy: danger-full-access. The GNK file sandbox does not restrict file modifications by available operations."
             },
             {
               "name": "approval:policy",
@@ -125,7 +125,7 @@
       "data": {
         "header": {
           "config": {
-            "provider": "deepseek-official",
+            "provider": "greeneek-official",
             "model": "smoke-model",
             "maxTokens": 256000,
             "reasoningEffort": "high"
@@ -159,13 +159,13 @@
       "seq": 11,
       "time": 0,
       "data": {
-        "provider": "deepseek-official",
+        "provider": "greeneek-official",
         "model": "smoke-model",
         "contextWindow": 1000000
       }
     },
     {
-      "type": "session-log-deepseek/delivery-accepted",
+      "type": "session-log-greeneek/delivery-accepted",
       "seq": 12,
       "time": 0,
       "data": {
@@ -273,7 +273,7 @@
           ],
           "source": {
             "kind": "model",
-            "provider": "deepseek-official",
+            "provider": "greeneek-official",
             "model": "smoke-model"
           },
           "id": "{{messageId}}"
@@ -362,7 +362,7 @@
       }
     },
     {
-      "type": "session-log-deepseek/delivery-accepted",
+      "type": "session-log-greeneek/delivery-accepted",
       "seq": 23,
       "time": 0,
       "data": {
@@ -470,7 +470,7 @@
           ],
           "source": {
             "kind": "model",
-            "provider": "deepseek-official",
+            "provider": "greeneek-official",
             "model": "smoke-model"
           },
           "id": "{{messageId}}"
@@ -566,7 +566,7 @@
       "data": {
         "header": {
           "config": {
-            "provider": "deepseek-official",
+            "provider": "greeneek-official",
             "model": "smoke-model",
             "maxTokens": 256000,
             "reasoningEffort": "high"
@@ -597,7 +597,7 @@
       }
     },
     {
-      "type": "session-log-deepseek/delivery-accepted",
+      "type": "session-log-greeneek/delivery-accepted",
       "seq": 35,
       "time": 0,
       "data": {
@@ -705,7 +705,7 @@
           ],
           "source": {
             "kind": "model",
-            "provider": "deepseek-official",
+            "provider": "greeneek-official",
             "model": "smoke-model"
           },
           "id": "{{messageId}}"
@@ -825,7 +825,7 @@
       }
     },
     {
-      "type": "session-log-deepseek/delivery-accepted",
+      "type": "session-log-greeneek/delivery-accepted",
       "seq": 48,
       "time": 0,
       "data": {
@@ -933,7 +933,7 @@
           ],
           "source": {
             "kind": "model",
-            "provider": "deepseek-official",
+            "provider": "greeneek-official",
             "model": "smoke-model"
           },
           "id": "{{messageId}}"
@@ -1018,7 +1018,7 @@
       }
     },
     {
-      "type": "session-log-deepseek/delivery-accepted",
+      "type": "session-log-greeneek/delivery-accepted",
       "seq": 59,
       "time": 0,
       "data": {
@@ -1126,7 +1126,7 @@
           ],
           "source": {
             "kind": "model",
-            "provider": "deepseek-official",
+            "provider": "greeneek-official",
             "model": "smoke-model"
           },
           "id": "{{messageId}}"
@@ -1251,7 +1251,7 @@
       }
     },
     {
-      "type": "session-log-deepseek/delivery-accepted",
+      "type": "session-log-greeneek/delivery-accepted",
       "seq": 74,
       "time": 0,
       "data": {
@@ -1359,7 +1359,7 @@
           ],
           "source": {
             "kind": "model",
-            "provider": "deepseek-official",
+            "provider": "greeneek-official",
             "model": "smoke-model"
           },
           "id": "{{messageId}}"
@@ -1450,7 +1450,7 @@
       "data": {
         "header": {
           "config": {
-            "provider": "deepseek-official",
+            "provider": "greeneek-official",
             "model": "smoke-model",
             "maxTokens": 256000,
             "reasoningEffort": "high"
@@ -1480,7 +1480,7 @@
       }
     },
     {
-      "type": "session-log-deepseek/delivery-accepted",
+      "type": "session-log-greeneek/delivery-accepted",
       "seq": 86,
       "time": 0,
       "data": {
@@ -1582,7 +1582,7 @@
           ],
           "source": {
             "kind": "model",
-            "provider": "deepseek-official",
+            "provider": "greeneek-official",
             "model": "smoke-model"
           },
           "id": "{{messageId}}"
@@ -1744,17 +1744,17 @@
             "content": [
               {
                 "type": "text",
-                "text": "Current runtime context. This snapshot supersedes earlier runtime-context snapshots.\n\nCurrent DSH file policy: danger-full-access. The DSH file sandbox does not restrict file modifications by available operations.\n\nApproval prompts are disabled in this session: actions that require approval are rejected automatically — do not request sandbox escalation (do not set `sandbox_permissions`)."
+                "text": "Current runtime context. This snapshot supersedes earlier runtime-context snapshots.\n\nCurrent GNK file policy: danger-full-access. The GNK file sandbox does not restrict file modifications by available operations.\n\nApproval prompts are disabled in this session: actions that require approval are rejected automatically — do not request sandbox escalation (do not set `sandbox_permissions`)."
               }
             ],
             "source": {
               "kind": "plugin",
-              "plugin": "@deepseek-ai/dsh-system-prompt",
+              "plugin": "@greeneek/gnk-system-prompt",
               "form": "snapshot",
               "sections": [
                 {
                   "name": "sandbox:policy",
-                  "text": "Current DSH file policy: danger-full-access. The DSH file sandbox does not restrict file modifications by available operations."
+                  "text": "Current GNK file policy: danger-full-access. The GNK file sandbox does not restrict file modifications by available operations."
                 },
                 {
                   "name": "approval:policy",
@@ -1800,7 +1800,7 @@
           "data": {
             "header": {
               "config": {
-                "provider": "deepseek-official",
+                "provider": "greeneek-official",
                 "model": "smoke-model",
                 "maxTokens": 256000,
                 "reasoningEffort": "high"
@@ -1840,7 +1840,7 @@
           "seq": 11,
           "time": 0,
           "data": {
-            "provider": "deepseek-official",
+            "provider": "greeneek-official",
             "model": "smoke-model",
             "contextWindow": 1000000
           }
@@ -1852,7 +1852,7 @@
       "payload": {
         "sessionId": "{{parent}}",
         "event": {
-          "type": "session-log-deepseek/delivery-accepted",
+          "type": "session-log-greeneek/delivery-accepted",
           "seq": 12,
           "time": 0,
           "data": {
@@ -1996,7 +1996,7 @@
               ],
               "source": {
                 "kind": "model",
-                "provider": "deepseek-official",
+                "provider": "greeneek-official",
                 "model": "smoke-model"
               },
               "id": "{{messageId}}"
@@ -2115,7 +2115,7 @@
       "payload": {
         "sessionId": "{{parent}}",
         "event": {
-          "type": "session-log-deepseek/delivery-accepted",
+          "type": "session-log-greeneek/delivery-accepted",
           "seq": 23,
           "time": 0,
           "data": {
@@ -2259,7 +2259,7 @@
               ],
               "source": {
                 "kind": "model",
-                "provider": "deepseek-official",
+                "provider": "greeneek-official",
                 "model": "smoke-model"
               },
               "id": "{{messageId}}"
@@ -2385,7 +2385,7 @@
           "data": {
             "header": {
               "config": {
-                "provider": "deepseek-official",
+                "provider": "greeneek-official",
                 "model": "smoke-model",
                 "maxTokens": 256000,
                 "reasoningEffort": "high"
@@ -2422,7 +2422,7 @@
       "payload": {
         "sessionId": "{{parent}}",
         "event": {
-          "type": "session-log-deepseek/delivery-accepted",
+          "type": "session-log-greeneek/delivery-accepted",
           "seq": 35,
           "time": 0,
           "data": {
@@ -2566,7 +2566,7 @@
               ],
               "source": {
                 "kind": "model",
-                "provider": "deepseek-official",
+                "provider": "greeneek-official",
                 "model": "smoke-model"
               },
               "id": "{{messageId}}"
@@ -2728,7 +2728,7 @@
       "payload": {
         "sessionId": "{{parent}}",
         "event": {
-          "type": "session-log-deepseek/delivery-accepted",
+          "type": "session-log-greeneek/delivery-accepted",
           "seq": 48,
           "time": 0,
           "data": {
@@ -2872,7 +2872,7 @@
               ],
               "source": {
                 "kind": "model",
-                "provider": "deepseek-official",
+                "provider": "greeneek-official",
                 "model": "smoke-model"
               },
               "id": "{{messageId}}"
@@ -3070,17 +3070,17 @@
             "content": [
               {
                 "type": "text",
-                "text": "Current runtime context. This snapshot supersedes earlier runtime-context snapshots.\n\nCurrent DSH file policy: danger-full-access. The DSH file sandbox does not restrict file modifications by available operations.\n\nApproval prompts are disabled in this session: actions that require approval are rejected automatically — do not request sandbox escalation (do not set `sandbox_permissions`).\n\nYou are a delegated subagent: your permission scope was fixed when you were started and cannot be widened from inside this session — operations that require approval are rejected automatically. When the task needs access beyond that scope, do not retry the denied operation; state the limitation in your reply so the delegating agent can handle it."
+                "text": "Current runtime context. This snapshot supersedes earlier runtime-context snapshots.\n\nCurrent GNK file policy: danger-full-access. The GNK file sandbox does not restrict file modifications by available operations.\n\nApproval prompts are disabled in this session: actions that require approval are rejected automatically — do not request sandbox escalation (do not set `sandbox_permissions`).\n\nYou are a delegated subagent: your permission scope was fixed when you were started and cannot be widened from inside this session — operations that require approval are rejected automatically. When the task needs access beyond that scope, do not retry the denied operation; state the limitation in your reply so the delegating agent can handle it."
               }
             ],
             "source": {
               "kind": "plugin",
-              "plugin": "@deepseek-ai/dsh-system-prompt",
+              "plugin": "@greeneek/gnk-system-prompt",
               "form": "snapshot",
               "sections": [
                 {
                   "name": "sandbox:policy",
-                  "text": "Current DSH file policy: danger-full-access. The DSH file sandbox does not restrict file modifications by available operations."
+                  "text": "Current GNK file policy: danger-full-access. The GNK file sandbox does not restrict file modifications by available operations."
                 },
                 {
                   "name": "approval:policy",
@@ -3130,7 +3130,7 @@
           "data": {
             "header": {
               "config": {
-                "provider": "deepseek-official",
+                "provider": "greeneek-official",
                 "model": "smoke-model",
                 "reasoningEffort": "high",
                 "maxTokens": 256000
@@ -3170,7 +3170,7 @@
           "seq": 12,
           "time": 0,
           "data": {
-            "provider": "deepseek-official",
+            "provider": "greeneek-official",
             "model": "smoke-model",
             "contextWindow": 1000000
           }
@@ -3182,7 +3182,7 @@
       "payload": {
         "sessionId": "{{child-1}}",
         "event": {
-          "type": "session-log-deepseek/delivery-accepted",
+          "type": "session-log-greeneek/delivery-accepted",
           "seq": 13,
           "time": 0,
           "data": {
@@ -3320,7 +3320,7 @@
               ],
               "source": {
                 "kind": "model",
-                "provider": "deepseek-official",
+                "provider": "greeneek-official",
                 "model": "smoke-model"
               },
               "id": "{{messageId}}"
@@ -3473,7 +3473,7 @@
       "payload": {
         "sessionId": "{{parent}}",
         "event": {
-          "type": "session-log-deepseek/delivery-accepted",
+          "type": "session-log-greeneek/delivery-accepted",
           "seq": 59,
           "time": 0,
           "data": {
@@ -3617,7 +3617,7 @@
               ],
               "source": {
                 "kind": "model",
-                "provider": "deepseek-official",
+                "provider": "greeneek-official",
                 "model": "smoke-model"
               },
               "id": "{{messageId}}"
@@ -3847,17 +3847,17 @@
             "content": [
               {
                 "type": "text",
-                "text": "Current runtime context. This snapshot supersedes earlier runtime-context snapshots.\n\nCurrent DSH file policy: danger-full-access. The DSH file sandbox does not restrict file modifications by available operations.\n\nApproval prompts are disabled in this session: actions that require approval are rejected automatically — do not request sandbox escalation (do not set `sandbox_permissions`).\n\nYou are a delegated subagent: your permission scope was fixed when you were started and cannot be widened from inside this session — operations that require approval are rejected automatically. When the task needs access beyond that scope, do not retry the denied operation; state the limitation in your reply so the delegating agent can handle it."
+                "text": "Current runtime context. This snapshot supersedes earlier runtime-context snapshots.\n\nCurrent GNK file policy: danger-full-access. The GNK file sandbox does not restrict file modifications by available operations.\n\nApproval prompts are disabled in this session: actions that require approval are rejected automatically — do not request sandbox escalation (do not set `sandbox_permissions`).\n\nYou are a delegated subagent: your permission scope was fixed when you were started and cannot be widened from inside this session — operations that require approval are rejected automatically. When the task needs access beyond that scope, do not retry the denied operation; state the limitation in your reply so the delegating agent can handle it."
               }
             ],
             "source": {
               "kind": "plugin",
-              "plugin": "@deepseek-ai/dsh-system-prompt",
+              "plugin": "@greeneek/gnk-system-prompt",
               "form": "snapshot",
               "sections": [
                 {
                   "name": "sandbox:policy",
-                  "text": "Current DSH file policy: danger-full-access. The DSH file sandbox does not restrict file modifications by available operations."
+                  "text": "Current GNK file policy: danger-full-access. The GNK file sandbox does not restrict file modifications by available operations."
                 },
                 {
                   "name": "approval:policy",
@@ -3907,7 +3907,7 @@
           "data": {
             "header": {
               "config": {
-                "provider": "deepseek-official",
+                "provider": "greeneek-official",
                 "model": "smoke-model",
                 "reasoningEffort": "high",
                 "maxTokens": 256000
@@ -3947,7 +3947,7 @@
           "seq": 12,
           "time": 0,
           "data": {
-            "provider": "deepseek-official",
+            "provider": "greeneek-official",
             "model": "smoke-model",
             "contextWindow": 1000000
           }
@@ -3959,7 +3959,7 @@
       "payload": {
         "sessionId": "{{child-2}}",
         "event": {
-          "type": "session-log-deepseek/delivery-accepted",
+          "type": "session-log-greeneek/delivery-accepted",
           "seq": 13,
           "time": 0,
           "data": {
@@ -4097,7 +4097,7 @@
               ],
               "source": {
                 "kind": "model",
-                "provider": "deepseek-official",
+                "provider": "greeneek-official",
                 "model": "smoke-model"
               },
               "id": "{{messageId}}"
@@ -4281,7 +4281,7 @@
       "payload": {
         "sessionId": "{{parent}}",
         "event": {
-          "type": "session-log-deepseek/delivery-accepted",
+          "type": "session-log-greeneek/delivery-accepted",
           "seq": 74,
           "time": 0,
           "data": {
@@ -4425,7 +4425,7 @@
               ],
               "source": {
                 "kind": "model",
-                "provider": "deepseek-official",
+                "provider": "greeneek-official",
                 "model": "smoke-model"
               },
               "id": "{{messageId}}"
@@ -4546,7 +4546,7 @@
           "data": {
             "header": {
               "config": {
-                "provider": "deepseek-official",
+                "provider": "greeneek-official",
                 "model": "smoke-model",
                 "maxTokens": 256000,
                 "reasoningEffort": "high"
@@ -4582,7 +4582,7 @@
       "payload": {
         "sessionId": "{{parent}}",
         "event": {
-          "type": "session-log-deepseek/delivery-accepted",
+          "type": "session-log-greeneek/delivery-accepted",
           "seq": 86,
           "time": 0,
           "data": {
@@ -4720,7 +4720,7 @@
               ],
               "source": {
                 "kind": "model",
-                "provider": "deepseek-official",
+                "provider": "greeneek-official",
                 "model": "smoke-model"
               },
               "id": "{{messageId}}"

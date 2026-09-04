@@ -9,7 +9,7 @@ Archived: 2026-07-26
 
 可合并扩展的词汇映射表设计上通过声明合并来增长，代码库已在 `TurnEndReasonMap`（`packages/core/session/src/types.ts`）上明确了准入策略：像 `refusal` 这样的变体「在适配器或循环首次发出它之前，有意不纳入」。三个已声明的词汇项违反了该策略——每个都既无生产者也无消费方，其中两个甚至没有测试：
 
-- **`TextBlock`/`ToolResultBlock` 上的 `CacheHint` 及其 `cache?: CacheHint` 块字段**（`packages/llm/llm/src/types.ts`；图像块曾有第三个此类字段，已随图像块一同移除——参见[删除图像 Agent Note（agent 决策记录）](2026-07-04-drop-image-content-block.md)）。任何地方都没有构造带 `cache:` 的块——src、测试和文档粘贴均为空——两个适配器也都不读取 `.cache`：DeepSeek 的提示词缓存是自动的，因此适配器会从响应中映射出 `prompt_cache_hit_tokens`，却从不向请求中发送 hint。这是没有任何提供方能够遵守的 Anthropic 风格 `cache_control` 表面。
+- **`TextBlock`/`ToolResultBlock` 上的 `CacheHint` 及其 `cache?: CacheHint` 块字段**（`packages/llm/llm/src/types.ts`；图像块曾有第三个此类字段，已随图像块一同移除——参见[删除图像 Agent Note（agent 决策记录）](2026-07-04-drop-image-content-block.md)）。任何地方都没有构造带 `cache:` 的块——src、测试和文档粘贴均为空——两个适配器也都不读取 `.cache`：Greeneek 的提示词缓存是自动的，因此适配器会从响应中映射出 `prompt_cache_hit_tokens`，却从不向请求中发送 hint。这是没有任何提供方能够遵守的 Anthropic 风格 `cache_control` 表面。
 - **`MessageSourceMap.agent`**（`{ kind: 'agent'; agentId: string }`，同一文件）。零个构造点，包括测试在内。它预期的生产者在实现时并未使用它：subagent 后端将父级的提示词发送给子级时不带 `source`，因此记录为 `{ kind: 'user' }`，通用信封渲染器在插值 `source.kind` 时也从未对其做路由。
 - **`TurnTriggerMap.continuation`**（`packages/core/session/src/types.ts`）。agent loop（智能体循环）在结构上不可能发出它——continuation 发生在一个轮次*内部*作为后续步骤，而非作为新轮次——循环只构造 `message` 和 `injection` 触发器。唯一的写入者是一个手工构建的测试 fixture（测试前置数据），它只需要一个任意的非消息触发器（`packages/support/llm-replay/tests/llm-replay.spec.ts`），`injection` 触发器同样满足需求；唯一的生产环境触发器读取方 ACP（Agent Client Protocol）桥接层只过滤 `kind === 'message'`。
 

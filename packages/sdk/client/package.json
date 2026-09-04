@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-sdk-client",
-  "description": "TypeScript client SDK for driving a DeepSeek Harness runtime subprocess over stdio JSON-RPC: the DeepSeekHarness high-level turns API and the lower-level HarnessClient",
+  "name": "@greeneek/gnk-sdk-client",
+  "description": "TypeScript client SDK for driving a Greeneek Harness runtime subprocess over stdio JSON-RPC: the GreeneekHarness high-level turns API and the lower-level HarnessClient",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/sdk/client"
   },
   "type": "module",
@@ -26,18 +26,18 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@deepseek-ai/dsh": "workspace:*"
+    "@greeneek/gnk": "workspace:*"
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh-llm": "workspace:^",
-    "@deepseek-ai/dsh-sdk-protocol": "workspace:^",
-    "@deepseek-ai/dsh-session": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-llm": "workspace:^",
+    "@greeneek/gnk-sdk-protocol": "workspace:^",
+    "@greeneek/gnk-session": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-llm": "workspace:^",
-    "@deepseek-ai/dsh-sdk-protocol": "workspace:^",
-    "@deepseek-ai/dsh-session": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-llm": "workspace:^",
+    "@greeneek/gnk-sdk-protocol": "workspace:^",
+    "@greeneek/gnk-session": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   }
 }

@@ -2,13 +2,13 @@ import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { Context } from '@deepseek-ai/cordis'
-import Loader from '@deepseek-ai/cordis-plugin-loader'
+import { Context } from '@greeneek/cordis'
+import Loader from '@greeneek/cordis-plugin-loader'
 import { describe, expect, it } from 'vitest'
 
 describe('Loader internal shape detection', () => {
   it('tags the running Node loader with the resolver signature that runtime accepts', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'dsh-loader-shape-'))
+    const dir = mkdtempSync(join(tmpdir(), 'gnk-loader-shape-'))
     const baseUrl = pathToFileURL(dir).href + '/'
     const ctx = new Context()
     ctx.baseUrl = baseUrl

@@ -3,7 +3,7 @@
  * rows). The logged model text remains the single truth; this is presentation
  * only, and every part renders inline so a single-line message never breaks
  * across lines. Three decoration sources, by precedence: the wire session form
- * `@[label](dsh-session:...)` folds to its label; exact session labels
+ * `@[label](gnk-session:...)` folds to its label; exact session labels
  * supplied by an adjacent recall decorate their bare `@label` mention; and
  * plain `/name` / `@name` word-boundary tokens decorate by shape alone (sent
  * tokens were validated at compose time).
@@ -13,7 +13,7 @@ import { ReferenceIcon } from './ReferenceIcon.tsx'
 import css from './user-text.module.css'
 
 /** The wire form a session chip serializes to; label is the display text. */
-const SESSION_WIRE_RE = /@\[([^\]\n]+)\]\(dsh-session:[^)\s]+\)/gu
+const SESSION_WIRE_RE = /@\[([^\]\n]+)\]\(gnk-session:[^)\s]+\)/gu
 
 interface DecorationRange {
   readonly start: number

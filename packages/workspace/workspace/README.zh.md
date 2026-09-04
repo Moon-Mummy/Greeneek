@@ -3,13 +3,13 @@ description: "面向选择、挂载或排查持久 workspace 记录与会话头�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-workspace
+# @greeneek/gnk-workspace
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-workspace` 为宿主提供一组持久 workspace：命名用户目录，每个目录带有在其中运行的会话，并在重启之间保持稳定顺序。借助它，UI 可以显示项目侧边栏、把会话附加到正确的项目、把会话从分组中隐藏而不丢失它，以及移除项目——移除绝不会删除文件夹或会话历史，它们变成 Ungrouped。在需要持久项目分组的 GUI 或宿主组合中使用它；headless 与最小运行可以完全省略它。此包只面向宿主侧：模型、工具与 agent loop 永远不会看到它，因此不会增加任何 token、提示词或请求上下文。它需要会话存储与持久化后端一并挂载；设置只需几行组合配置。
+`gnk-workspace` 为宿主提供一组持久 workspace：命名用户目录，每个目录带有在其中运行的会话，并在重启之间保持稳定顺序。借助它，UI 可以显示项目侧边栏、把会话附加到正确的项目、把会话从分组中隐藏而不丢失它，以及移除项目——移除绝不会删除文件夹或会话历史，它们变成 Ungrouped。在需要持久项目分组的 GUI 或宿主组合中使用它；headless 与最小运行可以完全省略它。此包只面向宿主侧：模型、工具与 agent loop 永远不会看到它，因此不会增加任何 token、提示词或请求上下文。它需要会话存储与持久化后端一并挂载；设置只需几行组合配置。
 
 ## 目录
 
@@ -36,14 +36,14 @@ kind: "package-reference"
 此包本身不声明任何配置；它需要会话存储、会话持久化后端，以及保存其记录的存储行。最小组合如下：
 
 ```yaml
-- name: '@deepseek-ai/dsh-session'
-- name: '@deepseek-ai/dsh-session-persistence-jsonl'
-- name: '@deepseek-ai/dsh-storage'
-- name: '@deepseek-ai/dsh-storage-json'
-- name: '@deepseek-ai/dsh-storage-domain'
+- name: '@greeneek/gnk-session'
+- name: '@greeneek/gnk-session-persistence-jsonl'
+- name: '@greeneek/gnk-storage'
+- name: '@greeneek/gnk-storage-json'
+- name: '@greeneek/gnk-storage-domain'
   config:
     backend: json
-- name: '@deepseek-ai/dsh-workspace'
+- name: '@greeneek/gnk-workspace'
 ```
 
 挂载这些行之后，创建项目会立即出现在列表中并在重启后保留；首次启动还会按会话运行的目录对既有会话分组。如果缺少某个必需依赖，workspace 功能会一直不可用，直到它被挂载。

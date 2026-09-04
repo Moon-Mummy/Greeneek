@@ -10,11 +10,11 @@ Status: implemented
 
 ## 决定
 
-**一个读取方，多个派生面。**`dsh-client-ui-settings` 持有 `SettingsDescribeMirror`——浏览器中唯一的 `settings.describe` 读取方：一个持有完整应答的快照 store，由所属插件的两个订阅（`settings/document-updated`、`connection/reset`）负责刷新。并发的 `load()` 调用折叠进在飞读取加至多一次尾随重读。在飞槽位会在 loading 发布同步重入 `load()` 之前先取得 run 的所有权，随后在 run 自身 try/finally 内、与读取 rerun 标志相同的同步段中清空；若把清理挂在返回 promise 的 `.finally()` 上，它要晚一个微任务执行，落入该间隙的刷新会标记一个无人读取的 rerun。
+**一个读取方，多个派生面。**`gnk-client-ui-settings` 持有 `SettingsDescribeMirror`——浏览器中唯一的 `settings.describe` 读取方：一个持有完整应答的快照 store，由所属插件的两个订阅（`settings/document-updated`、`connection/reset`）负责刷新。并发的 `load()` 调用折叠进在飞读取加至多一次尾随重读。在飞槽位会在 loading 发布同步重入 `load()` 之前先取得 run 的所有权，随后在 run 自身 try/finally 内、与读取 rerun 标志相同的同步段中清空；若把清理挂在返回 promise 的 `.finally()` 上，它要晚一个微任务执行，落入该间隙的刷新会标记一个无人读取的 rerun。
 
 `bind()` 返回的 `SettingsScope<T>` 面保持不变，但 controller 现在是镜像上的 selector：自身没有读路径，decode 规则不变，写队列保留。提交成功的写入把应答的 view 折回镜像（`acceptView`），兄弟 scope 无需重读即可看到新 revision；这次折叠会废弃更早发出的在飞应答，而首次完整文档尚未建立时到达的写入会让该读取重跑，不会把单个 namespace 发布成残缺文档。失败的最新写入触发一次镜像恢复读取。跨命名空间的表面——插件目录 tab、permission 行（其动态枚举位于命名空间 schema 中，而 scope 有意不携带 schema）、models join、agent-preset 行的可写性、以及 `hasDocument`——消费 `ctx.settingsScope.describe()` 提供的共享读／折叠面（`getSnapshot`／`subscribe`／`ensure`／`acceptView`）。
 
-本决策更新了[通过 Host settings 持久化 Web 用户偏好](../bug-fix/2026-08-06-host-backed-web-preferences.zh.md)和[由插件自己拥有的设置表层](2026-08-12-plugin-owned-settings-surface.zh.md)所记录的浏览器读取与失效机制，同时保留其中关于偏好所有权与命名空间暴露的决策。它也取代了 [DeepSeek 官方首次使用凭据配置](../feature/2026-07-30-deepseek-onboarding-credential-setup.zh.md)中的设置直读描述；该联接的 settings 部分现在从本镜像派生。
+本决策更新了[通过 Host settings 持久化 Web 用户偏好](../bug-fix/2026-08-06-host-backed-web-preferences.zh.md)和[由插件自己拥有的设置表层](2026-08-12-plugin-owned-settings-surface.zh.md)所记录的浏览器读取与失效机制，同时保留其中关于偏好所有权与命名空间暴露的决策。它也取代了 [Greeneek 官方首次使用凭据配置](../feature/2026-07-30-greeneek-onboarding-credential-setup.zh.md)中的设置直读描述；该联接的 settings 部分现在从本镜像派生。
 
 冷启动预算由 `apps/web/tests/startup-rpc-budget.e2e.ts` 钉在两次读取：镜像在绑定时的急切读取，加上首连 reset 触发的读取——后者是有意保留的：它关闭了「文档提交落在急切 HTTP 读取与 SSE 订阅之间、其失效通知丢失」的窗口。方案最初的一次读取目标，若不接受该失效丢失窗口、或不把首次读取推迟到 SSE 流建立之后，无法达成。
 
