@@ -619,7 +619,7 @@ describe('projectedPageContent', () => {
   })
 
   it('drops the repository badge every page links from its footer', () => {
-    const badge = '[![](https://img.shields.io/badge/powered_by-gnk-4D6BFE?style=flat-square)](https://github.com/greeneek/greeneek-harness)'
+    const badge = '[![](https://img.shields.io/badge/powered_by-gnk-067A52?style=flat-square)](https://github.com/greeneek/greeneek-harness)'
     expect(projectedPageContent(`# Guide\n\nBody.\n\n${badge}\n`, page('zh-guide')))
       .toBe('# Guide\n\nBody.\n')
   })
@@ -645,7 +645,7 @@ describe('rawMarkdownPageContent', () => {
   })
 
   it('drops the language switcher and repository badge like the rendered site', () => {
-    const badge = '[![](https://img.shields.io/badge/powered_by-gnk-4D6BFE?style=flat-square)](https://github.com/greeneek/greeneek-harness)'
+    const badge = '[![](https://img.shields.io/badge/powered_by-gnk-067A52?style=flat-square)](https://github.com/greeneek/greeneek-harness)'
     expect(rawMarkdownPageContent(`# Guide\n\nEnglish | [中文](./x)\n\nBody.\n\n${badge}\n`, 'docs/guide.md'))
       .toBe('# Guide\n\nBody.\n')
   })

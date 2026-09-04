@@ -119,14 +119,45 @@ stricter than the pre-rebrand behavior — BYOK proxies remain allowed.
 
 `scripts/rebrand/gen-badge-png.mjs` and `gen-logomark-png.mjs` deterministically
 re-emit the badge PNG (726×120, "POWERED BY / GREENEEK", shields gray + brand
-blue, dependency-free 5×7 bitmap + own PNG encoder) and the logomark PNGs (512,
+green, dependency-free 5×7 bitmap + own PNG encoder) and the logomark PNGs (512,
 `tile`/`mark`). The favicon/wordmark SVGs were hand-replaced with a geometric
 `G` monogram (ring arc + bar), preserving each file's consumer contract
 (VitePress class-injects on `<svg `; `fill=currentColor`; the apps/web media
-query inverts the glyph). The brand accent stays `#4D6BFE` — a palette
-redesign is a design task, not a rename. The skill-badge integrity test pins a
-sha256 of the asset; the pin now records the GENERATED asset, and re-running
-either generator reproduces it byte-exactly.
+query inverts the glyph). The skill-badge integrity test pins a sha256 of the
+asset; the pin now records the GENERATED asset, and re-running either generator
+reproduces it byte-exactly.
+
+## D18 — the logo is sourced, and the accent is Greeneek green (supersedes D17)
+
+The P5 asset pass traded the brand mark for a generated monogram and kept the
+inherited `#4D6BFE` accent. Both halves were superseded: app branding is
+Greeneek, so the logo and the green theme are restored to the brand, not to a
+placeholder.
+
+- **Logo is the committed artwork again.** `apps/web/public/assets/logo-mark.png`
+  and `apps/web/public/favicon.png` carry the Greeneek ninja mark (1347×1168,
+  RGBA on transparency — the size `manifest.webmanifest` declares), which every
+  in-app surface reaches through `FishLogo`/`BrandWordmark`. The favicon vectors
+  are a silhouette traced from that same artwork (head + scarf tails, glowing
+  eyes kept as even-odd holes so the mark survives 16px), because the vectors
+  still in the tree at `70fe9633` were the upstream whale, not the Greeneek mark.
+  `apps/web/public/favicon.svg` keeps the black/`prefers-color-scheme: dark`
+  white contract `pwa-manifest.e2e.ts` asserts; `website/public/favicon.svg`
+  carries the brand greens.
+- **Accent is the app's own green, end to end.** `#4D6BFE` is retired from brand
+  surfaces: the badge generator's value panel and every `powered_by-gnk-*`
+  Shields URL now read `#067a52` (the `--dsw-static-greeneek-500` step, with
+  `#34d399` as the light step), and the VitePress brand vars — which the site
+  never set, so it rendered VitePress indigo — are pinned to the same pair.
+  `--dsw-static-greeneek-50` was the one blue value inside the green ramp
+  (`rgb(237, 243, 254)`, DeepSeek's tint) and drives the light-theme chat
+  bubble; it is now the ramp's own floor, `rgb(236, 253, 245)`.
+- **`gen-logomark-png.mjs` is no longer pointed at the app assets.** The
+  generator remains as a fallback monogram; the header says so, since re-running
+  it over `logo-mark.png` would flatten the real mark again.
+- **Archived notes keep their blue.** `.agents/notes/archived/**` still describes
+  the `#4D6BFE` banner gradient and the PNG fallback that shipped with it; those
+  are dated records of the upstream design, not brand promises.
 
 ## EXPECTED_DIFFS (parity triage)
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // Regenerates the `gnk-badge.png` skill asset as a shields-flat-square style
-// "powered by greeneek" badge: 726x120, gray label panel + brand-blue value
-// panel, white 5x7 bitmap text. Deterministic (no font loading, no network):
-// the PNG is written with a dependency-free encoder so the rebrand ships a
-// brand-correct asset everywhere the old one was referenced.
+// "powered by greeneek" badge: 726x120, gray label panel + Greeneek green
+// value panel, white 5x7 bitmap text. Deterministic (no font loading, no
+// network): the PNG is written with a dependency-free encoder so the brand
+// ships a badge in the same green as the rest of the theme.
 import { deflateSync } from 'node:zlib'
 import { writeFileSync } from 'node:fs'
 
@@ -11,7 +11,7 @@ const W = 726, H = 120
 const SCALE = 6, GLYPH_W = 5 * SCALE, ADVANCE = 6 * SCALE, PAD = 18
 const LABEL = 'POWERED BY', VALUE = 'GREENEEK'
 const LABEL_W = PAD * 2 + LABEL.length * ADVANCE - (ADVANCE - GLYPH_W)
-const LABEL_BG = [85, 85, 85], VALUE_BG = [77, 107, 254] // shields gray over the brand badge blue
+const LABEL_BG = [85, 85, 85], VALUE_BG = [6, 122, 82] // shields gray over the Greeneek brand green
 
 // Minimal 5x7 uppercase font (the only glyphs the badge needs).
 const F = {

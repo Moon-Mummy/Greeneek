@@ -81,4 +81,4 @@ The loader used in this repo supports a `!!js` tag for config values that must b
 
 Next: [Composition and HMR](06-composition-and-hmr.md) — treating `cordis.yml` as the application.
 
-[![](https://img.shields.io/badge/powered_by-gnk-4D6BFE?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)
+[![](https://img.shields.io/badge/powered_by-gnk-067A52?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)

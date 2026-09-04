@@ -110,4 +110,4 @@ needs-timer is PENDING — a required service is missing
 
 Next: [Into the harness](07-into-the-harness.md) — the same patterns against real harness services.
 
-[![](https://img.shields.io/badge/powered_by-gnk-4D6BFE?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)
+[![](https://img.shields.io/badge/powered_by-gnk-067A52?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)

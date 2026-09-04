@@ -34,7 +34,7 @@ describe('gnk-skill-badge', () => {
     expect(image.readUInt32BE(16)).toBe(726)
     expect(image.readUInt32BE(20)).toBe(120)
     expect(createHash('sha256').update(image).digest('hex')).toBe(
-      'd486a6a5a9985095b8ebbaf8d6a0fd43d3ba1061e55ac2fbdb46a77ac827e749',
+      '0bc17004e102a6b9a9e37accde8b344e7fc65f9f96e2d751387848c01c2d9e6f',
     )
   })
 })

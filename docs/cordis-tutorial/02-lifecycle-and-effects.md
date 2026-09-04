@@ -95,4 +95,4 @@ One ordering caveat: disposers start in reverse registration order, but multiple
 
 Next: [Services](03-services.md) — how plugins share capabilities.
 
-[![](https://img.shields.io/badge/powered_by-gnk-4D6BFE?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)
+[![](https://img.shields.io/badge/powered_by-gnk-067A52?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)

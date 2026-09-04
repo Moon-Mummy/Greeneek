@@ -110,4 +110,4 @@ needs-timer is PENDING — a required service is missing
 
 下一章：[进入 harness](07-into-the-harness.zh.md)：把相同模式用于真实的 harness 服务。
 
-[![](https://img.shields.io/badge/powered_by-gnk-4D6BFE?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)
+[![](https://img.shields.io/badge/powered_by-gnk-067A52?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)

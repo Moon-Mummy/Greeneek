@@ -95,4 +95,4 @@ PENDING → LOADING → ACTIVE → UNLOADING → DISPOSED
 
 下一章：[服务](03-services.zh.md)：插件如何共享功能。
 
-[![](https://img.shields.io/badge/powered_by-gnk-4D6BFE?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)
+[![](https://img.shields.io/badge/powered_by-gnk-067A52?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)
