@@ -276,19 +276,36 @@ export type OnboardingReadiness =
     kind: 'unavailable'
     reason:
       | 'load-failed'
-      | 'provider-inactive'
       | 'credentials-unavailable'
       | 'settings-read-only'
       | 'credential-read-only'
   }
 
 /**
+ * Whether this page could store a key for a row: it addresses a settings
+ * namespace (a live route with no settings address is configured elsewhere)
+ * and the credential it would write is not held read-only by the environment.
+ * @param row - one joined provider row.
+ * @returns whether onboarding can offer this provider.
+ */
+export function providerSetupCandidate(row: ProviderRow): boolean {
+  if (row.entry.settingsNs === '') return false
+  const credential = row.apiKeyEnv === undefined ? row.derivedCredential : row.credential
+  return credential?.writable !== false
+}
+
+/**
  * Project first-run readiness from the provider/settings/credential join used
  * by the Models page. The step exists to leave the user with a model to talk
- * to, so ANY usable provider ends it; only when none exists does the official
- * Greeneek route — the one route the prompt can offer a key field for — decide
- * whether prompting can help. A missing official configurable-provider
- * declaration means the adapter is not repairable by navigating to Models.
+ * to, so ANY usable provider ends it; only when none exists does the step ask
+ * for a key.
+ *
+ * Which provider it asks for is deliberately NOT a fixed route. This build
+ * ships no provider of its own — every route is one the user's own key
+ * activates — so the step offers the configurable directory and lets the user
+ * choose. `adapter-absent` therefore means the composition mounts no
+ * configurable adapter at all, which navigating to Models could not repair
+ * either.
  * @param state - current shared Models join snapshot.
  * @returns the onboarding state without reading a parallel fact source.
  */
@@ -303,20 +320,20 @@ export function onboardingReadiness(state: ModelsSettingsState): OnboardingReadi
     }
   }
   if (state.rows.some(providerUsable)) return { kind: 'provider-ready' }
-  const row = state.rows.find(candidate =>
-    candidate.entry.provider === 'greeneek-official'
-    && candidate.entry.settingsNs === 'llm-greeneek'
-    && candidate.entry.settingsPath.length === 0)
-  if (row === undefined) return { kind: 'adapter-absent' }
-  if (!row.entry.active) {
+  const addressable = state.rows.filter(row => row.entry.settingsNs !== '')
+  if (addressable.length === 0) return { kind: 'adapter-absent' }
+  const candidates = addressable.filter(providerSetupCandidate)
+  // Every adapter this composition mounts keeps its credential in the
+  // environment, so the page has nothing it could write for any of them.
+  if (candidates.length === 0) {
     return {
       kind: 'unavailable',
-      reason: 'provider-inactive',
+      reason: 'credential-read-only',
     }
   }
-  // Past the usable gate an active route names a reference it has no stored
-  // credential for, so the remaining questions are all about that credential.
-  if (state.credentialError !== null || row.credential === undefined) {
+  // Credential state is what the step is about, so a describe that failed
+  // outright leaves it unable to say whether prompting would help.
+  if (state.credentialError !== null) {
     return {
       kind: 'unavailable',
       reason: 'credentials-unavailable',
@@ -328,10 +345,12 @@ export function onboardingReadiness(state: ModelsSettingsState): OnboardingReadi
       reason: 'settings-read-only',
     }
   }
-  if (!row.credential.writable) {
+  // Every offerable provider's credential is held by the environment, so there
+  // is no key for this page to write.
+  if (candidates.every(row => (row.apiKeyEnv === undefined ? row.derivedCredential : row.credential) === undefined)) {
     return {
       kind: 'unavailable',
-      reason: 'credential-read-only',
+      reason: 'credentials-unavailable',
     }
   }
   return { kind: 'credential-missing' }

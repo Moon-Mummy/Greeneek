@@ -21,7 +21,7 @@ Greeneek 是基于 MIT 许可的 [Greeneek Harness](https://github.com/greeneek/
 它构建于**一切皆插件**的架构之上，由 [Cordis](https://github.com/cordiverse/cordis) 驱动，其设计参见论文 [_A Programming Paradigm for Spatiotemporal Composability_](https://arxiv.org/abs/2608.25512)。
 
 - **运行界面**：Web GUI（`gnk --profile web`）、headless 运行、自动化 ACP 服务器、TypeScript SDK 与 Python SDK。
-- **Greeneek 模型**：`Greeneek`、`Greeneek-V4-Flash`、`Greeneek-V4-Pro`、`Greeneek-V4-Flash-Vision-Exp`。
+- **自带模型**：OpenAI、Anthropic、Google 等 35+ 条路由，由你自己的 API 密钥激活。
 - **会话与追踪**：持久的会话存储、标题与遥测。
 - **可扩展**：每个能力都是插件；为社区插件添加 [`gnk-plugin`](https://github.com/topics/gnk-plugin) 话题。
 
@@ -32,11 +32,9 @@ Greeneek 是基于 MIT 许可的 [Greeneek Harness](https://github.com/greeneek/
 - 应用品牌保持为 **Greeneek**。
 - Logo 保持为 **Greeneek**。
 - 绿色主题保持为 **Greeneek green**。
-- 模型提供商与模型名称回到 **Greeneek**：
-  - `Greeneek`
-  - `Greeneek-V4-Flash`
-  - `Greeneek-V4-Pro`
-  - `Greeneek-V4-Flash-Vision-Exp`
+- 模型**属于你，而非我们**：本项目不运营任何推理服务，也不自带模型提供方。
+  每一条模型路由都由你自己的 API 密钥激活。在**设置 → 模型**中添加密钥
+  （或设置对应的环境变量，例如 `OPENAI_API_KEY`），该提供方即可在各处选用。
 
 ## 开发者预览
 

@@ -11,7 +11,7 @@ import {
   WELCOME_NOTICE_ACK_FIELD, WELCOME_NOTICE_SETTINGS_NAMESPACE, WELCOME_NOTICE_VERSION,
 } from '../src/onboarding-copy.ts'
 import { ModelsSection } from '../src/client/ModelsSection.tsx'
-import { GreeneekOnboardingDialog } from '../src/client/GreeneekOnboardingDialog.tsx'
+import { ProviderOnboardingDialog } from '../src/client/ProviderOnboardingDialog.tsx'
 import { WelcomeNotice } from '../src/client/WelcomeNotice.tsx'
 import { apply as hostApply } from '../src/index.ts'
 
@@ -97,14 +97,14 @@ describe('ui-settings-models apply', () => {
       component: WelcomeNotice,
       options: { id: 'welcome-notice', order: -100 },
     })
-    const greeneek = onboarding.find(entry => entry.options.id === 'greeneek-official')!
-    expect(greeneek.component).toBe(GreeneekOnboardingDialog)
-    expect(greeneek.options).toMatchObject({ id: 'greeneek-official', order: 0 })
-    const greeneekInjected = (
-      greeneek.inject as unknown as () => import('../src/client/GreeneekOnboardingDialog.tsx').GreeneekOnboardingInjected
+    const providerSetup = onboarding.find(entry => entry.options.id === 'provider-setup')!
+    expect(providerSetup.component).toBe(ProviderOnboardingDialog)
+    expect(providerSetup.options).toMatchObject({ id: 'provider-setup', order: 0 })
+    const providerSetupInjected = (
+      providerSetup.inject as unknown as () => import('../src/client/ProviderOnboardingDialog.tsx').ProviderOnboardingInjected
     )()
-    expect(greeneekInjected.hooks.models).toBe(injected.controller.store)
-    expect(typeof greeneekInjected.operations.storeCredential).toBe('function')
+    expect(providerSetupInjected.hooks.models).toBe(injected.controller.store)
+    expect(typeof providerSetupInjected.operations.storeCredential).toBe('function')
 
     const after = await bench()
     await after.ctx.plugin({ inject: [...inject], apply }).await()
@@ -245,14 +245,14 @@ describe('pushed invalidations', () => {
     declare(b.slots)
     await b.ctx.plugin({ inject: [...inject], apply }).await()
     const entry = b.slots.entries('settings.onboarding')
-      .find(candidate => candidate.options.id === 'greeneek-official')!
+      .find(candidate => candidate.options.id === 'provider-setup')!
     const injected = (
       entry.inject as unknown as
-      () => import('../src/client/GreeneekOnboardingDialog.tsx').GreeneekOnboardingInjected
+      () => import('../src/client/ProviderOnboardingDialog.tsx').ProviderOnboardingInjected
     )()
     injected.controller.store.update((state) => { state.status = 'ready' })
     const load = vi.spyOn(injected.controller, 'load').mockResolvedValue()
-    b.remote.emit('credentials/reference-updated', ['GREENEEK_API_KEY'])
+    b.remote.emit('credentials/reference-updated', ['OPENAI_API_KEY'])
     expect(load).toHaveBeenCalledTimes(1)
   })
 

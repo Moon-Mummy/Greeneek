@@ -1,15 +1,16 @@
 // @vitest-environment jsdom
-/** First-run Greeneek prompt behavior over the shared Models join. */
+/** First-run provider-setup prompt behavior over the shared Models join. */
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import Schema from '@greeneek/schemastery'
 import type { SettingsNamespaceView } from '@greeneek/gnk-api-remotes/client'
 import type { JsonValue } from '@greeneek/gnk-util-values'
 import { bindSnapshotSelector, RemoteError } from '@greeneek/gnk-client-test-runtime'
-import { GreeneekOnboardingDialog } from '../src/client/GreeneekOnboardingDialog.tsx'
-import type { GreeneekOnboardingDialogProps } from '../src/client/GreeneekOnboardingDialog.tsx'
+import { initialOnboardingProvider, ProviderOnboardingDialog } from '../src/client/ProviderOnboardingDialog.tsx'
+import type { ProviderOnboardingDialogProps } from '../src/client/ProviderOnboardingDialog.tsx'
 import { SettingsDescribeMirror } from '@greeneek/gnk-client-ui-settings/src/client/settings-mirror.ts'
 import { ModelsSettingsStore } from '../src/client/store.ts'
+import type { ProviderRow } from '../src/client/store.ts'
 import { createModelsOperations } from '../src/client/operations.ts'
 import { en } from '../src/client/locales.ts'
 import { settingsSchema } from './settings-schema.client.ts'
@@ -27,28 +28,42 @@ function remoteFail(message: string) {
   return { ok: false as const, error: new RemoteError('gateway/internal', message, {}) }
 }
 
-const GreeneekConfig = Schema.object({
+/** The routes the shipped multi-provider adapter offers a first-run user. */
+const ROUTES = [
+  { provider: 'openai', displayName: 'OpenAI', keyRef: 'OPENAI_API_KEY' },
+  { provider: 'anthropic', displayName: 'Anthropic', keyRef: 'ANTHROPIC_API_KEY' },
+] as const
+
+const ProviderProfile = Schema.object({
   apiKeyEnv: Schema.string().role('credential-ref'),
   baseURL: Schema.string().pattern(/^https:\/\//),
-  reasoningEffort: Schema.union(['off', 'low', 'high', 'max']),
-  defaultContextWindow: Schema.number().step(1).min(1),
+  api: Schema.union(['openai-chat', 'anthropic-messages']),
   models: Schema.array(Schema.object({
     id: Schema.string().required(),
     name: Schema.string(),
-    description: Schema.string(),
     contextWindow: Schema.number().step(1).min(1),
   })),
 })
 
-type AttentionSnapshot = Parameters<Parameters<GreeneekOnboardingDialogProps['useSessionPendingInteraction']>[0]>[0]
-const noAttention: AttentionSnapshot = new Map()
-const useSessionPendingInteraction: GreeneekOnboardingDialogProps['useSessionPendingInteraction'] = selector => selector(noAttention)
+const PiAiConfig = Schema.object({
+  providers: Schema.dict(ProviderProfile),
+})
 
-function greeneekNamespace(apiKeyEnv: string | null): SettingsNamespaceView {
-  const value = apiKeyEnv === null ? {} : { apiKeyEnv }
+type AttentionSnapshot = Parameters<Parameters<ProviderOnboardingDialogProps['useSessionPendingInteraction']>[0]>[0]
+const noAttention: AttentionSnapshot = new Map()
+const useSessionPendingInteraction: ProviderOnboardingDialogProps['useSessionPendingInteraction'] = selector =>
+  selector(noAttention)
+
+function piAiNamespace(apiKeyEnv: string | null): SettingsNamespaceView {
+  const value = {
+    providers: Object.fromEntries(ROUTES.map(route => [
+      route.provider,
+      apiKeyEnv === null ? {} : { apiKeyEnv: apiKeyEnv === 'default' ? route.keyRef : apiKeyEnv },
+    ])),
+  }
   return {
-    ns: 'llm-greeneek',
-    schema: JSON.parse(JSON.stringify(GreeneekConfig.toJSON())) as JsonValue,
+    ns: 'llm-pi-ai',
+    schema: JSON.parse(JSON.stringify(PiAiConfig.toJSON())) as JsonValue,
     value,
     base: value,
     user: {},
@@ -64,7 +79,7 @@ function harness(options: {
   providerActive?: boolean
   settingsNamespace?: boolean
   apiKeyEnv?: string | null
-  configured?: () => boolean
+  configured?: (ref: string) => boolean
   credential?: { source?: string; writable: boolean }
   describeFailure?: string
   settingsWritable?: boolean
@@ -76,13 +91,13 @@ function harness(options: {
     appRoot.id = 'root'
     document.body.append(appRoot)
   }
-  let fileConfigured = false
-  const configured = options.configured ?? (() => fileConfigured)
-  const apiKeyEnv = options.apiKeyEnv === undefined ? 'GREENEEK_API_KEY' : options.apiKeyEnv
-  const mutate = vi.fn(() => Promise.resolve(remoteOk(greeneekNamespace(apiKeyEnv))))
-  const set = vi.fn((_ref: string, _value: string) => {
+  const configuredRefs = new Set<string>()
+  const configured = options.configured ?? ((ref: string) => configuredRefs.has(ref))
+  const apiKeyEnv = options.apiKeyEnv === undefined ? 'default' : options.apiKeyEnv
+  const mutate = vi.fn(() => Promise.resolve(remoteOk(piAiNamespace(apiKeyEnv))))
+  const set = vi.fn((ref: string, _value: string) => {
     if (options.setFailure !== undefined) return Promise.resolve(remoteFail(options.setFailure))
-    fileConfigured = true
+    configuredRefs.add(ref)
     return Promise.resolve(remoteOk(undefined))
   })
   const face = {
@@ -92,18 +107,18 @@ function harness(options: {
         return Promise.resolve(remoteOk(
           options.provider === false || options.providerActive === false
             ? []
-            : [{ id: 'greeneek-official', name: 'Greeneek' }],
+            : ROUTES.map(route => ({ id: route.provider, name: route.displayName })),
         ))
       },
       listConfigurableProviders: () => Promise.resolve(remoteOk(
         options.provider === false
           ? []
-          : [{
-            provider: 'greeneek-official',
-            displayName: 'Greeneek',
-            settingsNs: options.providerSettingsNs ?? 'llm-greeneek',
-            settingsPath: [],
-          }],
+          : ROUTES.map(route => ({
+            provider: route.provider,
+            displayName: route.displayName,
+            settingsNs: options.providerSettingsNs ?? 'llm-pi-ai',
+            settingsPath: ['providers', route.provider],
+          })),
       )),
       discoverModels: () => Promise.resolve(remoteOk([])),
     },
@@ -111,21 +126,22 @@ function harness(options: {
       describe: () => Promise.resolve(remoteOk({
         writable: options.settingsWritable ?? true,
         hasDocument: false,
-        namespaces: options.settingsNamespace === false ? [] : [greeneekNamespace(apiKeyEnv)],
+        namespaces: options.settingsNamespace === false ? [] : [piAiNamespace(apiKeyEnv)],
       })),
       mutate,
     },
     credentials: {
       describe: () => options.describeFailure === undefined
-        ? Promise.resolve(remoteOk({
-          GREENEEK_API_KEY: {
-            configured: configured(),
-            ...configured() && options.credential?.source !== undefined
+        ? Promise.resolve(remoteOk(Object.fromEntries(ROUTES.map(route => [
+          route.keyRef,
+          {
+            configured: configured(route.keyRef),
+            ...configured(route.keyRef) && options.credential?.source !== undefined
               ? { source: options.credential.source }
               : {},
             writable: options.credential?.writable ?? true,
           },
-        }))
+        ]))))
         : Promise.resolve(remoteFail(options.describeFailure)),
       set,
     },
@@ -137,8 +153,8 @@ function harness(options: {
   const openSection = vi.fn()
   const complete = vi.fn()
   const unusedHook = (() => { throw new Error('unused standard hook') }) as never
-  const props: GreeneekOnboardingDialogProps = {
-    stepId: 'greeneek-official',
+  const props: ProviderOnboardingDialogProps = {
+    stepId: 'provider-setup',
     complete,
     openSection,
     useSessions: unusedHook,
@@ -152,21 +168,35 @@ function harness(options: {
   }
   return {
     controller, complete, openSection, props, mutate, set,
-    configure: () => { fileConfigured = true },
+    configure: (ref = ROUTES[0].keyRef) => { configuredRefs.add(ref) },
   }
 }
 
-describe('GreeneekOnboardingDialog', () => {
+describe('initialOnboardingProvider', () => {
+  it('opens on the first route the directory lists, and on none when empty', () => {
+    const candidate = (provider: string): ProviderRow => ({
+      entry: { provider, displayName: provider, settingsNs: 'llm-pi-ai', settingsPath: [], active: true },
+      configured: false,
+      removable: false,
+      apiKeyEnv: undefined,
+      credential: undefined,
+    })
+    expect(initialOnboardingProvider([candidate('openai'), candidate('anthropic')])).toBe('openai')
+    expect(initialOnboardingProvider([])).toBeUndefined()
+  })
+})
+
+describe('ProviderOnboardingDialog', () => {
   it('renders when the shell root is absent', async () => {
     const h = harness()
     document.getElementById('root')!.remove()
-    render(<GreeneekOnboardingDialog {...h.props} />)
+    render(<ProviderOnboardingDialog {...h.props} />)
     expect(await screen.findByRole('dialog', { name: en.onboardingTitle })).toBeTruthy()
   })
 
   it('loads a credential-only modal, inerts the product, and focuses the key', async () => {
     const h = harness()
-    render(<GreeneekOnboardingDialog {...h.props} />)
+    render(<ProviderOnboardingDialog {...h.props} />)
     expect(await screen.findByRole('dialog', { name: en.onboardingTitle })).toBeTruthy()
     expect(document.getElementById('root')?.inert).toBe(true)
     expect(screen.getByText(en.onboardingDescription)).toBeTruthy()
@@ -175,11 +205,35 @@ describe('GreeneekOnboardingDialog', () => {
     expect(screen.queryByText(en.customized)).toBeNull()
   })
 
+  it('offers every configurable route and opens on the first one', async () => {
+    const h = harness()
+    render(<ProviderOnboardingDialog {...h.props} />)
+    await screen.findByRole('dialog')
+    const chooser = screen.getByLabelText<HTMLSelectElement>(en.provider)
+    expect([...chooser.options].map(option => option.value)).toEqual(['openai', 'anthropic'])
+    expect(chooser.value).toBe('openai')
+  })
+
+  it('switches provider without carrying the previous route\'s draft key', async () => {
+    const h = harness()
+    render(<ProviderOnboardingDialog {...h.props} />)
+    await screen.findByRole('dialog')
+    fireEvent.change(screen.getByLabelText(en.keyInput), { target: { value: 'sk-openai' } })
+    fireEvent.change(screen.getByLabelText(en.provider), { target: { value: 'anthropic' } })
+    await waitFor(() => {
+      expect(screen.getByLabelText<HTMLInputElement>(en.keyInput).value).toBe('')
+    })
+    fireEvent.change(screen.getByLabelText(en.keyInput), { target: { value: 'sk-anthropic' } })
+    fireEvent.click(screen.getByRole('button', { name: en.onboardingSave }))
+    await waitFor(() => { expect(h.set).toHaveBeenCalledOnce() })
+    expect(h.set.mock.calls[0]).toEqual(['ANTHROPIC_API_KEY', 'sk-anthropic'])
+  })
+
   it('cannot be dismissed implicitly and restores the previous inert state', async () => {
     const h = harness()
     const appRoot = document.getElementById('root')!
     appRoot.inert = true
-    const view = render(<GreeneekOnboardingDialog {...h.props} />)
+    const view = render(<ProviderOnboardingDialog {...h.props} />)
     await screen.findByRole('dialog')
 
     fireEvent.keyDown(document, { key: 'Escape' })
@@ -193,7 +247,7 @@ describe('GreeneekOnboardingDialog', () => {
 
   it('requires a non-blank key before Save and continue is available', async () => {
     const h = harness()
-    render(<GreeneekOnboardingDialog {...h.props} />)
+    render(<ProviderOnboardingDialog {...h.props} />)
     await screen.findByRole('dialog')
     const save = screen.getByRole<HTMLButtonElement>('button', { name: en.onboardingSave })
     expect(save.disabled).toBe(true)
@@ -208,7 +262,7 @@ describe('GreeneekOnboardingDialog', () => {
       [{ setFailure: 'credential was rejected' }, 'credential was rejected'],
     ] as const) {
       const h = harness(options)
-      const view = render(<GreeneekOnboardingDialog {...h.props} />)
+      const view = render(<ProviderOnboardingDialog {...h.props} />)
       await screen.findByRole('dialog')
       fireEvent.change(screen.getByLabelText(en.keyInput), { target: { value: 'sk-live' } })
       fireEvent.click(screen.getByRole('button', { name: en.onboardingSave }))
@@ -223,7 +277,7 @@ describe('GreeneekOnboardingDialog', () => {
 
   it('allows configure-later dismissal without opening settings', async () => {
     const h = harness()
-    render(<GreeneekOnboardingDialog {...h.props} />)
+    render(<ProviderOnboardingDialog {...h.props} />)
     await screen.findByRole('dialog')
     fireEvent.click(screen.getByRole('button', { name: en.onboardingLater }))
     expect(h.complete).toHaveBeenCalledOnce()
@@ -232,17 +286,16 @@ describe('GreeneekOnboardingDialog', () => {
     expect(h.mutate).not.toHaveBeenCalled()
   })
 
-  it('does not block the product when Greeneek setup is unavailable', async () => {
+  it('does not block the product when provider setup is unavailable', async () => {
     for (const h of [
       harness({ describeFailure: 'credentials service is absent' }),
       harness({ credential: { writable: false } }),
       harness({ settingsWritable: false }),
       harness({ providersFailure: 'the provider directory is unavailable' }),
-      harness({ providerActive: false }),
       harness({ settingsNamespace: false }),
       harness({ apiKeyEnv: null }),
     ]) {
-      const view = render(<GreeneekOnboardingDialog {...h.props} />)
+      const view = render(<ProviderOnboardingDialog {...h.props} />)
       await act(async () => { await h.controller.load() })
       expect(screen.queryByRole('dialog')).toBeNull()
       await waitFor(() => { expect(h.complete).toHaveBeenCalledOnce() })
@@ -257,7 +310,7 @@ describe('GreeneekOnboardingDialog', () => {
       harness({ providerSettingsNs: '' }),
       harness({ configured: () => true, credential: { source: 'env', writable: false } }),
     ]) {
-      const view = render(<GreeneekOnboardingDialog {...h.props} />)
+      const view = render(<ProviderOnboardingDialog {...h.props} />)
       await act(async () => { await h.controller.load() })
       expect(screen.queryByRole('dialog')).toBeNull()
       await waitFor(() => { expect(h.complete).toHaveBeenCalledOnce() })
@@ -267,7 +320,7 @@ describe('GreeneekOnboardingDialog', () => {
 
   it('closes when an external credential invalidation refreshes the shared join', async () => {
     const h = harness()
-    render(<GreeneekOnboardingDialog {...h.props} />)
+    render(<ProviderOnboardingDialog {...h.props} />)
     await screen.findByRole('dialog')
     h.configure()
     await act(async () => { await h.controller.load() })

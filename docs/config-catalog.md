@@ -38,16 +38,23 @@ Source: [`packages/acp/acp/src/index.ts:75`](../packages/acp/acp/src/index.ts)
 ## `@greeneek/gnk-agent-default-model`
 
 ```ts config-catalog
-/** Composition entry for the default model selection. */
+/**
+ * Composition entry for the default model selection. Both halves are optional:
+ * a deployment that ships no provider of its own pins nothing, and the default
+ * is then resolved live from the adapter registry by
+ * {@link AgentDefaultModelConfig.resolveSelection}. Pinning a route no mounted
+ * adapter serves would only fail at the first request, so absence is modelled
+ * as absence rather than as a placeholder route.
+ */
 export interface Config {
-  /** Registered provider route. */
-  provider: string
-  /** Provider-owned model id. */
-  model: string
+  /** Registered provider route; omitted defers to the user's own configuration. */
+  provider?: string
+  /** Provider-owned model id; omitted defers to the user's own configuration. */
+  model?: string
 }
 ```
 
-Source: [`packages/core/agent-default-model/src/index.ts:41`](../packages/core/agent-default-model/src/index.ts)
+Source: [`packages/core/agent-default-model/src/index.ts:63`](../packages/core/agent-default-model/src/index.ts)
 
 <a id="greeneekgnk-agent-instructions"></a>
 

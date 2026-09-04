@@ -10,13 +10,18 @@ import type {
 /**
  * Build the browser model catalog without requiring a Session.
  * @param ctx - Host context carrying the live LLM registry.
- * @param defaultSelection - deployment default used before a Session selects a model.
+ * @param defaultSelection - deployment default used before a Session selects a
+ * model. Resolved rather than merely read, so a deployment that pins no
+ * provider still reports the route the user's own key activated; `null` only
+ * when nothing can serve a request yet, which the browser renders as the empty
+ * first-run state rather than as a selection it cannot serve.
  * @returns successful non-empty provider groups and isolated provider failures.
  */
 export async function buildModelCatalog(
   ctx: Context,
-  defaultSelection: ModelSelection = ctx.agentDefaultModel.currentSelection(),
+  defaultSelection?: ModelSelection | undefined,
 ): Promise<ModelCatalog> {
+  const selection = defaultSelection ?? await ctx.agentDefaultModel.resolveSelection()
   const providers = ctx.llm.listProviders()
   const catalog = await Promise.all(providers.map(async (provider) => {
     try {
@@ -58,7 +63,7 @@ export async function buildModelCatalog(
     }
   }))
   return {
-    default: { ...defaultSelection },
+    default: selection === undefined ? null : { ...selection },
     routableProviders: providers.map(provider => provider.id),
     groups: catalog.flatMap(item => item.kind === 'group' ? [item.group] : [])
       .filter(group => group.models.length > 0),

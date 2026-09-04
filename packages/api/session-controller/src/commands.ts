@@ -243,7 +243,10 @@ export class SessionCommandController {
     const childId = brandString<SessionId>(`session-${randomUUID()}`)
     const composition = await this.agents.composeAgent(this.agents.presetForObservation(source))
     try {
-      const { provider, model } = this.ctx.agentDefaultModel.currentSelection()
+      // A fork inherits its parent's logged selection through the seeded
+      // events, so an absent deployment default leaves both halves unset
+      // rather than blocking the fork.
+      const selected = this.ctx.agentDefaultModel.currentSelection()
       await this.ctx.agents.create({
         sessionId: childId,
         seed: source.events.slice(0, cut),
@@ -256,7 +259,9 @@ export class SessionCommandController {
             ? {}
             : { agentPreset: composition.agentPreset }),
         },
-        agentOptions: { provider, model },
+        agentOptions: selected === undefined
+          ? {}
+          : { provider: selected.provider, model: selected.model },
         setup: composition.setup,
       })
     } catch (error) {
@@ -298,6 +303,17 @@ export class SessionCommandController {
     }
     const agent = await this.resolveAgent(request.sessionId)
     const selection = this.agents.selectionFor(agent).current
+    // No selection at all is the first-run posture: the deployment pins no
+    // default and the user has not configured a provider yet. It is reported
+    // as the same unavailable-model failure the picker already handles, but
+    // with copy that names the actual remedy instead of a missing route.
+    if (selection === undefined) {
+      throw new RemoteError(
+        'session/model-unavailable',
+        'no model is configured; add a provider API key in Settings → Models, then select a model',
+        {},
+      )
+    }
     if (!routeServed(this.ctx, selection.provider)) {
       throw new RemoteError(
         'session/model-unavailable',
@@ -314,7 +330,9 @@ export class SessionCommandController {
     const admit = async (): Promise<SessionPromptValue> => {
       try {
         if (hasImage) {
-          const current = this.agents.selectionFor(agent).current
+          // The gate above already refused a promptless selection, and this
+          // reads the same ref; the fallback keeps the narrowing local.
+          const current = this.agents.selectionFor(agent).current ?? selection
           const model = await this.ctx.llm.resolveModelInfo(current.provider, current.model)
           if (model.inputModalities !== undefined && !model.inputModalities.includes('image')) {
             throw new RemoteError(

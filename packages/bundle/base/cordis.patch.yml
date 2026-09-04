@@ -72,11 +72,13 @@
 
     # The transport-independent default for Agents created by entry points.
     # Settings may supply a saved selection; consumers read it at creation time.
+    # No provider/model is pinned: this build ships no provider of its own, so
+    # the default is whichever route the user's own API key activated (the
+    # first registered one until they choose otherwise) and the model picker's
+    # saved choice from then on. A deployment that wants a fixed default states
+    # `provider` and `model` here.
     - id: agent-default-model
       name: '@greeneek/gnk-agent-default-model'
-      config:
-        provider: greeneek-official
-        model: greeneek-v4-flash
 
     - id: jobs
       name: '@greeneek/gnk-jobs-local'
@@ -84,9 +86,9 @@
     - id: llm-retry
       name: '@greeneek/gnk-llm-retry'
 
-    # User-settings document (`$GNK_HOME/settings.yaml`, hot-reloaded): a
-    # `llm-greeneek:` or `llm-pi-ai:` section there overrides the adapter entries
-    # below without a restart, and is what the web Models page writes.
+    # User-settings document (`$GNK_HOME/settings.yaml`, hot-reloaded): an
+    # `llm-pi-ai:` section there activates provider routes with the user's own
+    # keys without a restart, and is what the web Models page writes.
     - id: settings
       name: '@greeneek/gnk-settings-file'
 
@@ -435,29 +437,39 @@
 
     # The shared base enables the stable model-facing web_search and web_fetch
     # tools. The Web app disables this host row and composes both tools per agent
-    # preset; products with a stricter network policy override tool-web. Greeneek
-    # search resolves the same GREENEEK_API_KEY
-    # credential the Models page manages for chat, at each search; its Messages
-    # endpoint is separate from the chat-completions endpoint, so it takes its own
-    # base-URL override. Anonymous fetch accepts only public HTTP(S) destinations,
-    # resolves and validates every destination, and pins every actual connection.
-    # Search is a full auxiliary model request with server-side retrieval, so this
-    # shipped Greeneek route gets 60s while the provider-neutral tool default
-    # remains 30s.
+    # preset; products with a stricter network policy override tool-web.
+    # Anonymous fetch accepts only public HTTP(S) destinations, resolves and
+    # validates every destination, and pins every actual connection.
+    #
+    # No search provider is pinned: the Greeneek search route talks to
+    # `api.greeneek.dev`, which no deployment of this repository operates, so
+    # naming it here made every web_search fail against a host that does not
+    # resolve. `gnk-web` auto-selects when exactly one usable search provider is
+    # registered, so mounting one (Exa or Perplexity below, with its key) is all
+    # a deployment needs; with none, `web_search` reports that it is
+    # unconfigured while `web_fetch` keeps working.
     - id: web
       name: '@greeneek/gnk-web'
       config:
-        searchProvider: greeneek-official
         fetchProvider: http
-
-    - id: web-search-greeneek
-      name: '@greeneek/gnk-web-search-greeneek'
-      config:
-        apiKeyEnv: GREENEEK_API_KEY
 
     - id: web-fetch-http
       name: '@greeneek/gnk-web-fetch-http'
 
+    # Both search providers mount unconditionally and report themselves
+    # unavailable until their key is present ($EXA_API_KEY, $PERPLEXITY_API_KEY),
+    # so an unkeyed deployment registers no usable provider and auto-selection
+    # stays unambiguous. Setting both keys is the one case that needs
+    # `searchProvider` above to name the winner.
+    - id: web-search-exa
+      name: '@greeneek/gnk-web-search-exa'
+
+    - id: web-search-perplexity
+      name: '@greeneek/gnk-web-search-perplexity'
+
+    # Search is a full auxiliary model request with server-side retrieval for
+    # some providers, so the tool keeps a 60s ceiling over the provider-neutral
+    # 30s default.
     - id: tool-web
       name: '@greeneek/gnk-tool-web'
       config:
@@ -490,9 +502,15 @@
     - id: fs-sandbox
       name: '@greeneek/gnk-fs-sandbox'
 
-    # The native Greeneek adapter. No key or endpoint is inlined: both resolve per
-    # request from the `llm-greeneek:` settings section over this entry, with the
-    # key coming from the credential store below. Thinking defaults are a deployment
-    # choice.
-    - id: llm-greeneek
-      name: '@greeneek/gnk-llm-greeneek'
+    # The native Greeneek adapter is NOT mounted here. It speaks to
+    # `api.greeneek.dev`, which no deployment of this repository operates, so
+    # shipping it would put a route in the model picker that can never answer a
+    # request and make it the default every new session starts on. Providers
+    # come from the user's own keys through `llm-pi-ai` above; a deployment that
+    # does run a Greeneek-protocol endpoint mounts the adapter itself:
+    #
+    #   - insert:
+    #       - id: llm-greeneek
+    #         name: '@greeneek/gnk-llm-greeneek'
+    #         config:
+    #           baseURL: https://your-endpoint.example

@@ -138,7 +138,12 @@ export interface ModelCatalogFailure {
 
 /** Host-generation model catalog and the default used by unconfigured Sessions. */
 export interface ModelCatalog {
-  readonly default: ModelSelection
+  /**
+   * Selection an unconfigured Session starts on, or `null` when the deployment
+   * pins no default and no provider is configured yet — the first-run state,
+   * distinct from a default the client merely cannot route.
+   */
+  readonly default: ModelSelection | null
   /** Provider routes currently able to serve a request, including empty catalogs. */
   readonly routableProviders: readonly string[]
   readonly groups: readonly ModelProviderGroup[]
@@ -177,7 +182,11 @@ export const SESSION_SEARCH_SNIPPET_MAX_CODE_POINTS = 240
 
 declare module '@greeneek/gnk-typert-protocol' {
   interface RemoteErrorDetailsMap {
-    'session/model-unavailable': { readonly provider: string; readonly model: string }
+    /**
+     * Both halves are absent when nothing is configured at all (a first run
+     * with no provider), and present when a named route stopped being served.
+     */
+    'session/model-unavailable': { readonly provider?: string; readonly model?: string }
     'session/conflict': {
       readonly sessionId: SessionId
       readonly requestedCwd: string

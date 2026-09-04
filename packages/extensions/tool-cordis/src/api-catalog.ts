@@ -87,10 +87,16 @@ export const SERVICE_API: readonly ServiceApiEntry[] = [
     description: 'Owns the default model selection independently of any Host or transport. The composition entry remains usable without a settings provider; when one is mounted, its user layer is read live.',
     methods: [
       {
-        signature: 'currentSelection(): ModelSelection',
-        description: 'Read the current default model selection.',
+        signature: 'currentSelection(): ModelSelection | undefined',
+        description: 'Read the configured default model selection: the settings layer over the composition entry, without consulting the adapter registry.',
         parameters: [],
-        returns: 'a detached provider, model, and optional reasoning selection.',
+        returns: 'a detached selection, or undefined when no layer names a complete provider/model pair — a deployment that ships no provider of its own until the user configures one.',
+      },
+      {
+        signature: 'async resolveSelection(signal?: AbortSignal): Promise<ModelSelection | undefined>',
+        description: 'The selection a fresh Agent should start on: the configured default when one exists, otherwise the first model of the first registered provider route.\n\nThe fallback is what makes a harness that pins no provider usable the moment the user configures one: a deployment ships adapters, the user supplies the key that activates a route, and a new session opens on it without anyone having to also state it as the default. It is deliberately a *live* read rather than a value captured at mount, because routes come and go with the settings document.\n\nProvider order is the registry\'s own registration order, and the model is the first the route advertises; both are the same order the model picker shows, so the implicit default is the one a user would read as first.',
+        parameters: [{ name: 'signal', description: 'cancellation for the catalog reads this resolution makes.' }],
+        returns: 'the selection, or undefined while no route can serve a request.',
       },
       {
         signature: 'async saveSelection(next: ModelSelection): Promise<void>',
@@ -4426,7 +4432,7 @@ export const TYPE_API: readonly TypeApiEntry[] = [
   },
   {
     name: 'ModelCatalog',
-    declaration: 'export interface ModelCatalog {\n    readonly default: ModelSelection;\n    readonly routableProviders: readonly string[];\n    readonly groups: readonly ModelProviderGroup[];\n    readonly failures: readonly ModelCatalogFailure[];\n}',
+    declaration: 'export interface ModelCatalog {\n    readonly default: ModelSelection | null;\n    readonly routableProviders: readonly string[];\n    readonly groups: readonly ModelProviderGroup[];\n    readonly failures: readonly ModelCatalogFailure[];\n}',
   },
   {
     name: 'ModelCatalogFailure',

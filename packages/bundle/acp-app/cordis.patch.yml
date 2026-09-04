@@ -12,9 +12,10 @@
     - id: acp-app-startup
       name: '@greeneek/gnk-acp-app'
 
+    # No provider/model is pinned: this build ships no provider of its own, so
+    # the route comes from the user's configuration (the `llm-pi-ai` settings
+    # section their API key activates). Both fields stay available for a
+    # deployment that wants every ACP session to start on one fixed model.
     - id: acp
       name: '@greeneek/gnk-acp'
       inject: [acpAppStartup]
-      config:
-        provider: greeneek-official
-        model: greeneek-v4-flash

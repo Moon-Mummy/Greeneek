@@ -28,9 +28,9 @@ describe('gnk-acp-app bundle', () => {
     expect(patches.find(patch => patch.id === 'session-title-llm')).toMatchObject({ disabled: true })
     const rows = patches.flatMap(patch => patch.insert ?? [])
     expect(rows.find(row => row.id === 'acp-app-startup')?.name).toBe('@greeneek/gnk-acp-app')
-    expect(rows.find(row => row.id === 'acp')).toMatchObject({
-      inject: ['acpAppStartup'],
-      config: { provider: 'greeneek-official', model: 'greeneek-v4-flash' },
-    })
+    // The row pins no route: this build ships no provider of its own, so the
+    // ACP client's initial selection or the resolved default decides.
+    expect(rows.find(row => row.id === 'acp')).toMatchObject({ inject: ['acpAppStartup'] })
+    expect(rows.find(row => row.id === 'acp')?.config).toBeUndefined()
   })
 })

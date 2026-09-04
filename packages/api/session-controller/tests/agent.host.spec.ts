@@ -37,6 +37,7 @@ async function harness(): Promise<{ ctx: Context; agents: ApiSessionAgentControl
   installModelSelectionProjection(ctx)
   ctx.provide('agentDefaultModel', {
     currentSelection: () => ({ provider: 'fixture', model: 'fixture-model' }),
+    resolveSelection: () => Promise.resolve({ provider: 'fixture', model: 'fixture-model' }),
     saveSelection: () => Promise.resolve(),
   } as never)
   return { ctx, agents: new ApiSessionAgentController(ctx) }

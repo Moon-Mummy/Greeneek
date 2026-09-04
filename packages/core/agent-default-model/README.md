@@ -29,32 +29,33 @@ Mount this package wherever agents are created without an explicit model route. 
 
 ### Configure the default
 
-The composition entry is the base of the default: it requires a provider and model and stays usable without any settings provider.
+The composition entry is the base of the default. Both fields are optional: a deployment that ships no provider of its own pins nothing, and the default becomes whichever route the user's own key activates. The entry stays usable without any settings provider.
 
 ```yaml
 - name: '@greeneek/gnk-agent-default-model'
   config:
-    provider: greeneek
-    model: greeneek-chat
+    provider: openai
+    model: gpt-5
 ```
 
 | Field | Default | Meaning |
 |---|---|---|
-| `provider` | required | Registered provider route for fresh agents |
-| `model` | required | Provider-owned model id for fresh agents |
+| `provider` | optional | Registered provider route for fresh agents; omitted defers to the user's configuration |
+| `model` | optional | Provider-owned model id for fresh agents; omitted defers to the user's configuration |
 
 The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-agent-default-model) is the exhaustive source for every accepted field. `reasoningEffort` is deliberately not a config field: it belongs to the settings layer, so a complete saved selection can clear an effort when the next selected model has none, while a composition value would be inherited again.
 
 ### Read and change the default
 
-`currentSelection()` returns a detached `{ provider, model, reasoningEffort? }` for a newly created agent; `saveSelection()` stores the complete selection for later agents.
+`currentSelection()` returns the *configured* default as a detached `{ provider, model, reasoningEffort? }`, or `undefined` when no layer names a complete pair. `resolveSelection()` is what an entry point creating an agent should call: it returns the configured default when one exists, and otherwise the first model of the first registered provider route — so a deployment that pins nothing becomes usable the moment the user supplies a key. `saveSelection()` stores the complete selection for later agents.
 
 ```text
-const selection = ctx.agentDefaultModel.currentSelection()
+const configured = ctx.agentDefaultModel.currentSelection() // ModelSelection | undefined
+const selection = await ctx.agentDefaultModel.resolveSelection() // ModelSelection | undefined
 await ctx.agentDefaultModel.saveSelection({ provider, model, reasoningEffort: 'high' })
 ```
 
-Without a settings provider, `saveSelection()` is a no-op and the composition entry remains current. The service does not validate catalog membership: a provider route may serve an unadvertised model, and the consumer that opens a model request owns availability diagnostics.
+A `resolveSelection()` of `undefined` means no route can serve a request yet: the caller should report that the user needs to configure a provider, rather than substituting a placeholder route. Without a settings provider, `saveSelection()` is a no-op and the composition entry remains current. The service does not validate catalog membership: a provider route may serve an unadvertised model, and the consumer that opens a model request owns availability diagnostics.
 
 -----
 
@@ -68,18 +69,18 @@ This section explains how the service realizes the behavior above; the observabl
 
 ### Design concept
 
-The service is a composition entry with a settings-backed source. The plugin config supplies the base `{ provider, model }`; when a settings provider is mounted, the `agent-default-model` settings section becomes the live source and every consumer reads through `currentSelection()`, so a settings write needs no registration-level rebuild. `reasoningEffort` lives only in the settings schema — the config cannot carry it, because an effort cleared by a new selection must stay cleared rather than being re-inherited from composition.
+The service is a composition entry with a settings-backed source. The plugin config supplies the optional base `{ provider?, model? }`; when a settings provider is mounted, the `agent-default-model` settings section becomes the live source and every consumer reads through `currentSelection()`, so a settings write needs no registration-level rebuild. `reasoningEffort` lives only in the settings schema — the config cannot carry it, because an effort cleared by a new selection must stay cleared rather than being re-inherited from composition.
 
 ### Source map
 
 | File | Role |
 |---|---|
-| [`src/index.ts`](src/index.ts) | Plugin entry: `AgentDefaultModelConfig` service, settings section install, `currentSelection`/`saveSelection` |
+| [`src/index.ts`](src/index.ts) | Plugin entry: `AgentDefaultModelConfig` service, settings section install, `currentSelection`/`resolveSelection`/`saveSelection` |
 | — | No runtime invariant companion is published; settings validation owns the only mutable-value relationship. |
 
 ### Behavior notes
 
-Both public methods are thin reads and writes over that source: `currentSelection()` returns a fresh detached object so a caller can hold it without aliasing service state, and `saveSelection()` writes the whole selection through `ctx.settings` when present.
+`currentSelection()` and `saveSelection()` are thin reads and writes over that source: the former returns a fresh detached object so a caller can hold it without aliasing service state, and reports a section naming only one half of the route as no selection at all. `resolveSelection()` adds one live read of the adapter registry — deliberately live rather than captured at mount, because routes come and go with the settings document — and and `saveSelection()` writes the whole selection through `ctx.settings` when present.
 
 </details>
 

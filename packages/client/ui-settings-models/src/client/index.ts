@@ -1,6 +1,6 @@
 /**
  * Models settings and product-onboarding plugin, browser half. It registers
- * the Models page plus the ordered internal-testing and official-Greeneek
+ * the Models page plus the ordered internal-testing and provider-setup
  * onboarding dialogs, whose UI shares this package's modal wrapper. The Host
  * settings and credential contracts stay behind their existing wire APIs.
  * Export discipline:
@@ -17,8 +17,8 @@ import type {} from '@greeneek/gnk-client-ui-renderer/client'
 import type {} from '@greeneek/gnk-api-remotes/client'
 import { ModelsSection } from './ModelsSection.tsx'
 import type { ModelsSectionInjected } from './ModelsSection.tsx'
-import { GreeneekOnboardingDialog } from './GreeneekOnboardingDialog.tsx'
-import type { GreeneekOnboardingInjected } from './GreeneekOnboardingDialog.tsx'
+import { ProviderOnboardingDialog } from './ProviderOnboardingDialog.tsx'
+import type { ProviderOnboardingInjected } from './ProviderOnboardingDialog.tsx'
 import { WelcomeNotice } from './WelcomeNotice.tsx'
 import type { WelcomeNoticeInjected } from './WelcomeNotice.tsx'
 import { decodeWelcomeSection, WelcomeNoticeStore } from './welcome-store.ts'
@@ -90,7 +90,7 @@ export function apply(ctx: ClientContext): void {
     schema,
     t,
   })
-  const greeneekOnboardingInjected = (): GreeneekOnboardingInjected => ({
+  const providerOnboardingInjected = (): ProviderOnboardingInjected => ({
     controller,
     hooks: { models: controller.store },
     operations,
@@ -147,8 +147,8 @@ export function apply(ctx: ClientContext): void {
   }, WelcomeNotice))
   ctx.slots.inject('settings.onboarding', () => ctx.slots.register({
     name: 'settings.onboarding',
-    id: 'greeneek-official',
+    id: 'provider-setup',
     order: 0,
-    inject: greeneekOnboardingInjected,
-  }, GreeneekOnboardingDialog))
+    inject: providerOnboardingInjected,
+  }, ProviderOnboardingDialog))
 }

@@ -2,22 +2,22 @@
 import { describe, expect, it } from 'vitest'
 import type { CredentialInfo } from '@greeneek/gnk-api-remotes/client'
 import type { ModelsSettingsState, ProviderRow } from '../src/client/store.ts'
-import { onboardingReadiness, providerUsable } from '../src/client/store.ts'
+import { onboardingReadiness, providerSetupCandidate, providerUsable } from '../src/client/store.ts'
 
 const missingCredential: CredentialInfo = { configured: false, writable: true }
 
 function row(overrides: Partial<ProviderRow> = {}): ProviderRow {
   return {
     entry: {
-      provider: 'greeneek-official',
-      displayName: 'Greeneek',
-      settingsNs: 'llm-greeneek',
-      settingsPath: [],
+      provider: 'openai',
+      displayName: 'OpenAI',
+      settingsNs: 'llm-pi-ai',
+      settingsPath: ['providers', 'openai'],
       active: true,
     },
     configured: true,
     removable: false,
-    apiKeyEnv: 'GREENEEK_API_KEY',
+    apiKeyEnv: 'OPENAI_API_KEY',
     credential: missingCredential,
     ...overrides,
   }
@@ -66,8 +66,31 @@ describe('providerUsable', () => {
   })
 })
 
+describe('providerSetupCandidate', () => {
+  it('offers rows this page could write a key for', () => {
+    expect(providerSetupCandidate(row())).toBe(true)
+    // Configured elsewhere: no settings address to write the profile into.
+    expect(providerSetupCandidate(row({ entry: { ...row().entry, settingsNs: '' } }))).toBe(false)
+    // The environment owns the credential, so there is no key to store here.
+    expect(providerSetupCandidate(row({ credential: { configured: false, writable: false } }))).toBe(false)
+  })
+
+  it('reads the derived reference when the profile names none', () => {
+    expect(providerSetupCandidate(row({
+      apiKeyEnv: undefined,
+      credential: undefined,
+      derivedCredential: { configured: false, writable: false },
+    }))).toBe(false)
+    expect(providerSetupCandidate(row({
+      apiKeyEnv: undefined,
+      credential: undefined,
+      derivedCredential: { configured: false, writable: true },
+    }))).toBe(true)
+  })
+})
+
 describe('onboardingReadiness', () => {
-  it('waits for the first join and skips onboarding when the adapter directory entry is absent', () => {
+  it('waits for the first join and skips onboarding when no configurable adapter is mounted', () => {
     expect(onboardingReadiness(state({ status: 'idle', rows: [] }))).toEqual({ kind: 'loading' })
     expect(onboardingReadiness(state({ status: 'loading', rows: [] }))).toEqual({ kind: 'loading' })
     expect(onboardingReadiness(state({ rows: [] }))).toEqual({ kind: 'adapter-absent' })
@@ -107,9 +130,6 @@ describe('onboardingReadiness', () => {
       kind: 'unavailable',
       reason: 'load-failed',
     })
-    expect(onboardingReadiness(state({
-      rows: [row({ entry: { ...row().entry, active: false } })],
-    }))).toEqual({ kind: 'unavailable', reason: 'provider-inactive' })
     expect(onboardingReadiness(state({
       credentialError: 'credentials service is absent',
     }))).toEqual({
