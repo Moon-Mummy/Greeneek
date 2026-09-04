@@ -141,4 +141,4 @@ harness 使用 waterfall 处理协作插件可以包装或回答的决策：[`ag
 
 下一章：[配置](05-config.zh.md)：来自 `cordis.yml` 的插件选项。
 
-[![](https://img.shields.io/badge/powered_by-gnk-4D6BFE?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)
+[![](https://img.shields.io/badge/powered_by-gnk-067A52?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)

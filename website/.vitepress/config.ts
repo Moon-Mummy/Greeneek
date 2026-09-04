@@ -229,6 +229,23 @@ const wordmark = readFileSync(resolve(import.meta.dirname, '../public/wordmark.s
  * stay behind a query only Firefox answers.
  */
 const siteStyle = `
+/* Greeneek green brand accent. VitePress ships an indigo default, so without
+   this the docs site renders its links, active nav, and CTAs in blue while the
+   app renders the same brand from --dsw-static-greeneek-* (rgb(6, 122, 82) in
+   light, rgb(52, 211, 153) on dark) — the two greens below are those values. */
+:root {
+  --vp-c-brand-1: #067a52;
+  --vp-c-brand-2: #059669;
+  --vp-c-brand-3: #067a52;
+  --vp-c-brand-soft: rgb(6 122 82 / 14%);
+}
+html.dark {
+  --vp-c-brand-1: #34d399;
+  --vp-c-brand-2: #6ee7b7;
+  --vp-c-brand-3: #059669;
+  --vp-c-brand-soft: rgb(52 211 153 / 18%);
+}
+
 .gnk-lockup { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
 .gnk-wordmark { display: block; height: 22px; width: auto; color: var(--vp-c-text-1); }
 .gnk-tag {

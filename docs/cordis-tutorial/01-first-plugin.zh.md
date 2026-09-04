@@ -92,4 +92,4 @@ export function apply(ctx: Context) {
 
 下一章：[生命周期与 effect](02-lifecycle-and-effects.zh.md)：插件卸载时会发生什么。
 
-[![](https://img.shields.io/badge/powered_by-gnk-4D6BFE?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)
+[![](https://img.shields.io/badge/powered_by-gnk-067A52?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)

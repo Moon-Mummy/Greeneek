@@ -84,7 +84,7 @@ describe('gnk badge assembled snapshot', () => {
       ## Assets
 
       - Local PNG: [\`gnk-badge.png\`](gnk-badge.png), 726×120 source image; render at 121×20
-      - Shields.io image URL: \`https://img.shields.io/badge/powered_by-gnk-4D6BFE?style=flat-square&logo=greeneek&logoColor=white\`
+      - Shields.io image URL: \`https://img.shields.io/badge/powered_by-gnk-067A52?style=flat-square&logo=greeneek&logoColor=white\`
       - Project URL: \`https://github.com/greeneek/greeneek-harness\`
 
       ## Markdown
@@ -92,13 +92,13 @@ describe('gnk badge assembled snapshot', () => {
       Use this linked badge in Markdown:
 
       \`\`\`markdown
-      [![](https://img.shields.io/badge/powered_by-gnk-4D6BFE?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)
+      [![](https://img.shields.io/badge/powered_by-gnk-067A52?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)
       \`\`\`
 
       If attribution should not be linked, use:
 
       \`\`\`markdown
-      ![](https://img.shields.io/badge/powered_by-gnk-4D6BFE?style=flat-square&logo=greeneek&logoColor=white)
+      ![](https://img.shields.io/badge/powered_by-gnk-067A52?style=flat-square&logo=greeneek&logoColor=white)
       \`\`\`
 
       ## Usage rules
@@ -123,7 +123,7 @@ describe('gnk badge assembled snapshot', () => {
       ## Assets
 
       - Local PNG: [\`gnk-badge.png\`](gnk-badge.png), 726×120 source image; render at 121×20
-      - Shields.io image URL: \`https://img.shields.io/badge/powered_by-gnk-4D6BFE?style=flat-square&logo=greeneek&logoColor=white\`
+      - Shields.io image URL: \`https://img.shields.io/badge/powered_by-gnk-067A52?style=flat-square&logo=greeneek&logoColor=white\`
       - Project URL: \`https://github.com/greeneek/greeneek-harness\`
 
       ## Markdown
@@ -131,13 +131,13 @@ describe('gnk badge assembled snapshot', () => {
       Use this linked badge in Markdown:
 
       \`\`\`markdown
-      [![](https://img.shields.io/badge/powered_by-gnk-4D6BFE?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)
+      [![](https://img.shields.io/badge/powered_by-gnk-067A52?style=flat-square&logo=greeneek&logoColor=white)](https://github.com/greeneek/greeneek-harness)
       \`\`\`
 
       If attribution should not be linked, use:
 
       \`\`\`markdown
-      ![](https://img.shields.io/badge/powered_by-gnk-4D6BFE?style=flat-square&logo=greeneek&logoColor=white)
+      ![](https://img.shields.io/badge/powered_by-gnk-067A52?style=flat-square&logo=greeneek&logoColor=white)
       \`\`\`
 
       ## Usage rules

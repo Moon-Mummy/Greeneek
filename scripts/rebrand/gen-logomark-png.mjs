@@ -1,14 +1,20 @@
 #!/usr/bin/env node
-// Regenerates the Greeneek logo-mark / favicon PNGs: a rounded-square brand
-// green tile with a geometric white "G" monogram. Coverage is computed
-// analytically per subpixel (4x4 supersampling), so edges are smooth without
-// a rasterizer or font. Deterministic output.
+// Re-emits a fallback logo-mark / favicon PNG: a rounded-square brand green
+// tile with a geometric white "G" monogram. Coverage is computed analytically
+// per subpixel (4x4 supersampling), so edges are smooth without a rasterizer
+// or font. Deterministic output.
+//
+// NOT the source of the shipped app logo. `apps/web/public/assets/logo-mark.png`
+// and `apps/web/public/favicon.png` carry the real Greeneek ninja artwork; do
+// not point this generator at them (it would flatten the brand mark to a
+// placeholder monogram). Use it only where no artwork is available, e.g. a
+// throwaway tile for a headless screenshot fixture.
 import { deflateSync } from 'node:zlib'
 import { writeFileSync } from 'node:fs'
 
 const S = Number(process.argv[3] ?? 512) // square canvas
 const MODE = process.argv[4] ?? 'tile' // 'tile' = filled rounded square; 'mark' = glyph on transparent
-const GREEN = [77, 107, 254] // brand blue, matches the documented badge accent
+const GREEN = [6, 122, 82] // Greeneek brand green #067a52 = --dsw-static-greeneek-500
 const WHITE = [255, 255, 255]
 const RING_R = S * 0.295, RING_T = S * 0.118, NOTCH = 1.15, BAR_Y = S / 2
 const CX = S / 2, CY = S / 2
