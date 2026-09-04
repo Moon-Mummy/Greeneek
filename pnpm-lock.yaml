@@ -1274,9 +1274,12 @@ importers:
       '@greeneek/gnk-web-fetch-http':
         specifier: workspace:^
         version: link:../../web/web-fetch-http
-      '@greeneek/gnk-web-search-greeneek':
+      '@greeneek/gnk-web-search-exa':
         specifier: workspace:^
-        version: link:../../web/web-search-greeneek
+        version: link:../../web/web-search-exa
+      '@greeneek/gnk-web-search-perplexity':
+        specifier: workspace:^
+        version: link:../../web/web-search-perplexity
       '@greeneek/gnk-workflow-worker-thread':
         specifier: workspace:^
         version: link:../../workflow/workflow-worker-thread
@@ -1373,9 +1376,9 @@ importers:
       '@greeneek/gnk-llm':
         specifier: workspace:^
         version: link:../../llm/llm
-      '@greeneek/gnk-llm-greeneek':
+      '@greeneek/gnk-llm-pi-ai':
         specifier: workspace:^
-        version: link:../../llm/llm-greeneek
+        version: link:../../llm/llm-pi-ai
       '@greeneek/gnk-llm-retry':
         specifier: workspace:^
         version: link:../../llm/llm-retry

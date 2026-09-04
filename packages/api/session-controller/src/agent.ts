@@ -66,7 +66,12 @@ export type ApiSessionAgentResult =
   | { readonly error: ApiSessionAgentError }
 
 type InstalledSelection = ModelSelectionRef & {
-  current: AgentModelSelection
+  /**
+   * The selection a fresh request would use, or undefined while the
+   * deployment has no default and the session has logged no request yet —
+   * a first run whose user has not configured a provider.
+   */
+  current: AgentModelSelection | undefined
   consume(provider: string, model: string, reasoningEffort: string | undefined): boolean
 }
 
@@ -285,10 +290,25 @@ export class ApiSessionAgentController {
       : agentModelSelection(projectionState.pending)
     const defaultModel = this.ctx.agentDefaultModel
     const selection: InstalledSelection = {
-      get current(): AgentModelSelection {
+      get current(): AgentModelSelection | undefined {
         if (picked !== undefined) return picked
         const loggedHeader = agent.session.requestHeader()
-        if (loggedHeader === undefined) return defaultModel.currentSelection()
+        if (loggedHeader === undefined) {
+          // Before the first logged request there is no conversation choice
+          // yet. The Agent was created on the *resolved* default, so prefer
+          // the route it actually holds: a deployment that pins no provider
+          // still opens on whichever route the user's own key activated,
+          // and only a truly empty registry leaves this undefined.
+          const configured = defaultModel.currentSelection()
+          if (configured !== undefined) return configured
+          const { provider, model, reasoningEffort } = agent.options
+          if (provider === undefined || model === undefined) return undefined
+          return {
+            provider,
+            model,
+            ...(reasoningEffort === undefined ? {} : { reasoningEffort }),
+          }
+        }
         const logged = loggedHeader.config
         return {
           provider: logged.provider,
@@ -301,7 +321,7 @@ export class ApiSessionAgentController {
             : { reasoningEffort: logged.reasoningEffort }),
         }
       },
-      set current(next: AgentModelSelection) {
+      set current(next: AgentModelSelection | undefined) {
         picked = next
       },
       consume(provider: string, model: string, reasoningEffort: string | undefined): boolean {
@@ -427,7 +447,7 @@ export class ApiSessionAgentController {
     }
     return (await this.ctx.agents.resume({
       resumeSessionId: sessionId,
-      agentOptions: this.agentOptions(),
+      agentOptions: await this.agentOptions(),
       setup: composition.setup,
     })).agent
   }
@@ -459,7 +479,7 @@ export class ApiSessionAgentController {
         const composition = await this.composeAgent(storedPreset)
         return (await this.ctx.agents.resume({
           resumeSessionId: sessionId,
-          agentOptions: this.agentOptions(),
+          agentOptions: await this.agentOptions(),
           setup: composition.setup,
         })).agent
       } catch (error: unknown) {
@@ -476,7 +496,7 @@ export class ApiSessionAgentController {
     const composition = await this.composeAgent(presetId)
     return (await this.ctx.agents.create({
       sessionId,
-      agentOptions: this.agentOptions(),
+      agentOptions: await this.agentOptions(),
       meta: {
         cwd,
         ...(composition.agentPreset === undefined ? {} : { agentPreset: composition.agentPreset }),
@@ -485,9 +505,22 @@ export class ApiSessionAgentController {
     })).agent
   }
 
-  private agentOptions(): AgentOptions {
-    const { provider, model } = this.ctx.agentDefaultModel.currentSelection()
-    return { provider, model }
+  /**
+   * The model a newly created or resumed Agent starts on. This resolves rather
+   * than merely reads the default, so a deployment that pins no provider still
+   * opens Sessions on whichever route the user's own key activated, without
+   * anyone having to also record it as the default.
+   *
+   * An absent default is not an error here: `AgentOptions` leaves both halves
+   * optional, and the Session stays openable so the user can pick a model (or
+   * add a provider) from the UI it opens into. The request path is what
+   * refuses an unroutable selection, with a message naming the missing
+   * provider.
+   */
+  private async agentOptions(): Promise<AgentOptions> {
+    const selected = await this.ctx.agentDefaultModel.resolveSelection()
+    if (selected === undefined) return {}
+    return { provider: selected.provider, model: selected.model }
   }
 
   private installSelection(agentCtx: Context): void {

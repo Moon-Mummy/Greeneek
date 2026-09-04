@@ -333,7 +333,7 @@ describe('headless runner', () => {
     const exited = new Promise<number>((resolve) => {
       ctx.provide('appExit', resolve)
     })
-    ctx.provide('agentDefaultModel', { currentSelection: () => ({ provider: 'p', model: 'm' }) } as never)
+    ctx.provide('agentDefaultModel', { resolveSelection: () => Promise.resolve({ provider: 'p', model: 'm' }) } as never)
     ctx.provide('sessions', { flush: () => Promise.resolve(true) } as never)
     ctx.provide('agents', { create: () => Promise.reject(new Error('factory exploded')) } as never)
     apply(ctx, { task: 't' })
@@ -350,7 +350,7 @@ describe('headless runner', () => {
     const exited = new Promise<number>((resolve) => {
       ctx.provide('appExit', resolve)
     })
-    ctx.provide('agentDefaultModel', { currentSelection: () => ({ provider: 'p', model: 'm' }) } as never)
+    ctx.provide('agentDefaultModel', { resolveSelection: () => Promise.resolve({ provider: 'p', model: 'm' }) } as never)
     ctx.provide('sessions', { flush: () => Promise.resolve(true) } as never)
     const rejected = {
       then(_resolve: (value: never) => void, reject: (reason: unknown) => void): void {
@@ -371,7 +371,7 @@ describe('headless runner', () => {
     internals.stderr = { write: () => true }
     ctx.provide('appExit', () => { exited = true })
     const services = ctx.plugin((child: Context) => {
-      child.provide('agentDefaultModel', { currentSelection: () => ({ provider: 'p', model: 'm' }) } as never)
+      child.provide('agentDefaultModel', { resolveSelection: () => Promise.resolve({ provider: 'p', model: 'm' }) } as never)
       child.provide('sessions', {} as never)
       child.provide('agents', {} as never)
     })

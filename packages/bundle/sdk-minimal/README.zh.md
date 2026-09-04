@@ -25,7 +25,7 @@ kind: "package-bundle"
 <a id="use-this-package"></a>
 ## 使用本包
 
-直接启动该 profile，或从 Python SDK 选择它。提供显式 `GNK_HOME`、使用一次性 workspace，并通过 `GREENEEK_API_KEY` 提供模型凭据。
+直接启动该 profile，或从 Python SDK 选择它。提供显式 `GNK_HOME`、使用一次性 workspace，并为准备使用的路由提供模型凭据：`OPENAI_API_KEY`、`ANTHROPIC_API_KEY` 或 `GEMINI_API_KEY`。缺少密钥的路由不会挂载。
 
 ```sh
 export GNK_HOME=/absolute/path/to/example-gnk-home
@@ -46,7 +46,7 @@ gnk --profile sdk-minimal
 <details>
 <summary>实现细节——点击展开</summary>
 
-该 bundle 的单个 insert 就是完整应用配置树：SDK stdio 启动与 JSON-RPC 服务、一个由环境配置的 Greeneek 适配器、显式 agent 核心、本地子进程与不受限文件系统提供方、按平台选择的持久 shell PTY、字符串替换编辑器，以及位于 `$GNK_HOME/sessions` 的未压缩 JSONL 持久化。它不继承其他 bundle，因此每个额外配置项都是显式 profile 变更。
+该 bundle 的单个 insert 就是完整应用配置树：SDK stdio 启动与 JSON-RPC 服务、一个由环境配置、提供 OpenAI/Anthropic/Google 三条路由的多提供方适配器、显式 agent 核心、本地子进程与不受限文件系统提供方、按平台选择的持久 shell PTY、字符串替换编辑器，以及位于 `$GNK_HOME/sessions` 的未压缩 JSONL 持久化。它不继承其他 bundle，因此每个额外配置项都是显式 profile 变更。
 
 ### 源码地图
 

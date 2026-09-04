@@ -153,8 +153,12 @@ function registerTextOnly(ctx: Context): void {
 function currentSelection(ctx: Context, sessionId: SessionId) {
   const session = ctx.sessions.get(sessionId)
   if (session === undefined) throw new Error('expected a live test Session')
-  return ctx.sessionProjections.snapshot(session).values.modelSelection?.next
+  const selection = ctx.sessionProjections.snapshot(session).values.modelSelection?.next
     ?? ctx.agentDefaultModel.currentSelection()
+  // Every caller here has already selected or defaulted a route; an absent one
+  // is a broken fixture rather than a case under test.
+  if (selection === undefined) throw new Error('expected a resolved model selection')
+  return selection
 }
 
 describe('Web session model selection', () => {

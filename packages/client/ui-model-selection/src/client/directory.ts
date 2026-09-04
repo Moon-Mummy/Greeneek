@@ -159,11 +159,14 @@ export class ModelDirectory {
       })
       return
     }
+    // A null catalog default is the first-run state: no provider is configured
+    // yet, so there is no selection to show and nothing to call unroutable.
+    // The picker renders that as "no model", not as a broken selection.
     const current = projected.next ?? catalog.value.default
     this.resolved = true
     this.store.set({
       current,
-      routable: catalog.value.routableProviders.includes(current.provider),
+      routable: current !== null && catalog.value.routableProviders.includes(current.provider),
       groups: catalog.value.groups,
       failures: catalog.value.failures,
       status: this.store.getSnapshot().status === 'selecting'

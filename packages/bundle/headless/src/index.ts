@@ -175,7 +175,16 @@ async function run(ctx: Context, task: string, io: HeadlessIo): Promise<void> {
   // Early process shutdown can dispose the tree while settlement is pending.
   if (agents === undefined || defaultModel === undefined || sessions === undefined) return
 
-  const selection = defaultModel.currentSelection()
+  // A headless run is one shot with nowhere to pick a model, so it resolves
+  // the deployment default over the live registry: a harness that pins no
+  // provider still runs the moment the user's own key activates one.
+  const selection = await defaultModel.resolveSelection()
+  if (selection === undefined) {
+    throw new Error(
+      'no model is configured: set a provider API key (for example $OPENAI_API_KEY with an'
+      + ' `llm-pi-ai` settings profile), or pin one with the agent-default-model composition entry',
+    )
+  }
   // This bundle composes no preset roster, so the model-facing rows sit in the
   // host plane and the agent reads them from the global layer. A deployment
   // that DOES configure one has to join it here first

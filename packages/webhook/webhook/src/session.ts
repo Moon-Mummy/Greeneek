@@ -62,6 +62,15 @@ function resolveRequest(ctx: Context, input: WebhookSessionRequest): ResolvedWeb
   let modelSelection: ModelSelection
   if (model === undefined) {
     const selected = ctx.agentDefaultModel.currentSelection()
+    // A webhook payload that names no model needs the deployment to have one.
+    // Refusing here names the missing configuration, instead of creating a
+    // Session that fails on its first request with a routing error.
+    if (selected === undefined) {
+      throw new TypeError(
+        'webhook Session request omits model and no default model is configured;'
+        + ' configure a provider or send an explicit model',
+      )
+    }
     agentOptions = { provider: selected.provider, model: selected.model }
     modelSelection = { ...selected }
   } else {

@@ -42,7 +42,7 @@
     "@greeneek/gnk-invariants": "workspace:^",
     "@greeneek/gnk-jobs-local": "workspace:^",
     "@greeneek/gnk-llm": "workspace:^",
-    "@greeneek/gnk-llm-greeneek": "workspace:^",
+    "@greeneek/gnk-llm-pi-ai": "workspace:^",
     "@greeneek/gnk-llm-retry": "workspace:^",
     "@greeneek/gnk-plugin-package-inventory-greeneek": "workspace:^",
     "@greeneek/gnk-sandbox-local": "workspace:^",

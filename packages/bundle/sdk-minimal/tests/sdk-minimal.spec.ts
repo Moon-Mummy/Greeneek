@@ -31,7 +31,7 @@ describe('gnk-sdk-minimal bundle', () => {
       ['greeneek-llm-api-extensions', '@greeneek/gnk-greeneek-llm-api-extensions'],
       ['session-log-greeneek', '@greeneek/gnk-session-log-greeneek'],
       ['plugin-package-inventory-greeneek', '@greeneek/gnk-plugin-package-inventory-greeneek'],
-      ['llm-greeneek', '@greeneek/gnk-llm-greeneek'],
+      ['llm-pi-ai', '@greeneek/gnk-llm-pi-ai'],
       ['sandbox', '@greeneek/gnk-sandbox-local'],
       ['session-projection', '@greeneek/gnk-session-projection'],
       ['sandbox-policy', '@greeneek/gnk-sandbox-policy'],
@@ -65,10 +65,27 @@ describe('gnk-sdk-minimal bundle', () => {
       inject: ['sdkAppStartup', 'loader'],
       config: { maxTokensAsSuccess: false },
     })
-    expect(rows.find(row => row.id === 'llm-greeneek')?.config).toEqual({
-      apiKeyEnv: 'GREENEEK_API_KEY',
-      defaultContextWindow: { __jsExpr: 'Number(process.env.GNK_CONTEXT_WINDOW ?? 1000000)' },
-      streamIdleTimeoutMs: 172800000,
+    // Every route this standalone profile serves is one the caller's own key
+    // activates; a route whose variable is unset simply refuses its first
+    // request rather than sitting in the picker unable to answer.
+    expect(rows.find(row => row.id === 'llm-pi-ai')?.config).toEqual({
+      providers: {
+        openai: {
+          apiKeyEnv: 'OPENAI_API_KEY',
+          streamIdleTimeoutMs: 172800000,
+          defaultContextWindow: { __jsExpr: 'Number(process.env.GNK_CONTEXT_WINDOW ?? 1000000)' },
+        },
+        anthropic: {
+          apiKeyEnv: 'ANTHROPIC_API_KEY',
+          streamIdleTimeoutMs: 172800000,
+          defaultContextWindow: { __jsExpr: 'Number(process.env.GNK_CONTEXT_WINDOW ?? 1000000)' },
+        },
+        google: {
+          apiKeyEnv: 'GEMINI_API_KEY',
+          streamIdleTimeoutMs: 172800000,
+          defaultContextWindow: { __jsExpr: 'Number(process.env.GNK_CONTEXT_WINDOW ?? 1000000)' },
+        },
+      },
     })
     expect(rows.find(row => row.id === 'system-prompt')?.config).toEqual({
       includeHarnessIdentity: false,

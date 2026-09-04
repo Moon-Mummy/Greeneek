@@ -29,32 +29,33 @@ kind: "package-reference"
 
 ### 配置默认值
 
-组合配置项是默认值的基础：它要求提供方与模型，并且不依赖任何设置提供方也能使用。
+组合配置项是默认值的基础。两个字段都是可选的：不自带模型提供方的部署不固定任何路由，默认值即为用户自己的密钥所激活的那条路由。该配置项不依赖任何设置提供方也能使用。
 
 ```yaml
 - name: '@greeneek/gnk-agent-default-model'
   config:
-    provider: greeneek
-    model: greeneek-chat
+    provider: openai
+    model: gpt-5
 ```
 
 | 字段 | 默认值 | 含义 |
 |---|---|---|
-| `provider` | 必填 | 新 agent 使用的已注册提供方路由 |
-| `model` | 必填 | 新 agent 使用的、由提供方持有的模型 id |
+| `provider` | 可选 | 新 agent 使用的已注册提供方路由；省略则交给用户配置 |
+| `model` | 可选 | 新 agent 使用的、由提供方持有的模型 id；省略则交给用户配置 |
 
 生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-agent-default-model)是每个受支持字段的穷尽式真源。`reasoningEffort` 刻意不是配置字段：它属于设置层，因此完整保存的选择可以在下一个选定的模型没有推理强度时清除旧值，而组合配置值会再次被继承。
 
 ### 读取与更改默认值
 
-`currentSelection()` 为新创建的 agent 返回一份独立的 `{ provider, model, reasoningEffort? }`；`saveSelection()` 为后续 agent 保存完整选择。
+`currentSelection()` 返回*已配置*的默认值（一份独立的 `{ provider, model, reasoningEffort? }`），当没有任何层给出完整的一对时返回 `undefined`。创建 agent 的入口应调用 `resolveSelection()`：存在已配置默认值时返回它，否则返回首个已注册提供方路由的首个模型——因此不固定任何路由的部署会在用户提供密钥的那一刻变得可用。`saveSelection()` 为后续 agent 保存完整选择。
 
 ```text
-const selection = ctx.agentDefaultModel.currentSelection()
+const configured = ctx.agentDefaultModel.currentSelection() // ModelSelection | undefined
+const selection = await ctx.agentDefaultModel.resolveSelection() // ModelSelection | undefined
 await ctx.agentDefaultModel.saveSelection({ provider, model, reasoningEffort: 'high' })
 ```
 
-未挂载设置提供方时，`saveSelection()` 不执行任何操作，组合配置项仍为当前值。该服务不校验目录成员关系：提供方路由可以服务未在目录中公布的模型；发起模型请求的消费方负责可用性诊断。
+`resolveSelection()` 返回 `undefined` 表示尚无任何路由可以服务请求：调用方应提示用户需要配置提供方，而不是替换成一条占位路由。未挂载设置提供方时，`saveSelection()` 不执行任何操作，组合配置项仍为当前值。该服务不校验目录成员关系：提供方路由可以服务未在目录中公布的模型；发起模型请求的消费方负责可用性诊断。
 
 -----
 
@@ -68,18 +69,18 @@ await ctx.agentDefaultModel.saveSelection({ provider, model, reasoningEffort: 'h
 
 ### 设计理念
 
-该服务是一个带设置后援真源的组合配置项。插件配置提供基础 `{ provider, model }`；挂载设置提供方后，`agent-default-model` 设置分节成为实时真源，所有消费方都通过 `currentSelection()` 读取，因此设置写入无需重建任何注册级事实。`reasoningEffort` 只存在于设置 schema 中——配置不能携带它，因为被新选择清除的推理强度必须保持清除，而不是从组合中再次继承。
+该服务是一个带设置后援真源的组合配置项。插件配置提供可选的基础 `{ provider?, model? }`；挂载设置提供方后，`agent-default-model` 设置分节成为实时真源，所有消费方都通过 `currentSelection()` 读取，因此设置写入无需重建任何注册级事实。`reasoningEffort` 只存在于设置 schema 中——配置不能携带它，因为被新选择清除的推理强度必须保持清除，而不是从组合中再次继承。
 
 ### 源码地图
 
 | 文件 | 职责 |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 插件入口：`AgentDefaultModelConfig` 服务、设置分节安装、`currentSelection`/`saveSelection` |
+| [`src/index.ts`](src/index.ts) | 插件入口：`AgentDefaultModelConfig` 服务、设置分节安装、`currentSelection`/`resolveSelection`/`saveSelection` |
 | — | 不发布运行时不变式伴生入口；唯一的可变值关系由 settings 校验负责。 |
 
 ### 行为说明
 
-两个公开方法都是对该真源的薄读写：`currentSelection()` 返回全新独立对象，调用方持有它不会别名化服务状态；`saveSelection()` 在存在 `ctx.settings` 时写入完整选择。
+`currentSelection()` 与 `saveSelection()` 是对该真源的薄读写：前者返回全新独立对象，调用方持有它不会别名化服务状态，并把只写了半条路由的分节视为完全没有选择；`saveSelection()` 在存在 `ctx.settings` 时写入完整选择。`resolveSelection()` 额外对适配器注册表做一次实时读取——刻意实时而非在挂载时捕获，因为路由会随设置文档增减。
 
 </details>
 

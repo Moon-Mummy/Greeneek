@@ -23,12 +23,30 @@
     - id: plugin-package-inventory-greeneek
       name: '@greeneek/gnk-plugin-package-inventory-greeneek'
 
-    - id: llm-greeneek
-      name: '@greeneek/gnk-llm-greeneek'
+    # This profile mounts no settings or credential provider, so its routes are
+    # composition rather than a document the user edits: each names the
+    # environment variable holding its key, and a route whose variable is unset
+    # simply fails its first request with MISSING_CREDENTIAL. The SDK
+    # initialization request picks which of them a session uses.
+    - id: llm-pi-ai
+      name: '@greeneek/gnk-llm-pi-ai'
       config:
-        apiKeyEnv: GREENEEK_API_KEY
-        defaultContextWindow: !!js Number(process.env.GNK_CONTEXT_WINDOW ?? 1000000)
-        streamIdleTimeoutMs: 172800000
+        providers:
+          openai:
+            apiKeyEnv: OPENAI_API_KEY
+            streamIdleTimeoutMs: 172800000
+            defaultContextWindow: !!js >-
+              Number(process.env.GNK_CONTEXT_WINDOW ?? 1000000)
+          anthropic:
+            apiKeyEnv: ANTHROPIC_API_KEY
+            streamIdleTimeoutMs: 172800000
+            defaultContextWindow: !!js >-
+              Number(process.env.GNK_CONTEXT_WINDOW ?? 1000000)
+          google:
+            apiKeyEnv: GEMINI_API_KEY
+            streamIdleTimeoutMs: 172800000
+            defaultContextWindow: !!js >-
+              Number(process.env.GNK_CONTEXT_WINDOW ?? 1000000)
 
     - id: sandbox
       name: '@greeneek/gnk-sandbox-local'

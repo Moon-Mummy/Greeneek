@@ -28,7 +28,7 @@ pnpm gnk web
 - [ ] `pnpm run typecheck` clean
 - [ ] `pnpm run test` green
 - [ ] `pnpm run verify-translation-pairing <edited pairs>` green
-- [ ] Brand contract intact (Greeneek app/logo/theme; Greeneek models)
+- [ ] Brand contract intact (Greeneek app/logo/theme; no invented model provider)
 - [ ] Docs updated for new capabilities
 
 ## Branding and models
@@ -36,8 +36,6 @@ pnpm gnk web
 - App branding stays **Greeneek**.
 - Logo stays **Greeneek**.
 - Green theme stays **Greeneek green**.
-- Model provider/models are back to **Greeneek**:
-  - `Greeneek`
-  - `Greeneek-V4-Flash`
-  - `Greeneek-V4-Pro`
-  - `Greeneek-V4-Flash-Vision-Exp`
+- Model providers are **not** part of the brand contract. This project operates no
+  inference service, so no composition may ship a provider route it does not serve:
+  every route is one the user's own API key activates. Add adapters, never endpoints.

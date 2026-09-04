@@ -223,6 +223,9 @@ function installControllers(
   if (ctx.get('agentDefaultModel') === undefined) {
     ctx.provide('agentDefaultModel', {
       currentSelection: defaults.defaultModelSelection,
+      // The harness always configures a default, so resolution never reaches
+      // the registry fallback the real service uses.
+      resolveSelection: () => Promise.resolve(defaults.defaultModelSelection()),
       saveSelection: async (selection: AgentModelSelection) => {
         await defaults.saveDefaultModelSelection?.(selection)
       },

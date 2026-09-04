@@ -28,7 +28,7 @@ pnpm gnk web
 - [ ] `pnpm run typecheck` 通过
 - [ ] `pnpm run test` 通过
 - [ ] `pnpm run verify-translation-pairing <edited pairs>` 通过
-- [ ] 品牌契约完好（Greeneek 应用/Logo/主题；Greeneek 模型）
+- [ ] 品牌契约完好（Greeneek 应用/Logo/主题；不虚构模型提供方）
 - [ ] 新功能文档已更新
 
 ## 品牌与模型
@@ -36,8 +36,6 @@ pnpm gnk web
 - 应用品牌保持为 **Greeneek**。
 - Logo 保持为 **Greeneek**。
 - 绿色主题保持为 **Greeneek green**。
-- 模型提供商与模型名称回到 **Greeneek**：
-  - `Greeneek`
-  - `Greeneek-V4-Flash`
-  - `Greeneek-V4-Pro`
-  - `Greeneek-V4-Flash-Vision-Exp`
+- 模型提供方**不属于**品牌契约。本项目不运营任何推理服务，因此任何组合都不得
+  内置自己并不提供的模型路由：每条路由都由用户自己的 API 密钥激活。
+  只添加适配器，不添加端点。

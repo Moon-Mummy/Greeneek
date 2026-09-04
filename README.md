@@ -21,7 +21,7 @@ Greeneek is an open-source agent harness based on the MIT-licensed [Greeneek Har
 It is built on an **everything-is-a-plugin** architecture and powered by [Cordis](https://github.com/cordiverse/cordis), whose design is described in [_A Programming Paradigm for Spatiotemporal Composability_](https://arxiv.org/abs/2608.25512).
 
 - **Surfaces**: Web GUI (`gnk --profile web`), headless runs, automation ACP server, TypeScript SDK, and Python SDK.
-- **Greeneek models**: `Greeneek`, `Greeneek-V4-Flash`, `Greeneek-V4-Pro`, `Greeneek-V4-Flash-Vision-Exp`.
+- **Bring your own models**: OpenAI, Anthropic, Google, and 35+ other routes, activated by your own API key.
 - **Sessions and tracing**: durable session persistence, titles, and telemetry.
 - **Extensible**: every capability is a plugin; tag community plugins with the [`gnk-plugin`](https://github.com/topics/gnk-plugin) topic.
 
@@ -32,11 +32,10 @@ Documentation: see the in-repository [user guide](docs/user/guide/index.md) and 
 - App branding stays **Greeneek**.
 - Logo stays **Greeneek**.
 - Green theme stays **Greeneek green**.
-- Model provider/models are back to **Greeneek**:
-  - `Greeneek`
-  - `Greeneek-V4-Flash`
-  - `Greeneek-V4-Pro`
-  - `Greeneek-V4-Flash-Vision-Exp`
+- Models are **yours, not ours**: this project operates no inference service and ships
+  no provider of its own. Every model route is one your own API key activates.
+  Add a key under **Settings → Models** (or set the matching environment variable,
+  such as `OPENAI_API_KEY`), and that provider becomes selectable everywhere.
 
 ## Developer preview
 
