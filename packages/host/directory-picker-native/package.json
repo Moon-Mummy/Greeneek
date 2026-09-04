@@ -34,7 +34,7 @@
   "dependencies": {
     "@greeneek/gnk-host-directory-picker": "workspace:^",
     "@greeneek/gnk-native-command": "workspace:^",
-    "koffi": "^3.1.0"
+    "koffi": "^3.1.2"
   },
   "peerDependencies": {
     "@greeneek/cordis": "workspace:^"
