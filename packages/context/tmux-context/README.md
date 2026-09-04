@@ -3,13 +3,13 @@ description: "Opt-in per-turn tmux location context for users and maintainers en
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tmux-context
+# @greeneek/gnk-tmux-context
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-tmux-context` tells the model where its agent process runs: on each turn whose tmux state changed, it appends a durable, source-attributed reading naming the tmux session, window, and pane plus the window's pane-tree layout. It is sampled once per turn during request preparation and only when the process genuinely lives inside the named pane — a terminal that merely inherited `$TMUX`/`$TMUX_PANE` from a tmux ancestor reads as not in tmux and adds nothing. An unchanged location adds nothing, and a failed query is a no-op, never a turn failure. The plugin is opt-in and not part of the shipped Web/headless composition.
+`gnk-tmux-context` tells the model where its agent process runs: on each turn whose tmux state changed, it appends a durable, source-attributed reading naming the tmux session, window, and pane plus the window's pane-tree layout. It is sampled once per turn during request preparation and only when the process genuinely lives inside the named pane — a terminal that merely inherited `$TMUX`/`$TMUX_PANE` from a tmux ancestor reads as not in tmux and adds nothing. An unchanged location adds nothing, and a failed query is a no-op, never a turn failure. The plugin is opt-in and not part of the shipped Web/headless composition.
 
 ## Table of Contents
 
@@ -36,7 +36,7 @@ On each turn whose tmux state changed, the model receives one source-tagged cont
 The minimal mount needs no configuration. A positive `refreshIntervalMs` additionally suppresses injections that fall within that many milliseconds of the latest one; omission or `0` injects whenever the tmux state changed since the last injection.
 
 ```yaml
-- name: '@deepseek-ai/dsh-tmux-context'
+- name: '@greeneek/gnk-tmux-context'
   config:
     refreshIntervalMs: 60000
 ```
@@ -45,7 +45,7 @@ The minimal mount needs no configuration. A positive `refreshIntervalMs` additio
 |---|---|---|
 | `refreshIntervalMs` | `0` (every changed turn) | Minimum milliseconds between durable injections in one session |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-tmux-context) is the exhaustive source for every accepted field and its JSDoc.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-tmux-context) is the exhaustive source for every accepted field and its JSDoc.
 
 ### When the location is known
 
@@ -88,7 +88,7 @@ Read these pages when the package-level contract is not enough. They move from t
 - [Tmux location context decision record](../../../.agents/notes/implemented/feature/2026-07-27-tmux-location-context.md) — design rationale for the tty-based detection and reading shape.
 - [Shell subsystem](../../../docs/subsystems/shell.md) — the executor service the read-only query runs through.
 - [Context group map](../README.md) — sibling request-context packages.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-tmux-context) — every accepted config field and its source declaration.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-tmux-context) — every accepted config field and its source declaration.
 
 -----
 

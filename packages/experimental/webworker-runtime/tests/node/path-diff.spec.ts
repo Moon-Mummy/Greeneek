@@ -14,29 +14,29 @@
  */
 import { expect, test } from 'vitest'
 import { posix as nodePosix } from 'node:path'
-import * as shim from '@deepseek-ai/dsh-experimental-webworker-runtime/src/node/builtin_modules/implemented/path.ts'
+import * as shim from '@greeneek/gnk-experimental-webworker-runtime/src/node/builtin_modules/implemented/path.ts'
 
 const CASES = [
   '', '.', '..', '/', '//', '///', 'a', '/a', 'a/', '/a/', 'a/b', '/a/b/c', 'a//b', '/a//b/',
   './a', '../a', 'a/./b', 'a/../b', '/a/../..', '/../a', 'a/b/../../c', '.hidden', 'a.b.c',
   '/a/b/c.txt', 'c.txt', '.txt', 'a/.txt', 'a/b.', '/a/b/.', '/a/b/..', 'foo/bar/../baz/./qux',
-  '/dsh/node_modules/@deepseek-ai/dsh-session/lib/index.js', 'node_modules/.bin/x',
+  '/gnk/node_modules/@greeneek/gnk-session/lib/index.js', 'node_modules/.bin/x',
 ]
 
 const JOINS: string[][] = [
   ['a', 'b'], ['/a', 'b'], ['a', '/b'], ['a', '..'], ['a', '../..'], ['', 'b'], ['a', ''],
-  ['/dsh', 'config', 'cordis.yml'], ['/dsh/node_modules', '@scope/pkg', 'lib/index.js'],
+  ['/gnk', 'config', 'cordis.yml'], ['/gnk/node_modules', '@scope/pkg', 'lib/index.js'],
   ['a/', '/b'], ['.', 'a'], ['..', 'a'], ['/', 'a'], [],
 ]
 
 const RESOLVES: string[][] = [
-  ['a'], ['/a', 'b'], ['/a', '/b'], ['a', '..'], ['/dsh', './config/../config/cordis.yml'],
-  ['/a/b', '../c'], ['/'], ['', 'a'], ['/dsh/node_modules/pkg', './lib/../lib/index.js'],
+  ['a'], ['/a', 'b'], ['/a', '/b'], ['a', '..'], ['/gnk', './config/../config/cordis.yml'],
+  ['/a/b', '../c'], ['/'], ['', 'a'], ['/gnk/node_modules/pkg', './lib/../lib/index.js'],
 ]
 
 const RELATIVES: [string, string][] = [
   ['/a/b', '/a/b/c'], ['/a/b/c', '/a/b'], ['/a', '/b'], ['/a/b', '/a/b'], ['/', '/a'],
-  ['/dsh/node_modules/a', '/dsh/node_modules/b/lib/x.js'],
+  ['/gnk/node_modules/a', '/gnk/node_modules/b/lib/x.js'],
 ]
 
 const compare = (label: string, actual: unknown, expected: unknown): void => {

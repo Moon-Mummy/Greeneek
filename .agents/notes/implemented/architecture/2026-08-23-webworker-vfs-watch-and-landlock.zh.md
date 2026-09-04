@@ -8,7 +8,7 @@ Status: implemented
 
 Web Worker preview 启动与 Node host 相同的 Web profile 和 Agent preset。缺少 VFS 变更源时，拒绝 `node:fs.watchFile` 会让 `skill-filesystem` 返回不完整观测并在每次查询时重新扫描，而无事件的成功调用会让已有根永远等待 Chokidar 的 `ready`。Settings 和 credentials 同样需要真实的外部编辑事件，而不是包专用 fake。
 
-同一组合挂载 `sandbox-local`，其 Linux 选择链依次探测 bwrap 和 `@deepseek-ai/node-addon-landlock-run`。Worker 无法执行这两个二进制文件。如果选择链到此结束，`workspace-write` 与 `read-only` 将不可用，尽管 shell 的每项文件系统操作已经经过 Host 侧 VFS 调用点。
+同一组合挂载 `sandbox-local`，其 Linux 选择链依次探测 bwrap 和 `@greeneek/node-addon-landlock-run`。Worker 无法执行这两个二进制文件。如果选择链到此结束，`workspace-write` 与 `read-only` 将不可用，尽管 shell 的每项文件系统操作已经经过 Host 侧 VFS 调用点。
 
 文件系统兼容边界遵循 [Worker Node face 决策](2026-08-20-webworker-node-face.zh.md)：纯 JavaScript watcher 包在 Node 兼容模块之上保持原样运行。Native 或 binary 包可以保持公开 JavaScript API 与可执行文件协议，同时替换执行后端。无法维持调用方可见 Node 行为的 API 继续明确标记为不可用；`node:vm` 不属于本决策范围。
 
@@ -32,11 +32,11 @@ Chokidar 和 readdirp 作为普通镜像依赖运行，不属于模块 replaceme
 
 ### 基于逐进程 VFS 授权的 Landlock CLI
 
-`@deepseek-ai/node-addon-landlock-run` 是普通镜像依赖，不是模块 replacement。其未经修改的 JavaScript 入口通过 Worker 实现的 `node:child_process`、`node:module`、`node:path` 与 `node:url` 运行，因此该包仍是 `LAUNCHER_BIN`、`LAUNCHER_FAILURE_EXIT`、`launcherPath()`、`grantArgs()` 和 `probe()` 的唯一所有者。镜像可以包含匹配的 Linux optional package，但包解析不决定 Worker 平台是否提供 Landlock；缺少该 optional package 时，入口包产生的确定性 fallback 路径仍到达同一个平台可执行文件实现。
+`@greeneek/node-addon-landlock-run` 是普通镜像依赖，不是模块 replacement。其未经修改的 JavaScript 入口通过 Worker 实现的 `node:child_process`、`node:module`、`node:path` 与 `node:url` 运行，因此该包仍是 `LAUNCHER_BIN`、`LAUNCHER_FAILURE_EXIT`、`launcherPath()`、`grantArgs()` 和 `probe()` 的唯一所有者。镜像可以包含匹配的 Linux optional package，但包解析不决定 Worker 平台是否提供 Landlock；缺少该 optional package 时，入口包产生的确定性 fallback 路径仍到达同一个平台可执行文件实现。
 
 进程层持有按逻辑可执行文件名识别的 Worker 平台可执行文件表，而不依赖某一个包管理器路径。其 `landlock-run` provider 接受裸命令或绝对 launcher 路径，解析 native 包未经修改的 CLI、校验每个授权根，并把内部 argv 交给既有 shell 进程 runner。`node:child_process` 只负责通用的可执行文件查找、输出投递与结束处理。因此，原包的同步 `probe()` 会通过 `spawnSync` 观察到该 provider 并报告 `full`。用法错误、缺失的授权根或未知内部可执行文件只输出一行 `landlock-run: ...`，以 `125` 退出，并且绝不运行内部命令。bwrap 仍探测为不可用，因此未修改的 `sandbox-local` Linux 选择链会选中该 Landlock 后端。
 
-每个已启动进程分别获得一个 `ShellFileSystem` guard。`stat`、`list` 和 `readText` 需要只读或读写授权；`writeText`、`mkdir` 和 `remove` 需要读写授权；`rename` 要求源和目标都可写。Grant root 在 containment 检查前去除尾部分隔符。拒绝错误包含 `EACCES` 与 `permission denied`，从而保持 `bash-sandbox` 的拒绝分类。`/tmp` 映射到 VFS 的 `/dsh/tmp`，`/dev/null` 则是空读、丢弃写入且不保存任何字节的虚拟文件。
+每个已启动进程分别获得一个 `ShellFileSystem` guard。`stat`、`list` 和 `readText` 需要只读或读写授权；`writeText`、`mkdir` 和 `remove` 需要读写授权；`rename` 要求源和目标都可写。Grant root 在 containment 检查前去除尾部分隔符。拒绝错误包含 `EACCES` 与 `permission denied`，从而保持 `bash-sandbox` 的拒绝分类。`/tmp` 映射到 VFS 的 `/gnk/tmp`，`/dev/null` 则是空读、丢弃写入且不保存任何字节的虚拟文件。
 
 Worker 的 `full` 结论覆盖 shell 命令表和 Host 服务 VFS 协议能够表达的全部文件操作。它不表示 Linux 内核 Landlock、不支持任意 native 可执行文件，也无法约束未来绕过 `ShellFileSystem` 的 shell 程序。
 
@@ -66,7 +66,7 @@ Worker 的 `full` 结论覆盖 shell 命令表和 Host 服务 VFS 协议能够�
 
 - `fs-watch-stream.spec.ts` 对照当前 Node 版本验证缺失、创建、修改、删除的 `watchFile` 状态转换，以及文件流生命周期、分片、范围、backpressure、字节计数、默认值和 abort 身份。
 - `chokidar.spec.ts` 通过 Worker transformer 与模块 loader 加载 lockfile 选定的两组 Chokidar 和 readdirp 依赖，并在 `MemoryVfs` 上验证 `ready`、callback watcher、polling、缺失文件创建、删除和完全停稳的关闭。
-- `image-loadable.spec.ts` 打包并加载真实的 `@deepseek-ai/node-addon-landlock-run` JavaScript，验证它不在 replacement 表中，并让其 fallback `launcherPath()` 与 `probe()` 经过 Worker 平台可执行文件。`child-process.spec.ts` 与 `sandbox-stack.spec.ts` 随后通过生产 sandbox 和 subprocess 包验证 launcher 失败码、错误 argv 与授权失败、`/tmp` 与 `/dev/null`、rename 拒绝、三种权限模式和逐进程并发授权。
+- `image-loadable.spec.ts` 打包并加载真实的 `@greeneek/node-addon-landlock-run` JavaScript，验证它不在 replacement 表中，并让其 fallback `launcherPath()` 与 `probe()` 经过 Worker 平台可执行文件。`child-process.spec.ts` 与 `sandbox-stack.spec.ts` 随后通过生产 sandbox 和 subprocess 包验证 launcher 失败码、错误 argv 与授权失败、`/tmp` 与 `/dev/null`、rename 拒绝、三种权限模式和逐进程并发授权。
 - `preview-boot.e2e.ts` 构建并启动打包后的浏览器部署，创建 Workspace 与 Session，把缺失的 skill 根逐级推进到可用的 Chokidar watch，读取 catalog，并在没有 watcher 警告的情况下完成 settings 与 credential 写入。
 
 ## Consequences

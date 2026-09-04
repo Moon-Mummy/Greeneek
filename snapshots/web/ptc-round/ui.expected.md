@@ -19,10 +19,10 @@
 - button "1 tool call" [expanded]:
   - text: 1 tool call
   - img
-- button "Context injection @deepseek-ai/dsh-system-prompt":
+- button "Context injection @greeneek/gnk-system-prompt":
   - img
   - img
-  - text: Context injection @deepseek-ai/dsh-system-prompt
+  - text: Context injection @greeneek/gnk-system-prompt
 - 'button "Think The user wants me to write a single `run_code` program that:"':
   - img
   - img
@@ -57,8 +57,8 @@
 - button "Commands":
   - img
 - 'button "Access mode, current: Workspace Write"': Workspace Write
-- button "Select model, current DeepSeek-V4-Flash":
-  - text: DeepSeek-V4-Flash
+- button "Select model, current Greeneek-V4-Flash":
+  - text: Greeneek-V4-Flash
   - img
 - button "7% of context used"
 - button "Send message" [disabled]

@@ -1,6 +1,6 @@
 /**
  * Quick comprehensive documentation-standard tests: the reference example
- * stays valid, the consolidated `dsh-doc` skill carries no stale copied
+ * stays valid, the consolidated `gnk-doc` skill carries no stale copied
  * website values or prototype-era language, and the kind system maps each
  * label to exactly one skill template. These run in `pnpm run test` and
  * `pnpm run test:docs` to guard the standard between heavier corpus gates.
@@ -30,22 +30,22 @@ function packageReadmes(): string[] {
 }
 
 /**
- * The kind system: each label maps to exactly one template in the dsh-doc
+ * The kind system: each label maps to exactly one template in the gnk-doc
  * skill. The check derives the expected kind from the same mechanical facts
  * the skill documents; a kind without a template, a template without a kind,
  * or a document whose kind does not match its position fails here.
  */
 const KIND_TEMPLATES: Readonly<Record<string, string>> = {
-  'package-group': '.agents/skills/dsh-doc/templates/package-group.md',
-  'package-reference': '.agents/skills/dsh-doc/templates/package-reference.md',
-  'package-library': '.agents/skills/dsh-doc/templates/package-library.md',
-  'package-bundle': '.agents/skills/dsh-doc/templates/package-bundle.md',
+  'package-group': '.agents/skills/gnk-doc/templates/package-group.md',
+  'package-reference': '.agents/skills/gnk-doc/templates/package-reference.md',
+  'package-library': '.agents/skills/gnk-doc/templates/package-library.md',
+  'package-bundle': '.agents/skills/gnk-doc/templates/package-bundle.md',
 }
 
 /**
  * Audited packages whose entry is a plain module API rather than a Cordis
  * plugin (`apply` export or a default service export) or an installable
- * bundle (`dsh.bundle.patch`). Each entry names why the package is a
+ * bundle (`gnk.bundle.patch`). Each entry names why the package is a
  * library; the check re-derives the entry shape so a stale entry fails loud.
  */
 const PACKAGE_LIBRARIES: Readonly<Record<string, string>> = {
@@ -83,6 +83,7 @@ const PACKAGE_LIBRARIES: Readonly<Record<string, string>> = {
   'packages/util/native-command': 'Host-side subprocess runner utility.',
   'packages/util/output-retention': 'Zero-dependency retention utility.',
   'packages/util/time': 'Zero-dependency time-zone canonicalization utility.',
+  'packages/util/egress': 'Zero-dependency network egress policy; plain function/type exports.',
   'packages/util/timeout': 'Zero-dependency timeout utility.',
   'packages/util/values': 'Stateless lossless-JSON and immutable-value helpers.',
   'packages/util/workspace-path': 'Zero-dependency Workspace path formatter.',
@@ -102,12 +103,12 @@ function packageDir(file: string): string {
   return file.replaceAll('\\', '/').replace(/\/README\.zh\.md$/, '').replace(/\/README\.md$/, '')
 }
 
-/** Whether the package manifest declares `dsh.bundle.patch`. */
+/** Whether the package manifest declares `gnk.bundle.patch`. */
 function declaresBundle(dir: string): boolean {
   const manifest = resolve(root, dir, 'package.json')
   if (!existsSync(manifest)) return false
-  const metadata = JSON.parse(readFileSync(manifest, 'utf8')) as { dsh?: { bundle?: { patch?: string } } }
-  return metadata.dsh?.bundle?.patch !== undefined
+  const metadata = JSON.parse(readFileSync(manifest, 'utf8')) as { gnk?: { bundle?: { patch?: string } } }
+  return metadata.gnk?.bundle?.patch !== undefined
 }
 
 /** The expected kind for one package README, from the facts the skill documents. */
@@ -140,15 +141,15 @@ function packageReadmeStructureErrors(file: string, source: string): string[] {
   return required.flatMap(([pattern, label]) => pattern.test(source) ? [] : [`missing ${label}`])
 }
 
-describe('dsh-doc skill consolidation', () => {
+describe('gnk-doc skill consolidation', () => {
   it('carries no prototype-era language', () => {
     const files = [
-      '.agents/skills/dsh-doc/SKILL.md',
-      '.agents/skills/dsh-doc/references/metadata-links-i18n.md',
-      '.agents/skills/dsh-doc/references/structure-hierarchy.md',
-      '.agents/skills/dsh-doc/references/style.md',
-      '.agents/skills/dsh-doc/references/review.md',
-      '.agents/skills/dsh-doc/references/website-sync.md',
+      '.agents/skills/gnk-doc/SKILL.md',
+      '.agents/skills/gnk-doc/references/metadata-links-i18n.md',
+      '.agents/skills/gnk-doc/references/structure-hierarchy.md',
+      '.agents/skills/gnk-doc/references/style.md',
+      '.agents/skills/gnk-doc/references/review.md',
+      '.agents/skills/gnk-doc/references/website-sync.md',
     ]
     for (const file of files) {
       const source = readFileSync(resolve(root, file), 'utf8')
@@ -157,20 +158,20 @@ describe('dsh-doc skill consolidation', () => {
   })
 
   it('copies no stale website sidebar or section-owner values', () => {
-    const source = readFileSync(resolve(root, '.agents/skills/dsh-doc/references/website-sync.md'), 'utf8')
+    const source = readFileSync(resolve(root, '.agents/skills/gnk-doc/references/website-sync.md'), 'utf8')
     expect(source).not.toContain('en-docs')
     expect(source).not.toContain('sectionOrder')
   })
 
   it('keeps the reference example linked from the skill', () => {
-    const skill = readFileSync(resolve(root, '.agents/skills/dsh-doc/SKILL.md'), 'utf8')
+    const skill = readFileSync(resolve(root, '.agents/skills/gnk-doc/SKILL.md'), 'utf8')
     expect(skill).toContain('session-persistence-jsonl/README.md')
     expect(skill).toContain('session-persistence-jsonl/README.zh.md')
   })
 
   it('defines controlled English as a precision-preserving review discipline', () => {
-    const skill = readFileSync(resolve(root, '.agents/skills/dsh-doc/SKILL.md'), 'utf8')
-    const style = readFileSync(resolve(root, '.agents/skills/dsh-doc/references/style.md'), 'utf8')
+    const skill = readFileSync(resolve(root, '.agents/skills/gnk-doc/SKILL.md'), 'utf8')
+    const style = readFileSync(resolve(root, '.agents/skills/gnk-doc/references/style.md'), 'utf8')
     expect(skill).toContain('references/style.md#controlled-technical-english')
     expect(style).toContain('not certified ASD-STE100 compliance')
     expect(style).toContain('review prompts, not mechanical gates')
@@ -178,7 +179,7 @@ describe('dsh-doc skill consolidation', () => {
   })
 
   it('maps every kind label to exactly one skill template that exists', () => {
-    const templateFiles = globSync('.agents/skills/dsh-doc/templates/*.md', { cwd: root }).map(path => path.split(sep).join('/')).sort()
+    const templateFiles = globSync('.agents/skills/gnk-doc/templates/*.md', { cwd: root }).map(path => path.split(sep).join('/')).sort()
     const registered = Object.values(KIND_TEMPLATES).sort()
     expect(templateFiles).toEqual(registered)
     for (const [kind, template] of Object.entries(KIND_TEMPLATES)) {

@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-web-fetch-http",
-  "description": "Anonymous public HTTP(S) fetch provider for the DeepSeek Harness web capability seam (ctx.web)",
+  "name": "@greeneek/gnk-web-fetch-http",
+  "description": "Anonymous public HTTP(S) fetch provider for the Greeneek Harness web capability seam (ctx.web)",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/web/web-fetch-http"
   },
   "type": "module",
@@ -27,18 +27,18 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-timeout": "workspace:^",
-    "@deepseek-ai/dsh-web": "workspace:^"
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-timeout": "workspace:^",
+    "@greeneek/gnk-web": "workspace:^"
   },
   "dependencies": {
-    "@deepseek-ai/schemastery": "workspace:^",
+    "@greeneek/schemastery": "workspace:^",
     "ipaddr.js": "^2.5.0",
     "undici": "^8.10.0"
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-timeout": "workspace:^",
-    "@deepseek-ai/dsh-web": "workspace:^"
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-timeout": "workspace:^",
+    "@greeneek/gnk-web": "workspace:^"
   }
 }

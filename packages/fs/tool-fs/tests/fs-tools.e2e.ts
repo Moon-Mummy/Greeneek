@@ -1,10 +1,10 @@
-import { createUserMessage } from '@deepseek-ai/dsh-llm'
+import { createUserMessage } from '@greeneek/gnk-llm'
 import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import type { Context } from '@deepseek-ai/cordis'
-import { SessionId } from '@deepseek-ai/dsh-session'
+import type { Context } from '@greeneek/cordis'
+import { SessionId } from '@greeneek/gnk-session'
 import { fsHarness, waitForIdle } from './harness.ts'
 
 /** Key-gated smoke for a real model driving the local read/write/edit tools. */
@@ -22,13 +22,13 @@ afterEach(async () => {
 const SYSTEM = 'You are a coding assistant. Use the write tool to create files, the read tool to inspect '
   + 'them, and the edit tool for literal replacements. Read a file before editing it. Keep replies terse.'
 
-describe.skipIf(!process.env.DEEPSEEK_API_KEY)('fs tools with-key smoke', () => {
+describe.skipIf(!process.env.GREENEEK_API_KEY)('fs tools with-key smoke', () => {
   it('creates, reads, then edits a file — verified on disk', async () => {
-    workdir = await mkdtemp(join(tmpdir(), 'dsh-fs-e2e-'))
+    workdir = await mkdtemp(join(tmpdir(), 'gnk-fs-e2e-'))
     ctx = await fsHarness(workdir, SYSTEM)
     // agentLoop.create prepares a session with no cwd, so the provider default
     // (config.cwd = workdir) is the workspace.
-    const agent = await ctx.agentLoop.create(SessionId('fs-e2e'), { provider: 'deepseek-official', model: 'deepseek-v4-flash' })
+    const agent = await ctx.agentLoop.create(SessionId('fs-e2e'), { provider: 'greeneek-official', model: 'greeneek-v4-flash' })
 
     agent.followup(createUserMessage({
       content: [{ type: 'text', text:
@@ -53,15 +53,15 @@ describe.skipIf(!process.env.DEEPSEEK_API_KEY)('fs tools with-key smoke', () => 
     // config.cwd is the harness workdir, but the agent's SESSION cwd is a
     // different dir; the write must land in the SESSION dir, proving the tool
     // passes the per-session cwd (not the backend default).
-    const configDir = await mkdtemp(join(tmpdir(), 'dsh-fs-e2e-cfg-'))
+    const configDir = await mkdtemp(join(tmpdir(), 'gnk-fs-e2e-cfg-'))
     workdir = configDir
-    const sessionDir = await mkdtemp(join(tmpdir(), 'dsh-fs-e2e-session-'))
+    const sessionDir = await mkdtemp(join(tmpdir(), 'gnk-fs-e2e-session-'))
     try {
       ctx = await fsHarness(configDir, SYSTEM)
       const handle = await ctx.agents.create({
         sessionId: SessionId(`fs-e2e-cwd-${Date.now()}`),
         meta: { cwd: sessionDir },
-        agentOptions: { provider: 'deepseek-official', model: 'deepseek-v4-flash' },
+        agentOptions: { provider: 'greeneek-official', model: 'greeneek-v4-flash' },
       })
       handle.agent.followup(createUserMessage({
         content: [{ type: 'text', text:

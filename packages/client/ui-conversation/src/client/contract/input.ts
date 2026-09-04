@@ -6,9 +6,9 @@
  * and its reference chips live in the shell's Lexical editor; the machine
  * here is the submit plane (phase, claim, attempt) alone.
  */
-import type { Context } from '@deepseek-ai/cordis'
-import type { ObservableSnapshot, SnapshotStore } from '@deepseek-ai/dsh-client-store'
-import type { Branded } from '@deepseek-ai/dsh-brand'
+import type { Context } from '@greeneek/cordis'
+import type { ObservableSnapshot, SnapshotStore } from '@greeneek/gnk-client-store'
+import type { Branded } from '@greeneek/gnk-brand'
 import type { LexicalEditor } from 'lexical'
 import type { QueueRow } from './queue.ts'
 import type { InputSubmitMode } from './composer-submission.ts'
@@ -133,7 +133,7 @@ export interface InputTriggerController {
   toggleSource(source: string, hit: InputTriggerHit): void
 }
 
-declare module '@deepseek-ai/cordis' {
+declare module '@greeneek/cordis' {
   interface Events {
     /**
      * Claim a command token for the scoped input machine.

@@ -10,7 +10,7 @@ Trajectory has to make prose, machine payloads, token usage, timing, and nested 
 
 ## Decision
 
-**Render a compact, turn-aware event ledger with a local record inspector, using the existing DeepSeek design system.**
+**Render a compact, turn-aware event ledger with a local record inspector, using the existing Greeneek design system.**
 
 - The ledger keeps materialized business records in Session Event order within the loaded window. Turn boundaries use a slightly heavier rule, the raw Turn id, and a continuous left rail; Request boundaries appear as small points integrated into that structure and use one chronological numbering space across ordinary and compaction requests.
 - Event kind and content form the two stable columns. Role tags align toward the content, nested subtools receive a small indentation, and CSS truncation preserves the available preview width. Token usage and duration stay in the inspector.

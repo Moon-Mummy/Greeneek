@@ -3,7 +3,7 @@ description: "Cross-runtime UUID generation for maintainers replacing secure-con
 kind: "package-library"
 ---
 
-# dsh-util-crypto
+# gnk-util-crypto
 
 English | [中文](README.zh.md)
 
@@ -32,7 +32,7 @@ It is a **library, not a service or plugin**: no `ctx`, registers nothing, holds
 ## API
 
 ```ts
-import { bytesToBase64, randomUUID, type Uuid } from '@deepseek-ai/dsh-util-crypto'
+import { bytesToBase64, randomUUID, type Uuid } from '@greeneek/gnk-util-crypto'
 ```
 
 | Export | Role |

@@ -9,10 +9,10 @@
  * with `removedCount` and marks a cancellation `outcome: 'canceled'`, which
  * separates a turn claiming its input from work being dropped unrun.
  *
- * @module @deepseek-ai/dsh-agent/consumed-work
+ * @module @greeneek/gnk-agent/consumed-work
  */
 
-import type { SessionEvent, TurnEndReason } from '@deepseek-ai/dsh-session'
+import type { SessionEvent, TurnEndReason } from '@greeneek/gnk-session'
 
 /** How one agent log accounts for the work it consumed. */
 export interface ConsumedWork {

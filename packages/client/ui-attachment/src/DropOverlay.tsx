@@ -11,7 +11,7 @@ export interface DropOverlayLabels {
 
 /**
  * Full-viewport invitation shown while a file drag is over the page
- * (DeepSeek Chat's DragMask). Decoration only: `pointer-events: none` keeps
+ * (Greeneek Chat's DragMask). Decoration only: `pointer-events: none` keeps
  * drag targeting on the page below, so the owner's document-level listeners
  * keep an accurate enter/leave count and own accept/reject. Rendered through
  * a body portal for the same transformed-ancestor reason as the lightbox.
@@ -39,10 +39,10 @@ export function DropOverlay({ disabled, labels }: {
   )
 }
 
-/** Tilted photo-and-note cards (DeepSeek Chat upload illustration). */
+/** Tilted photo-and-note cards (Greeneek Chat upload illustration). */
 const UploadIllustration = () => (
   <svg width="115" height="84" viewBox="0 0 115 84" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g clipPath="url(#dshDropOverlayClip)">
+    <g clipPath="url(#gnkDropOverlayClip)">
       <rect y="17.0742" width="44.1832" height="43.6431" rx="12" transform="rotate(-22.7338 0 17.0742)" fill="#9CE5ED" />
       <rect x="73.4043" y="8.54297" width="43.7267" height="50.5284" rx="8" transform="rotate(17.403 73.4043 8.54297)" fill="#679EFE" />
       <path d="M30.4917 28.1369L40.8865 33.4564L37.2232 34.9524L29.5302 31.0159L26.7919 39.2122L23.1285 40.7082L26.8287 29.6338L16.8967 24.5516L20.5601 23.0556L27.7902 26.7549L30.3639 19.052L34.0273 17.556L30.4917 28.1369Z" fill="white" />
@@ -54,14 +54,14 @@ const UploadIllustration = () => (
       <circle cx="60.6157" cy="52.247" r="4.38794" transform="rotate(22.5996 60.6157 52.247)" fill="white" />
     </g>
     <defs>
-      <clipPath id="dshDropOverlayClip">
+      <clipPath id="gnkDropOverlayClip">
         <rect width="115" height="84" fill="white" />
       </clipPath>
     </defs>
   </svg>
 )
 
-/** Greyed cards with a blocked badge (DeepSeek Chat disabled illustration). */
+/** Greyed cards with a blocked badge (Greeneek Chat disabled illustration). */
 const UploadDisabledIllustration = () => (
   <svg width="115" height="84" viewBox="0 0 115 84" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M29.6829 4.63701L11.0677 12.4368C4.95519 14.998 2.07624 22.0294 4.6374 28.1419L12.2285 46.259C14.7896 52.3715 21.8211 55.2505 27.9336 52.6893L46.5488 44.8895C52.6613 42.3283 55.5403 35.2969 52.9791 29.1844L45.388 11.0673C42.8269 4.9548 35.7954 2.07585 29.6829 4.63701Z" fill="#979DA6" />

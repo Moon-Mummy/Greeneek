@@ -3,13 +3,13 @@ description: "面向插件作者与维护者的用户设置服务：注册可配
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-settings
+# @greeneek/gnk-settings
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-settings` 让插件把配置开放给用户运行时修改：插件用一个 schema 注册 namespace，解析值依次尊重 schema 默认值、部署自身的组合 `base` 与用户编辑的文档分节——用户覆盖优先。消费方读取解析值快照并在每次已提交变更后收到通知；配置界面每个 namespace 得到一条 descriptor——schema、当前值、每个字段来自哪一层、生效时机——而无需直接触碰存储。写入只改动用户覆盖、按 namespace 逐个执行，并可携带期望 revision，让持有陈旧快照的写入方被拒绝，而不是悄悄覆盖较新的写入。文档必须由挂载的提供方存储；没有提供方时一切照旧，配置保持组合原样。
+`gnk-settings` 让插件把配置开放给用户运行时修改：插件用一个 schema 注册 namespace，解析值依次尊重 schema 默认值、部署自身的组合 `base` 与用户编辑的文档分节——用户覆盖优先。消费方读取解析值快照并在每次已提交变更后收到通知；配置界面每个 namespace 得到一条 descriptor——schema、当前值、每个字段来自哪一层、生效时机——而无需直接触碰存储。写入只改动用户覆盖、按 namespace 逐个执行，并可携带期望 revision，让持有陈旧快照的写入方被拒绝，而不是悄悄覆盖较新的写入。文档必须由挂载的提供方存储；没有提供方时一切照旧，配置保持组合原样。
 
 ## 目录
 
@@ -36,12 +36,12 @@ kind: "package-reference"
 服务本身不存储任何内容；请挂载一个提供方，例如随附的文件型提供方：
 
 ```yaml
-- name: '@deepseek-ai/dsh-settings-file'
+- name: '@greeneek/gnk-settings-file'
   config:
     path: /absolute/path/to/settings.yaml
 ```
 
-提供方上线后 `ctx.settings` 即出现。完整配置面由提供方 README 负责；生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-settings-file)列出每个受支持字段。
+提供方上线后 `ctx.settings` 即出现。完整配置面由提供方 README 负责；生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-settings-file)列出每个受支持字段。
 
 ### 注册 namespace
 

@@ -1,14 +1,14 @@
 /**
  * Pure types of the plan domain: the ONE home of the `plan` projection-key
  * declaration, free of this package's host-side value imports (cordis,
- * dsh-tools, dsh-agent). Two namespace projections serve it — `./types` for
+ * gnk-tools, gnk-agent). Two namespace projections serve it — `./types` for
  * host consumers and `./client` for client aggregates — with zero content
  * duplication.
  *
- * @module @deepseek-ai/dsh-plan-mode/types
+ * @module @greeneek/gnk-plan-mode/types
  */
 
-import type { CommandId } from '@deepseek-ai/dsh-commands/brand'
+import type { CommandId } from '@greeneek/gnk-commands/brand'
 
 /**
  * The plan projection's wire value. `active` is the logged state in force
@@ -35,7 +35,7 @@ export interface PlanUnitState {
   activeAtLastHeader: boolean | null
 }
 
-declare module '@deepseek-ai/dsh-session-projection/types' {
+declare module '@greeneek/gnk-session-projection/types' {
   interface SessionProjectionStateMap {
     /** Host plan-mode fold state. */
     plan: PlanUnitState

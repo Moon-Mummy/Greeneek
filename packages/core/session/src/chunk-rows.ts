@@ -1,7 +1,7 @@
 /**
  * Lossless row packing for `assistant/chunk` delta runs. Providers stream
  * token-sized deltas, so a log stores hundreds of near-identical event lines
- * whose JSON envelopes dwarf their payloads (~56× measured on a real DeepSeek
+ * whose JSON envelopes dwarf their payloads (~56× measured on a real Greeneek
  * session). This module packs each run of consecutive same-block delta chunks
  * into ONE storage row — `text-chunks`, `reasoning-chunks`, or
  * `tool-call-chunks` — and expands rows back to the exact original events.
@@ -16,12 +16,12 @@
  * before expanding and fails loud on a malformed row-tagged value instead of
  * silently dropping a whole run.
  *
- * @module @deepseek-ai/dsh-session/chunk-rows
+ * @module @greeneek/gnk-session/chunk-rows
  */
 
-import { brandString } from '@deepseek-ai/dsh-brand'
-import type { ToolCallId } from '@deepseek-ai/dsh-llm/brand'
-import type { StreamChunk } from '@deepseek-ai/dsh-llm'
+import { brandString } from '@greeneek/gnk-brand'
+import type { ToolCallId } from '@greeneek/gnk-llm/brand'
+import type { StreamChunk } from '@greeneek/gnk-llm'
 import { SessionSeq } from './types.ts'
 import type { SessionEvent, SessionSeq as SessionSeqType } from './types.ts'
 

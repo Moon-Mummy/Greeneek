@@ -3,13 +3,13 @@ description: "Loader integration for generated Typert artifacts: how mounted pac
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-typert-loader
+# @greeneek/gnk-typert-loader
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-With `dsh-typert-loader` mounted, every package that mounts in a Loader composition automatically contributes its generated Typert reflection and schemas to the runtime registry — and withdraws them when the package or the plugin unmounts. Packages without the generated export are skipped, so adding the plugin to any composition is safe. An explicit `packages` list covers plugins nested behind another Loader entry, whose fibers carry no resolvable package specifier. It is a Node-only plugin and needs the config-tree resolution anchor to resolve packages.
+With `gnk-typert-loader` mounted, every package that mounts in a Loader composition automatically contributes its generated Typert reflection and schemas to the runtime registry — and withdraws them when the package or the plugin unmounts. Packages without the generated export are skipped, so adding the plugin to any composition is safe. An explicit `packages` list covers plugins nested behind another Loader entry, whose fibers carry no resolvable package specifier. It is a Node-only plugin and needs the config-tree resolution anchor to resolve packages.
 
 ## Table of Contents
 
@@ -25,22 +25,22 @@ With `dsh-typert-loader` mounted, every package that mounts in a Loader composit
 <a id="use-this-package"></a>
 ## Use this package
 
-Mount this plugin in a Host Loader composition that loads packages publishing generated Typert artifacts. The registry itself comes from `dsh-typert-registry`; this plugin only discovers and registers.
+Mount this plugin in a Host Loader composition that loads packages publishing generated Typert artifacts. The registry itself comes from `gnk-typert-registry`; this plugin only discovers and registers.
 
 ### Minimal configuration
 
 Load the registry and the loader; the loader defaults to discovering every Loader entry:
 
 ```yaml
-- name: '@deepseek-ai/dsh-typert-registry'
-- name: '@deepseek-ai/dsh-typert-loader'
+- name: '@greeneek/gnk-typert-registry'
+- name: '@greeneek/gnk-typert-loader'
 ```
 
 | Field | Default | Meaning |
 |---|---|---|
 | `packages` | `[]` | Additional package artifacts to register for plugins nested behind another Loader entry; each must resolve from the config tree and export `./typert` |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-typert-loader) is the exhaustive source for every accepted field.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-typert-loader) is the exhaustive source for every accepted field.
 
 ### What gets registered
 
@@ -90,7 +90,7 @@ Read these pages when the package-level contract is not enough; they move from t
 
 - [Typert registry](../registry/README.md) — the service this plugin feeds.
 - [Typert generator](../generator/README.md) — what produces the artifacts the loader imports.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-typert-loader) — the `packages` field declaration and JSDoc.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-typert-loader) — the `packages` field declaration and JSDoc.
 - [Typert group map](../README.md) — the full type-reflection pipeline.
 
 -----

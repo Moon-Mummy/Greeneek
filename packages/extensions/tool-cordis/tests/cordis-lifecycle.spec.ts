@@ -1,4 +1,4 @@
-import { Context, CordisError, FiberState, type Fiber } from '@deepseek-ai/cordis'
+import { Context, CordisError, FiberState, type Fiber } from '@greeneek/cordis'
 import { describe, expect, it } from 'vitest'
 
 /**

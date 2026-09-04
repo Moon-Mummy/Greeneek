@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 /** Exercises Conversation persistence through the real SlotRegistry store axis. */
 import { beforeEach, describe, expect, it } from 'vitest'
-import { SlotTestRuntime } from '@deepseek-ai/dsh-client-test-runtime'
-import type { SessionId } from '@deepseek-ai/dsh-session/types'
-import type { PropsRenderSlots } from '@deepseek-ai/dsh-client-ui-slots'
+import { SlotTestRuntime } from '@greeneek/gnk-client-test-runtime'
+import type { SessionId } from '@greeneek/gnk-session/types'
+import type { PropsRenderSlots } from '@greeneek/gnk-client-ui-slots'
 import { createConversationStore } from '../src/client/stores.ts'
 
 const sid = (value: string): SessionId => value as SessionId
@@ -74,11 +74,11 @@ describe('Conversation state survives on its store seat', () => {
     const doomed = storeFor(b, 'conversation.session', sid('s1'))
     doomed.actions.setDraft('to be buried')
     doomed.actions.setView('chat')
-    expect(localStorage.getItem('dsh.conversation.s1')).not.toBeNull()
+    expect(localStorage.getItem('gnk.conversation.s1')).not.toBeNull()
 
     await b.runtime.sessions.remove('s1')
 
-    expect(localStorage.getItem('dsh.conversation.s1')).toBeNull()
+    expect(localStorage.getItem('gnk.conversation.s1')).toBeNull()
     await b.runtime.sessions.add({ id: 's1' })
     const reborn = storeFor(b, 'conversation.session', sid('s1'))
     expect(reborn).not.toBe(doomed)

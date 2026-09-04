@@ -9,9 +9,9 @@
  * @module
  */
 
-import type { Context } from '@deepseek-ai/cordis'
-import { errorChain } from '@deepseek-ai/dsh-llm'
-import type { Session, SessionEvent, SessionHeader, SessionId, SessionLogOffset } from '@deepseek-ai/dsh-session'
+import type { Context } from '@greeneek/cordis'
+import { errorChain } from '@greeneek/gnk-llm'
+import type { Session, SessionEvent, SessionHeader, SessionId, SessionLogOffset } from '@greeneek/gnk-session'
 import {
   assertContiguous,
   materializeAppendBatch,
@@ -21,14 +21,14 @@ import {
   SessionPersistenceNotFoundError,
   SessionPersistenceRevision,
   SessionReadOnlyError,
-} from '@deepseek-ai/dsh-session-persistence'
+} from '@greeneek/gnk-session-persistence'
 import type {
   SessionAccess,
   SessionHandle,
   SessionHandleAppendOptions,
   SessionHandleFlushOptions,
   SessionHandleReadOptions,
-} from '@deepseek-ai/dsh-session-persistence'
+} from '@greeneek/gnk-session-persistence'
 
 /** Maximum intentional wait before a routed live session batch starts writing. */
 export const LIVE_WRITE_BATCH_MAX_DELAY_MS = 200

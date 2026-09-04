@@ -1,11 +1,11 @@
 /** Default Agent model settings layered over a real settings provider. */
 
 import { describe, expect, it } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
+import { Context } from '@greeneek/cordis'
 import AgentDefaultModelConfig, { AGENT_DEFAULT_MODEL_SETTINGS_NAMESPACE } from '../src/index.ts'
-import { SettingsProvider } from '@deepseek-ai/dsh-settings'
-import type { SettingsNamespace } from '@deepseek-ai/dsh-settings'
-import { ReasoningEffortId } from '@deepseek-ai/dsh-llm'
+import { SettingsProvider } from '@greeneek/gnk-settings'
+import type { SettingsNamespace } from '@greeneek/gnk-settings'
+import { ReasoningEffortId } from '@greeneek/gnk-llm'
 
 /** The smallest real provider: one in-memory document, always writable. */
 class MemorySettings extends SettingsProvider {
@@ -34,8 +34,8 @@ async function boot(): Promise<{
   const settingsFiber = ctx.plugin(MemorySettings)
   await settingsFiber.await()
   await ctx.plugin(AgentDefaultModelConfig, {
-    provider: 'deepseek-official',
-    model: 'deepseek-v4-flash',
+    provider: 'greeneek-official',
+    model: 'greeneek-v4-flash',
   })
   return { ctx, settingsFiber, defaultModel: ctx.agentDefaultModel }
 }
@@ -44,7 +44,7 @@ describe('AgentDefaultModelConfig', () => {
   it('resolves the user layer over the composition entry', async () => {
     const bench = await boot()
     expect(bench.defaultModel.currentSelection()).toEqual({
-      provider: 'deepseek-official', model: 'deepseek-v4-flash',
+      provider: 'greeneek-official', model: 'greeneek-v4-flash',
     })
 
     await bench.defaultModel.saveSelection({
@@ -69,10 +69,10 @@ describe('AgentDefaultModelConfig', () => {
   it('layers a hand-written partial section over the entry', async () => {
     const bench = await boot()
     await bench.settingsFiber.ctx.settings.replace(AGENT_DEFAULT_MODEL_SETTINGS_NAMESPACE, {
-      model: 'deepseek-reasoner',
+      model: 'greeneek-reasoner',
     })
     expect(bench.defaultModel.currentSelection()).toEqual({
-      provider: 'deepseek-official', model: 'deepseek-reasoner',
+      provider: 'greeneek-official', model: 'greeneek-reasoner',
     })
     await bench.ctx.fiber.dispose()
   })
@@ -83,7 +83,7 @@ describe('AgentDefaultModelConfig', () => {
     expect(bench.defaultModel.currentSelection().provider).toBe('acme-gateway')
     await bench.settingsFiber.dispose()
     expect(bench.defaultModel.currentSelection()).toEqual({
-      provider: 'deepseek-official', model: 'deepseek-v4-flash',
+      provider: 'greeneek-official', model: 'greeneek-v4-flash',
     })
     await bench.ctx.fiber.dispose()
   })

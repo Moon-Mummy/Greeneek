@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-subprocess-local",
-  "description": "Local-subprocess implementation of the DeepSeek Harness subprocess seam",
+  "name": "@greeneek/gnk-subprocess-local",
+  "description": "Local-subprocess implementation of the Greeneek Harness subprocess seam",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/subprocess/subprocess-local"
   },
   "type": "module",
@@ -31,18 +31,18 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/dsh-subprocess": "workspace:^",
-    "@deepseek-ai/dsh-timeout": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-subprocess": "workspace:^",
+    "@greeneek/gnk-timeout": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   },
   "dependencies": {
     "koffi": "^3.1.0",
     "node-pty": "1.2.0-beta.15"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-loader-smoke": "workspace:^",
-    "@deepseek-ai/dsh-subprocess": "workspace:^",
-    "@deepseek-ai/dsh-timeout": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-loader-smoke": "workspace:^",
+    "@greeneek/gnk-subprocess": "workspace:^",
+    "@greeneek/gnk-timeout": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   }
 }

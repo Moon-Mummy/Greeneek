@@ -6,25 +6,25 @@
 - id: headless-runner
   disabled: true
 
-- id: llm-deepseek
+- id: llm-greeneek
   config:
     thinking: enabled
     reasoningEffort: max
     models:
-      - id: deepseek-v4-pro
+      - id: greeneek-v4-pro
         contextWindow: 128000
-      - id: deepseek-v4-flash
+      - id: greeneek-v4-flash
         contextWindow: 128000
 
 - id: agent-loop
   config:
     agents:
       - id: main
-        provider: deepseek-official
-        model: deepseek-v4-flash
+        provider: greeneek-official
+        model: greeneek-v4-flash
         cwd: !!js process.cwd()
 
 - id: session-persistence-jsonl
   config:
     root: './.sessions'
-    compression: !!js "process.env.DSH_SNAPSHOT === undefined ? 'zstd' : 'none'"
+    compression: !!js "process.env.GNK_SNAPSHOT === undefined ? 'zstd' : 'none'"

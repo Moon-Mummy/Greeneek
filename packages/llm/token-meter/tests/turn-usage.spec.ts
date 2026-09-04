@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { TokenUsage } from '@deepseek-ai/dsh-llm'
-import type { SessionEvent } from '@deepseek-ai/dsh-session'
+import type { TokenUsage } from '@greeneek/gnk-llm'
+import type { SessionEvent } from '@greeneek/gnk-session'
 import { deriveTurnTokenUsage } from '../src/turn-usage.ts'
 
 function event(seq: number, type: string, data: unknown): SessionEvent {
@@ -23,8 +23,8 @@ function usage(overrides: UsageOverrides = {}): TokenUsage {
 function message(
   seq: number,
   tokenUsage?: TokenUsage,
-  provider = 'deepseek',
-  model = 'deepseek-chat',
+  provider = 'greeneek',
+  model = 'greeneek-chat',
   step = 1,
 ) {
   return event(seq, 'assistant/message', {
@@ -62,7 +62,7 @@ describe('deriveTurnTokenUsage', () => {
       cacheReadTokens: 50,
       cacheWriteTokens: 0,
       reasoningTokens: 8,
-      routes: [{ provider: 'deepseek', model: 'deepseek-chat' }],
+      routes: [{ provider: 'greeneek', model: 'greeneek-chat' }],
     })
   })
 
@@ -200,7 +200,7 @@ describe('deriveTurnTokenUsage', () => {
       totalTokens: 340,
       cacheReadTokens: 100,
       routes: [
-        { provider: 'deepseek', model: 'deepseek-chat' },
+        { provider: 'greeneek', model: 'greeneek-chat' },
         { provider: 'openai', model: 'gpt-5' },
       ],
     })
@@ -220,7 +220,7 @@ describe('deriveTurnTokenUsage', () => {
         step: 2,
         message: {
           id: 'message-6', role: 'assistant', content: [],
-          source: { kind: 'model', provider: 'deepseek', model: 'deepseek-chat' },
+          source: { kind: 'model', provider: 'greeneek', model: 'greeneek-chat' },
         },
         usage: attempt,
       }),

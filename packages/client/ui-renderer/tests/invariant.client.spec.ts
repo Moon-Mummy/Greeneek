@@ -3,9 +3,9 @@
  * a fired key must already carry a bumped version (emission follows the
  * applied mutation), bogus payloads fail loud, foreign events pass.
  */
-import { Context } from '@deepseek-ai/cordis'
+import { Context } from '@greeneek/cordis'
 import { describe, expect, it } from 'vitest'
-import InvariantRegistry from '@deepseek-ai/dsh-invariants'
+import InvariantRegistry from '@greeneek/gnk-invariants'
 import * as RendererInvariant from '../src/invariant.ts'
 import { SlotRegistry } from '../src/client/registry.ts'
 

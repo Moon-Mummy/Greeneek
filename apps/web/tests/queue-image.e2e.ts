@@ -12,8 +12,8 @@ import { join } from 'node:path'
 import type { Browser, Page } from 'playwright'
 import { chromium } from 'playwright'
 import { afterEach, describe, expect, it, onTestFailed } from 'vitest'
-import { deriveReplayScript, parseSessionLog, type ReplayEntry } from '@deepseek-ai/dsh-llm-replay'
-import type { SessionEvent } from '@deepseek-ai/dsh-session'
+import { deriveReplayScript, parseSessionLog, type ReplayEntry } from '@greeneek/gnk-llm-replay'
+import type { SessionEvent } from '@greeneek/gnk-session'
 import {
   captureStableAria, compareOrRefreshGolden,
   launchWebScaffold, watchConsole, webSnapshotMode, type WebScaffold,
@@ -64,7 +64,7 @@ describe('web e2e: queued image submission', () => {
   })
 
   it.skipIf(MODE === 'record')('queues a text-plus-image submission with a thumbnail and delivers it as the next turn', async () => {
-    overrideDir = await mkdtemp(join(tmpdir(), 'dsh-web-queued-image-'))
+    overrideDir = await mkdtemp(join(tmpdir(), 'gnk-web-queued-image-'))
     const readyFile = join(overrideDir, '.hang-ready')
     const overridePath = join(overrideDir, 'replay.override.json')
     const recorded = deriveReplayScript(parseSessionLog(await readFile(FIXTURE, 'utf8')))

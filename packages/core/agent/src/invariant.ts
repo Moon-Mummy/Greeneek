@@ -1,10 +1,10 @@
-/** Package-owned agent lifecycle invariants. @module @deepseek-ai/dsh-agent/invariant */
+/** Package-owned agent lifecycle invariants. @module @greeneek/gnk-agent/invariant */
 
-import type { Context } from '@deepseek-ai/cordis'
-import type { InvariantInstaller } from '@deepseek-ai/dsh-invariants'
-import type { Agent, AgentStatus } from '@deepseek-ai/dsh-agent'
+import type { Context } from '@greeneek/cordis'
+import type { InvariantInstaller } from '@greeneek/gnk-invariants'
+import type { Agent, AgentStatus } from '@greeneek/gnk-agent'
 
-const PACKAGE_NAME = '@deepseek-ai/dsh-agent'
+const PACKAGE_NAME = '@greeneek/gnk-agent'
 
 /** Cordis companion plugin name. */
 export const name = 'agent-invariant'

@@ -3,13 +3,13 @@ description: "The tool-result spill policy: how deployments keep oversized plain
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-spill-policy
+# @greeneek/gnk-spill-policy
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-spill-policy` keeps oversized plain-text tool results out of the model's context: when a final result exceeds `maxInlineBytes`, it saves the full text through `ctx.spillStore` and replaces the model-facing result with a bounded head/tail preview plus the backend's locator and retrieval guidance, which the model can use to read or grep the spill file. It registers no service and owns no storage or preview mechanics — storage is the mounted `SpillStore` backend and previews come from `dsh-output-retention`; it only decides when to spill and composes the notice. It is opt-in and best-effort: omitted `maxInlineBytes` disables it entirely, and a spill failure leaves the original result visible. A second arm applies the same cap to the durable log copy of `run_code` sub-call results, so replay and UIs never grow unbounded either.
+`gnk-spill-policy` keeps oversized plain-text tool results out of the model's context: when a final result exceeds `maxInlineBytes`, it saves the full text through `ctx.spillStore` and replaces the model-facing result with a bounded head/tail preview plus the backend's locator and retrieval guidance, which the model can use to read or grep the spill file. It registers no service and owns no storage or preview mechanics — storage is the mounted `SpillStore` backend and previews come from `gnk-output-retention`; it only decides when to spill and composes the notice. It is opt-in and best-effort: omitted `maxInlineBytes` disables it entirely, and a spill failure leaves the original result visible. A second arm applies the same cap to the durable log copy of `run_code` sub-call results, so replay and UIs never grow unbounded either.
 
 ## Table of Contents
 
@@ -32,8 +32,8 @@ Mount the policy alongside a spill backend to cap how much of a tool's plain-tex
 Load the policy with a `maxInlineBytes` budget, in UTF-8 bytes, and a spill backend:
 
 ```yaml
-- name: '@deepseek-ai/dsh-spill-local'
-- name: '@deepseek-ai/dsh-spill-policy'
+- name: '@greeneek/gnk-spill-local'
+- name: '@greeneek/gnk-spill-policy'
   config:
     maxInlineBytes: 50000
 ```
@@ -42,7 +42,7 @@ Load the policy with a `maxInlineBytes` budget, in UTF-8 bytes, and a spill back
 |---|---|---|
 | `maxInlineBytes` | omitted | Model-facing context cap for a plain-text result, in UTF-8 bytes; omitted disables the policy entirely |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-spill-policy) is the exhaustive source for every accepted field. A negative or fractional cap fails plugin load rather than corrupting per-call behavior.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-spill-policy) is the exhaustive source for every accepted field. A negative or fractional cap fails plugin load rather than corrupting per-call behavior.
 
 ### What the model sees
 
@@ -80,7 +80,7 @@ This section explains the design decisions behind the policy; the observable beh
 
 ### Design philosophy
 
-The policy is deliberately narrow: it only decides **when** to spill and composes the notice. It registers no service, owns no storage, and owns no preview mechanics — `TextRetainer` from `dsh-output-retention` builds the head/tail preview. Two invariants shape the code: the model-facing replacement never exceeds `maxInlineBytes` (the notice's byte cost is reserved out of the budget first), and a spill failure never changes the tool call's outcome.
+The policy is deliberately narrow: it only decides **when** to spill and composes the notice. It registers no service, owns no storage, and owns no preview mechanics — `TextRetainer` from `gnk-output-retention` builds the head/tail preview. Two invariants shape the code: the model-facing replacement never exceeds `maxInlineBytes` (the notice's byte cost is reserved out of the budget first), and a spill failure never changes the tool call's outcome.
 
 ### The two arms
 
@@ -108,8 +108,8 @@ Best-effort degradation applies to both arms: no session owner, no backend, a sa
 Read these pages when the package-level contract is not enough.
 
 - [Spill storage service](../spill/README.md) — the `saveText` contract behind the policy's replacement.
-- [dsh-spill-local](../spill-local/README.md) — the local backend that stores the spilled text.
-- [dsh-output-retention](../../util/output-retention/README.md) — the preview mechanics (`TextRetainer`) the policy composes.
+- [gnk-spill-local](../spill-local/README.md) — the local backend that stores the spilled text.
+- [gnk-output-retention](../../util/output-retention/README.md) — the preview mechanics (`TextRetainer`) the policy composes.
 - [Tool output spill decision](../../../.agents/notes/implemented/architecture/2026-07-08-tool-output-spill-files.md) — the capability boundary and design rationale.
 - [PTC dispatch-log spill decision](../../../.agents/notes/implemented/feature/2026-07-26-ptc-dispatch-log-spill.md) — why the durable log copy is bounded too.
 

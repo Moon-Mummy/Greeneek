@@ -3,13 +3,13 @@ description: "面向部署方与维护者的 SQLite FTS5 会话历史全文搜�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-session-query-sqlite
+# @greeneek/gnk-session-query-sqlite
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-session-query-sqlite` 用 SQLite FTS5 索引搜索会话历史，返回按会话分组或会话内排序、游标分页的结果。与 `dsh-session-query` 一起挂载，即可同时获得全文搜索与完整查询表面——精确读取、过滤与追踪。实时会话从内存索引，持久化会话从专用派生索引数据库索引，因此结果始终反映最新状态，且不触碰会话持久化存储。搜索是可选能力，已发布组合默认关闭：`openAt` 决定索引在启动时、首次搜索时打开，还是永不打开。设置与用法在前；实现内部细节放在下方可折叠的开发者章节中。
+`gnk-session-query-sqlite` 用 SQLite FTS5 索引搜索会话历史，返回按会话分组或会话内排序、游标分页的结果。与 `gnk-session-query` 一起挂载，即可同时获得全文搜索与完整查询表面——精确读取、过滤与追踪。实时会话从内存索引，持久化会话从专用派生索引数据库索引，因此结果始终反映最新状态，且不触碰会话持久化存储。搜索是可选能力，已发布组合默认关闭：`openAt` 决定索引在启动时、首次搜索时打开，还是永不打开。设置与用法在前；实现内部细节放在下方可折叠的开发者章节中。
 
 ## 目录
 
@@ -29,13 +29,13 @@ kind: "package-reference"
 
 ### 何时选择
 
-当你想对既往会话进行带排序与分页的全文召回时选择它。它与 `dsh-session-query` 和会话服务一起使用；持久化后端可选但建议挂载，这样重启后持久化历史仍可搜索。不要把 `path` 指向 session-persistence 数据库——本包拥有独立的派生索引。
+当你想对既往会话进行带排序与分页的全文召回时选择它。它与 `gnk-session-query` 和会话服务一起使用；持久化后端可选但建议挂载，这样重启后持久化历史仍可搜索。不要把 `path` 指向 session-persistence 数据库——本包拥有独立的派生索引。
 
 ### 最小配置
 
 ```yaml
-- name: '@deepseek-ai/dsh-session'
-- name: '@deepseek-ai/dsh-session-query-sqlite'
+- name: '@greeneek/gnk-session'
+- name: '@greeneek/gnk-session-query-sqlite'
   config:
     path: /absolute/path/to/session-search.db
 ```
@@ -52,7 +52,7 @@ kind: "package-reference"
 | `persistedReadConcurrency` | `4` | 继承批量读取的并发持久化日志读取数 |
 | `preparedSessionCacheSize` | `5` | 继承的 `observeSession` 读取器为复用保留的冷 prepared-Session 观察数 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-session-query-sqlite)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-session-query-sqlite)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### 搜索行为
 
@@ -118,8 +118,8 @@ kind: "package-reference"
 当包级约定不够用时阅读以下页面。它们从共享查询服务逐步进入类型级约定与设计证据。
 
 - [会话查询子系统参考](../../../docs/subsystems/session-query.zh.md)——本后端实现的完整类型级约定。
-- [dsh-session-query](../session-query/README.zh.md)——服务定义：本后端继承的精确读取、过滤与追踪。
-- [dsh-tool-session-query](../tool-session-query/README.zh.md)——调用这些搜索方法的面向模型消费方。
+- [gnk-session-query](../session-query/README.zh.md)——服务定义：本后端继承的精确读取、过滤与追踪。
+- [gnk-tool-session-query](../tool-session-query/README.zh.md)——调用这些搜索方法的面向模型消费方。
 - [SQLite FTS5 会话搜索](../../../.agents/notes/implemented/feature/2026-07-10-sqlite-session-query-provider.zh.md)——搜索语义、对账与 tokenizer 决策。
 - [JSONL 会话持久化](../../session/session-persistence-jsonl/README.zh.md)——本可丢弃索引观察的权威 Session store；其 root 必须与本包的数据库路径分开。
 

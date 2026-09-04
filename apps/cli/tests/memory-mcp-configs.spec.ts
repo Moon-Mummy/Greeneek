@@ -8,12 +8,12 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import type { Context } from '@deepseek-ai/cordis'
-import type { PatchOptions } from '@deepseek-ai/cordis-plugin-include'
-import { boot, loadOverlayPatches } from '@deepseek-ai/dsh-app-boot'
-import SystemPrompt from '@deepseek-ai/dsh-system-prompt'
-import ToolRuntime from '@deepseek-ai/dsh-tools'
-import * as McpClient from '@deepseek-ai/dsh-mcp-client/src/index.ts'
+import type { Context } from '@greeneek/cordis'
+import type { PatchOptions } from '@greeneek/cordis-plugin-include'
+import { boot, loadOverlayPatches } from '@greeneek/gnk-app-boot'
+import SystemPrompt from '@greeneek/gnk-system-prompt'
+import ToolRuntime from '@greeneek/gnk-tools'
+import * as McpClient from '@greeneek/gnk-mcp-client/src/index.ts'
 
 interface ExampleContract {
   file: string
@@ -87,12 +87,12 @@ describe('third-party memory MCP example overlays', () => {
     const row = insertedRow(loadOverlayPatches('memory-mcp-config-test', file))
 
     expect(row.id).toBe(contract.id)
-    expect(row.name).toBe('@deepseek-ai/dsh-mcp-client')
+    expect(row.name).toBe('@greeneek/gnk-mcp-client')
     expect(row.config?.serverName).toBe(contract.serverName)
     expect(row.config?.transport).toBe(contract.transport)
     expect(source.split('\n', 1)[0]).toContain(contract.pin)
     expect(source).not.toMatch(/\bsk-[A-Za-z0-9_-]{8,}\b/)
-    expect(source).not.toContain('DEEPSEEK_API_KEY')
+    expect(source).not.toContain('GREENEEK_API_KEY')
   })
 
   it.each(examples)('loads $file and discovers a keyless fixture tool', async (contract) => {

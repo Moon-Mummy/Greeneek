@@ -3,13 +3,13 @@ description: "Web 壳的 SPA dist 服务器：占据 webserver 回退席位，�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-host-frontend-static
+# @greeneek/gnk-host-frontend-static
 
 [English](README.md) | 中文
 
 ## 概述
 
-浏览器从 `dsh-host-frontend-static` 获取已构建的 Web 壳：它占据 [webserver](../webserver/README.zh.md) 回退席位，并按锁定语义服务已构建前端目录——只有 dist 根目录与配置的 index 路径以 HTTP 200 渲染 `index.html`，其他已有文件直接提供，dist 根目录内缺失或非文件的 target（包括配置的 index 缺失）返回空 404，越出 dist 根目录的遍历返回 403，未知扩展名按 `application/octet-stream` 提供，GET／HEAD 之外的方法在没有匹配的具名路由时返回 405。每个成功的 index 响应都经 webserver 的 `renderIndex` 渲染，启动 manifest（元数据清单）就是经这条路径送达页面的。回退席位只有单一所有者：第二次占据会抛错，卸载插件即释放席位。
+浏览器从 `gnk-host-frontend-static` 获取已构建的 Web 壳：它占据 [webserver](../webserver/README.zh.md) 回退席位，并按锁定语义服务已构建前端目录——只有 dist 根目录与配置的 index 路径以 HTTP 200 渲染 `index.html`，其他已有文件直接提供，dist 根目录内缺失或非文件的 target（包括配置的 index 缺失）返回空 404，越出 dist 根目录的遍历返回 403，未知扩展名按 `application/octet-stream` 提供，GET／HEAD 之外的方法在没有匹配的具名路由时返回 405。每个成功的 index 响应都经 webserver 的 `renderIndex` 渲染，启动 manifest（元数据清单）就是经这条路径送达页面的。回退席位只有单一所有者：第二次占据会抛错，卸载插件即释放席位。
 
 ## 目录
 
@@ -30,12 +30,12 @@ kind: "package-reference"
 ### 最小配置
 
 ```yaml
-- name: '@deepseek-ai/dsh-host-frontend-static'
+- name: '@greeneek/gnk-host-frontend-static'
   config:
     distIndex: /absolute/path/to/dist/index.html
 ```
 
-`distIndex` 是组合应用的组装事实：[`dsh-web-app`](../../bundle/web-app/README.zh.md) 通过前端包的 exports 解析它并挂载本插件；部署绝不硬编码它。
+`distIndex` 是组合应用的组装事实：[`gnk-web-app`](../../bundle/web-app/README.zh.md) 通过前端包的 exports 解析它并挂载本插件；部署绝不硬编码它。
 
 ### 服务器强制什么
 
@@ -79,9 +79,9 @@ kind: "package-reference"
 当服务约定不够用时阅读以下内容：先看席位所有者的约定，再看解析 dist 的组合与子系统参考。
 
 - [Webserver](../webserver/README.zh.md)——本插件占据的回退席位与它运行的 index 转换器。
-- [dsh-web-app 组合包](../../bundle/web-app/README.zh.md)——解析 `distIndex` 并挂载本插件的应用。
+- [gnk-web-app 组合包](../../bundle/web-app/README.zh.md)——解析 `distIndex` 并挂载本插件的应用。
 - [HTTP 服务器子系统](../../../docs/subsystems/web-server.zh.md)——回退席位如何融入路由表。
-- [生成配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-host-frontend-static)——每个受支持配置字段及其源声明。
+- [生成配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-host-frontend-static)——每个受支持配置字段及其源声明。
 
 -----
 

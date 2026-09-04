@@ -16,11 +16,11 @@ Neither obvious configuration owner is sufficient. Compact-basic is optional and
 
 `LlmAdapter.resolveModel(provider, model, signal?)` returns aggregate metadata for one exact route, with optional `LlmModelContext` under its `context` field. `LlmRuntime.resolveModelInfo()` selects the registered route owner, validates a positive integer `contextWindow`, and returns detached metadata. The query is independent of `listModels()`: an unlisted dynamic model may have capacity metadata, and an absent `context` means only that the adapter cannot describe capacity.
 
-The hand-rolled DeepSeek adapter accepts optional `contextWindow` on each configured model plus an adapter-wide `defaultContextWindow`. Exact model capacity wins; an entry without capacity and an unlisted pass-through id inherit the adapter default, or omit `context` when it is absent. The two built-in model entries each publish an exact 256,000-token capacity. The pi-ai adapter resolves capacity from the same catalog descriptor that authoritatively resolves the request model.
+The hand-rolled Greeneek adapter accepts optional `contextWindow` on each configured model plus an adapter-wide `defaultContextWindow`. Exact model capacity wins; an entry without capacity and an unlisted pass-through id inherit the adapter default, or omit `context` when it is absent. The two built-in model entries each publish an exact 256,000-token capacity. The pi-ai adapter resolves capacity from the same catalog descriptor that authoritatively resolves the request model.
 
 ### Token measurement remains model-agnostic
 
-`dsh-token-meter` has no configuration and no model profiles. It owns one fixed replay fold and returns absolute estimated token pressure plus positional surface prices. Removing global capacity keeps measurement reusable when compaction-basic is absent and prevents replay accounting from becoming another model registry.
+`gnk-token-meter` has no configuration and no model profiles. It owns one fixed replay fold and returns absolute estimated token pressure plus positional surface prices. Removing global capacity keeps measurement reusable when compaction-basic is absent and prevents replay accounting from becoming another model registry.
 
 ### Compact-basic resolves a target spec
 
@@ -36,7 +36,7 @@ An adapter that lacks capacity metadata remains a valid LLM route. Manual proact
 
 ## Testing
 
-Service tests cover detached context metadata, invalid adapter output, catalog independence, and default absence. Adapter tests cover DeepSeek exact/default/unlisted resolution, invalid capacities, and pi-ai exact descriptor resolution. Compact tests cover ratio scaling, exact provider/model overrides, load-time rejection of invalid merged ratios, runtime absolute-budget validation, same-model-id provider switches, target-specific warning suppression, and capacity-independent overflow recovery. Loader fixtures reject the removed token-meter capacity setting, and examples configure capacity on adapters.
+Service tests cover detached context metadata, invalid adapter output, catalog independence, and default absence. Adapter tests cover Greeneek exact/default/unlisted resolution, invalid capacities, and pi-ai exact descriptor resolution. Compact tests cover ratio scaling, exact provider/model overrides, load-time rejection of invalid merged ratios, runtime absolute-budget validation, same-model-id provider switches, target-specific warning suppression, and capacity-independent overflow recovery. Loader fixtures reject the removed token-meter capacity setting, and examples configure capacity on adapters.
 
 ## Alternatives considered
 
@@ -51,7 +51,7 @@ Service tests cover detached context metadata, invalid adapter output, catalog i
 - Capacity has one authoritative owner at the provider contract, while compaction policy stays in the optional consuming plugin.
 - The same compaction-basic instance safely handles different windows, provider switches, and identical model ids under different providers without consulting discovery metadata.
 - LLM-only and meter-only compositions remain valid; loading compaction-basic adds no reverse dependency from adapters.
-- DeepSeek deployments may set exact per-model capacities, or use `defaultContextWindow` for entries without capacity and unlisted pass-through ids.
+- Greeneek deployments may set exact per-model capacities, or use `defaultContextWindow` for entries without capacity and unlisted pass-through ids.
 - Ratio defaults scale naturally across models, while exact-target absolute retention remains available for deployment-specific behavior.
 
 This note supersedes the global-capacity and no-model-policy parts of the [replay token meter service Agent Note](2026-07-15-replay-token-meter-service.md). Its single-fold measurement decision remains unchanged.

@@ -1,14 +1,15 @@
+/* rebrand:ignore-start -- pi-ai adapter specs exercise upstream catalog ids (B4, decisions.md D16); the rebrand rules must never rewrite them */
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
+import { Context } from '@greeneek/cordis'
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import LlmRuntime, { LlmAdapter } from '@deepseek-ai/dsh-llm'
-import { credentialRef } from '@deepseek-ai/dsh-credentials'
-import { LocalCredentialProvider } from '@deepseek-ai/dsh-credentials-local'
-import { FileSettingsProvider } from '@deepseek-ai/dsh-settings-file'
-import * as LlmPiAi from '@deepseek-ai/dsh-llm-pi-ai'
-import AuthorizationService from '@deepseek-ai/dsh-authorization'
+import LlmRuntime, { LlmAdapter } from '@greeneek/gnk-llm'
+import { credentialRef } from '@greeneek/gnk-credentials'
+import { LocalCredentialProvider } from '@greeneek/gnk-credentials-local'
+import { FileSettingsProvider } from '@greeneek/gnk-settings-file'
+import * as LlmPiAi from '@greeneek/gnk-llm-pi-ai'
+import AuthorizationService from '@greeneek/gnk-authorization'
 import { assemble } from './assemble.ts'
 import { closeMockServers, mockServer, textEvents } from './mock-server.ts'
 
@@ -31,7 +32,7 @@ afterEach(async () => {
 })
 
 async function home(): Promise<string> {
-  const dir = await mkdtemp(join(tmpdir(), 'dsh-pi-dynamic-'))
+  const dir = await mkdtemp(join(tmpdir(), 'gnk-pi-dynamic-'))
   cleanups.push(() => rm(dir, { recursive: true, force: true }))
   return dir
 }
@@ -244,3 +245,4 @@ describe('request-level dynamic profiles', () => {
     expect(ctx.llm.listProviders().map(provider => provider.id)).toEqual(before)
   })
 })
+/* rebrand:ignore-end */

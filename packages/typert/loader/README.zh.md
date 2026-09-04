@@ -3,13 +3,13 @@ description: "生成的 Typert 产物所用的 Loader 集成：已挂载的包�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-typert-loader
+# @greeneek/gnk-typert-loader
 
 [English](README.md) | 中文
 
 ## 概述
 
-挂载 `dsh-typert-loader` 后，Loader 组合中每个挂载的包都会自动把其生成的 Typert 反射与 schema 贡献给运行时注册表——并在包或本插件卸载时自动撤销。没有该导出的包会被跳过，因此在任何 Loader 组合中挂载它都是安全的。显式 `packages` 用于覆盖嵌套在另一 Loader 配置项之下的插件，这些插件的 fiber 不携带可解析的包说明符。它是仅支持 Node 的插件，需要配置树解析锚点才能解析包。
+挂载 `gnk-typert-loader` 后，Loader 组合中每个挂载的包都会自动把其生成的 Typert 反射与 schema 贡献给运行时注册表——并在包或本插件卸载时自动撤销。没有该导出的包会被跳过，因此在任何 Loader 组合中挂载它都是安全的。显式 `packages` 用于覆盖嵌套在另一 Loader 配置项之下的插件，这些插件的 fiber 不携带可解析的包说明符。它是仅支持 Node 的插件，需要配置树解析锚点才能解析包。
 
 ## 目录
 
@@ -25,22 +25,22 @@ kind: "package-reference"
 <a id="use-this-package"></a>
 ## 使用本包
 
-在加载发布生成 Typert 产物的包的 Host Loader 组合中挂载本插件。注册表本身来自 `dsh-typert-registry`；本插件只负责发现与注册。
+在加载发布生成 Typert 产物的包的 Host Loader 组合中挂载本插件。注册表本身来自 `gnk-typert-registry`；本插件只负责发现与注册。
 
 ### 最小配置
 
 加载注册表与 loader；loader 默认发现每一个 Loader 配置项：
 
 ```yaml
-- name: '@deepseek-ai/dsh-typert-registry'
-- name: '@deepseek-ai/dsh-typert-loader'
+- name: '@greeneek/gnk-typert-registry'
+- name: '@greeneek/gnk-typert-loader'
 ```
 
 | 字段 | 默认值 | 含义 |
 |---|---|---|
 | `packages` | `[]` | 为嵌套在另一 Loader 配置项下的插件额外注册的包产物；每个包都必须能从配置树解析，并导出 `./typert` |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-typert-loader)是每个受支持字段的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-typert-loader)是每个受支持字段的穷尽式真源。
 
 ### 注册什么
 
@@ -90,7 +90,7 @@ kind: "package-reference"
 
 - [Typert 注册表](../registry/README.zh.md)——本插件所供给的服务。
 - [Typert 生成器](../generator/README.zh.md)——产生 loader 所导入产物的包。
-- [生成配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-typert-loader)——`packages` 字段声明及其 JSDoc。
+- [生成配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-typert-loader)——`packages` 字段声明及其 JSDoc。
 - [Typert 组地图](../README.zh.md)——完整的类型反射流水线。
 
 -----

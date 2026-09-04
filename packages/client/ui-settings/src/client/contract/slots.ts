@@ -9,9 +9,9 @@
  * ui-settings-general too.
  */
 
-import type {} from '@deepseek-ai/dsh-client-ui-slots'
+import type {} from '@greeneek/gnk-client-ui-slots'
 
-declare module '@deepseek-ai/dsh-client-ui-slots' {
+declare module '@greeneek/gnk-client-ui-slots' {
   interface SlotMap {
     /**
      * The sidebar-foot trigger row content: icon + label, supplied as slot

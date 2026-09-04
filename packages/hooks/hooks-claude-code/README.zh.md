@@ -3,13 +3,13 @@ description: "在 agent 运行期间使用你现有的 Claude Code hooks.json �
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-hooks-claude-code
+# @greeneek/gnk-hooks-claude-code
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-hooks-claude-code` 在 agent（智能体）运行期间执行你现有 Claude Code 配置（`hooks.json` 或 settings 文件的 `hooks` key）中的钩子，让你已经写好的行为无需重写即可继续生效。你的钩子会在对应时刻触发：会话开始时、提示词提交时、工具运行前后、运行即将停止时，以及子 agent 启动或结束时。钩子可以带一条模型可见的消息阻塞提示词或工具调用、向对话附加额外上下文，或强制运行继续。当你持有 Claude Code command 钩子、希望它们原样在 harness 中工作时选择它；没有 Claude Code 对应物的行为应放入原生插件。
+`gnk-hooks-claude-code` 在 agent（智能体）运行期间执行你现有 Claude Code 配置（`hooks.json` 或 settings 文件的 `hooks` key）中的钩子，让你已经写好的行为无需重写即可继续生效。你的钩子会在对应时刻触发：会话开始时、提示词提交时、工具运行前后、运行即将停止时，以及子 agent 启动或结束时。钩子可以带一条模型可见的消息阻塞提示词或工具调用、向对话附加额外上下文，或强制运行继续。当你持有 Claude Code command 钩子、希望它们原样在 harness 中工作时选择它；没有 Claude Code 对应物的行为应放入原生插件。
 
 ## 目录
 
@@ -34,7 +34,7 @@ kind: "package-reference"
 ### 最小配置
 
 ```yaml
-- name: '@deepseek-ai/dsh-hooks-claude-code'
+- name: '@greeneek/gnk-hooks-claude-code'
   config:
     configPath: ./.claude/hooks.json
     pluginRoot: ./.claude/plugins/my-plugin
@@ -49,7 +49,7 @@ kind: "package-reference"
 | `defaultTimeoutMs` | `600,000` | hook 未设置时的每 hook 超时（即 Claude Code 默认值） |
 | `stderrSummaryMaxChars` | `500` | 持久化 `hook/result` stderr 摘要的字符上限 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-hooks-claude-code)是每个受支持字段的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-hooks-claude-code)是每个受支持字段的穷尽式真源。
 
 ### 你的钩子能做什么
 
@@ -96,7 +96,7 @@ matcher subject 是工具名称（`PreToolUse`／`PostToolUse`）、会话源（
 
 ### 脱离运行与释放
 
-三个 emit 点（`SessionStart`、`SubagentStart`、`SubagentStop`）以脱离方式运行——没有扩展点等待它们。每条运行链都会被跟踪，对桥接执行 dispose（资源释放）时会中止仍在运行的 hook 进程，并在 dispose 完成前排空 continuation（`createDetachedRuns`，位于 `dsh-hook-protocol`）。
+三个 emit 点（`SessionStart`、`SubagentStart`、`SubagentStop`）以脱离方式运行——没有扩展点等待它们。每条运行链都会被跟踪，对桥接执行 dispose（资源释放）时会中止仍在运行的 hook 进程，并在 dispose 完成前排空 continuation（`createDetachedRuns`，位于 `gnk-hook-protocol`）。
 
 ### 设计理念
 
@@ -114,7 +114,7 @@ matcher subject 是工具名称（`PreToolUse`／`PostToolUse`）、会话源（
 |---|---|
 | [`src/index.ts`](src/index.ts) | 插件入口：配置校验、监听器注册、逐事件 payload、决策映射 |
 | [`src/config.ts`](src/config.ts) | Claude Code 配置解析：受支持事件、matcher 校验、命令替换 |
-| — | 不发布运行时不变式伴生入口；`hook/*` 配对检查位于 `dsh-hook-protocol`。 |
+| — | 不发布运行时不变式伴生入口；`hook/*` 配对检查位于 `gnk-hook-protocol`。 |
 
 </details>
 
@@ -129,7 +129,7 @@ matcher subject 是工具名称（`PreToolUse`／`PostToolUse`）、会话源（
 - [hook 协议库](../hook-protocol/README.zh.md)——本桥接应用的共享钩子规则。
 - [钩子桥接 Agent Note](../../../.agents/notes/implemented/feature/2026-06-30-hook-bridges.zh.md)——桥接设计、决策映射与延期缺口。
 - [拦截扩展点 Agent Note](../../../.agents/notes/implemented/feature/2026-06-30-interception-extension-points.zh.md)——桥接所映射的类型化 Decision 接口面。
-- [生成的配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-hooks-claude-code)——每个受支持配置字段及其源声明。
+- [生成的配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-hooks-claude-code)——每个受支持配置字段及其源声明。
 
 -----
 

@@ -1,10 +1,11 @@
+/* rebrand:ignore-start -- e2e exercises pi-ai's own catalog ids and gateway ids side by side (B4 + gateway data, D16) */
 import { afterEach, describe, expect, it } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import LlmRuntime, { createUserMessage, ToolCallId, ReasoningEffortId  } from '@deepseek-ai/dsh-llm'
-import type { Message, ToolSchema } from '@deepseek-ai/dsh-llm'
-import * as LlmPiAi from '@deepseek-ai/dsh-llm-pi-ai'
-import type { PiAiProviderProfile } from '@deepseek-ai/dsh-llm-pi-ai'
-import * as LlmDeepSeek from '@deepseek-ai/dsh-llm-deepseek'
+import { Context } from '@greeneek/cordis'
+import LlmRuntime, { createUserMessage, ToolCallId, ReasoningEffortId  } from '@greeneek/gnk-llm'
+import type { Message, ToolSchema } from '@greeneek/gnk-llm'
+import * as LlmPiAi from '@greeneek/gnk-llm-pi-ai'
+import type { PiAiProviderProfile } from '@greeneek/gnk-llm-pi-ai'
+import * as LlmGreeneek from '@greeneek/gnk-llm-greeneek'
 import { assemble, type AssembledResult } from './assemble.ts'
 
 /**
@@ -13,7 +14,8 @@ import { assemble, type AssembledResult } from './assemble.ts'
  * and exercises a replayed tool follow-up. Key-gated.
  */
 
-const FLASH = 'deepseek-v4-flash'
+const FLASH = 'deepseek-v4-flash' // pi-ai catalog route ids stay upstream spellings (B4, D16)
+const GATEWAY_FLASH = 'greeneek-v4-flash'
 const contexts: Context[] = []
 
 async function harness(_model: string, config: Partial<PiAiProviderProfile> = {}) {
@@ -23,8 +25,8 @@ async function harness(_model: string, config: Partial<PiAiProviderProfile> = {}
   await ctx.plugin(LlmPiAi, {
     providers: {
       deepseek: {
-        ...process.env.DEEPSEEK_API_KEY === undefined ? {} : { apiKey: process.env.DEEPSEEK_API_KEY },
-        ...process.env.DEEPSEEK_BASE_URL === undefined ? {} : { baseURL: process.env.DEEPSEEK_BASE_URL },
+        ...process.env.GREENEEK_API_KEY === undefined ? {} : { apiKey: process.env.GREENEEK_API_KEY },
+        ...process.env.GREENEEK_BASE_URL === undefined ? {} : { baseURL: process.env.GREENEEK_BASE_URL },
         ...config,
       },
     },
@@ -64,7 +66,7 @@ const weatherTool: ToolSchema = {
   },
 }
 
-describe.skipIf(!process.env.DEEPSEEK_API_KEY)('llm-pi-ai e2e (real API)', () => {
+describe.skipIf(!process.env.GREENEEK_API_KEY)('llm-pi-ai e2e (real API)', () => {
   it(`${FLASH} + provider-default reasoning: plain text generation`, async () => {
     const ctx = await harness(FLASH)
     const result = await assemble(ctx,{
@@ -146,23 +148,24 @@ describe.skipIf(!process.env.DEEPSEEK_API_KEY)('llm-pi-ai e2e (real API)', () =>
     expect(textOf(second).toLowerCase()).toMatch(/sunny|22/)
   })
 
-  it('produces the same block structure as llm-deepseek for the same prompt', async () => {
+  it('produces the same block structure as llm-greeneek for the same prompt', async () => {
     // Loose structural equivalence between the two independent adapters:
     // same block KINDS in the same order for a deterministic prompt — the
     // cross-implementation check that the StreamChunk design holds.
-    const deepseekCtx = new Context()
-    contexts.push(deepseekCtx)
-    await deepseekCtx.plugin(LlmRuntime)
-    await deepseekCtx.plugin(LlmDeepSeek, { thinking: 'disabled' })
+    const greeneekCtx = new Context()
+    contexts.push(greeneekCtx)
+    await greeneekCtx.plugin(LlmRuntime)
+    await greeneekCtx.plugin(LlmGreeneek, { thinking: 'disabled' })
 
     const piCtx = await harness(FLASH)
 
     const prompt = ask('Reply with exactly the word: pong')
-    const [fromDeepSeek, fromPiAi] = await Promise.all([
-      assemble(deepseekCtx, { provider: 'deepseek-official', model: FLASH, messages: prompt, maxTokens: 50 }),
+    const [fromGreeneek, fromPiAi] = await Promise.all([
+      assemble(greeneekCtx, { provider: 'greeneek-official', model: GATEWAY_FLASH, messages: prompt, maxTokens: 50 }),
       assemble(piCtx, { model: FLASH, messages: prompt, maxTokens: 50 }),
     ])
-    expect(blockKinds(fromPiAi)).toEqual(blockKinds(fromDeepSeek))
-    expect(fromPiAi.finish.kind).toBe(fromDeepSeek.finish.kind)
+    expect(blockKinds(fromPiAi)).toEqual(blockKinds(fromGreeneek))
+    expect(fromPiAi.finish.kind).toBe(fromGreeneek.finish.kind)
   })
 })
+/* rebrand:ignore-end */

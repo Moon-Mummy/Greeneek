@@ -38,13 +38,13 @@ The persistence boundary is message acceptance, not paste:
 | State | Allowed representation | Durability and ordering |
 | --- | --- | --- |
 | Unsent user draft | Browser `File` plus object URL; a native client may use an OS temporary file such as `/var/...` | Temporary and client-owned. It may disappear on reload or process exit and never appears in a session event. |
-| Accepted user image | Immutable object below `DSH_HOME` plus `ImageAttachmentRef` | The host commits every image before `agent.send()` or `agent.steer()` can append the owning user event. |
-| Structured model image output | Immutable object below `DSH_HOME` plus `ImageAttachmentRef` | The provider adapter commits the bytes before it emits a completed image block or assistant message event. Temporary URLs, paths, and base64 are forbidden in the event. |
+| Accepted user image | Immutable object below `GNK_HOME` plus `ImageAttachmentRef` | The host commits every image before `agent.send()` or `agent.steer()` can append the owning user event. |
+| Structured model image output | Immutable object below `GNK_HOME` plus `ImageAttachmentRef` | The provider adapter commits the bytes before it emits a completed image block or assistant message event. Temporary URLs, paths, and base64 are forbidden in the event. |
 
 Each session's `InputMachine` state keeps the ordered runtime-only attachment identifiers alongside the live draft. The framework-owned chat store receives only the draft's plain-text persistence mirror, while `ConversationController` owns the corresponding browser-only `File` and object-URL registry:
 
 ```ts
-import type { Branded } from '@deepseek-ai/dsh-brand'
+import type { Branded } from '@greeneek/gnk-brand'
 
 type DraftAttachmentId = Branded<'DraftAttachmentId'>
 
@@ -69,7 +69,7 @@ interface ComposerAttachment {
 
 This split uses the session provide channel's input hook and actions as the single subscription path for live composer state while keeping non-serializable browser objects out of persisted JSON. Only the plain-text draft mirror uses `localStorage`; attachment identifiers, browser `File` objects, and object URLs remain scoped to the live session input shell. Unsent images therefore do not survive reload or session-scope disposal. A Workspace switch moves a mixed text-and-image draft only when the destination shell accepts the complete image batch; refusal leaves both parts with the source. A native client may stage input in an OS temporary directory, but it must treat that path exactly like the browser object URL: delete it when no longer needed and copy the bytes into the durable store before message acceptance.
 
-The local attachment backend resolves an explicit `dshHome`, then `$DSH_HOME`, then `~/.dsh`. It stores content-addressed objects below `$DSH_HOME/attachments/v1/objects/<prefix>/<sha256>` with owner-only directory and file permissions. On each process's first save for one home, it creates that home and synchronizes every ancestor entry to the filesystem root; existence is not treated as durability because another process may still be between `mkdir` and parent `fsync`. A temporary file is then written, synchronized, atomically published, and made durable with directory syncs on the publication path (POSIX; Windows relies on filesystem metadata journaling) before the service returns a reference. The content digest is encoded in the opaque `sha256:<digest>` identifier. Admission prepares a provider-independent master by applying orientation, removing metadata, converting to 8-bit sRGB/sRGBA, and preserving aspect ratio under independent dimension and byte limits. Reads verify the digest, byte length, and logged metadata. Route-specific deterministic request versions are cached separately; the full policy is recorded in [Unified image masters, request versions, and provider files](2026-08-20-unified-image-request-pipeline.md).
+The local attachment backend resolves an explicit `gnkHome`, then `$GNK_HOME`, then `~/.gnk`. It stores content-addressed objects below `$GNK_HOME/attachments/v1/objects/<prefix>/<sha256>` with owner-only directory and file permissions. On each process's first save for one home, it creates that home and synchronizes every ancestor entry to the filesystem root; existence is not treated as durability because another process may still be between `mkdir` and parent `fsync`. A temporary file is then written, synchronized, atomically published, and made durable with directory syncs on the publication path (POSIX; Windows relies on filesystem metadata journaling) before the service returns a reference. The content digest is encoded in the opaque `sha256:<digest>` identifier. Admission prepares a provider-independent master by applying orientation, removing metadata, converting to 8-bit sRGB/sRGBA, and preserving aspect ratio under independent dimension and byte limits. Reads verify the digest, byte length, and logged metadata. Route-specific deterministic request versions are cached separately; the full policy is recorded in [Unified image masters, request versions, and provider files](2026-08-20-unified-image-request-pipeline.md).
 
 The store performs no automatic deletion in version one. Sent user images and model-generated images remain reachable for history, resume, and fork. Reference-aware garbage collection needs a separate design because an age-only rule can delete data still referenced by a durable session. Deployment byte and pixel limits are admission policy on writes; reads verify the digest and recorded metadata without reapplying current admission limits, so lowering policy does not invalidate older history.
 
@@ -78,7 +78,7 @@ The store performs no automatic deletion in version one. Sent user images and mo
 The attachment seam exposes immutable image write and verified read operations. The canonical metadata is deliberately narrower than a generic file record:
 
 ```ts
-import type { Branded } from '@deepseek-ai/dsh-brand'
+import type { Branded } from '@greeneek/gnk-brand'
 
 type AttachmentId = Branded<'AttachmentId'>
 
@@ -124,7 +124,7 @@ Model catalog entries gain optional merge-extensible input modality declarations
 
 The host is the authoritative preflight point. It resolves the session's latest routed provider and model, falling back through agent options to host defaults; if that model explicitly excludes image input, it rejects a new image prompt before writing an attachment or event, and the client restores the draft. Image-bearing prompt admission and model selection share one per-agent serial chain ([ordering decision](../bug-fix/2026-07-29-atomic-web-image-admission.md)), including steering that does not enter the queued UI mirror. This gives a prompt and concurrent selection a deterministic order. Selection itself may target a text-only model after images enter durable history; the shared LLM runtime replaces retained image blocks with deterministic text placeholders for that request. `session.updateQueue` edits accept text content only, so a queue edit cannot inject an image past admission. Unknown capability proceeds to the adapter guard so uncatalogued model identifiers remain usable. The browser rejects unsupported declared image media types before allocating preview URLs, but it does not snapshot deployment limits or model capability. The host validates the complete batch against current byte, count, aggregate, media, dimension, pixel, and routed-model policy before writing an attachment or event; its rejection appears through the composer's transient toast.
 
-Pi-AI and the direct DeepSeek adapter resolve `ctx.attachments` at request time, recursively convert each retained image reference including references nested inside tool results, and emit native image content only for models that declare image input. Both adapters request the same deterministic route-specific version from the durable normalized attachment. Pi-AI carries it inline under a base64-aware request budget. The built-in DeepSeek route advertises `deepseek-v4-flash-vision-exp`, uploads every retained version through Files API, and sends `file_id` blocks with indexed reuse, expiry, bounded stale-id retry, quota cleanup, and explicit deletion. DeepSeek text models, custom models without an image declaration, and unlisted pass-through ids remain text-only. Request-time service resolution keeps Cordis load order from freezing optional attachment availability. No adapter may flatten or silently skip a retained image; unsupported roles and models fail with typed `UNSUPPORTED_CONTENT`.
+Pi-AI and the direct Greeneek adapter resolve `ctx.attachments` at request time, recursively convert each retained image reference including references nested inside tool results, and emit native image content only for models that declare image input. Both adapters request the same deterministic route-specific version from the durable normalized attachment. Pi-AI carries it inline under a base64-aware request budget. The built-in Greeneek route advertises `greeneek-v4-flash-vision-exp`, uploads every retained version through Files API, and sends `file_id` blocks with indexed reuse, expiry, bounded stale-id retry, quota cleanup, and explicit deletion. Greeneek text models, custom models without an image declaration, and unlisted pass-through ids remain text-only. Request-time service resolution keeps Cordis load order from freezing optional attachment availability. No adapter may flatten or silently skip a retained image; unsupported roles and models fail with typed `UNSUPPORTED_CONTENT`.
 
 Core supports structured assistant image blocks, but no current production provider route is certified for image output. Any future output-capable adapter must retrieve provider bytes under bounded size and time policy, validate them through the same attachment service, persist them, and only then publish the atomic `ImageBlock`. A URL in assistant Markdown remains text and is never downloaded automatically.
 
@@ -152,7 +152,7 @@ Malformed base64, unsupported or mismatched media, truncated image payloads, exc
 | `packages/attachment/attachment-local` | Private content-addressed masters, deterministic request cache, complete raster decoding, integrity verification, and configuration. |
 | `packages/llm/llm` | Role-neutral `ImageBlock`, input-modality metadata, exact adapter generations, and text-only request projection. |
 | `packages/llm/llm-pi-ai` | Resolve durable images to deterministic inline request versions. |
-| `packages/llm/llm-deepseek` | Resolve official vision input to deterministic request versions and Files API ids. |
+| `packages/llm/llm-greeneek` | Resolve official vision input to deterministic request versions and Files API ids. |
 | `packages/compaction/compaction-basic` | Preserve images in summary input and reject non-text checkpoint output explicitly. |
 | `packages/host/apiproxy` and `packages/bundle/base` | Narrow upload wire, shared batch admission, limits and routed-model preflight, persist-before-event ordering, session-authorized reads, and default profile composition. |
 | `packages/client/connection` and `packages/client/runtime` | Bounded request buffering, wire types, fixture images, prompt uploads, attachment reads, and durable-reference folding. |
@@ -165,7 +165,7 @@ The attachment packages form the interface/implementation side of one capability
 
 ### Implementation
 
-The implemented capability includes shared prepare-once batch admission, provider-independent masters, deterministic request versions, DeepSeek Files reuse, stable crop handles, role-neutral image blocks, Pi-AI and DeepSeek input conversion, durable Web/ACP/MCP ordering, Web upload/read protocol, conditional ACP image support, lossless MCP results with durable image projection, PTC mode rich-result forwarding, bounded Web requests, draft and historical image UI, compaction handling, and keyless assembled coverage.
+The implemented capability includes shared prepare-once batch admission, provider-independent masters, deterministic request versions, Greeneek Files reuse, stable crop handles, role-neutral image blocks, Pi-AI and Greeneek input conversion, durable Web/ACP/MCP ordering, Web upload/read protocol, conditional ACP image support, lossless MCP results with durable image projection, PTC mode rich-result forwarding, bounded Web requests, draft and historical image UI, compaction handling, and keyless assembled coverage.
 
 No compatibility shim is required for the pre-release prompt wire; all call sites and fixtures change with the introducing slice.
 
@@ -173,7 +173,7 @@ No compatibility shim is required for the pre-release prompt wire; all call site
 
 ### Keep every intake image in `/var` or another temporary directory
 
-Temporary storage is appropriate before send, including for a native client that receives clipboard files through the operating system. It is not appropriate after acceptance: cleanup is outside the harness's control, paths are host-specific, and resume or fork can outlive the file. The proposal permits temporary staging but copies accepted bytes into `DSH_HOME` before the event.
+Temporary storage is appropriate before send, including for a native client that receives clipboard files through the operating system. It is not appropriate after acceptance: cleanup is outside the harness's control, paths are host-specific, and resume or fork can outlive the file. The proposal permits temporary staging but copies accepted bytes into `GNK_HOME` before the event.
 
 ### Persist immediately on paste or drop
 
@@ -212,9 +212,9 @@ Rejected because tool renderers are pure, synchronous, and replayable. MCP prepa
 - Storage tests cover content-addressed deduplication, private permissions, admission failures, corruption/missing-object failures, and reading history after deployment limits are lowered.
 - Host and protocol tests cover persist-before-event ordering, absence of base64 in logs, session-scoped authorization, capability rejection, upload limits, bounded HTTP request bodies, image-admission/model-selection ordering, text-only queue edits, and text-only request projection.
 - Client unit tests cover paste and drop, mixed clipboard text, image-only send, draft restoration, ordering, draft/session-scope/application object-URL cleanup, and a deferred historical read that completes after disposal; the keyless assembled built-client lane (`apps/web/tests/image-display.expected.e2e.ts`, `pnpm run test:web`) covers the historical user and assistant galleries over the authorized attachment route, the original-size lightbox, and the composer paste rail.
-- Adapter and compaction tests cover deterministic Pi-AI request versions, DeepSeek Files upload and reuse, stale-id recovery, text-only projection, recursively nested tool-result images, shared summary request versions, and explicit image-output rejection.
+- Adapter and compaction tests cover deterministic Pi-AI request versions, Greeneek Files upload and reuse, stale-id recovery, text-only projection, recursively nested tool-result images, shared summary request versions, and explicit image-output rejection.
 - Attachment, MCP, ACP, and PTC mode tests cover all-member validation before writes, mixed text/image ordering, no inline base64 in durable events, exact route-capability gates, explicit unsupported-content diagnostics, post-execute replacement/block precedence, cancellation during admission, verified assistant-image delivery, and generic nested-image forwarding. A keyless assembled ACP snapshot sends a real inline PNG and pins only its durable reference in the session log.
-- Credentialed real-API tests cover the configured Anthropic route and the built-in `deepseek-official` Files path. The DeepSeek test does not use a custom provider entry.
+- Credentialed real-API tests cover the configured Anthropic route and the built-in `greeneek-official` Files path. The Greeneek test does not use a custom provider entry.
 - The current production adapter set has no certified image-output route; output-provider certification remains outside version one.
 
 ## Consequences

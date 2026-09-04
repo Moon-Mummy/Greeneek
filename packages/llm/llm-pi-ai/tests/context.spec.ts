@@ -1,13 +1,13 @@
 import { describe, expect, it, vi } from 'vitest'
-import { AttachmentId, ImageVariantId } from '@deepseek-ai/dsh-attachment'
+import { AttachmentId, ImageVariantId } from '@greeneek/gnk-attachment'
 import type {
   AttachmentStore,
   ImageAttachmentRef,
   ImageRequestPolicy,
   RequestImageAttachment,
-} from '@deepseek-ai/dsh-attachment'
-import { ToolCallId, createMessage, createUserMessage, offloadedImageText } from '@deepseek-ai/dsh-llm'
-import type { ContentBlock, GenerateOptions, Message } from '@deepseek-ai/dsh-llm'
+} from '@greeneek/gnk-attachment'
+import { ToolCallId, createMessage, createUserMessage, offloadedImageText } from '@greeneek/gnk-llm'
+import type { ContentBlock, GenerateOptions, Message } from '@greeneek/gnk-llm'
 import { toPiContext } from '../src/context.ts'
 import type { PiImageRequestContext } from '../src/context.ts'
 import { toPiAssistant } from '../src/replay.ts'
@@ -190,7 +190,7 @@ describe('pi-ai request context conversion', () => {
       height: 565,
     }))
     const context = await toPiContext(request([user([{ type: 'image', attachment: named }])]), imageContext(store, {
-      resolveImageAccess: () => ({ readonlyPath: '/tmp/dsh/objects/aa/object' }),
+      resolveImageAccess: () => ({ readonlyPath: '/tmp/gnk/objects/aa/object' }),
     }))
     expect(context.messages[0]).toMatchObject({
       role: 'user',
@@ -199,7 +199,7 @@ describe('pi-ai request context conversion', () => {
         { type: 'image' },
       ],
     })
-    expect(JSON.stringify(context.messages[0])).toContain('/tmp/dsh/objects/aa/object')
+    expect(JSON.stringify(context.messages[0])).toContain('/tmp/gnk/objects/aa/object')
     expect(JSON.stringify(context.messages[0])).toContain('request preview 1130x565px')
   })
 
@@ -333,7 +333,7 @@ describe('pi-ai request context conversion', () => {
 
   it('uses independently resolved access when exact encoded bytes require offload', async () => {
     const sized: ImageAttachmentRef = { ...ref, bytes: 3 }
-    const access = { readonlyPath: '/tmp/dsh-normalized-image' }
+    const access = { readonlyPath: '/tmp/gnk-normalized-image' }
     const readImageRequest = vi.fn((value: ImageAttachmentRef) => Promise.resolve({
       ...requestImage(value, Uint8Array.of(1, 2, 3, 4)),
     }))

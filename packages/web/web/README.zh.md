@@ -3,13 +3,13 @@ description: "web 访问服务（ctx.web）：部署方与插件作者如何通�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-web
+# @greeneek/gnk-web
 
 [English](README.md) | 中文
 
 ## 概述
 
-任何插件或工具都可以通过 `dsh-web`（`ctx.web`）搜索 web 或抓取 URL，而无需绑定任何厂商的 API。搜索与抓取提供方以后端形式接入，服务按操作挑选一个可用的提供方，调用方无需追踪每次调用背后是哪家厂商。在构建 web 工具或其他后端时选择它；已交付的面向模型工具（`dsh-tool-web`）会自动挂载它。服务本身不发起网络调用、不注册面向模型的工具：搜索或抓取执行前必须已挂载提供方。搜索与抓取共用同一套选择策略、取消与错误词汇以及配置接口，因此「这个 harness 如何访问 web」只有一个归属方。
+任何插件或工具都可以通过 `gnk-web`（`ctx.web`）搜索 web 或抓取 URL，而无需绑定任何厂商的 API。搜索与抓取提供方以后端形式接入，服务按操作挑选一个可用的提供方，调用方无需追踪每次调用背后是哪家厂商。在构建 web 工具或其他后端时选择它；已交付的面向模型工具（`gnk-tool-web`）会自动挂载它。服务本身不发起网络调用、不注册面向模型的工具：搜索或抓取执行前必须已挂载提供方。搜索与抓取共用同一套选择策略、取消与错误词汇以及配置接口，因此「这个 harness 如何访问 web」只有一个归属方。
 
 ## 目录
 
@@ -25,20 +25,20 @@ kind: "package-reference"
 <a id="use-this-package"></a>
 ## 使用本包
 
-需要 web 访问的组合会加载 `dsh-web` 服务并挂载至少一个后端——搜索提供方和／或抓取提供方——插件或工具作者随后直接调用 `ctx.web.search()` 与 `ctx.web.fetch()`。服务会为每次调用解析后端，因此除非调用方配置了提供方 id，否则它们看不到提供方 id。
+需要 web 访问的组合会加载 `gnk-web` 服务并挂载至少一个后端——搜索提供方和／或抓取提供方——插件或工具作者随后直接调用 `ctx.web.search()` 与 `ctx.web.fetch()`。服务会为每次调用解析后端，因此除非调用方配置了提供方 id，否则它们看不到提供方 id。
 
 ### 何时选择
 
-当插件或工具必须搜索或抓取、又不希望硬编码厂商时选择本服务；只使用已交付的 `web_search`／`web_fetch` 工具的组合会通过 `dsh-tool-web` 免费获得它。当组合从不访问 web 时，你不需要它。服务本身不增加任何网络访问能力：没有至少一个可用提供方时，每次调用都会以结构化 `WebError` 失败。
+当插件或工具必须搜索或抓取、又不希望硬编码厂商时选择本服务；只使用已交付的 `web_search`／`web_fetch` 工具的组合会通过 `gnk-tool-web` 免费获得它。当组合从不访问 web 时，你不需要它。服务本身不增加任何网络访问能力：没有至少一个可用提供方时，每次调用都会以结构化 `WebError` 失败。
 
 ### 最小配置
 
-加载服务并让唯一挂载的后端自动选择，或用 `searchProvider`／`fetchProvider` 固定提供方 id。环境变量 `$DSH_WEB_SEARCH_PROVIDER` 与 `$DSH_WEB_FETCH_PROVIDER` 提供相同字段，不是另一条优先级链。
+加载服务并让唯一挂载的后端自动选择，或用 `searchProvider`／`fetchProvider` 固定提供方 id。环境变量 `$GNK_WEB_SEARCH_PROVIDER` 与 `$GNK_WEB_FETCH_PROVIDER` 提供相同字段，不是另一条优先级链。
 
 ```yaml
-- name: '@deepseek-ai/dsh-web'
-- name: '@deepseek-ai/dsh-web-search-exa'
-- name: '@deepseek-ai/dsh-web-fetch-http'
+- name: '@greeneek/gnk-web'
+- name: '@greeneek/gnk-web-search-exa'
+- name: '@greeneek/gnk-web-fetch-http'
 ```
 
 | 字段 | 默认值 | 含义 |
@@ -46,7 +46,7 @@ kind: "package-reference"
 | `searchProvider` | （未设置） | 固定的搜索提供方 id；未设置时仅在恰好一个可用时自动选择 |
 | `fetchProvider` | （未设置） | 固定的抓取提供方 id；未设置时仅在恰好一个可用时自动选择 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-web)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-web)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### 搜索与抓取
 
@@ -54,7 +54,7 @@ kind: "package-reference"
 
 ```text
 // Search the web; sources[] is capped to maxResults:
-const result = await ctx.web.search({ query: 'deepseek harness', maxResults: 8 })
+const result = await ctx.web.search({ query: 'greeneek harness', maxResults: 8 })
 
 // Fetch one URL; a non-2xx response is a result, not an error:
 const page = await ctx.web.fetch({ url: 'https://example.com' })
@@ -126,9 +126,9 @@ const page = await ctx.web.fetch({ url: 'https://example.com' })
 
 - [web 子系统](../../../docs/subsystems/web.zh.md)——穷尽式的搜索／抓取请求与结果、提供方可用性与错误码。
 - [web 包映射](../README.zh.md)——六包家族与各角色。
-- [dsh-tool-web](../tool-web/README.zh.md)——构建于本服务之上的面向模型 `web_search` 与 `web_fetch` 工具。
-- [dsh-web-fetch-http](../web-fetch-http/README.zh.md)——已交付的匿名 HTTP(S) 抓取后端。
-- [生成配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-web)——每个受支持配置字段及其源声明。
+- [gnk-tool-web](../tool-web/README.zh.md)——构建于本服务之上的面向模型 `web_search` 与 `web_fetch` 工具。
+- [gnk-web-fetch-http](../web-fetch-http/README.zh.md)——已交付的匿名 HTTP(S) 抓取后端。
+- [生成配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-web)——每个受支持配置字段及其源声明。
 - [web 能力 seam 决策](../../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.zh.md)——搜索与抓取为何共用一项提供方选择服务。
 
 -----
@@ -136,7 +136,7 @@ const page = await ctx.web.fetch({ url: 'https://example.com' })
 <a id="model-experience"></a>
 ## 模型体验
 
-间接地，通过 `dsh-tool-web`：该工具把 seam 规范化的搜索结果与抓取正文渲染给模型，而本服务不贡献任何提示词或 schema。
+间接地，通过 `gnk-tool-web`：该工具把 seam 规范化的搜索结果与抓取正文渲染给模型，而本服务不贡献任何提示词或 schema。
 
 #### KV Cache 影响
 

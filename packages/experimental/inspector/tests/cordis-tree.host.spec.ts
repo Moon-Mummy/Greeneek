@@ -1,6 +1,6 @@
 /** Host-driven Cordis tree integration. */
 
-import { Context } from '@deepseek-ai/cordis'
+import { Context } from '@greeneek/cordis'
 import WebSocket, { type RawData } from 'ws'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { CordisTreeCollector } from '../src/shared/cordis/collector.ts'
@@ -387,7 +387,7 @@ describe('Cordis tree inspection', () => {
     expect(document.children?.map(node => node.localName)).toEqual(['host', 'clients'])
     expect(document.children?.every(node => (node.attributes ?? []).length === 0)).toBe(true)
 
-    const stored = await cdp.call('DSHInspector.getCordisTree')
+    const stored = await cdp.call('GNKInspector.getCordisTree')
     const model = stored.result?.tree as {
       host: { root: Record<string, unknown> } | null
       clients: Array<{ root: Record<string, unknown> }>
@@ -534,7 +534,7 @@ describe('Cordis tree inspection', () => {
     expect((await cdp.call('DOM.requestNode', {
       objectId: (clientEvaluated.result?.result as Record<string, unknown>).objectId,
     })).error).toBeDefined()
-    const disconnectedTree = (await cdp.call('DSHInspector.getCordisTree')).result?.tree as {
+    const disconnectedTree = (await cdp.call('GNKInspector.getCordisTree')).result?.tree as {
       clients: Array<{ connection: { state: string } }>
     }
     expect(disconnectedTree.clients[0]?.connection.state).toBe('disconnected')
@@ -562,14 +562,14 @@ describe('Cordis tree inspection', () => {
     expect(insertedClient?.children).toBeUndefined()
     await cdp.call('DOM.requestChildNodes', { nodeId: insertedClient!.nodeId, depth: -1 })
 
-    const firstTree = (await cdp.call('DSHInspector.getCordisTree')).result?.tree as {
+    const firstTree = (await cdp.call('GNKInspector.getCordisTree')).result?.tree as {
       clients: Array<{ revision: number }>
     }
     const firstRevision = firstTree.clients[0]?.revision
     offset = cdp.events.length
     await clientSource.refreshTree()
     await vi.waitFor(async () => {
-      const tree = (await cdp!.call('DSHInspector.getCordisTree')).result?.tree as {
+      const tree = (await cdp!.call('GNKInspector.getCordisTree')).result?.tree as {
         clients: Array<{ revision: number }>
       }
       expect(tree.clients[0]?.revision).toBeGreaterThan(firstRevision ?? 0)
@@ -702,7 +702,7 @@ describe('Cordis tree inspection', () => {
       contextId = (created?.params?.context as { id?: number } | undefined)?.id
       expect(contextId).toBeTypeOf('number')
     })
-    const initialTree = (await cdp.call('DSHInspector.getCordisTree')).result?.tree as {
+    const initialTree = (await cdp.call('GNKInspector.getCordisTree')).result?.tree as {
       clients: Array<{ source: { sourceId: string } }>
     }
     const sourceId = initialTree.clients[0]?.source.sourceId
@@ -732,7 +732,7 @@ describe('Cordis tree inspection', () => {
       const current = (await cdp!.call('DOM.getDocument')).result?.root as CdpNode
       expect(clientContainers(current)).toHaveLength(1)
       expect(clientContainers(current)[0]?.children?.[0]?.localName).toBe('context')
-      const tree = (await cdp!.call('DSHInspector.getCordisTree')).result?.tree as {
+      const tree = (await cdp!.call('GNKInspector.getCordisTree')).result?.tree as {
         clients: Array<{
           source: { sourceId: string }
           connection: { state: string }

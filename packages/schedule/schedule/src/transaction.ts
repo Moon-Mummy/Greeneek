@@ -1,6 +1,6 @@
 /** Agent-scoped serialization for Schedule reads and durable mutations. */
 
-import type { Agent } from '@deepseek-ai/dsh-agent'
+import type { Agent } from '@greeneek/gnk-agent'
 
 const tails = new WeakMap<Agent, Promise<void>>()
 

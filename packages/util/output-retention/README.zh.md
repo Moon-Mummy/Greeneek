@@ -3,13 +3,13 @@ description: "为必须限制返回上下文量的工具提供有界的面向模
 kind: "package-library"
 ---
 
-# @deepseek-ai/dsh-output-retention
+# @greeneek/gnk-output-retention
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-output-retention` 限制工具返回给模型的上下文量：调用方把项或文本分片送入 retainer，然后取回保留的内容与精确的省略元数据。`ItemRetainer` 以头部预算限制有序逻辑单元列表（路径、匹配项、来源）；`TextRetainer` 以 head、tail 或 head+tail 窗口限制面向字节的文本流，并在每个切割处保持 UTF-8 边界有效。标准化的省略子句与通知格式化器让工具获得一致的「结果已达上限」页脚，而恢复指引由工具自己提供。该库只回答「保留了什么、省略了什么」这个机制问题——分组、行号、spill 文件与提供方错误状态都留在工具侧。它是轻依赖库，由工具包直接导入；`cordis.yml` 无法加载它。
+`gnk-output-retention` 限制工具返回给模型的上下文量：调用方把项或文本分片送入 retainer，然后取回保留的内容与精确的省略元数据。`ItemRetainer` 以头部预算限制有序逻辑单元列表（路径、匹配项、来源）；`TextRetainer` 以 head、tail 或 head+tail 窗口限制面向字节的文本流，并在每个切割处保持 UTF-8 边界有效。标准化的省略子句与通知格式化器让工具获得一致的「结果已达上限」页脚，而恢复指引由工具自己提供。该库只回答「保留了什么、省略了什么」这个机制问题——分组、行号、spill 文件与提供方错误状态都留在工具侧。它是轻依赖库，由工具包直接导入；`cordis.yml` 无法加载它。
 
 ## 目录
 
@@ -30,7 +30,7 @@ kind: "package-library"
 ### 限制项列表
 
 ```ts
-import { ItemRetainer } from '@deepseek-ai/dsh-output-retention'
+import { ItemRetainer } from '@greeneek/gnk-output-retention'
 
 declare const globMaxResults: number
 declare const candidates: AsyncIterable<{ path: string }>
@@ -46,7 +46,7 @@ const { items, truncated, omitted } = retainer.finish()
 ### 限制文本流
 
 ```text
-import { TextRetainer } from '@deepseek-ai/dsh-output-retention'
+import { TextRetainer } from '@greeneek/gnk-output-retention'
 
 const out = new TextRetainer({ kind: 'headTail', headBytes: headCap, tailBytes: tailCap })
 child.stdout.on('data', (chunk: Buffer) => { out.push(chunk) })
@@ -58,11 +58,11 @@ const { text, omittedBytes } = out.finish()
 ### 构建省略页脚
 
 ```ts
-import { formatRetentionNotice } from '@deepseek-ai/dsh-output-retention'
+import { formatRetentionNotice } from '@greeneek/gnk-output-retention'
 
 declare const grepMaxMatches: number
 declare const items: { length: number }
-import type { Omitted } from '@deepseek-ai/dsh-output-retention'
+import type { Omitted } from '@greeneek/gnk-output-retention'
 
 declare const omitted: Omitted
 

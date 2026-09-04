@@ -21,10 +21,10 @@ Shared UI libraries still expose synchronous TypeScript and React values to many
 | Layer | Members | Responsibility | Build and load form |
 | --- | --- | --- | --- |
 | Web compilation shell | `apps/web` | Owns `index.html`, Vite configuration, dist chunks, and static assets | Assembles final browser output from built package exports |
-| Startup kernel | `packages/client/web` | Owns the plain-DOM boot page, module-system wiring, Cordis settlement, and renderer handoff | `staticLinked` `lib/index.js`; no `dsh.client` row |
+| Startup kernel | `packages/client/web` | Owns the plain-DOM boot page, module-system wiring, Cordis settlement, and renderer handoff | `staticLinked` `lib/index.js`; no `gnk.client` row |
 | Static assembly libraries | Cordis, `ui-primitives`, `ui-slots` | Supply shared module identities and direct value APIs | ESM `lib/index.js`, merged and chunked by Vite; not Loader entries |
 | Module bootstrap | `packages/client/modules` | Supplies the client module table and its Cordis wrapper | Dynamic package with one ordinary `lib/client.js`; the host delivers its factory early |
-| Dynamic client packages | connection, `ui-renderer`, theme, and feature plugins | Participate through Cordis services, slots, and effects | Declare `dsh.client`, emit self-registering `lib/client.js`, and remain host-graph entries |
+| Dynamic client packages | connection, `ui-renderer`, theme, and feature plugins | Participate through Cordis services, slots, and effects | Declare `gnk.client`, emit self-registering `lib/client.js`, and remain host-graph entries |
 
 `packages/client/web` keeps Cordis as matching peer and development dependencies and uses modules and static UI packages as development compilation inputs. `apps/web` consumes built package exports rather than aliases into workspace source.
 
@@ -32,14 +32,14 @@ The `staticLinked` preset leaves every bare specifier as an external import in `
 
 ### Shared module requests
 
-Dynamic browser bundles implicitly externalize the common baseline: `PLATFORM_MODULES` names shell-seeded React, Cordis, and static UI identities, while `PRELOADED_CLIENT_EXTERNALS` is reserved for a dynamic identity that must arrive before shell boot and is currently empty. A package uses `dsh.client.external` only for an exact non-baseline value request. Type-only imports are erased and create no request; permitted third-party implementation libraries remain private bundle contents.
+Dynamic browser bundles implicitly externalize the common baseline: `PLATFORM_MODULES` names shell-seeded React, Cordis, and static UI identities, while `PRELOADED_CLIENT_EXTERNALS` is reserved for a dynamic identity that must arrive before shell boot and is currently empty. A package uses `gnk.client.external` only for an exact non-baseline value request. Type-only imports are erased and create no request; permitted third-party implementation libraries remain private bundle contents.
 
 A request has exactly two suppliers:
 
 1. The dynamic package row it names; a trailing `/client` aliases that package row.
 2. An exact key in the shell's static module table.
 
-There is no general `dsh.client.provide` alias mechanism. Dynamic rows and static keys exhaust the real suppliers, while Cordis service provision remains independent. Graph composition rejects malformed or missing requests, self-requests, and synchronous request cycles, and orders dynamic suppliers before their consumers. `ClientModuleSystem.import()` and `prefetch()` recursively register those dynamic supplier factories before the consumer can materialize, so network timing cannot violate the synchronous request graph.
+There is no general `gnk.client.provide` alias mechanism. Dynamic rows and static keys exhaust the real suppliers, while Cordis service provision remains independent. Graph composition rejects malformed or missing requests, self-requests, and synchronous request cycles, and orders dynamic suppliers before their consumers. `ClientModuleSystem.import()` and `prefetch()` recursively register those dynamic supplier factories before the consumer can materialize, so network timing cannot violate the synchronous request graph.
 
 ### Parser preloading and React handoff
 
@@ -48,7 +48,7 @@ The modules Node half injects the startup protocol into the served HTML in this 
 1. Install `window.__ModuleLoader__` in queue mode with `pendingQueue`, `load()`, and `create()`.
 2. Start preloading every content-addressed application combo URL containing the rows other than modules.
 3. Execute every blocking bootstrap combo URL; these currently contain the ordinary modules factory registration.
-4. Assign `window.__DSH_BOOT__`, including all scheduling descriptors and every row's one-resource HMR combo URL.
+4. Assign `window.__GNK_BOOT__`, including all scheduling descriptors and every row's one-resource HMR combo URL.
 5. Execute the Vite main module.
 
 The bootstrap combo currently registers only the modules factory. The startup kernel passes the raw graph and shell seeds to `__ModuleLoader__.create()`. The facade removes the modules registration, materializes it with a `require` function that rejects every external, and invokes its `createClientModuleSystem` export. The modules bundle parses the graph, constructs `ClientModuleSystem`, caches its own exports as the modules row, retains the system in a module closure, and switches the same facade to live mode. The modules client face consequently has a zero-external bootstrap requirement.
@@ -57,7 +57,7 @@ After the `immediately` tier has registered its factories, the kernel creates al
 
 ### Dependency declarations
 
-Every Client package keeps Cordis in matching `peerDependencies` and `devDependencies`; Cordis is its only peer. Browser imports, type references, module augmentations, and `dsh.client.inject` are development inputs because the Client build and shipped profile supply their runtime identities. A package that also publishes a Host entry keeps that entry's runtime value imports in `dependencies`. [Published dependency faces](../process/2026-08-26-published-dependency-faces.md) owns package discovery, exceptions, and the explicit Host roster.
+Every Client package keeps Cordis in matching `peerDependencies` and `devDependencies`; Cordis is its only peer. Browser imports, type references, module augmentations, and `gnk.client.inject` are development inputs because the Client build and shipped profile supply their runtime identities. A package that also publishes a Host entry keeps that entry's runtime value imports in `dependencies`. [Published dependency faces](../process/2026-08-26-published-dependency-faces.md) owns package discovery, exceptions, and the explicit Host roster.
 
 Ordinary installed libraries remain `dependencies`: a dynamic build may bundle a private implementation, while a `staticLinked` library retains its bare import for the final host. Each build face decides externality independently from npm sections. Published file lists cover every runtime entry, relative asset, and declaration file reached by the artifact.
 
@@ -77,7 +77,7 @@ Ordinary installed libraries remain `dependencies`: a dynamic build may bundle a
 
 ## Consequences
 
-Bundle contents stay stable when an internal DSH relationship is development-only, because each build face declares externality directly. Static libraries remain host-assembled, while dynamic packages retain uniform artifacts and lifecycle governance. The shipped profile owns the complete Client package roster, so individual Client packages do not ask npm to solve the same graph again through peer placement.
+Bundle contents stay stable when an internal GNK relationship is development-only, because each build face declares externality directly. Static libraries remain host-assembled, while dynamic packages retain uniform artifacts and lifecycle governance. The shipped profile owns the complete Client package roster, so individual Client packages do not ask npm to solve the same graph again through peer placement.
 
 The startup protocol depends on the modules package id, and modules must remain self-contained at runtime. Combo generation preserves its ordinary package artifact and gives every other row one shared initial transport; HMR uses the same route with that row as its sole resource. A missing bootstrap registration fails before Cordis starts; later plugin import, apply, and service-wait failures remain visible through the boot page's ACTIVE scan.
 

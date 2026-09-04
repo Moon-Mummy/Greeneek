@@ -18,13 +18,13 @@ Status: implemented
 
 Compact-basic 会在每个拟议请求之前包装 `agent/pre-step`。在续步边界，前一条 assistant 输出、所有已分发或合成的工具结果、工具后上下文与 steering 都已经持久化，因此压力策略能看到完整的成功调用状态，同时不会拆开 assistant 工具调用与其结果。初始边界上的无 header 会话尚无已完成路由请求，因此不执行压力工作。Compact-basic 会在内部处理操作性失败、发出警告并继续委托，不会 reject 拟议步骤。
 
-`dsh-compaction-basic` 从持久请求头读取精确的最新实际路由模型，只用它确认已经存在已完成的路由，随后让单例 `ctx.tokenMeter` 计量规范日志信封与当前表层。自动压力不会回退到 `AgentOptions.model`。没有请求头的会话尚无已完成路由请求可供判断，因此不执行工作；任意持久记录的非空模型名都使用同一个估算器。操作性的计量或摘要失败会发出警告，并从最新持久表层继续：任何替换发生前使用完整历史；若剪枝已经落盘，则使用已剪枝表层。
+`gnk-compaction-basic` 从持久请求头读取精确的最新实际路由模型，只用它确认已经存在已完成的路由，随后让单例 `ctx.tokenMeter` 计量规范日志信封与当前表层。自动压力不会回退到 `AgentOptions.model`。没有请求头的会话尚无已完成路由请求可供判断，因此不执行工作；任意持久记录的非空模型名都使用同一个估算器。操作性的计量或摘要失败会发出警告，并从最新持久表层继续：任何替换发生前使用完整历史；若剪枝已经落盘，则使用已剪枝表层。
 
 ### 请求恢复只覆盖最终模型边界
 
 `agent/request-error` 表示来自最终适配器边界的终止失败。适配器选择、分发、iterator 构造与迭代抛出会在 agent loop（智能体循环）消费前成为终止 `error` 或 `aborted` finish；适配器直接发出的终止 finish 进入同一路径。提示词装配、请求 middleware、请求日志、结果处理、工具、step 监听器与清理仍属于普通失败。[LLM（大语言模型）流的终止失败](2026-07-29-terminal-llm-stream-failures.zh.md)规定这一规范化边界。
 
-恢复运行前，失败 step 已经关闭。负责处理的监听器修复持久状态、返回 `{ kind: 'retry' }`，并停止 waterfall（瀑布式事件）委托。循环随后关闭失败 turn，并从持久日志开启一个重试 turn，中间不发布空闲通知。重试策略与尝试计数由插件自己拥有；compaction-basic 在链路到达终态 `agent/settled` 时清除对应 agent 的溢出计数。两个 DeepSeek 适配器都把识别出的提供方上下文限制错误规范化为 `CONTEXT_WINDOW_EXCEEDED`。[重试动作决策](../simplification/2026-07-27-request-error-retry-action.zh.md)规定这一返回边界。
+恢复运行前，失败 step 已经关闭。负责处理的监听器修复持久状态、返回 `{ kind: 'retry' }`，并停止 waterfall（瀑布式事件）委托。循环随后关闭失败 turn，并从持久日志开启一个重试 turn，中间不发布空闲通知。重试策略与尝试计数由插件自己拥有；compaction-basic 在链路到达终态 `agent/settled` 时清除对应 agent 的溢出计数。两个 Greeneek 适配器都把识别出的提供方上下文限制错误规范化为 `CONTEXT_WINDOW_EXCEEDED`。[重试动作决策](../simplification/2026-07-27-request-error-retry-action.zh.md)规定这一返回边界。
 
 如果取消发生在 assistant 工具调用已经持久化之后、所有调用完成分发之前，循环会为每个尚未分发的调用记录一对合成的 `tool/call` 与 aborted `tool/result`，随后进入正常中止路径。因此，表层不会仅因取消赢得竞态而留下孤立的持久工具调用。
 

@@ -18,15 +18,15 @@
  * durable descriptor, so it neither restores the prior budget nor inherits
  * the parent's current one; the resumed route's defaults apply instead.
  *
- * @module @deepseek-ai/dsh-subagent/descriptor
+ * @module @greeneek/gnk-subagent/descriptor
  */
 
-import { snapshotJsonValue } from '@deepseek-ai/dsh-util-values'
-import type { SessionEvent } from '@deepseek-ai/dsh-session'
-import type { ReasoningEffortId } from '@deepseek-ai/dsh-llm'
-import type { ToolRestriction } from '@deepseek-ai/dsh-tools'
+import { snapshotJsonValue } from '@greeneek/gnk-util-values'
+import type { SessionEvent } from '@greeneek/gnk-session'
+import type { ReasoningEffortId } from '@greeneek/gnk-llm'
+import type { ToolRestriction } from '@greeneek/gnk-tools'
 
-declare module '@deepseek-ai/dsh-session/types' {
+declare module '@greeneek/gnk-session/types' {
   interface SessionEventMap {
     /**
      * Durable identity and lifecycle mode of a session-backed subagent child,

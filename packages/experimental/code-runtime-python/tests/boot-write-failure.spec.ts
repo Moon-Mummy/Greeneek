@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs'
 import { dirname } from 'node:path'
 import { PassThrough } from 'node:stream'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
+import { Context } from '@greeneek/cordis'
 
 /**
  * A synchronous `proto.write` throw on the fd-3 pipe is the one boot path a real
@@ -172,7 +172,7 @@ describe('PythonCodeRuntime — boot-write failure', () => {
     // received (`['-I', <dir>/bootstrap.py]`) and assert only that path is gone.
     // A tmpdir scan — even a set difference against a pre-run snapshot — would
     // flake under vitest's forks pool: a sibling worker creating its own
-    // `dsh-code-runtime-python-*` dir in the window reads as a leak here. Keying
+    // `gnk-code-runtime-python-*` dir in the window reads as a leak here. Keying
     // off our own argv is fully isolated from concurrent staging.
     let stagedBootstrap: string | undefined
     spawnMock.mockImplementation((_bin: string, args: string[]) => {

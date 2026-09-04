@@ -3,13 +3,13 @@ description: "Per-message ratings and notes for finalized assistant messages, fo
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-message-feedback
+# @greeneek/gnk-message-feedback
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-message-feedback` lets product surfaces offer per-message feedback: a user marks an assistant message positive or negative and can attach a short note, and the rating stays with that message. Ratings are stored with the session, survive restarts, and never enter model history or telemetry. Product surfaces read, create, and change ratings through the `messageFeedback` service, whose `list`, `put`, and `delete` operations are the whole surface. The one deployment setting is the maximum note length (`maxNoteBytes`), which the Web bundle sets to 8192. Browser controls live in a separate client package; this package provides the service itself.
+`gnk-message-feedback` lets product surfaces offer per-message feedback: a user marks an assistant message positive or negative and can attach a short note, and the rating stays with that message. Ratings are stored with the session, survive restarts, and never enter model history or telemetry. Product surfaces read, create, and change ratings through the `messageFeedback` service, whose `list`, `put`, and `delete` operations are the whole surface. The one deployment setting is the maximum note length (`maxNoteBytes`), which the Web bundle sets to 8192. Browser controls live in a separate client package; this package provides the service itself.
 
 ## Table of Contents
 
@@ -35,12 +35,12 @@ Choose this service when a product surface should let users rate and annotate in
 
 ```yaml
 - id: message-feedback
-  name: '@deepseek-ai/dsh-message-feedback'
+  name: '@greeneek/gnk-message-feedback'
   config:
     maxNoteBytes: 8192
 ```
 
-A note must contain at least one non-whitespace character and fit within the configured byte length; a blank note is rejected with `note-blank` and an oversized one with `note-too-large`. Accepted text is stored exactly as submitted — nothing is trimmed. The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-message-feedback) is the exhaustive source for every accepted field and its JSDoc.
+A note must contain at least one non-whitespace character and fit within the configured byte length; a blank note is rejected with `note-blank` and an oversized one with `note-too-large`. Accepted text is stored exactly as submitted — nothing is trimmed. The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-message-feedback) is the exhaustive source for every accepted field and its JSDoc.
 
 ### Reading and changing feedback
 
@@ -111,7 +111,7 @@ Read these pages when the package-level contract is not enough. They move from t
 - [Feedback subsystem](../../../docs/subsystems/feedback.md) — the public types, Remote contract, and Web consumer details.
 - [Message-feedback sidecar decision](../../../.agents/notes/implemented/architecture/2026-08-10-message-feedback-sidecar.md) — the design boundary that keeps this sidecar out of Session-log content.
 - [Session persistence subsystem](../../../docs/subsystems/persistence.md) — the handle `read`, `stat`, and `flush` semantics behind the durability barrier.
-- [dsh-client-ui-message-feedback](../../client/ui-message-feedback/README.md) — the browser consumer that drives the Host Remote contract.
+- [gnk-client-ui-message-feedback](../../client/ui-message-feedback/README.md) — the browser consumer that drives the Host Remote contract.
 - [Feedback package map](../README.md) — where per-message feedback sits next to the log-only capture command.
 
 -----
@@ -154,7 +154,7 @@ These limits define when the service is a poor fit or needs special operational 
 
 This Dev Note is working context for maintainers; it is explicitly non-authoritative. Shipped behavior, limits, and rationale live in the sections above, the package code, and the linked Agent Note.
 
-- The browser controls and the client Remote mount live in `dsh-client-ui-message-feedback` and `dsh-api-remotes`; their open items belong to those packages' notes.
+- The browser controls and the client Remote mount live in `gnk-client-ui-message-feedback` and `gnk-api-remotes`; their open items belong to those packages' notes.
 - The trusted-caller limitation is the open authorization direction: the Host gateway records no actor or audit identity, and any authentication layer must land at the deployment boundary before the service exposes per-user attribution.
 - Note validation precedes Session lookup by design, so `note-blank` and `note-too-large` win over `session-not-found` for a missing Session; tests pin this order.
 

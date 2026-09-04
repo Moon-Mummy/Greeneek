@@ -10,7 +10,7 @@ English | [中文](2026-07-20-todo-event-ownership.zh.md)
 
 ## Decision
 
-`@deepseek-ai/dsh-tool-todo` declares `TodoItem` and merges `todo/write` into `@deepseek-ai/dsh-session/types` from its type-only outlet. The package root and `/client` entrypoint re-export `TodoItem`, so host and browser consumers share one declaration without loading the todo plugin.
+`@greeneek/gnk-tool-todo` declares `TodoItem` and merges `todo/write` into `@greeneek/gnk-session/types` from its type-only outlet. The package root and `/client` entrypoint re-export `TodoItem`, so host and browser consumers share one declaration without loading the todo plugin.
 
 Consumers that inspect todo records use type-only imports plus explicit package dependencies and TypeScript project references. The emitted JavaScript has no todo import, and a composition does not need to mount the todo tool merely to search, transmit, or render a log that may contain `todo/write`.
 
@@ -28,4 +28,4 @@ Focused todo tool, invariant, projection, integration, and Loader-composition te
 
 ## Consequences
 
-The core session package does not export `TodoItem` or enforce todo relationships. A package that names or narrows `todo/write` declares a type-only dependency on `dsh-tool-todo`; consumers that treat unknown merged events generically need no dependency. The todo package is the single source for the event payload, client type, runtime validation, and open-turn rule.
+The core session package does not export `TodoItem` or enforce todo relationships. A package that names or narrows `todo/write` declares a type-only dependency on `gnk-tool-todo`; consumers that treat unknown merged events generically need no dependency. The todo package is the single source for the event payload, client type, runtime validation, and open-turn rule.

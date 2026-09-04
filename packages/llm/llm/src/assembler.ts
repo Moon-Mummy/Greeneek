@@ -3,11 +3,11 @@
  * algorithm used by the agent loop to build an assistant message from a chunk
  * stream while logging the raw chunks for replay fidelity.
  *
- * @module @deepseek-ai/dsh-llm/assembler
+ * @module @greeneek/gnk-llm/assembler
  */
 
-import { brandString } from '@deepseek-ai/dsh-brand'
-import { assertNever } from '@deepseek-ai/dsh-util-values'
+import { brandString } from '@greeneek/gnk-brand'
+import { assertNever } from '@greeneek/gnk-util-values'
 import type { ToolCallId } from './brand.ts'
 import { createMessage } from './message.ts'
 import type { Message, MessageSource } from './message.ts'
@@ -202,7 +202,7 @@ export class BlockAssembler {
    * @param source - producer attribution for the assembled message.
    * @returns a frozen assistant-role message over `blocks()` (same open-block assembly rules).
    */
-  message(source: MessageSource = { kind: 'plugin', plugin: 'dsh-llm/assembler' }): Message {
+  message(source: MessageSource = { kind: 'plugin', plugin: 'gnk-llm/assembler' }): Message {
     return createMessage({ role: 'assistant', content: this.blocks(), source })
   }
 }

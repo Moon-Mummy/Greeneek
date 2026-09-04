@@ -1,13 +1,13 @@
 /**
  * Agent-scoped Schedule management tools over the durable session fold.
- * @module @deepseek-ai/dsh-schedule
+ * @module @greeneek/gnk-schedule
  */
 
-import type { Context } from '@deepseek-ai/cordis'
-import type { Agent } from '@deepseek-ai/dsh-agent'
-import type { ContentBlock } from '@deepseek-ai/dsh-llm'
-import { defineTool } from '@deepseek-ai/dsh-tools'
-import type { GenericCallView } from '@deepseek-ai/dsh-tools'
+import type { Context } from '@greeneek/cordis'
+import type { Agent } from '@greeneek/gnk-agent'
+import type { ContentBlock } from '@greeneek/gnk-llm'
+import { defineTool } from '@greeneek/gnk-tools'
+import type { GenericCallView } from '@greeneek/gnk-tools'
 import {
   allocateScheduleId,
   createAfterScheduleRecord,

@@ -3,13 +3,13 @@ description: "跨会话快照引用与持久的不受信任模型上下文，供
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-session-reference
+# @greeneek/gnk-session-reference
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-session-reference` 让一次对话可以引用其他会话：宿主把 `@label` mention 转换为规范 URI，服务则为模型准备每个被引用会话的有界、只读快照，作为持久、不受信任的背景上下文。候选发现按工作目录亲和度对其他会话排序，并用其最新标题作标签。快照在捕获后不可变，并带有固定警告，禁止遵循其中的指令、权限声明或工具请求。它是面向支持跨会话 mention 的宿主的可选服务；它消费 `ctx.sessionQuery`，不需要 SQLite FTS。
+`gnk-session-reference` 让一次对话可以引用其他会话：宿主把 `@label` mention 转换为规范 URI，服务则为模型准备每个被引用会话的有界、只读快照，作为持久、不受信任的背景上下文。候选发现按工作目录亲和度对其他会话排序，并用其最新标题作标签。快照在捕获后不可变，并带有固定警告，禁止遵循其中的指令、权限声明或工具请求。它是面向支持跨会话 mention 的宿主的可选服务；它消费 `ctx.sessionQuery`，不需要 SQLite FTS。
 
 ## 目录
 
@@ -29,7 +29,7 @@ kind: "package-reference"
 
 ### mention 语法
 
-规范 mention 是 Markdown 形式的 `@[label](dsh-session:<base64url 编码的 id>)`，或裸 `dsh-session:` URI；每个 JavaScript 字符串会话 id 都能精确往返。服务会把 mention 改写为消息中可读的 `@label` 文本，并返回结构化引用。显式 Markdown mention 会拒绝格式错误的 URI；空或只含标点符号的 scheme mention 仍是普通讨论文本。
+规范 mention 是 Markdown 形式的 `@[label](gnk-session:<base64url 编码的 id>)`，或裸 `gnk-session:` URI；每个 JavaScript 字符串会话 id 都能精确往返。服务会把 mention 改写为消息中可读的 `@label` 文本，并返回结构化引用。显式 Markdown mention 会拒绝格式错误的 URI；空或只含标点符号的 scheme mention 仍是普通讨论文本。
 
 ### 模型能得到什么
 
@@ -47,7 +47,7 @@ kind: "package-reference"
 | `candidateLimit` | `50` | 返回给宿主的默认候选数量 |
 | `maxReferenceBytes` | `65536` | 一个引用对象的最大序列化 JSON 字节数 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-session-reference)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-session-reference)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 -----
 
@@ -69,7 +69,7 @@ kind: "package-reference"
 |---|---|
 | [`src/index.ts`](src/index.ts) | `SessionReferenceResolver`：pre-step 监听器、候选发现、准备 |
 | [`src/config.ts`](src/config.ts) | `Config` schema、`SessionReferenceError` 错误分类 |
-| [`src/uri.ts`](src/uri.ts) | `dsh-session:` URI 编解码、mention 格式化与解析 |
+| [`src/uri.ts`](src/uri.ts) | `gnk-session:` URI 编解码、mention 格式化与解析 |
 | [`src/projection.ts`](src/projection.ts) | 当前表层投影与字节预算保留 |
 | [`src/serialization.ts`](src/serialization.ts) | 快照载荷的标签安全 JSON 转义 |
 | [`src/types.ts`](src/types.ts) | `SessionReferenceInput`／`Candidate` 与来源类型 |
@@ -92,7 +92,7 @@ kind: "package-reference"
 - [跨会话引用决策记录](../../../.agents/notes/implemented/feature/2026-07-21-cross-session-references.zh.md)——引用约定的设计理由。
 - [会话查询子系统](../../../docs/subsystems/session-query.zh.md)——提供会话表层的读取服务。
 - [context 组地图](../README.zh.md)——相邻的请求上下文包。
-- [生成的配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-session-reference)——每个受支持配置字段及其源声明。
+- [生成的配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-session-reference)——每个受支持配置字段及其源声明。
 
 -----
 

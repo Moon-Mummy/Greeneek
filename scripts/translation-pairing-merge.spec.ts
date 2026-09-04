@@ -98,7 +98,7 @@ function startMergeWithFakeNode(
   chmodSync(fakeNode, 0o755)
   git(fixture, [
     'config',
-    'merge.dsh-translation-pairing.driver',
+    'merge.gnk-translation-pairing.driver',
     `${shellQuote(driverLauncher)} %O %A %B %P`,
   ])
   return spawnSync('git', ['-C', fixture.root, 'merge', '--no-commit', 'master'], {
@@ -111,7 +111,7 @@ function startMergeWithFakeNode(
 }
 
 function createFixture(attributes = true): Fixture {
-  const root = mkdtempSync(join(tmpdir(), 'dsh-translation-pairing-merge-'))
+  const root = mkdtempSync(join(tmpdir(), 'gnk-translation-pairing-merge-'))
   fixtures.push(root)
   const env: NodeJS.ProcessEnv = {
     ...process.env,
@@ -125,7 +125,7 @@ function createFixture(attributes = true): Fixture {
   }
   const fixture = { env, root }
   execFileSync('git', ['init', '--quiet', '--initial-branch=master', root], { env })
-  if (attributes) write(root, '.gitattributes', '*.i18n.yaml merge=dsh-translation-pairing\n')
+  if (attributes) write(root, '.gitattributes', '*.i18n.yaml merge=gnk-translation-pairing\n')
   return fixture
 }
 
@@ -263,7 +263,7 @@ function expectMergedPair(fixture: Fixture): void {
 
 // Every case in this suite drives real `git` invocations against a scratch
 // repository, so it is bound by process creation rather than by its assertions.
-// The value matches DSH_COVERAGE_TEST_TIMEOUT_MS, which the Windows coverage
+// The value matches GNK_COVERAGE_TEST_TIMEOUT_MS, which the Windows coverage
 // lane passes as --testTimeout: a describe value overrides that flag rather than
 // yielding to it, so a smaller one here lowers what the lane grants every case
 // in this file, none of which carries an allowance of its own. Measurements and
@@ -489,7 +489,7 @@ describe('translation pairing merge composition', { timeout: 90_000 }, () => {
     installFixtureRuntime(fixture.root)
     git(fixture, [
       'config',
-      'merge.dsh-translation-pairing.driver',
+      'merge.gnk-translation-pairing.driver',
       'scripts/merge-translation-pairing-driver.sh %O %A %B %P',
     ])
 
@@ -523,7 +523,7 @@ describe('translation pairing merge composition', { timeout: 90_000 }, () => {
     installFixtureRuntime(fixture.root)
     git(fixture, [
       'config',
-      'merge.dsh-translation-pairing.driver',
+      'merge.gnk-translation-pairing.driver',
       'scripts/merge-translation-pairing-driver.sh %O %A %B %P',
     ])
 
@@ -611,7 +611,7 @@ describe('translation pairing merge composition', { timeout: 90_000 }, () => {
     installFixtureRuntime(fixture.root)
     git(fixture, [
       'config',
-      'merge.dsh-translation-pairing.driver',
+      'merge.gnk-translation-pairing.driver',
       'scripts/merge-translation-pairing-driver.sh %O %A %B %P',
     ])
     const hooks = join(fixture.root, 'hooks')

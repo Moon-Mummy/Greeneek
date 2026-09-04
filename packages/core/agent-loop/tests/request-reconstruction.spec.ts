@@ -6,16 +6,16 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import LlmRuntime, { createUserMessage, LlmError, ReasoningEffortId  } from '@deepseek-ai/dsh-llm'
-import type { GenerateOptions, LlmModelReasoningInfo, LlmResolvedModelInfo, StreamChunk } from '@deepseek-ai/dsh-llm'
-import SessionStore, { Session, SessionId, foldRequestHeader } from '@deepseek-ai/dsh-session'
-import SystemPrompt from '@deepseek-ai/dsh-system-prompt'
-import ToolRuntime, { defineContentToolFixture } from '@deepseek-ai/dsh-tools'
-import AgentRegistry, { type Agent } from '@deepseek-ai/dsh-agent'
+import { Context } from '@greeneek/cordis'
+import LlmRuntime, { createUserMessage, LlmError, ReasoningEffortId  } from '@greeneek/gnk-llm'
+import type { GenerateOptions, LlmModelReasoningInfo, LlmResolvedModelInfo, StreamChunk } from '@greeneek/gnk-llm'
+import SessionStore, { Session, SessionId, foldRequestHeader } from '@greeneek/gnk-session'
+import SystemPrompt from '@greeneek/gnk-system-prompt'
+import ToolRuntime, { defineContentToolFixture } from '@greeneek/gnk-tools'
+import AgentRegistry, { type Agent } from '@greeneek/gnk-agent'
 
-import AgentLoop from '@deepseek-ai/dsh-agent-loop'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
+import AgentLoop from '@greeneek/gnk-agent-loop'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
 import { MockAdapter, textResponse, toolCallResponse } from './mock-adapter.ts'
 
 async function harness(adapter: MockAdapter, persona = 'stable base') {
@@ -275,15 +275,15 @@ describe('request stability across the loop', () => {
   })
 
   it('rematerializes the selected adapter maxTokens default after a provider switch', async () => {
-    const deepseek = new MockAdapter([textResponse('deepseek')], undefined, 256_000)
+    const greeneek = new MockAdapter([textResponse('greeneek')], undefined, 256_000)
     const other = new MockAdapter([textResponse('other')], undefined, 8_192)
     const ctx = await harnessRoutes([
-      ['deepseek', deepseek],
+      ['greeneek', greeneek],
       ['other', other],
     ])
     const agent = await ctx.agentLoop.create(SessionId('adapter-max-tokens-switch'), {
-      provider: 'deepseek',
-      model: 'deepseek-model',
+      provider: 'greeneek',
+      model: 'greeneek-model',
     })
     ctx.on('agent/request', async ({ turn }, next) => {
       const config = await next()
@@ -297,7 +297,7 @@ describe('request stability across the loop', () => {
     send(agent, 'second')
     await waitForIdle(ctx, agent)
 
-    expect(deepseek.requests[0]?.maxTokens).toBe(256_000)
+    expect(greeneek.requests[0]?.maxTokens).toBe(256_000)
     expect(other.requests[0]?.maxTokens).toBe(8_192)
     const headers = agent.session.snapshotEvents().filter(event => event.type === 'request/header')
     expect(headers.map(event => event.data.header.config.maxTokens)).toEqual([256_000, 8_192])
@@ -308,15 +308,15 @@ describe('request stability across the loop', () => {
   })
 
   it('preserves an explicit agent maxTokens cap across a provider switch', async () => {
-    const deepseek = new MockAdapter([textResponse('deepseek')], undefined, 256_000)
+    const greeneek = new MockAdapter([textResponse('greeneek')], undefined, 256_000)
     const other = new MockAdapter([textResponse('other')], undefined, 8_192)
     const ctx = await harnessRoutes([
-      ['deepseek', deepseek],
+      ['greeneek', greeneek],
       ['other', other],
     ])
     const agent = await ctx.agentLoop.create(SessionId('explicit-max-tokens-switch'), {
-      provider: 'deepseek',
-      model: 'deepseek-model',
+      provider: 'greeneek',
+      model: 'greeneek-model',
       maxTokens: 4_096,
     })
     ctx.on('agent/request', async ({ turn }, next) => {
@@ -331,7 +331,7 @@ describe('request stability across the loop', () => {
     send(agent, 'second')
     await waitForIdle(ctx, agent)
 
-    expect(deepseek.requests[0]?.maxTokens).toBe(4_096)
+    expect(greeneek.requests[0]?.maxTokens).toBe(4_096)
     expect(other.requests[0]?.maxTokens).toBe(4_096)
     const headers = agent.session.snapshotEvents().filter(event => event.type === 'request/header')
     expect(headers.map(event => event.data.header.config.maxTokens)).toEqual([4_096, 4_096])

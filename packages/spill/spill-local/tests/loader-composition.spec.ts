@@ -9,10 +9,10 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { afterEach, describe, expect, it } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import Loader from '@deepseek-ai/cordis-plugin-loader'
-import Include from '@deepseek-ai/cordis-plugin-include'
-import LocalSpillStore, { sessionDir } from '@deepseek-ai/dsh-spill-local'
+import { Context } from '@greeneek/cordis'
+import Loader from '@greeneek/cordis-plugin-loader'
+import Include from '@greeneek/cordis-plugin-include'
+import LocalSpillStore, { sessionDir } from '@greeneek/gnk-spill-local'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -28,7 +28,7 @@ afterEach(async () => {
 
 describe('spill-local real Loader composition through cordis.yml', () => {
   it('loads cleanupPeriodDays and prunes only expired session contents', async () => {
-    root = await mkdtemp(join(tmpdir(), 'dsh-spill-loader-'))
+    root = await mkdtemp(join(tmpdir(), 'gnk-spill-loader-'))
     const oldDir = sessionDir(root, 'old-session')
     const freshDir = sessionDir(root, 'fresh-session')
     await mkdir(oldDir, { recursive: true })
@@ -43,7 +43,7 @@ describe('spill-local real Loader composition through cordis.yml', () => {
 
     const configPath = join(root, 'cordis.yml')
     await writeFile(configPath, [
-      "- name: '@deepseek-ai/dsh-spill-local'",
+      "- name: '@greeneek/gnk-spill-local'",
       '  config:',
       `    root: ${JSON.stringify(root)}`,
       '    cleanupPeriodDays: 30',
@@ -57,7 +57,7 @@ describe('spill-local real Loader composition through cordis.yml', () => {
     context.loader.internal = {
       version: 'v2',
       async import(specifier: string) {
-        if (specifier !== '@deepseek-ai/dsh-spill-local') throw new Error(`unexpected Loader import: ${specifier}`)
+        if (specifier !== '@greeneek/gnk-spill-local') throw new Error(`unexpected Loader import: ${specifier}`)
         return LocalSpillStore
       },
     } as unknown as NonNullable<typeof context.loader.internal>

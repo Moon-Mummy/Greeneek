@@ -3,13 +3,13 @@ description: "面向交互式组合的按需 /compact 命令：它做什么、�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-command-compact
+# @greeneek/gnk-command-compact
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-command-compact` 为聊天 UI 添加 `/compact` 命令：输入它，对话就会按需压缩——即使尚未触发自动压力，较早历史也会被替换为一条摘要。该命令适用于任何压缩后端，且不消耗模型轮次；完成后你会看到压缩了多少历史项以及估算节省的 token 数。当 agent 正在轮次中或压缩已在运行时，它会告诉你压缩暂不可用。运行期间你发送的提示词会保持排队，并在压缩结束后才开始。
+`gnk-command-compact` 为聊天 UI 添加 `/compact` 命令：输入它，对话就会按需压缩——即使尚未触发自动压力，较早历史也会被替换为一条摘要。该命令适用于任何压缩后端，且不消耗模型轮次；完成后你会看到压缩了多少历史项以及估算节省的 token 数。当 agent 正在轮次中或压缩已在运行时，它会告诉你压缩暂不可用。运行期间你发送的提示词会保持排队，并在压缩结束后才开始。
 
 ## 目录
 
@@ -25,7 +25,7 @@ kind: "package-reference"
 <a id="use-this-package"></a>
 ## 使用本包
 
-当对话已经很长、想立即压缩时，在聊天 UI 中输入 `/compact`。随附 `dsh` 基础配置把该命令挂载在默认后端旁，因此它通常已经可用。
+当对话已经很长、想立即压缩时，在聊天 UI 中输入 `/compact`。随附 `gnk` 基础配置把该命令挂载在默认后端旁，因此它通常已经可用。
 
 ### 使用命令
 
@@ -55,14 +55,14 @@ kind: "package-reference"
 
 ```yaml
 - id: commands
-  name: '@deepseek-ai/dsh-commands'
+  name: '@greeneek/gnk-commands'
 - id: compaction-basic
-  name: '@deepseek-ai/dsh-compaction-basic'
+  name: '@greeneek/gnk-compaction-basic'
 - id: command-compact
-  name: '@deepseek-ai/dsh-command-compact'
+  name: '@greeneek/gnk-command-compact'
 ```
 
-随附 `dsh` 基础配置把它挂载在默认后端旁，Web 客户端提供命令适配器。未组合命令适配器的自动化接口只保留自动压缩。
+随附 `gnk` 基础配置把它挂载在默认后端旁，Web 客户端提供命令适配器。未组合命令适配器的自动化接口只保留自动压缩。
 
 ### 对话会发生什么
 

@@ -7,7 +7,7 @@
   background: var(--dsw-alias-bg-base);
 
   /* Shared width axis for the whole column: one content width W
-     (--dsh-chat-content-width) for the transcript, the dock cards
+     (--gnk-chat-content-width) for the transcript, the dock cards
      (todo/goal/queue: card minus four insets, 4 x 8 = 32), and business-owned
      takeover cards; the input card alone is W + 32px.
      The relation also holds when a narrow viewport shrinks everything: the
@@ -18,20 +18,20 @@
 
      W adapts to the column, not the viewport (a collapsed sidebar widens the
      column without resizing the window): the component publishes the column's
-     live width as --dsh-conversation-column-width (px, via ResizeObserver —
+     live width as --gnk-conversation-column-width (px, via ResizeObserver —
      container-type would re-anchor the subtree's portal-free position:fixed
      descendants) and the clamp keeps a 680px floor (a step under the figma
      748px — the full-width reading felt wide on every screen), takes 64% of
      wider columns, and caps at 920px for line-length
-     readability. A dragged user preference (--dsh-chat-user-width, published
+     readability. A dragged user preference (--gnk-chat-user-width, published
      by the width handles) replaces the adaptive term wholesale. */
-  --dsh-chat-content-width: var(
-    --dsh-chat-user-width,
-    clamp(680px, calc(var(--dsh-conversation-column-width, 0px) * 0.64), 920px)
+  --gnk-chat-content-width: var(
+    --gnk-chat-user-width,
+    clamp(680px, calc(var(--gnk-conversation-column-width, 0px) * 0.64), 920px)
   );
-  --dsh-composer-card-max-width: calc(var(--dsh-chat-content-width) + 32px);
-  --dsh-composer-side-clearance: 16px;
-  --dsh-composer-dock-inset: 8px;
+  --gnk-composer-card-max-width: calc(var(--gnk-chat-content-width) + 32px);
+  --gnk-composer-side-clearance: 16px;
+  --gnk-composer-dock-inset: 8px;
 }
 
 .header {
@@ -217,23 +217,23 @@
   z-index: 8;
   width: min(
     40px,
-    calc((100% - var(--dsh-chat-content-width)) / 2 - 24px - 24px)
+    calc((100% - var(--gnk-chat-content-width)) / 2 - 24px - 24px)
   );
   cursor: col-resize;
 }
 
 .widthHandle[data-side='left'] {
-  right: calc(50% + var(--dsh-chat-content-width) / 2 + 24px);
+  right: calc(50% + var(--gnk-chat-content-width) / 2 + 24px);
 }
 
 .widthHandle[data-side='right'] {
-  left: calc(50% + var(--dsh-chat-content-width) / 2 + 24px);
+  left: calc(50% + var(--gnk-chat-content-width) / 2 + 24px);
 }
 
 /* The glow: a short 3px bar riding the pointer's Y, inset 16px outward from
    the strip's inner edge (40px from the content column),
    not a full-height rule — a 24px solid core centered on the pointer
-   (published by pointermove as --dsh-width-handle-pointer-y), fading to
+   (published by pointermove as --gnk-width-handle-pointer-y), fading to
    transparent over 40px each side (~104px total). A solid CORE, not a single
    solid stop: a lone peak washes out over the fade. The scrollbar hover tint,
    not a border token: this is a draggable bar and the border alphas (4-16%)
@@ -248,10 +248,10 @@
   border-radius: 3px;
   background: linear-gradient(
     to bottom,
-    transparent calc(var(--dsh-width-handle-pointer-y, 50%) - 52px),
-    var(--dsw-alias-scrollbar-hover-l1) calc(var(--dsh-width-handle-pointer-y, 50%) - 12px),
-    var(--dsw-alias-scrollbar-hover-l1) calc(var(--dsh-width-handle-pointer-y, 50%) + 12px),
-    transparent calc(var(--dsh-width-handle-pointer-y, 50%) + 52px)
+    transparent calc(var(--gnk-width-handle-pointer-y, 50%) - 52px),
+    var(--dsw-alias-scrollbar-hover-l1) calc(var(--gnk-width-handle-pointer-y, 50%) - 12px),
+    var(--dsw-alias-scrollbar-hover-l1) calc(var(--gnk-width-handle-pointer-y, 50%) + 12px),
+    transparent calc(var(--gnk-width-handle-pointer-y, 50%) + 52px)
   );
   opacity: 0;
   pointer-events: none;
@@ -281,11 +281,11 @@
 .composerStack {
   /* Horizontal geometry (card width, clearance, dock inset) rides the shared
      .root variables above so takeover siblings match the stack. */
-  --dsh-composer-stack-gap: 6px;
+  --gnk-composer-stack-gap: 6px;
 
   display: flex;
   flex-direction: column;
-  gap: var(--dsh-composer-stack-gap);
+  gap: var(--gnk-composer-stack-gap);
 }
 
 /* Common seat for the composer chain (fallback + elected overlay siblings). */
@@ -300,7 +300,7 @@
      the seat because it is the chain's only shared ancestor — fallback and
      elected overlay are siblings — and custom properties inherit down to
      whichever entry is mounted. */
-  --dsh-composer-text-max-height: 336px;
+  --gnk-composer-text-max-height: 336px;
 }
 
 /* Active phase: header is ordinary column chrome above the scrollport (not
@@ -400,12 +400,12 @@
   /* Chat's seat rides this box's content box, which its own scrolling shortens
      by the bar's width; the overlay seat is against the padding box, so it
      must give back the same width to keep the input card in place across
-     tabs. Reads ui-theme's --dsh-scrollbar-width, which mirrors the WebKit
+     tabs. Reads ui-theme's --gnk-scrollbar-width, which mirrors the WebKit
      bar's layout width. Chat reserves the engine-resolved width, so on an
      engine where the resolved width differs from this fixed 8px the card
      drifts by half the difference — accepted residual risk, recorded in
      ([decision](../../../../../../.agents/notes/implemented/bug-fix/2026-08-12-composer-overlay-seat-width-compensation.md)). */
-  right: var(--dsh-scrollbar-width);
+  right: var(--gnk-scrollbar-width);
   bottom: 0;
   left: 0;
 }
@@ -423,7 +423,7 @@
   padding-bottom: 32px;
   /* Card cap + both clearances: the hero input card lands at exactly the same
      width as the docked composer at every viewport. */
-  width: min(calc(var(--dsh-composer-card-max-width) + 2 * var(--dsh-composer-side-clearance)), 100%);
+  width: min(calc(var(--gnk-composer-card-max-width) + 2 * var(--gnk-composer-side-clearance)), 100%);
   z-index: 1;
 }
 

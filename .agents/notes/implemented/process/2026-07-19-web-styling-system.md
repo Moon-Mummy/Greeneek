@@ -47,7 +47,7 @@ Entry points for common tasks (operational checklists):
 |---|---|
 | The five framework rules, engineering constraints, why two layers / why font sizes are not tokenized | This RFC (changing it = a new superseding RFC) |
 | Per-token authoritative values (dark included), visual-baseline constants (sidebar/bubble/session-row/input-card geometry), the RPC four-quadrant direction-marker visual vocabulary, the 12 coding rules, the deviation record | web-styling.md (living document, evolves with the implementation) |
-| Value evidence (deepseekchat file:line) | The survey archive has served its purpose; git history keeps it |
+| Value evidence (greeneekchat file:line) | The survey archive has served its purpose; git history keeps it |
 
 ## Consequences
 

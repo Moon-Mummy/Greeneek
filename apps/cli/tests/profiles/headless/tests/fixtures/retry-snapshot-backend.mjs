@@ -4,7 +4,7 @@ import {
   LlmAdapter,
   LlmError,
   resolveRetryPolicy,
-} from '@deepseek-ai/dsh-llm'
+} from '@greeneek/gnk-llm'
 
 class RetrySnapshotAdapter extends LlmAdapter {
   requests = 0
@@ -46,8 +46,8 @@ export const inject = ['llm']
 
 /**
  * Register the deterministic provider adapter.
- * @param {import('@deepseek-ai/cordis').Context} ctx - plugin context carrying the LLM service.
+ * @param {import('@greeneek/cordis').Context} ctx - plugin context carrying the LLM service.
  */
 export function apply(ctx) {
-  ctx.llm.registerAdapter(['deepseek-official'], new RetrySnapshotAdapter())
+  ctx.llm.registerAdapter(['greeneek-official'], new RetrySnapshotAdapter())
 }

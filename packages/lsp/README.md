@@ -9,7 +9,7 @@ English | [中文](README.zh.md)
 
 ## Summary
 
-The lsp group gives agents precise, language-server-backed code navigation: go to a symbol's definition, find its references, jump to its implementations, or read hover documentation, without the model ever knowing which server answers. The capability is split across three product packages: the `dsh-lsp` seam (`ctx.lsp`) that selects a provider by file extension and normalizes results, the `dsh-lsp-stdio` provider that drives configured local language-server commands, and the model-facing `dsh-tool-lsp` tool that owns the `lsp` schema, prompt, and presentation. Only the provider and the tool do anything when loaded; deployments configure server commands and extension mappings explicitly, and the group ships no language server of its own.
+The lsp group gives agents precise, language-server-backed code navigation: go to a symbol's definition, find its references, jump to its implementations, or read hover documentation, without the model ever knowing which server answers. The capability is split across three product packages: the `gnk-lsp` seam (`ctx.lsp`) that selects a provider by file extension and normalizes results, the `gnk-lsp-stdio` provider that drives configured local language-server commands, and the model-facing `gnk-tool-lsp` tool that owns the `lsp` schema, prompt, and presentation. Only the provider and the tool do anything when loaded; deployments configure server commands and extension mappings explicitly, and the group ships no language server of its own.
 
 ## Table of Contents
 
@@ -37,7 +37,7 @@ Providers register capabilities, not tools: `tool-lsp` is the only owner of the 
 
 - [LSP navigation subsystem](../../docs/subsystems/lsp.md) — operations, coordinates, requests and results, and `LspError` codes.
 - [LSP capability seam Agent Note](../../.agents/notes/implemented/architecture/2026-07-15-lsp-capability-seam.md) — design rationale, alternatives, and deliberately deferred API.
-- [Generated tool catalog](../../docs/tool-catalog.md#deepseek-aidsh-tool-lsp) — the `lsp` schema the model receives.
+- [Generated tool catalog](../../docs/tool-catalog.md#greeneekgnk-tool-lsp) — the `lsp` schema the model receives.
 
 -----
 

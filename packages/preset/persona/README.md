@@ -3,13 +3,13 @@ description: "The composable persona row presets mount to give one agent its own
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-persona
+# @greeneek/gnk-persona
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-persona` gives one agent its own persona: a preset mounts this composable row to register the `deployment:persona` system-prompt section, shadowing the deployment-wide persona for that session. It can also make that persona the session's complete system prompt, suppressing every other section, and can turn off dynamic runtime-context snapshots for the session. Mount it inside a preset composition — mounting it globally collides with the prompt registry's own persona registration and fails loud. Without this row, a preset could change an agent's tools but never its identity.
+`gnk-persona` gives one agent its own persona: a preset mounts this composable row to register the `deployment:persona` system-prompt section, shadowing the deployment-wide persona for that session. It can also make that persona the session's complete system prompt, suppressing every other section, and can turn off dynamic runtime-context snapshots for the session. Mount it inside a preset composition — mounting it globally collides with the prompt registry's own persona registration and fails loud. Without this row, a preset could change an agent's tools but never its identity.
 
 ## Table of Contents
 
@@ -30,7 +30,7 @@ Mount this row inside a preset composition to give that preset's sessions their 
 ### Configuration
 
 ```yaml
-- name: '@deepseek-ai/dsh-persona'
+- name: '@greeneek/gnk-persona'
   config:
     text: You are a terse systems engineer who answers in short commands.
 ```
@@ -41,7 +41,7 @@ Mount this row inside a preset composition to give that preset's sessions their 
 | `complete` | `false` | Restore this persona after assembly as the only system-prompt section |
 | `includeRuntimeContext` | `true` | Include dynamic runtime-context snapshots for this agent scope; false suppresses every context contribution without disabling its owning services |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-persona) is the exhaustive source for every accepted field and its JSDoc.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-persona) is the exhaustive source for every accepted field and its JSDoc.
 
 ### Persona behavior
 
@@ -49,7 +49,7 @@ The persona `text` is a template: complete `{{…}}` groups resolve strictly aga
 
 ### When to use it
 
-Use this row when a preset must change an agent's identity and not only its tools. The deployment-wide persona itself is configured on the `dsh-system-prompt` row, not here; this row exists only to shadow or replace it for one agent.
+Use this row when a preset must change an agent's identity and not only its tools. The deployment-wide persona itself is configured on the `gnk-system-prompt` row, not here; this row exists only to shadow or replace it for one agent.
 
 -----
 
@@ -65,7 +65,7 @@ Use this row when a preset must change an agent's identity and not only its tool
 
 ### Why the row is scope-only
 
-`dsh-system-prompt` owns the global persona as its own config and registers `deployment:persona` unconditionally, so a process has exactly one. This row collides with that registration outside an agent scope, by design: the row exists because a preset cannot mount the prompt registry itself.
+`gnk-system-prompt` owns the global persona as its own config and registers `deployment:persona` unconditionally, so a process has exactly one. This row collides with that registration outside an agent scope, by design: the row exists because a preset cannot mount the prompt registry itself.
 
 ### Source map
 
@@ -85,7 +85,7 @@ Read these pages when the package-level contract is not enough; they move from t
 
 - [agent-presets package](../agent-presets/README.md) — the preset composition this row mounts into.
 - [System prompt subsystem](../../../docs/subsystems/system-prompt.md) — sections, assembly, and the persona slot this row shadows.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-persona) — every accepted config field and its source declaration.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-persona) — every accepted config field and its source declaration.
 
 -----
 

@@ -5,7 +5,7 @@
  * This implementation answers from memory. A command running in its own
  * worker uses the message-backed one (`./process/child.ts`), which this one
  * serves from the host side.
- * @module @deepseek-ai/dsh-experimental-webworker-runtime/src/shell/fs-access
+ * @module @greeneek/gnk-experimental-webworker-runtime/src/shell/fs-access
  */
 
 import { resolve } from '../module-system/posix-path.ts'
@@ -25,7 +25,7 @@ export function resolveIn(cwd: string, path: string): string {
 
 /**
  * Restate a filesystem failure the way a shell utility reports it, so the model
- * reads `cat: /dsh/none: No such file or directory` instead of a Node error
+ * reads `cat: /gnk/none: No such file or directory` instead of a Node error
  * string.
  * @param program - the utility's name, used as the message prefix.
  * @param path - the path the utility was working on.

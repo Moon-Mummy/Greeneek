@@ -21,10 +21,10 @@ describe.skipIf(!existsSync(builtIndex) || !existsSync(builtWorker))('built work
     const driver = join(packageRoot, `.built-worker-driver-${process.pid}.mjs`)
     try {
       await writeFile(driver, `
-import { Context } from '@deepseek-ai/cordis'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import SubagentRuntime from '@deepseek-ai/dsh-subagent'
-import WorkerThreadWorkflowEngine from '@deepseek-ai/dsh-workflow-worker-thread'
+import { Context } from '@greeneek/cordis'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import SubagentRuntime from '@greeneek/gnk-subagent'
+import WorkerThreadWorkflowEngine from '@greeneek/gnk-workflow-worker-thread'
 
 const ctx = new Context()
 await ctx.plugin(SessionProjectionRegistry)

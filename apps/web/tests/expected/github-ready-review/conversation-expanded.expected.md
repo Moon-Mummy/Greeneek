@@ -2,16 +2,16 @@
   - treeitem "{{workspace}}" [expanded]:
     - img
     - text: {{workspace}}
-  - treeitem "Review deepseek-harness/deepseek-harness#314 Session actions for Review deepseek-harness/deepseek-harness#314" [selected]:
-    - text: Review deepseek-harness/deepseek-harness#314
-    - button "Session actions for Review deepseek-harness/deepseek-harness#314":
+  - treeitem "Review greeneek-harness/greeneek-harness#314 Session actions for Review greeneek-harness/greeneek-harness#314" [selected]:
+    - text: Review greeneek-harness/greeneek-harness#314
+    - button "Session actions for Review greeneek-harness/greeneek-harness#314":
       - img
 
 ---
 
 - banner:
   - navigation "Session hierarchy":
-    - button "Review deepseek-harness/deepseek-harness#314" [disabled]
+    - button "Review greeneek-harness/greeneek-harness#314" [disabled]
   - img
   - text: Standard mode
   - button "Session log":
@@ -31,10 +31,10 @@
   - img
   - img
   - text: Context injection webhook github webhook handled by review-pr-when-ready
-- button "Context injection @deepseek-ai/dsh-system-prompt":
+- button "Context injection @greeneek/gnk-system-prompt":
   - img
   - img
-  - text: Context injection @deepseek-ai/dsh-system-prompt
+  - text: Context injection @greeneek/gnk-system-prompt
 - paragraph: "Review complete: no actionable findings."
 - button "Copy":
   - img

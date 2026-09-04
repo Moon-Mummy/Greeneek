@@ -1,13 +1,14 @@
+/* rebrand:ignore-start -- pi-ai adapter specs are upstream-catalog data (B4, decisions.md D16); the rebrand rules must never rewrite them */
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import LlmRuntime, { createUserMessage, ReasoningEffortId } from '@deepseek-ai/dsh-llm'
-import type { StreamChunk } from '@deepseek-ai/dsh-llm'
-import FileSettingsProvider from '@deepseek-ai/dsh-settings-file'
-import * as LlmPiAi from '@deepseek-ai/dsh-llm-pi-ai'
-import { PiAiAdapter } from '@deepseek-ai/dsh-llm-pi-ai'
+import { Context } from '@greeneek/cordis'
+import LlmRuntime, { createUserMessage, ReasoningEffortId } from '@greeneek/gnk-llm'
+import type { StreamChunk } from '@greeneek/gnk-llm'
+import FileSettingsProvider from '@greeneek/gnk-settings-file'
+import * as LlmPiAi from '@greeneek/gnk-llm-pi-ai'
+import { PiAiAdapter } from '@greeneek/gnk-llm-pi-ai'
 import { getBuiltinModels } from '@earendil-works/pi-ai/providers/all'
 import { createModels, getSupportedThinkingLevels } from '@earendil-works/pi-ai'
 import type { Api, Model, OpenAICompletionsCompat, Provider } from '@earendil-works/pi-ai'
@@ -34,9 +35,9 @@ afterEach(async () => {
   await Promise.all(homes.splice(0).map(dir => rm(dir, { recursive: true, force: true })))
 })
 
-/** A throwaway $DSH_HOME with an empty settings document. */
+/** A throwaway $GNK_HOME with an empty settings document. */
 async function home(): Promise<string> {
-  const dir = await mkdtemp(join(tmpdir(), 'dsh-pi-catalog-'))
+  const dir = await mkdtemp(join(tmpdir(), 'gnk-pi-catalog-'))
   homes.push(dir)
   await writeFile(join(dir, 'settings.yaml'), '')
   return dir
@@ -639,7 +640,7 @@ describe('per-model reasoning efforts', () => {
     expect(getSupportedThinkingLevels(catalogModel as Model<Api>)).toEqual(['off', 'low', 'high', 'max'])
 
     const model = modelOf({
-      deepseek: { models: [{ id: catalogModel.id, reasoningEfforts: { off: null, high: 'high' } }] },
+      deepseek: { baseURL: 'https://catalog.test', models: [{ id: catalogModel.id, reasoningEfforts: { off: null, high: 'high' } }] },
     }, 'deepseek')
 
     expect(getSupportedThinkingLevels(model)).toEqual(['off', 'high'])
@@ -653,7 +654,7 @@ describe('per-model reasoning efforts', () => {
     if (catalogModel === undefined) throw new Error('the installed catalog ships no deepseek model')
     expect(catalogModel.reasoning).toBe(true)
 
-    const model = modelOf({ deepseek: { models: [{ id: catalogModel.id, reasoningEfforts: false }] } }, 'deepseek')
+    const model = modelOf({ deepseek: { baseURL: 'https://catalog.test', models: [{ id: catalogModel.id, reasoningEfforts: false }] } }, 'deepseek')
 
     expect(model.reasoning).toBe(false)
     expect(getSupportedThinkingLevels(model)).toEqual(['off'])
@@ -663,7 +664,7 @@ describe('per-model reasoning efforts', () => {
     const [catalogModel] = getBuiltinModels('deepseek')
     if (catalogModel === undefined) throw new Error('the installed catalog ships no deepseek model')
 
-    const model = modelOf({ deepseek: { models: [{ id: catalogModel.id }] } }, 'deepseek')
+    const model = modelOf({ deepseek: { baseURL: 'https://catalog.test', models: [{ id: catalogModel.id }] } }, 'deepseek')
 
     expect(model.reasoning).toBe(catalogModel.reasoning)
     expect(model.thinkingLevelMap).toEqual(catalogModel.thinkingLevelMap)
@@ -685,7 +686,7 @@ describe('per-model reasoning efforts', () => {
 })
 
 describe('modelOverrides', () => {
-  const deepseekModel = (): Model<Api> => {
+  const greeneekModel = (): Model<Api> => {
     const [model] = getBuiltinModels('deepseek')
     if (model === undefined) throw new Error('the installed catalog ships no deepseek model')
     return model
@@ -693,12 +694,13 @@ describe('modelOverrides', () => {
 
   it('reshapes one catalog model while the rest of the catalog keeps serving', () => {
     const catalogSize = getBuiltinModels('deepseek').length
-    const target = deepseekModel()
+    const target = greeneekModel()
     const resolved = resolveProfiles({
       deepseek: {
+        baseURL: 'https://catalog.test',
         modelOverrides: {
           [target.id]: {
-            name: 'DeepSeek (proxied)',
+            name: 'Greeneek (proxied)',
             maxTokens: 4096,
             reasoningEfforts: { off: null, high: 'high' },
           },
@@ -712,7 +714,7 @@ describe('modelOverrides', () => {
     // The whole catalog still serves — that is the difference from `models`,
     // which replaces it.
     expect(models).toHaveLength(catalogSize)
-    expect(reshaped.name).toBe('DeepSeek (proxied)')
+    expect(reshaped.name).toBe('Greeneek (proxied)')
     expect(getSupportedThinkingLevels(reshaped)).toEqual(['off', 'high'])
     // An override's cap is explicit configuration, so it becomes the request
     // default exactly as a models entry's would.
@@ -734,7 +736,7 @@ describe('modelOverrides', () => {
         modelOverrides: { m: { name: 'renamed' } },
       },
     })).toThrow(/a declared route spells every model out/)
-    const declaredOnly = deepseekModel()
+    const declaredOnly = greeneekModel()
     expect(() => resolveProfiles({
       deepseek: {
         models: [{ id: declaredOnly.id }],
@@ -750,7 +752,7 @@ describe('modelOverrides', () => {
     // indirection mirrors that boundary by sidestepping the literal check.
     const smuggled = { name: 'x', id: 'other' }
     expect(() => resolveProfiles({
-      deepseek: { modelOverrides: { [deepseekModel().id]: smuggled } },
+      deepseek: { modelOverrides: { [greeneekModel().id]: smuggled } },
     })).toThrow(/sets "id", which is the dict key/)
   })
 })
@@ -786,7 +788,7 @@ describe('compat switches', () => {
     expect(inherited.requiresReasoningContentOnAssistantMessages).toBe(true)
 
     const models = modelsOf({
-      deepseek: { models: [{ id: catalogModel.id, compat: { thinkingFormat: 'openai' } }] },
+      deepseek: { baseURL: 'https://catalog.test', models: [{ id: catalogModel.id, compat: { thinkingFormat: 'openai' } }] },
     }, 'deepseek')
 
     // The one switched field changes; the catalog's other quirks survive,
@@ -1146,14 +1148,14 @@ describe('configurable-provider directory', () => {
     const dir = await home()
     const ctx = await bootWithSettings(dir, {})
     ctx.llm.registerConfigurableProviders([
-      { provider: 'deepseek-official', displayName: 'DeepSeek', settingsNs: 'llm-deepseek', settingsPath: [] },
+      { provider: 'greeneek-official', displayName: 'Greeneek', settingsNs: 'llm-greeneek', settingsPath: [] },
     ])
     const before = ctx.llm.listConfigurableProviders().length
     expect(before).toBeGreaterThan(30)
 
     await ctx.settings.update('llm-pi-ai', {
       providers: {
-        'deepseek-official': {
+        'greeneek-official': {
           api: 'openai-completions',
           baseURL: 'https://acme.test/v1',
           models: [{ id: 'm', contextWindow: 1, maxTokens: 1 }],
@@ -1164,8 +1166,8 @@ describe('configurable-provider directory', () => {
     // The refused swap costs a diagnostic, not the directory: every entry the
     // page needs is still declared.
     expect(ctx.llm.listConfigurableProviders()).toHaveLength(before)
-    expect(ctx.llm.listConfigurableProviders().find(entry => entry.provider === 'deepseek-official')?.settingsNs)
-      .toBe('llm-deepseek')
+    expect(ctx.llm.listConfigurableProviders().find(entry => entry.provider === 'greeneek-official')?.settingsNs)
+      .toBe('llm-greeneek')
   })
 
   it('replaces its entries atomically as declared routes come and go', async () => {
@@ -1218,3 +1220,4 @@ describe('configurable-provider directory', () => {
     })
   })
 })
+/* rebrand:ignore-end */

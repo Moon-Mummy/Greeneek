@@ -1,5 +1,5 @@
 {
-  "name": "@deepseek-ai/dsh-client-ui-goal",
+  "name": "@greeneek/gnk-client-ui-goal",
   "description": "Session goal surface: GoalBar docked above the composer, read from the goal session projection",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
@@ -7,7 +7,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/client/ui-goal"
   },
   "type": "module",
@@ -25,16 +25,16 @@
     "./src/*": "./src/*",
     "./package.json": "./package.json"
   },
-  "dsh": {
+  "gnk": {
     "client": {
       "inject": [
-        "@deepseek-ai/dsh-api-remotes",
-        "@deepseek-ai/dsh-api-session-controller",
-        "@deepseek-ai/dsh-client-locale",
-        "@deepseek-ai/dsh-client-ui-chat",
-        "@deepseek-ai/dsh-client-ui-conversation",
-        "@deepseek-ai/dsh-client-ui-renderer",
-        "@deepseek-ai/dsh-client-ui-session"
+        "@greeneek/gnk-api-remotes",
+        "@greeneek/gnk-api-session-controller",
+        "@greeneek/gnk-client-locale",
+        "@greeneek/gnk-client-ui-chat",
+        "@greeneek/gnk-client-ui-conversation",
+        "@greeneek/gnk-client-ui-renderer",
+        "@greeneek/gnk-client-ui-session"
       ],
       "platform": "web"
     }
@@ -45,28 +45,28 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/cordis": "workspace:^"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-api-remotes": "workspace:^",
-    "@deepseek-ai/dsh-api-session-controller": "workspace:^",
-    "@deepseek-ai/dsh-client-locale": "workspace:^",
-    "@deepseek-ai/dsh-client-test-runtime": "workspace:^",
-    "@deepseek-ai/dsh-client-ui-chat": "workspace:^",
-    "@deepseek-ai/dsh-client-ui-conversation": "workspace:^",
-    "@deepseek-ai/dsh-client-ui-primitives": "workspace:^",
-    "@deepseek-ai/dsh-client-ui-slots": "workspace:^",
-    "@deepseek-ai/dsh-client-ui-renderer": "workspace:^",
-    "@deepseek-ai/dsh-client-ui-session": "workspace:^",
-    "@deepseek-ai/dsh-commands": "workspace:^",
-    "@deepseek-ai/dsh-goal": "workspace:^",
+    "@greeneek/gnk-api-remotes": "workspace:^",
+    "@greeneek/gnk-api-session-controller": "workspace:^",
+    "@greeneek/gnk-client-locale": "workspace:^",
+    "@greeneek/gnk-client-test-runtime": "workspace:^",
+    "@greeneek/gnk-client-ui-chat": "workspace:^",
+    "@greeneek/gnk-client-ui-conversation": "workspace:^",
+    "@greeneek/gnk-client-ui-primitives": "workspace:^",
+    "@greeneek/gnk-client-ui-slots": "workspace:^",
+    "@greeneek/gnk-client-ui-renderer": "workspace:^",
+    "@greeneek/gnk-client-ui-session": "workspace:^",
+    "@greeneek/gnk-commands": "workspace:^",
+    "@greeneek/gnk-goal": "workspace:^",
     "@testing-library/react": "^16.1.0",
     "@types/react": "~18.3.1",
-    "@deepseek-ai/cordis": "workspace:^",
+    "@greeneek/cordis": "workspace:^",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@deepseek-ai/dsh-session": "workspace:^",
-    "@deepseek-ai/dsh-typert-protocol": "workspace:^"
+    "@greeneek/gnk-session": "workspace:^",
+    "@greeneek/gnk-typert-protocol": "workspace:^"
   },
   "files": [
     "lib/index.js",

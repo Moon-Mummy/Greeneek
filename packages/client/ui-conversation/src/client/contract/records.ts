@@ -2,12 +2,12 @@
 // substructure references. Stable node and location stores make old snapshots
 // live readers rather than time-point views.
 
-import type { CommandId } from '@deepseek-ai/dsh-commands/brand'
-import type { MessageId } from '@deepseek-ai/dsh-llm/brand'
-import type { ContentBlock } from '@deepseek-ai/dsh-llm/types'
-import type { ImageAttachmentRef } from '@deepseek-ai/dsh-attachment'
-import type { LlmRetryEventData } from '@deepseek-ai/dsh-llm-retry/types'
-import type { TodoItem } from '@deepseek-ai/dsh-tool-todo/client'
+import type { CommandId } from '@greeneek/gnk-commands/brand'
+import type { MessageId } from '@greeneek/gnk-llm/brand'
+import type { ContentBlock } from '@greeneek/gnk-llm/types'
+import type { ImageAttachmentRef } from '@greeneek/gnk-attachment'
+import type { LlmRetryEventData } from '@greeneek/gnk-llm-retry/types'
+import type { TodoItem } from '@greeneek/gnk-tool-todo/client'
 import type { ContextProvenanceView, KnownContextForm } from './context-provenance.ts'
 export type { TodoItem }
 

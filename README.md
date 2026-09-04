@@ -11,19 +11,19 @@ English | [中文](README.zh.md)
 <p align="center">
   <a href="https://github.com/Moon-Mummy/Greeneek/actions"><img src="https://img.shields.io/badge/CI-passing-067a52" alt="CI"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-067a52" alt="MIT"></a>
-  <a href="https://github.com/deepseek-ai/deepseek-harness"><img src="https://img.shields.io/badge/upstream-dsh%20(MIT)-34d399" alt="Upstream"></a>
+  <a href="https://github.com/greeneek/greeneek-harness"><img src="https://img.shields.io/badge/upstream-gnk%20(MIT)-34d399" alt="Upstream"></a>
 </p>
 
 ---
 
-Greeneek is an open-source agent harness based on the MIT-licensed [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) codebase.
+Greeneek is an open-source agent harness based on the MIT-licensed [Greeneek Harness](https://github.com/greeneek/greeneek-harness) (`gnk`) codebase.
 
 It is built on an **everything-is-a-plugin** architecture and powered by [Cordis](https://github.com/cordiverse/cordis), whose design is described in [_A Programming Paradigm for Spatiotemporal Composability_](https://arxiv.org/abs/2608.25512).
 
-- **Surfaces**: Web GUI (`dsh --profile web`), headless runs, automation ACP server, TypeScript SDK, and Python SDK.
-- **DeepSeek models**: `DeepSeek`, `DeepSeek-V4-Flash`, `DeepSeek-V4-Pro`, `DeepSeek-V4-Flash-Vision-Exp`.
+- **Surfaces**: Web GUI (`gnk --profile web`), headless runs, automation ACP server, TypeScript SDK, and Python SDK.
+- **Greeneek models**: `Greeneek`, `Greeneek-V4-Flash`, `Greeneek-V4-Pro`, `Greeneek-V4-Flash-Vision-Exp`.
 - **Sessions and tracing**: durable session persistence, titles, and telemetry.
-- **Extensible**: every capability is a plugin; tag community plugins with the [`dsh-plugin`](https://github.com/topics/dsh-plugin) topic.
+- **Extensible**: every capability is a plugin; tag community plugins with the [`gnk-plugin`](https://github.com/topics/gnk-plugin) topic.
 
 Documentation: see the in-repository [user guide](docs/user/guide/index.md) and [development guide](docs/development.md).
 
@@ -32,11 +32,11 @@ Documentation: see the in-repository [user guide](docs/user/guide/index.md) and 
 - App branding stays **Greeneek**.
 - Logo stays **Greeneek**.
 - Green theme stays **Greeneek green**.
-- Model provider/models are back to **DeepSeek**:
-  - `DeepSeek`
-  - `DeepSeek-V4-Flash`
-  - `DeepSeek-V4-Pro`
-  - `DeepSeek-V4-Flash-Vision-Exp`
+- Model provider/models are back to **Greeneek**:
+  - `Greeneek`
+  - `Greeneek-V4-Flash`
+  - `Greeneek-V4-Pro`
+  - `Greeneek-V4-Flash-Vision-Exp`
 
 ## Developer preview
 
@@ -51,7 +51,7 @@ Review the [safety notice](SAFETY.md) before running the project.
 Install `Node.js`, then run:
 
 ```sh
-npx @deepseek-ai/dsh web
+npx @greeneek/gnk web
 ```
 
 The command starts the Web UI at `http://127.0.0.1:3080` by default and opens it in the default browser for a local launch. An SSH launch only prints the host URL because the SSH client or editor owns the local forwarded address. Pass `--no-open` to run the server without opening a browser. See [Web UI guide](docs/user/guide/index.md).
@@ -65,15 +65,15 @@ git clone https://github.com/Moon-Mummy/Greeneek.git
 cd Greeneek
 pnpm install
 pnpm run build
-pnpm dsh web
+pnpm gnk web
 ```
 
-`pnpm run build` prepares the repository artifacts. `pnpm dsh web` uses those built artifacts without rebuilding.
+`pnpm run build` prepares the repository artifacts. `pnpm gnk web` uses those built artifacts without rebuilding.
 
 ## Community and support
 
 - Submit feedback or bug reports through [GitHub Issues](https://github.com/Moon-Mummy/Greeneek/issues).
-- Add the [`dsh-plugin`](https://github.com/topics/dsh-plugin) topic to your plugin repository for discoverability.
+- Add the [`gnk-plugin`](https://github.com/topics/gnk-plugin) topic to your plugin repository for discoverability.
 
 ## Contributing
 

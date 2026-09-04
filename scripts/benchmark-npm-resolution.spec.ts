@@ -60,7 +60,7 @@ describe('npm resolution benchmark', () => {
   })
 
   it('combines installed metadata with current publishable workspace fields', () => {
-    const root = mkdtempSync(join(tmpdir(), 'dsh-npm-registry-index-'))
+    const root = mkdtempSync(join(tmpdir(), 'gnk-npm-registry-index-'))
     roots.push(root)
     writeJson(root, 'node_modules/.pnpm/external@2.0.0/node_modules/external/package.json', {
       name: 'external',
@@ -69,30 +69,30 @@ describe('npm resolution benchmark', () => {
       devDependencies: { ignored: '^1.0.0' },
     })
     writeJson(root, 'apps/cli/package.json', {
-      name: '@deepseek-ai/dsh',
+      name: '@greeneek/gnk',
       version: '0.1.0',
-      dependencies: { '@deepseek-ai/dsh-child': 'workspace:^', external: '^2.0.0' },
+      dependencies: { '@greeneek/gnk-child': 'workspace:^', external: '^2.0.0' },
       devDependencies: { ignored: 'workspace:^' },
     })
     writeJson(root, 'packages/core/child/package.json', {
-      name: '@deepseek-ai/dsh-child',
+      name: '@greeneek/gnk-child',
       version: '0.1.0',
     })
 
     const index = buildRegistryIndex(root)
 
     expect(index.get('external')?.get('2.0.0')).toMatchObject({ dependencies: { child: '^1.0.0' } })
-    expect(index.get('@deepseek-ai/dsh')?.get('0.1.0')).toEqual({
-      name: '@deepseek-ai/dsh',
+    expect(index.get('@greeneek/gnk')?.get('0.1.0')).toEqual({
+      name: '@greeneek/gnk',
       version: '0.1.0',
-      dependencies: { '@deepseek-ai/dsh-child': '^0.1.0', external: '^2.0.0' },
+      dependencies: { '@greeneek/gnk-child': '^0.1.0', external: '^2.0.0' },
     })
   })
 
   it('runs npm against the local registry without requesting an archive', async () => {
     const index: RegistryIndex = new Map([[
-      '@deepseek-ai/dsh',
-      new Map([['0.1.0', { name: '@deepseek-ai/dsh', version: '0.1.0' }]]),
+      '@greeneek/gnk',
+      new Map([['0.1.0', { name: '@greeneek/gnk', version: '0.1.0' }]]),
     ]])
     const result = await benchmarkNpmResolution(index, '0.1.0', 10_000)
 
@@ -104,31 +104,31 @@ describe('npm resolution benchmark', () => {
 
   it('returns npm placement for two aliased package versions without requesting archives', async () => {
     const index: RegistryIndex = new Map([[
-      '@deepseek-ai/dsh',
+      '@greeneek/gnk',
       new Map([
-        ['0.1.0', { name: '@deepseek-ai/dsh', version: '0.1.0' }],
-        ['0.2.0', { name: '@deepseek-ai/dsh', version: '0.2.0' }],
+        ['0.1.0', { name: '@greeneek/gnk', version: '0.1.0' }],
+        ['0.2.0', { name: '@greeneek/gnk', version: '0.2.0' }],
       ]),
     ]])
 
     const result = await resolveNpmPackageLock(index, {
-      '@deepseek-ai/dsh': '0.2.0',
-      'dsh-previous': 'npm:@deepseek-ai/dsh@0.1.0',
+      '@greeneek/gnk': '0.2.0',
+      'gnk-previous': 'npm:@greeneek/gnk@0.1.0',
     }, 10_000)
 
     expect(result.archiveRequests).toBe(0)
-    expect(result.packageLock.packages['node_modules/@deepseek-ai/dsh']?.version).toBe('0.2.0')
-    expect(result.packageLock.packages['node_modules/dsh-previous']).toMatchObject({
-      name: '@deepseek-ai/dsh',
+    expect(result.packageLock.packages['node_modules/@greeneek/gnk']?.version).toBe('0.2.0')
+    expect(result.packageLock.packages['node_modules/gnk-previous']).toMatchObject({
+      name: '@greeneek/gnk',
       version: '0.1.0',
     })
   })
 
   it('isolates peer resolution from inherited npm configuration', async () => {
-    const root = mkdtempSync(join(tmpdir(), 'dsh-hostile-npm-config-'))
+    const root = mkdtempSync(join(tmpdir(), 'gnk-hostile-npm-config-'))
     roots.push(root)
     const userConfig = join(root, 'user.npmrc')
-    writeFileSync(userConfig, '@deepseek-ai:registry=http://127.0.0.1:1/\nlegacy-peer-deps=true\nomit=peer\n')
+    writeFileSync(userConfig, '@greeneek:registry=http://127.0.0.1:1/\nlegacy-peer-deps=true\nomit=peer\n')
     const previous = {
       userConfig: process.env.npm_config_userconfig,
       legacyPeerDeps: process.env.npm_config_legacy_peer_deps,
@@ -139,21 +139,21 @@ describe('npm resolution benchmark', () => {
     process.env.npm_config_omit = 'peer'
     try {
       const index: RegistryIndex = new Map([
-        ['@deepseek-ai/dsh', new Map([['0.1.0', {
-          name: '@deepseek-ai/dsh',
+        ['@greeneek/gnk', new Map([['0.1.0', {
+          name: '@greeneek/gnk',
           version: '0.1.0',
-          peerDependencies: { '@deepseek-ai/dsh-peer': '1.0.0' },
+          peerDependencies: { '@greeneek/gnk-peer': '1.0.0' },
         }]])],
-        ['@deepseek-ai/dsh-peer', new Map([['1.0.0', {
-          name: '@deepseek-ai/dsh-peer',
+        ['@greeneek/gnk-peer', new Map([['1.0.0', {
+          name: '@greeneek/gnk-peer',
           version: '1.0.0',
         }]])],
       ])
 
-      const result = await resolveNpmPackageLock(index, { '@deepseek-ai/dsh': '0.1.0' }, 10_000)
+      const result = await resolveNpmPackageLock(index, { '@greeneek/gnk': '0.1.0' }, 10_000)
 
       expect(result.archiveRequests).toBe(0)
-      expect(result.packageLock.packages['node_modules/@deepseek-ai/dsh-peer']?.version).toBe('1.0.0')
+      expect(result.packageLock.packages['node_modules/@greeneek/gnk-peer']?.version).toBe('1.0.0')
     } finally {
       if (previous.userConfig === undefined) delete process.env.npm_config_userconfig
       else process.env.npm_config_userconfig = previous.userConfig

@@ -1,6 +1,6 @@
-import { RemoteError } from '@deepseek-ai/dsh-typert-protocol'
-import { Context, Service } from '@deepseek-ai/cordis'
-import type { Fiber } from '@deepseek-ai/cordis'
+import { RemoteError } from '@greeneek/gnk-typert-protocol'
+import { Context, Service } from '@greeneek/cordis'
+import type { Fiber } from '@greeneek/cordis'
 import { describe, expect, expectTypeOf, it, vi } from 'vitest'
 import { z } from 'zod'
 import {
@@ -8,7 +8,7 @@ import {
   type ConnectionGeneration,
   type ConnectionGenerationSource,
   type ConnectionHandle,
-} from '@deepseek-ai/dsh-client-connection/client'
+} from '@greeneek/gnk-client-connection/client'
 import type {
   InvocationDescriptor,
   RemoteResult,
@@ -18,8 +18,8 @@ import type {
   TypertLookup,
   TypertRemoteScopeApi,
   TypertRemoteNamespace,
-} from '@deepseek-ai/dsh-typert-protocol'
-import TypertRegistry from '@deepseek-ai/dsh-typert-registry'
+} from '@greeneek/gnk-typert-protocol'
+import TypertRegistry from '@greeneek/gnk-typert-registry'
 import type { ClientRemote } from '../src/client/index.ts'
 import { apply, inject, RemoteStream } from '../src/client/index.ts'
 import {
@@ -36,7 +36,7 @@ interface FixtureAgent {
   readonly agentId: string
 }
 
-declare module '@deepseek-ai/cordis' {
+declare module '@greeneek/cordis' {
   interface Events {
     /**
      * Test-only forwarded Host event.
@@ -71,7 +71,7 @@ declare module '@deepseek-ai/cordis' {
   }
 }
 
-declare module '@deepseek-ai/dsh-typert-protocol' {
+declare module '@greeneek/gnk-typert-protocol' {
   interface TypertRemoteEventSelection extends
     Record<'fixture/changed' | 'fixture/idle' | 'fixture/approval', true> {}
 
@@ -2153,7 +2153,7 @@ describe('Client Typert API', () => {
   it('normalizes worker-local structural stream failures without sharing class identity', async () => {
     const cases = [{
       failure: Object.assign(new Error('fixture Host rejected the stream'), {
-        dshRemoteStreamFailure: {
+        gnkRemoteStreamFailure: {
           kind: 'remote' as const,
           code: 'fixture/rejected',
           details: { retry: false },
@@ -2169,7 +2169,7 @@ describe('Client Typert API', () => {
       },
     }, {
       failure: Object.assign(new Error('worker carrier stopped'), {
-        dshRemoteStreamFailure: { kind: 'carrier' as const },
+        gnkRemoteStreamFailure: { kind: 'carrier' as const },
       }),
       assert: (error: unknown) => {
         expect(error).toBeInstanceOf(RemoteStreamCarrierError)
@@ -2431,7 +2431,7 @@ describe('Remote stream client carrier lifecycle', () => {
       const secondPending = second.next()
       expect(FakeWebSocket.sockets).toHaveLength(1)
       const socket = FakeWebSocket.sockets[0]!
-      expect(socket.url).toBe('ws://dsh.internal/api/remote.mux')
+      expect(socket.url).toBe('ws://gnk.internal/api/remote.mux')
 
       socket.open()
       await vi.waitFor(() => { expect(socket.sent).toHaveLength(2) })
@@ -2480,7 +2480,7 @@ describe('Remote stream client carrier lifecycle', () => {
       abort.abort('cancelled while connecting')
       await expect(aborted).rejects.toBe('cancelled while connecting')
       await abortedClient.close()
-      expect(FakeWebSocket.sockets[3]?.url).toBe('ws://dsh.internal/api/remote.mux')
+      expect(FakeWebSocket.sockets[3]?.url).toBe('ws://gnk.internal/api/remote.mux')
     })
   })
 

@@ -4,11 +4,11 @@
  * projection, and snapshot reference stability.
  */
 import { describe, expect, it, vi } from 'vitest'
-import { createUserMessage } from '@deepseek-ai/dsh-llm'
-import type { ContentBlock, UserMessage } from '@deepseek-ai/dsh-llm/types'
-import { SessionSeq, type SessionEvent } from '@deepseek-ai/dsh-session/types'
-import type { MessageId, RpcId, SessionId } from '@deepseek-ai/dsh-api-remotes/client'
-import type { SessionControlFrame } from '@deepseek-ai/dsh-api-session-controller/types'
+import { createUserMessage } from '@greeneek/gnk-llm'
+import type { ContentBlock, UserMessage } from '@greeneek/gnk-llm/types'
+import { SessionSeq, type SessionEvent } from '@greeneek/gnk-session/types'
+import type { MessageId, RpcId, SessionId } from '@greeneek/gnk-api-remotes/client'
+import type { SessionControlFrame } from '@greeneek/gnk-api-session-controller/types'
 import { Session } from '../src/client/sessions/session.ts'
 import { SessionManager } from '../src/client/sessions/manager.ts'
 import { FakeApiClient, fakeRemote } from './fake-api.client.ts'

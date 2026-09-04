@@ -18,25 +18,25 @@
  * agent factory's `setup(agentCtx)` hook is the one supported call site,
  * because only there is the join installed while the agent is still
  * unpublished, so a rejected composition rolls the whole creation back.
- * @module @deepseek-ai/dsh-agent-presets
+ * @module @greeneek/gnk-agent-presets
  */
 
 import { stat } from 'node:fs/promises'
-import { Context } from '@deepseek-ai/cordis'
-import { evaluate } from '@deepseek-ai/cordis-plugin-loader'
-import z from '@deepseek-ai/schemastery'
-import { Remote, RemoteError, TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol'
-import { bindScopeParent, createScope, scopeOf, type Scope, type ScopeKey, type ScopeParentBinding } from '@deepseek-ai/dsh-scope'
+import { Context } from '@greeneek/cordis'
+import { evaluate } from '@greeneek/cordis-plugin-loader'
+import z from '@greeneek/schemastery'
+import { Remote, RemoteError, TypertRemoteService } from '@greeneek/gnk-typert-protocol'
+import { bindScopeParent, createScope, scopeOf, type Scope, type ScopeKey, type ScopeParentBinding } from '@greeneek/gnk-scope'
 // Type-only: resolves the `agent/created` lifecycle event this service watches.
-import type {} from '@deepseek-ai/dsh-agent'
-import type { Agent } from '@deepseek-ai/dsh-agent'
+import type {} from '@greeneek/gnk-agent'
+import type { Agent } from '@greeneek/gnk-agent'
 import type { AgentPresetDocument, AgentPresetRoster } from './types.ts'
-import type {} from '@deepseek-ai/dsh-session-projection'
+import type {} from '@greeneek/gnk-session-projection'
 // Type-only: resolves the registry notification emitted after scope reparenting.
-import type {} from '@deepseek-ai/dsh-tools'
-import type SettingsService from '@deepseek-ai/dsh-settings'
-import type { SettingsScope } from '@deepseek-ai/dsh-settings'
-import { dshHomePath } from '@deepseek-ai/dsh-home-paths'
+import type {} from '@greeneek/gnk-tools'
+import type SettingsService from '@greeneek/gnk-settings'
+import type { SettingsScope } from '@greeneek/gnk-settings'
+import { gnkHomePath } from '@greeneek/gnk-home-paths'
 import { discoverPresets, SHIPPED_PRESET_ROOT, USER_PRESET_DIR } from './discovery.ts'
 import { copyComposition, deleteComposition, presetExists, readComposition } from './authoring.ts'
 import { livePresetMounts, mountPreset, serviceForAgent, standingMountFor } from './mount.ts'
@@ -84,7 +84,7 @@ export { copyComposition, deleteComposition, readComposition, writableRoot } fro
 export { agentPresetProjectionDefinition } from './session.ts'
 export type { AgentPreset, Config, PresetRoot, PresetTrust } from './preset.ts'
 
-declare module '@deepseek-ai/cordis' {
+declare module '@greeneek/cordis' {
   interface Context {
     agentPresets: AgentPresets
   }
@@ -178,7 +178,7 @@ export class AgentPresets extends TypertRemoteService {
     this.resolvedRoots = [
       ...config.includeShippedRoot ? [{ path: SHIPPED_PRESET_ROOT, trust: 'system' } satisfies PresetRoot] : [],
       ...config.roots,
-      ...config.includeUserRoot ? [{ path: dshHomePath(USER_PRESET_DIR), trust: 'user' } satisfies PresetRoot] : [],
+      ...config.includeUserRoot ? [{ path: gnkHomePath(USER_PRESET_DIR), trust: 'user' } satisfies PresetRoot] : [],
     ]
     // Deliberately not `settings.installSection`: that method exists to re-judge
     // what a consumer DERIVED from the source — memoized resolutions,
@@ -392,7 +392,7 @@ export class AgentPresets extends TypertRemoteService {
 
   /**
    * Parent bindings of the agents this roster composed, keyed by the agent's
-   * scope key. The binding is dsh-scope's only re-link capability; holding it
+   * scope key. The binding is gnk-scope's only re-link capability; holding it
    * here makes this service the sole authority that can move an agent between
    * standing compositions. WeakMap: entries die with their agents.
    */
@@ -637,7 +637,7 @@ export class AgentPresets extends TypertRemoteService {
    * new one is ensured BEFORE the link moves. An unknown or unusable preset
    * therefore throws with the agent exactly as it was — there is no torn-down
    * state to restore. The re-link runs through the binding this roster kept
-   * from the agent's mount — dsh-scope's only re-link authority. An agent
+   * from the agent's mount — gnk-scope's only re-link authority. An agent
    * that never composed one has nothing to re-link: the switch is then the
    * agent's first bind, exactly a mount. A committed re-link emits
    * `tools/change` because changing the parent scope changes the Agent's
@@ -756,7 +756,7 @@ export class AgentPresets extends TypertRemoteService {
       const current = await compositionStamp(preset.path)
       if (current === undefined || sameStamp(mounted.stamp, current)) return mounted
       // TODO: reclaim the superseded generation once the last agent joined to
-      // it is gone. The subtree is not inert — `dsh-skill-filesystem` watches its
+      // it is gone. The subtree is not inert — `gnk-skill-filesystem` watches its
       // roots — and the settings-page authoring flow turns "a composition
       // changed" into a per-save event. This needs a joined-agent count on
       // StandingMount, incremented in `mount`/`composeFrom`/`recompose` and

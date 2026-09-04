@@ -6,7 +6,7 @@ Status: implemented
 
 ## Problem
 
-`dsh-llm-pi-ai` 把 pi-ai 包生成的 catalog 当成了可配置范围的边界。路由键必须点名一个已安装提供方（`resolveProfiles` 拒绝其余一切），模型列举原样返回 `getBuiltinModels(provider)`，请求期的模型解析又在同一份 catalog 里查这个 id、且只覆盖 `baseURL`。由此产生三个后果，而且三个都是死路而非缺口：OpenAI 兼容网关、自建服务，或比已安装 catalog 更新的提供方，根本无法配置；catalog 尚未跟上的模型即便端点正确也会以 `UNKNOWN_MODEL` 失败；模型的上下文窗口与输出上限完全由锁定的 pi-ai 版本决定，部署既无法更正陈旧值，也无法为 pi-ai 从未描述过的模型补上。要动其中任何一条，只能升级依赖。
+`gnk-llm-pi-ai` 把 pi-ai 包生成的 catalog 当成了可配置范围的边界。路由键必须点名一个已安装提供方（`resolveProfiles` 拒绝其余一切），模型列举原样返回 `getBuiltinModels(provider)`，请求期的模型解析又在同一份 catalog 里查这个 id、且只覆盖 `baseURL`。由此产生三个后果，而且三个都是死路而非缺口：OpenAI 兼容网关、自建服务，或比已安装 catalog 更新的提供方，根本无法配置；catalog 尚未跟上的模型即便端点正确也会以 `UNKNOWN_MODEL` 失败；模型的上下文窗口与输出上限完全由锁定的 pi-ai 版本决定，部署既无法更正陈旧值，也无法为 pi-ai 从未描述过的模型补上。要动其中任何一条，只能升级依赖。
 
 适配器还经 `@earendil-works/pi-ai/compat` 的 `streamSimple` 发起流式请求，而该入口自己的模块文档声明它是临时兼容面——其 catalog 读取标了 `@deprecated`，并会在 pi-ai 完成 `ModelManager` 迁移时被删除。这三条配置限制与这个废弃依赖的解法是同一个，因为 pi-ai 受支持的运行时（`createModels()` / `createProvider()`）正是围绕「提供方是被*声明*出来的，而非查出来的」建立的。
 
@@ -14,7 +14,7 @@ Status: implemented
 
 提供方路由是一份**声明**，已安装 catalog 是它的默认值。`resolveProfiles` 不再拿路由键去核对 `getBuiltinProviders()`，而是把每条路由解析成一份物化模型列表，外加服务它的 pi-ai `Provider`：
 
-- `catalog.ts` 把已安装 catalog 合并到 profile 自身条目之下。profile 的 `models` 列表*替换*该路由的 catalog（列表缺席或为空则原样服务），每个条目从同 `id` 的已安装模型继承自身未设置的字段。只有 harness 会消费的字段可配置——`id`、`name`、`contextWindow`、`maxTokens`；[[2026-08-08-pi-ai-per-model-reasoning-declarations]] 之后加入了 `reasoningEfforts` 与 `compat`，当初「推理（reasoning）沿用已安装条目或直接缺席」的立场也在那里被重新审视（孤立的能力布尔量仍被拒绝；带 wire 拼写的逐档位完整声明没有它那个问题）。输入模态后来被开放，形态是条目上的 `input` 加路由级 `defaultInput`——图片准入点使得「未被报告的模态」变成部署无法解除的拒绝之后（[[2026-08-12-pi-ai-route-default-input-modalities]]）；当初「没有任何读取方」那句论证描述的其实是 `llm-deepseek` 的序列化器，而不是这条路由，它的转换器能携带图片。定价仍因原有理由不出现在配置面：`replay.ts` 把 pi-ai 的成本元数据清零，且没有任何消费方报告开销。物化时以已安装条目铺底、再覆盖已配置的字段，而不是逐字段枚举结果：枚举式重建会静默丢弃本包未建模的每一个 `Model` 字段——`headers` 就是这样从某条 nvidia 路由上消失过一次。
+- `catalog.ts` 把已安装 catalog 合并到 profile 自身条目之下。profile 的 `models` 列表*替换*该路由的 catalog（列表缺席或为空则原样服务），每个条目从同 `id` 的已安装模型继承自身未设置的字段。只有 harness 会消费的字段可配置——`id`、`name`、`contextWindow`、`maxTokens`；[[2026-08-08-pi-ai-per-model-reasoning-declarations]] 之后加入了 `reasoningEfforts` 与 `compat`，当初「推理（reasoning）沿用已安装条目或直接缺席」的立场也在那里被重新审视（孤立的能力布尔量仍被拒绝；带 wire 拼写的逐档位完整声明没有它那个问题）。输入模态后来被开放，形态是条目上的 `input` 加路由级 `defaultInput`——图片准入点使得「未被报告的模态」变成部署无法解除的拒绝之后（[[2026-08-12-pi-ai-route-default-input-modalities]]）；当初「没有任何读取方」那句论证描述的其实是 `llm-greeneek` 的序列化器，而不是这条路由，它的转换器能携带图片。定价仍因原有理由不出现在配置面：`replay.ts` 把 pi-ai 的成本元数据清零，且没有任何消费方报告开销。物化时以已安装条目铺底、再覆盖已配置的字段，而不是逐字段枚举结果：枚举式重建会静默丢弃本包未建模的每一个 `Model` 字段——`headers` 就是这样从某条 nvidia 路由上消失过一次。
 - `provider.ts` 构造路由的 `Provider`。保持 catalog 协议不变的 catalog 路由会**复用**已安装提供方，只替换 `getModels()`；其余路由都由 `createProvider()` 基于一张协议表构造，表中条目正是 pi-ai 自己的提供方工厂所用的 `@earendil-works/pi-ai/api/*.lazy` factory。该表刻意窄于 pi-ai 的完整 API 集合——只保留 profile 能用密钥、端点与标头完整描述的协议，因此 Bedrock（SigV4 加 region）、Vertex（project、location、ADC）、Azure（提供方环境加 api-version）与 Codex（OAuth）不在其中，而不是被当作无法认证的路由提供出去。catalog 路由仍可经自己的 provider 抵达它们；被拒的只有显式覆盖。
 - `adapter.ts` 把每次解析变成一份**不可变快照**——profiles 加上持有这些 provider 的 `createModels()` 集合——每个操作都在自己第一个 `await` 之前整体捕获一份。
 
@@ -26,7 +26,7 @@ Status: implemented
 
 ### 目录原子替换
 
-可配置提供方目录跟随 profiles，因此每当一条声明路由出现或离开它都会变化。「撤销旧注册再新建一个」表达不了这件事：注册表拒绝的候选集合——比如一份键为 `deepseek-official` 的 profile，而 `llm-deepseek` 已声明了它——会让本插件的整个目录被撤走、Models 页变空，而且是静默的，因为 settings 变更回调把失败容住了。因此 `registerConfigurableProviders` 改为返回带 `replace(entries)` 的句柄，其「候选集先整体校验」的原子性与 `registerAdapter` 相同，插件改用它。被拒的替换只付出一条诊断；先前的条目继续服务。
+可配置提供方目录跟随 profiles，因此每当一条声明路由出现或离开它都会变化。「撤销旧注册再新建一个」表达不了这件事：注册表拒绝的候选集合——比如一份键为 `greeneek-official` 的 profile，而 `llm-greeneek` 已声明了它——会让本插件的整个目录被撤走、Models 页变空，而且是静默的，因为 settings 变更回调把失败容住了。因此 `registerConfigurableProviders` 改为返回带 `replace(entries)` 的句柄，其「候选集先整体校验」的原子性与 `registerAdapter` 相同，插件改用它。被拒的替换只付出一条诊断；先前的条目继续服务。
 
 解析失败得响亮，并点名出问题的路由与模型：catalog 未描述的模型会回落到该路由自己的 `defaultContextWindow`／`defaultMaxTokens`，因此只公布 id 的列表也能得到可服务的路由；catalog 未提供的路由需要 `api`、`baseURL` 和非空的 `models` 列表。由于构造出的 `Provider` 是解析结果的一部分，协议或模型出错时最后可用的路由集合会继续服务——与此前坏的 settings 快照的行为完全一致。
 

@@ -3,7 +3,7 @@
  * is in memory; browser persistence hydrates it and consumes its committed
  * mutation stream. Errors carry Node's `code` values because roster plugins
  * branch on them (`ENOENT` for optional files, `EACCES` for read-only trees).
- * @module @deepseek-ai/dsh-experimental-webworker-runtime/src/storage/types
+ * @module @greeneek/gnk-experimental-webworker-runtime/src/storage/types
  */
 
 /** Encodings the VFS accepts where Node accepts any `BufferEncoding`. */
@@ -42,7 +42,7 @@ export interface VfsStats {
 /**
  * Stats as Node returns them under `{ bigint: true }`.
  *
- * The filesystem service (`dsh-fs-local`) stats every target this way and then
+ * The filesystem service (`gnk-fs-local`) stats every target this way and then
  * does BigInt arithmetic on `mode` and builds its version token from
  * `dev:ino:size:mtimeNs:ctimeNs`, so these fields are load-bearing rather than
  * decorative: a number-valued `mode` here fails the whole read as a type error,

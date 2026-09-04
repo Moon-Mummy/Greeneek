@@ -12,7 +12,7 @@ Status: implemented
 
 ## 决策
 
-录制会话快照通过 `dsh` 启动随附 profile，驱动其公开接口，并将规范化输出与已提交的预期输出比较。归 ACP 所有的场景还会驱动 stdio 协议并比较其 transcript。从真实 API 一次记录的会话日志为后续所有模型流提供数据。fixture 是[产品持久化 JSONL 的投影](2026-08-18-session-snapshot-envelope-projection.zh.md)：保留 header 与 payload，省略正文序号／时间 envelope。
+录制会话快照通过 `gnk` 启动随附 profile，驱动其公开接口，并将规范化输出与已提交的预期输出比较。归 ACP 所有的场景还会驱动 stdio 协议并比较其 transcript。从真实 API 一次记录的会话日志为后续所有模型流提供数据。fixture 是[产品持久化 JSONL 的投影](2026-08-18-session-snapshot-envelope-projection.zh.md)：保留 header 与 payload，省略正文序号／时间 envelope。
 
 [Session-log 快照语料决策](2026-08-24-session-log-snapshot-corpus.zh.md)取代本 Note 中 ACP 专属的放置位置与控制器所有权；本 Note 继续负责会话日志 fixture、回放推导、例外 override、规范化和 ACP transcript 比较的理由。
 
@@ -44,7 +44,7 @@ Status: implemented
 
 ### 录制采集日志；无密钥回放需要无提供方的配置
 
-记录模式使用真实 `llm-deepseek` 适配器和配置为 `persistenceCompression: 'none'` 的 JSONL 持久化后端运行场景，再把生成的 `.jsonl` 投影到场景目录。显式 raw 模式让采集日志保持逐行可读，而普通部署使用后端的压缩默认值；符合条件的分片连续段仍使用默认的打包存储行。逐事件追加具有持久性，但 harness 会在采集前优雅关闭子进程（关闭 stdin → `await ctx.dispose()`），以确保最终事件已刷出。`llm-replay` 本身不执行记录——它只负责回放。
+记录模式使用真实 `llm-greeneek` 适配器和配置为 `persistenceCompression: 'none'` 的 JSONL 持久化后端运行场景，再把生成的 `.jsonl` 投影到场景目录。显式 raw 模式让采集日志保持逐行可读，而普通部署使用后端的压缩默认值；符合条件的分片连续段仍使用默认的打包存储行。逐事件追加具有持久性，但 harness 会在采集前优雅关闭子进程（关闭 stdin → `await ctx.dispose()`），以确保最终事件已刷出。`llm-replay` 本身不执行记录——它只负责回放。
 
 回放使用 `cordis.snapshot.yml` overlay，以 `llm-replay` 替换真实适配器，同时保留实际组合。记录使用普通配置和由 harness 提供的持久化根目录。回放模式跳过 `.env` 加载，因此意外存在的 API 密钥不会触发真实调用。参见[单一来源配置 Agent Note](../../archived/testing/2026-07-04-single-source-acp-replay-config.md)。
 
@@ -65,7 +65,7 @@ Status: implemented
 
 ### 回放插件是独立的包
 
-`@deepseek-ai/dsh-llm-replay` 是一个支撑包，而非示例本地的胶水代码。它通过用从 JSONL 重建的流短路 `llm/stream` 来替换真实适配器，其包级放置使回放逻辑处于正常覆盖率门禁之下。
+`@greeneek/gnk-llm-replay` 是一个支撑包，而非示例本地的胶水代码。它通过用从 JSONL 重建的流短路 `llm/stream` 来替换真实适配器，其包级放置使回放逻辑处于正常覆盖率门禁之下。
 
 ### 两个子命令，回放在默认门禁中
 

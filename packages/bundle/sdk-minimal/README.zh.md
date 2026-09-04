@@ -3,13 +3,13 @@ description: "供需要不含共享 base bundle 的极简跨平台 coding agent 
 kind: "package-bundle"
 ---
 
-# `@deepseek-ai/dsh-sdk-minimal`
+# `@greeneek/gnk-sdk-minimal`
 
 [English](README.md) | 中文
 
 ## 概述
 
-当 SDK 客户端需要小型、显式的 coding agent 运行时时，请使用 `dsh --profile sdk-minimal`。该 profile 只公布按平台选择的持久 shell 与 `str_replace_editor`，把会话持久化为未压缩 JSONL，并从 SDK 初始化请求选择模型。它提供完整 Cordis 配置树，并刻意排除 `dsh-base`、Web、settings、托管凭据、遥测、compaction、workspace 指令、skills、jobs 与 subagent。其 danger-full-access 策略允许 shell 与编辑器修改进程可访问的任何路径，因此只能配合隔离 workspace 使用。
+当 SDK 客户端需要小型、显式的 coding agent 运行时时，请使用 `gnk --profile sdk-minimal`。该 profile 只公布按平台选择的持久 shell 与 `str_replace_editor`，把会话持久化为未压缩 JSONL，并从 SDK 初始化请求选择模型。它提供完整 Cordis 配置树，并刻意排除 `gnk-base`、Web、settings、托管凭据、遥测、compaction、workspace 指令、skills、jobs 与 subagent。其 danger-full-access 策略允许 shell 与编辑器修改进程可访问的任何路径，因此只能配合隔离 workspace 使用。
 
 ## 目录
 
@@ -25,16 +25,16 @@ kind: "package-bundle"
 <a id="use-this-package"></a>
 ## 使用本包
 
-直接启动该 profile，或从 Python SDK 选择它。提供显式 `DSH_HOME`、使用一次性 workspace，并通过 `DEEPSEEK_API_KEY` 提供模型凭据。
+直接启动该 profile，或从 Python SDK 选择它。提供显式 `GNK_HOME`、使用一次性 workspace，并通过 `GREENEEK_API_KEY` 提供模型凭据。
 
 ```sh
-export DSH_HOME=/absolute/path/to/example-dsh-home
-dsh --profile sdk-minimal
+export GNK_HOME=/absolute/path/to/example-gnk-home
+gnk --profile sdk-minimal
 ```
 
-`DSH_CONTEXT_WINDOW` 为不在适配器建议目录中的模型设置后备容量。`DSH_SYSTEM_PROMPT` 替换默认 persona。SDK 初始化请求是唯一模型选择，并覆盖环境默认值。
+`GNK_CONTEXT_WINDOW` 为不在适配器建议目录中的模型设置后备容量。`GNK_SYSTEM_PROMPT` 替换默认 persona。SDK 初始化请求是唯一模型选择，并覆盖环境默认值。
 
-使用 `dsh plugin --profile sdk-minimal` 管理持久外部依赖。Profile、home 与有序 `--patch` 文件可以在完整默认配置树上替换配置项或插入 bundle。随附模板只在启动时应用 patch。
+使用 `gnk plugin --profile sdk-minimal` 管理持久外部依赖。Profile、home 与有序 `--patch` 文件可以在完整默认配置树上替换配置项或插入 bundle。随附模板只在启动时应用 patch。
 
 该 profile 只挂载一套持久 shell：Linux 和 macOS 使用 Bash，Windows 使用 PowerShell。两套配置都使用 300 秒超时与一个 agent 自有终端；另一平台的配置项保持禁用。
 
@@ -46,7 +46,7 @@ dsh --profile sdk-minimal
 <details>
 <summary>实现细节——点击展开</summary>
 
-该 bundle 的单个 insert 就是完整应用配置树：SDK stdio 启动与 JSON-RPC 服务、一个由环境配置的 DeepSeek 适配器、显式 agent 核心、本地子进程与不受限文件系统提供方、按平台选择的持久 shell PTY、字符串替换编辑器，以及位于 `$DSH_HOME/sessions` 的未压缩 JSONL 持久化。它不继承其他 bundle，因此每个额外配置项都是显式 profile 变更。
+该 bundle 的单个 insert 就是完整应用配置树：SDK stdio 启动与 JSON-RPC 服务、一个由环境配置的 Greeneek 适配器、显式 agent 核心、本地子进程与不受限文件系统提供方、按平台选择的持久 shell PTY、字符串替换编辑器，以及位于 `$GNK_HOME/sessions` 的未压缩 JSONL 持久化。它不继承其他 bundle，因此每个额外配置项都是显式 profile 变更。
 
 ### 源码地图
 
@@ -77,7 +77,7 @@ dsh --profile sdk-minimal
 
 #### 模型看到的内容
 
-系统提示词取 `DSH_SYSTEM_PROMPT`，未设置时使用 `You are a helpful software engineer assistant.`。对外公布的工具只有 Linux/macOS 上 agent 所有的持久 `bash` 或 Windows 上的 `pwsh`，外加 `str_replace_editor`；运行时上下文、workspace 指令、skills、jobs 控制、compaction 与 Harness 身份均不存在。
+系统提示词取 `GNK_SYSTEM_PROMPT`，未设置时使用 `You are a helpful software engineer assistant.`。对外公布的工具只有 Linux/macOS 上 agent 所有的持久 `bash` 或 Windows 上的 `pwsh`，外加 `str_replace_editor`；运行时上下文、workspace 指令、skills、jobs 控制、compaction 与 Harness 身份均不存在。
 
 #### Token 影响
 
@@ -91,7 +91,7 @@ dsh --profile sdk-minimal
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **该组合刻意省略共享产品服务** — 需要 settings、托管凭据、权限策略预设、遥测、Web 工具或完整默认工具清单时，请选择 `dsh --profile sdk`。
+- **该组合刻意省略共享产品服务** — 需要 settings、托管凭据、权限策略预设、遥测、Web 工具或完整默认工具清单时，请选择 `gnk --profile sdk`。
 - **用户 patch 可以扩展配置树并破坏 stdout** — profile 自定义属于受信任的应用组合；向 stdout 写入普通文本的插件会破坏 JSON-RPC 分帧。
 
 <a id="dev-note"></a>

@@ -7,13 +7,13 @@ English | [中文](2026-07-21-tui-banner-brand-gradient.zh.md)
 
 ## Problem
 
-The TUI startup banner rendered the product name `DEEPSEEK` in the palette's flat accent color, which carries no brand identity and does not resemble the wordmark on deepseek.com. The request was to make the banner match the site logo's blue gradient specifically — not to recolor the rest of the coding harness.
+The TUI startup banner rendered the product name `GREENEEK` in the palette's flat accent color, which carries no brand identity and does not resemble the wordmark on greeneek.dev. The request was to make the banner match the site logo's blue gradient specifically — not to recolor the rest of the coding harness.
 
 The banner is the one surface where that matters, and it conflicts with a load-bearing invariant: the TUI palette is deliberately theme-agnostic. It uses only standard 16-color ANSI (SGR) codes and attributes so a user's terminal scheme remaps every color; the `themeViolations()` snapshot gate rejects any RGB, extended-palette, or explicit-background cell. A smooth logo-matching gradient cannot be built from 16 palette colors, so reproducing it requires 24-bit truecolor, which the gate flags by design.
 
 ## Decision
 
-The banner paints `DEEPSEEK` with a per-letter 24-bit truecolor foreground sweeping the deepseek.com brand gradient — `#4D6BFE` → `#3982FF` → `#2498FF` — via piecewise-linear interpolation across those three stops; `HARNESS` stays bold with the default foreground. The gradient is foreground-only, so it stays legible on any terminal background, and it is confined to the banner's product name. This is the sole sanctioned exception to the theme-agnostic palette; every other surface remains standard-ANSI and theme-adaptive.
+The banner paints `GREENEEK` with a per-letter 24-bit truecolor foreground sweeping the greeneek.dev brand gradient — `#4D6BFE` → `#3982FF` → `#2498FF` — via piecewise-linear interpolation across those three stops; `HARNESS` stays bold with the default foreground. The gradient is foreground-only, so it stays legible on any terminal background, and it is confined to the banner's product name. This is the sole sanctioned exception to the theme-agnostic palette; every other surface remains standard-ANSI and theme-adaptive.
 
 The gradient is gated on `resolved.color && resolved.truecolor`. When truecolor is unavailable the banner falls back to the existing flat bright-blue accent, so nothing about the theme-agnostic guarantee or the recorded snapshots changes unless truecolor is explicitly in play.
 
@@ -37,4 +37,4 @@ A dedicated `banner-gradient` terminal snapshot pins the real per-letter RGB out
 
 ## Consequences
 
-The banner now carries the DeepSeek brand identity on truecolor terminals while the theme-agnostic guarantee holds everywhere else — and even on the banner itself when truecolor is unavailable. The cost is one narrow, documented crack in the theme-agnostic invariant: a fixed-color surface that will not adapt to a user's terminal scheme, accepted because it is brand identity and foreground-only, so it stays legible on both light and dark backgrounds. The crack is fenced by the `banner-gradient` snapshot assertion, which confines truecolor to the banner foreground and fails if any other RGB, extended-palette, or background color ever appears.
+The banner now carries the Greeneek brand identity on truecolor terminals while the theme-agnostic guarantee holds everywhere else — and even on the banner itself when truecolor is unavailable. The cost is one narrow, documented crack in the theme-agnostic invariant: a fixed-color surface that will not adapt to a user's terminal scheme, accepted because it is brand identity and foreground-only, so it stays legible on both light and dark backgrounds. The crack is fenced by the `banner-gradient` snapshot assertion, which confines truecolor to the banner foreground and fails if any other RGB, extended-palette, or background color ever appears.

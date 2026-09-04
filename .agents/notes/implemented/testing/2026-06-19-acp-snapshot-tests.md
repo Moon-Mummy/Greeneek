@@ -12,7 +12,7 @@ The blocker for a full-transcript test is the model: the agent's output is drive
 
 ## Decision
 
-A recorded-session snapshot starts a shipped profile through `dsh`, drives its public interface, and compares normalized output with committed expected outputs. ACP-owned scenarios additionally drive the stdio protocol and compare its transcript. A session log recorded once from the real API supplies all later model streams. The fixture is a [projection of the product's persisted JSONL](2026-08-18-session-snapshot-envelope-projection.md): its header and payloads remain, while body sequence/time envelopes are omitted.
+A recorded-session snapshot starts a shipped profile through `gnk`, drives its public interface, and compares normalized output with committed expected outputs. ACP-owned scenarios additionally drive the stdio protocol and compare its transcript. A session log recorded once from the real API supplies all later model streams. The fixture is a [projection of the product's persisted JSONL](2026-08-18-session-snapshot-envelope-projection.md): its header and payloads remain, while body sequence/time envelopes are omitted.
 
 The [session-log snapshot corpus decision](2026-08-24-session-log-snapshot-corpus.md) supersedes this note's ACP-specific placement and controller ownership. This note remains the rationale authority for session-log fixtures, replay derivation, exceptional overrides, normalization, and ACP transcript comparison.
 
@@ -44,7 +44,7 @@ Replay is positional and therefore permits only one in-flight model stream per s
 
 ### Recording harvests the log; keyless replay needs a providerless config
 
-Recording runs the scenario with the real `llm-deepseek` adapter and the JSONL persistence backend configured with `persistenceCompression: 'none'`, then projects the produced `.jsonl` into the scenario dir. The explicit raw mode keeps harvested logs line-readable while ordinary deployments use the backend's compressed default; eligible chunk runs still use the default packed storage rows. Per-event appends are durable, but the harness shuts the subprocess down gracefully (close stdin → `await ctx.dispose()`) before harvesting so the final events are flushed. `llm-replay` itself does no recording — it is replay-only.
+Recording runs the scenario with the real `llm-greeneek` adapter and the JSONL persistence backend configured with `persistenceCompression: 'none'`, then projects the produced `.jsonl` into the scenario dir. The explicit raw mode keeps harvested logs line-readable while ordinary deployments use the backend's compressed default; eligible chunk runs still use the default packed storage rows. Per-event appends are durable, but the harness shuts the subprocess down gracefully (close stdin → `await ctx.dispose()`) before harvesting so the final events are flushed. `llm-replay` itself does no recording — it is replay-only.
 
 Replay uses a `cordis.snapshot.yml` overlay that replaces the real adapter with `llm-replay` while retaining the live composition. Recording uses the ordinary config and a harness-supplied persistence root. Replay mode skips `.env` loading, so a stray API key cannot trigger a live call. See the [single-source config Agent Note](../../archived/testing/2026-07-04-single-source-acp-replay-config.md).
 
@@ -65,7 +65,7 @@ Tool determinism comes from a generated cwd, scrubbed environment, fresh non-log
 
 ### The replay plugin is its own package
 
-`@deepseek-ai/dsh-llm-replay` is a support package rather than example-local glue. It replaces the real adapter by short-circuiting `llm/stream` with streams reconstructed from JSONL, and its package placement keeps the replay logic under normal coverage gates.
+`@greeneek/gnk-llm-replay` is a support package rather than example-local glue. It replaces the real adapter by short-circuiting `llm/stream` with streams reconstructed from JSONL, and its package placement keeps the replay logic under normal coverage gates.
 
 ### Two subcommands, replay in the default gate
 

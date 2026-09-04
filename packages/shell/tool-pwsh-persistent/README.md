@@ -3,13 +3,13 @@ description: "The model-facing persistent pwsh tool for users and maintainers ch
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tool-pwsh-persistent
+# @greeneek/gnk-tool-pwsh-persistent
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-tool-pwsh-persistent` gives the agent a `pwsh` tool whose PowerShell state persists across calls for the owning agent: cwd, `$env:` variables, functions, and background jobs survive between commands. It is the Windows counterpart of `dsh-tool-bash-persistent` — the same persistent-state contract in PowerShell dialect. Each agent gets its own shell backed by an owner-scoped PTY session with a pwsh-dialect backend, and commands for the same agent run one at a time. Configuration selects the backend and the wall-clock limit for one command; a timeout or an explicit `exit` closes the shell, and the next call starts fresh. Mount it with a pwsh-dialect terminal backend (Windows ConPTY or a POSIX pwsh) and the `ctx.terminals` service.
+`gnk-tool-pwsh-persistent` gives the agent a `pwsh` tool whose PowerShell state persists across calls for the owning agent: cwd, `$env:` variables, functions, and background jobs survive between commands. It is the Windows counterpart of `gnk-tool-bash-persistent` — the same persistent-state contract in PowerShell dialect. Each agent gets its own shell backed by an owner-scoped PTY session with a pwsh-dialect backend, and commands for the same agent run one at a time. Configuration selects the backend and the wall-clock limit for one command; a timeout or an explicit `exit` closes the shell, and the next call starts fresh. Mount it with a pwsh-dialect terminal backend (Windows ConPTY or a POSIX pwsh) and the `ctx.terminals` service.
 
 ## Table of Contents
 
@@ -25,22 +25,22 @@ English | [中文](README.zh.md)
 <a id="use-this-package"></a>
 ## Use this package
 
-Load this plugin in any composition where the agent should keep PowerShell state between commands — the persistent counterpart of `dsh-tool-pwsh` for work that needs cross-call state. It registers the `pwsh` tool and requires the `ctx.tools` and `ctx.terminals` services plus an owning agent session at execution time.
+Load this plugin in any composition where the agent should keep PowerShell state between commands — the persistent counterpart of `gnk-tool-pwsh` for work that needs cross-call state. It registers the `pwsh` tool and requires the `ctx.tools` and `ctx.terminals` services plus an owning agent session at execution time.
 
 ### When to choose it
 
-Choose the persistent tool when work depends on cross-call PowerShell state, and choose `dsh-tool-pwsh` when every command should start from a known, clean environment. Commands that need interactive stdin are unsupported here — a foreground child that reads input blocks until the command timeout, which resets the shell — so interactive work belongs to the terminal tools.
+Choose the persistent tool when work depends on cross-call PowerShell state, and choose `gnk-tool-pwsh` when every command should start from a known, clean environment. Commands that need interactive stdin are unsupported here — a foreground child that reads input blocks until the command timeout, which resets the shell — so interactive work belongs to the terminal tools.
 
 ### Minimal configuration
 
-The default `shell` backend starts a PowerShell shell through a `dsh-terminal-bash` instance configured with `shellDialect: pwsh`; deployments may register another pwsh-dialect PTY backend and select it by name.
+The default `shell` backend starts a PowerShell shell through a `gnk-terminal-bash` instance configured with `shellDialect: pwsh`; deployments may register another pwsh-dialect PTY backend and select it by name.
 
 ```yaml
-- name: '@deepseek-ai/dsh-terminal'
-- name: '@deepseek-ai/dsh-terminal-bash'
+- name: '@greeneek/gnk-terminal'
+- name: '@greeneek/gnk-terminal-bash'
   config:
     shellDialect: pwsh
-- name: '@deepseek-ai/dsh-tool-pwsh-persistent'
+- name: '@greeneek/gnk-tool-pwsh-persistent'
 ```
 
 | Field | Default | Meaning |
@@ -50,7 +50,7 @@ The default `shell` backend starts a PowerShell shell through a `dsh-terminal-ba
 | `maxOutputChars` | `16,000` | Maximum retained command-output characters; fixed diagnostics are added afterward |
 | `description` | `Run commands in a persistent PowerShell shell. State, including the current directory and exported environment variables, persists across calls for this agent.` | Model-facing environment contract; deployments may describe their environment |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-tool-pwsh-persistent) is the exhaustive source for every accepted field and its JSDoc.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-tool-pwsh-persistent) is the exhaustive source for every accepted field and its JSDoc.
 
 ### What the agent can rely on
 
@@ -72,7 +72,7 @@ This section explains the design decisions behind the tool and points at the cod
 
 ### Design philosophy
 
-- **A deliberate twin of `dsh-tool-bash-persistent`.** The session registry, polling loop, and reset contract mirror the persistent bash tool by design ([pwsh persistent PTY Agent Note](../../../.agents/notes/implemented/architecture/2026-08-11-pwsh-persistent-pty.md)).
+- **A deliberate twin of `gnk-tool-bash-persistent`.** The session registry, polling loop, and reset contract mirror the persistent bash tool by design ([pwsh persistent PTY Agent Note](../../../.agents/notes/implemented/architecture/2026-08-11-pwsh-persistent-pty.md)).
 - **Prompt-function readiness.** The tool installs its own `prompt` function that prints a BEL-terminated OSC marker plus a printable prompt; the OSC marker carries the last exit code and the printable prompt settles every command, so a model redefinition of `prompt` degrades readiness to the silence tier.
 - **PSReadLine echo stripped by anchoring.** PowerShell renders submitted input back into the stream; the marker-anchored extraction and a wrapper-source strip remove the echo, and a wrapper that wraps across the terminal width may leave a partial echo in partial-output results.
 - **Reset, never repair.** Any uncertain state — an explicit `exit`, a timeout, a send failure, an abort — closes the shell and starts the next call fresh.
@@ -102,8 +102,8 @@ Read these pages when the package-level contract is not enough. They move from t
 - [terminal-bash backend](../../terminal/terminal-bash/README.md) — the default backend, configured with `shellDialect: pwsh`.
 - [pwsh persistent PTY Agent Note](../../../.agents/notes/implemented/architecture/2026-08-11-pwsh-persistent-pty.md) — the pwsh-side session design and its rationale.
 - [Persistent PTY sessions Agent Note](../../../.agents/notes/implemented/feature/2026-07-16-persistent-pty-sessions.md) — the owner-scoped session design and its rationale.
-- [Generated tool catalog](../../../docs/tool-catalog.md#deepseek-aidsh-tool-pwsh-persistent) — the exact `pwsh` argument schema.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-tool-pwsh-persistent) — every accepted config field and its source declaration.
+- [Generated tool catalog](../../../docs/tool-catalog.md#greeneekgnk-tool-pwsh-persistent) — the exact `pwsh` argument schema.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-tool-pwsh-persistent) — every accepted config field and its source declaration.
 
 -----
 
@@ -114,7 +114,7 @@ Read these pages when the package-level contract is not enough. They move from t
 
 #### What the model sees
 
-The generated [`pwsh` schema](../../../docs/tool-catalog.md#deepseek-aidsh-tool-pwsh-persistent), including the configured `description`. The plugin contributes no standalone system-prompt section; the deployment owns persona and environment guidance.
+The generated [`pwsh` schema](../../../docs/tool-catalog.md#greeneekgnk-tool-pwsh-persistent), including the configured `description`. The plugin contributes no standalone system-prompt section; the deployment owns persona and environment guidance.
 
 #### Token effect
 

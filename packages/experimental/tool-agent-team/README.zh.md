@@ -3,13 +3,13 @@ description: "九个让模型创建、发消息与协调 teammate 的工具，�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-experimental-tool-agent-team
+# @greeneek/gnk-experimental-tool-agent-team
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-experimental-tool-agent-team` 在团队领域包之上给模型一套团队工具：创建具名 teammate、向它们 Steer 消息、查看谁在线、等待进展、中断卡住的 teammate，以及管理共享任务板——共九个工具。每个成员的提示词中都有一段简短策略，教模型何时组建团队（只有你要求时）以及如何在共享工作区协作。挂载它会用同名的团队工具取代旧版 subagent 控件，因此想同时使用两者的组合必须禁用旧定义。它是实验性的：不进入正式发布、不承诺稳定性，并且只有你明确要求组建团队时才会创建 teammate。
+`gnk-experimental-tool-agent-team` 在团队领域包之上给模型一套团队工具：创建具名 teammate、向它们 Steer 消息、查看谁在线、等待进展、中断卡住的 teammate，以及管理共享任务板——共九个工具。每个成员的提示词中都有一段简短策略，教模型何时组建团队（只有你要求时）以及如何在共享工作区协作。挂载它会用同名的团队工具取代旧版 subagent 控件，因此想同时使用两者的组合必须禁用旧定义。它是实验性的：不进入正式发布、不承诺稳定性，并且只有你明确要求组建团队时才会创建 teammate。
 
 ## 目录
 
@@ -25,7 +25,7 @@ kind: "package-reference"
 <a id="use-this-package"></a>
 ## 使用本包
 
-当模型应该通过工具运行一支团队时，在 `@deepseek-ai/dsh-experimental-agent-team` 之上挂载本包。挂载后，每个团队成员——Lead 与每个 teammate——都会获得相同的九个工具，外加一段说明自身角色与名字的策略段落。
+当模型应该通过工具运行一支团队时，在 `@greeneek/gnk-experimental-agent-team` 之上挂载本包。挂载后，每个团队成员——Lead 与每个 teammate——都会获得相同的九个工具，外加一段说明自身角色与名字的策略段落。
 
 ### 何时选择
 
@@ -37,7 +37,7 @@ kind: "package-reference"
 
 ```yaml
 - id: tool-agent-team
-  name: '@deepseek-ai/dsh-experimental-tool-agent-team'
+  name: '@greeneek/gnk-experimental-tool-agent-team'
   config:
     freshProvider: spawn
     forkProvider: fork
@@ -48,7 +48,7 @@ kind: "package-reference"
 | `freshProvider` | `spawn` | 启动 fresh teammate 的 provider |
 | `forkProvider` | `fork` | 启动 fork teammate 的 provider |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-experimental-tool-agent-team)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-experimental-tool-agent-team)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 试试这样要求 Lead 模型：「创建一个名为 reviewer 的 teammate 检查 diff，再把变更摘要发给 reviewer」。模型会调用创建工具，然后调用消息工具。
 
@@ -113,7 +113,7 @@ member scope 上的一个 `team:policy` 段落教每个成员自己的角色与�
 
 - [agent-team 包](../agent-team/README.zh.md)——这些工具背后的 `ctx.agentTeams` 领域服务。
 - [Agent Teams 子系统](../../../docs/subsystems/agent-team.zh.md)——持久 Team 类型与服务 API。
-- [生成的工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-experimental-tool-agent-team)——模型接收的每个工具 schema。
+- [生成的工具目录](../../../docs/tool-catalog.zh.md#greeneekgnk-experimental-tool-agent-team)——模型接收的每个工具 schema。
 - [Agent Teams Agent Note](../../../.agents/notes/implemented/feature/2026-08-05-agent-teams.zh.md)——模型侧、scoping 与隔离决策。
 
 -----

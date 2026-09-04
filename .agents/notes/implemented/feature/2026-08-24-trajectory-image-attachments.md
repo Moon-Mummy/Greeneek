@@ -6,7 +6,7 @@ English | [中文](2026-08-24-trajectory-image-attachments.zh.md)
 
 ## Problem
 
-Trajectory did not display session images. A durable `{ type: 'image', attachment: ImageAttachmentRef }` block rendered as pretty-printed JSON in the details panel, and an image-only user message produced an empty ledger row. The only image path Trajectory knew was `imageSrc` sniffing over inline wire fields (`url`, `image_url`, base64 `data`), which no production event carries: every producer commits a durable `ImageAttachmentRef` before its event is appended. Users could not confirm from the execution ledger which image the model saw ([issue #2986](https://github.com/deepseek-harness/deepseek-harness/issues/2986)), while Chat already displayed the same attachments.
+Trajectory did not display session images. A durable `{ type: 'image', attachment: ImageAttachmentRef }` block rendered as pretty-printed JSON in the details panel, and an image-only user message produced an empty ledger row. The only image path Trajectory knew was `imageSrc` sniffing over inline wire fields (`url`, `image_url`, base64 `data`), which no production event carries: every producer commits a durable `ImageAttachmentRef` before its event is appended. Users could not confirm from the execution ledger which image the model saw ([issue #2986](https://github.com/greeneek/greeneek-harness/issues/2986)), while Chat already displayed the same attachments.
 
 ## Decision
 
@@ -29,5 +29,5 @@ Trajectory did not display session images. A durable `{ type: 'image', attachmen
 ## Consequences
 
 - Both views present one gallery implementation, so image behavior (sizing, retry, lightbox, labels) cannot drift between Chat and Trajectory, and a session attachment is read once regardless of how many views show it.
-- `TrajectoryTable` threads a required `renderImages` prop through its detail components; `ui-trajectory` gains a type-only dependency on `dsh-attachment`, and `ui-attachment` gains a type-only dependency on `ui-trajectory` for the new SlotMap row.
+- `TrajectoryTable` threads a required `renderImages` prop through its detail components; `ui-trajectory` gains a type-only dependency on `gnk-attachment`, and `ui-attachment` gains a type-only dependency on `ui-trajectory` for the new SlotMap row.
 - The keyless assembled snapshot `apps/web/tests/trajectory-image-display.snapshot.ts` pins the shared-cache fact directly: the details-panel image URL is string-identical to the Chat gallery's URL for the same fixture attachment.

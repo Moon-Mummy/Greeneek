@@ -10,14 +10,14 @@
  */
 
 import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
+import { Context } from '@greeneek/cordis'
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, symlinkSync, utimesSync, writeFileSync } from 'node:fs'
 import { realpath } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { basename, dirname, isAbsolute, join, normalize } from 'node:path'
-import { ToolCallId } from '@deepseek-ai/dsh-llm'
-import { SessionId } from '@deepseek-ai/dsh-session'
-import type { SaveTextSpill } from '@deepseek-ai/dsh-spill'
+import { ToolCallId } from '@greeneek/gnk-llm'
+import { SessionId } from '@greeneek/gnk-session'
+import type { SaveTextSpill } from '@greeneek/gnk-spill'
 import LocalSpillStore, {
   DEFAULT_ROOT_PREFIX,
   discoverDefaultRoots,
@@ -27,8 +27,8 @@ import LocalSpillStore, {
   saveTextFile,
   sessionDir,
   sweepSpillRoots,
-} from '@deepseek-ai/dsh-spill-local'
-import type { SweepRoot } from '@deepseek-ai/dsh-spill-local'
+} from '@greeneek/gnk-spill-local'
+import type { SweepRoot } from '@greeneek/gnk-spill-local'
 import { gatherSweepRoots } from '../src/cleanup.ts'
 
 const DAY_MS = 24 * 60 * 60 * 1000
@@ -36,7 +36,7 @@ const DAY_MS = 24 * 60 * 60 * 1000
 let root: string
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'dsh-spill-test-'))
+  root = mkdtempSync(join(tmpdir(), 'gnk-spill-test-'))
 })
 afterEach(() => {
   rmSync(root, { recursive: true, force: true })
@@ -180,7 +180,7 @@ describe('LocalSpillStore service', () => {
     const ctx = new Context()
     // Point discovery at an empty isolated base so the default sweep does not
     // touch the real tmpdir; assert only that the default landed on config.
-    const emptyBase = mkdtempSync(join(tmpdir(), 'dsh-empty-'))
+    const emptyBase = mkdtempSync(join(tmpdir(), 'gnk-empty-'))
     class Isolated extends LocalSpillStore {
       protected override defaultRootsBase(): string { return emptyBase }
     }
@@ -357,7 +357,7 @@ describe('startup cleanup sweep', () => {
     // A discovered prior-default root (pruneWhenEmpty) whose only session dir is
     // emptied should have its outer directory removed too; the active root, even
     // when fully emptied, must survive (the live process still writes into it).
-    const prior = mkdtempSync(join(tmpdir(), 'dsh-spill-'))
+    const prior = mkdtempSync(join(tmpdir(), 'gnk-spill-'))
     const priorDir = sessionDir(prior, 'old-sess'); mkdirSync(priorDir, { recursive: true })
     writeAged(join(priorDir, 'old.txt'), 'x', 40)
     const activeDir = sessionDir(root, 'sess-1'); mkdirSync(activeDir, { recursive: true })
@@ -390,7 +390,7 @@ describe('startup cleanup sweep', () => {
   })
 
   it('does NOT prune a discovered root that still holds a fresh file', async () => {
-    const prior = mkdtempSync(join(tmpdir(), 'dsh-spill-'))
+    const prior = mkdtempSync(join(tmpdir(), 'gnk-spill-'))
     const priorDir = sessionDir(prior, 'sess'); mkdirSync(priorDir, { recursive: true })
     writeAged(join(priorDir, 'fresh.txt'), 'y', 1)
     try {
@@ -406,7 +406,7 @@ describe('startup cleanup sweep', () => {
     // A prior default root under an isolated fake tmpdir + the configured root.
     // This test drives the REAL gatherRoots/discoverDefaultRoots path by seaming
     // only the tmpdir scan base, not gatherRoots itself.
-    const fakeTmp = mkdtempSync(join(tmpdir(), 'dsh-faketmp-'))
+    const fakeTmp = mkdtempSync(join(tmpdir(), 'gnk-faketmp-'))
     const priorDefault = mkdtempSync(join(fakeTmp, DEFAULT_ROOT_PREFIX))
     const priorDir = sessionDir(priorDefault, 'old-sess')
     mkdirSync(priorDir, { recursive: true })
@@ -436,7 +436,7 @@ describe('startup cleanup sweep', () => {
     // default shape, so discovery finds it AND it is the active root — the sweep
     // must run once, not choke on the duplicate, and must NOT prune the active
     // root even though discovery would otherwise mark a default root prunable.
-    const fakeTmp = mkdtempSync(join(tmpdir(), 'dsh-faketmp-'))
+    const fakeTmp = mkdtempSync(join(tmpdir(), 'gnk-faketmp-'))
     const activeDefault = mkdtempSync(join(fakeTmp, DEFAULT_ROOT_PREFIX))
     const dir = sessionDir(activeDefault, 'sess-1')
     mkdirSync(dir, { recursive: true })
@@ -457,7 +457,7 @@ describe('startup cleanup sweep', () => {
   })
 
   it('de-dups a configured symlink alias by filesystem identity and keeps its target writable', async () => {
-    const fakeTmp = mkdtempSync(join(tmpdir(), 'dsh-faketmp-'))
+    const fakeTmp = mkdtempSync(join(tmpdir(), 'gnk-faketmp-'))
     const activeDefault = mkdtempSync(join(fakeTmp, DEFAULT_ROOT_PREFIX))
     const alias = join(root, 'configured-root')
     symlinkSync(activeDefault, alias, process.platform === 'win32' ? 'junction' : 'dir')
@@ -546,10 +546,10 @@ describe('startup cleanup sweep', () => {
 })
 
 describe('discoverDefaultRoots', () => {
-  it('returns only real dsh-spill-* directories, excluding symlinks and non-matches', async () => {
-    const base = mkdtempSync(join(tmpdir(), 'dsh-disc-'))
+  it('returns only real gnk-spill-* directories, excluding symlinks and non-matches', async () => {
+    const base = mkdtempSync(join(tmpdir(), 'gnk-disc-'))
     try {
-      // A real backend-shaped root (dsh-spill-<6>) via mkdtemp — the only match.
+      // A real backend-shaped root (gnk-spill-<6>) via mkdtemp — the only match.
       const realRoot = mkdtempSync(join(base, DEFAULT_ROOT_PREFIX))
       mkdirSync(join(base, 'unrelated-dir'))
       // Names of the EXACT default shape that must still be excluded because they

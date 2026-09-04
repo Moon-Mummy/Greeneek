@@ -1,12 +1,12 @@
 /** Stable Client source identity with a fresh descriptor for each WebSocket generation. */
 
-import { randomUUID } from '@deepseek-ai/dsh-util-crypto'
+import { randomUUID } from '@greeneek/gnk-util-crypto'
 import { inspectorId } from '../../shared/identity.ts'
 import type { InspectorSourceDescriptor } from '../../shared/bridge/messages/observation.ts'
 import { bridgeCapabilities } from '../cdp/index.ts'
 
-const CLIENT_SOURCE_STORAGE_KEY = 'dsh.experimental-inspector.client-source-id.v0'
-const CLIENT_SOURCE_LOCK_PREFIX = 'dsh.experimental-inspector.client-source:'
+const CLIENT_SOURCE_STORAGE_KEY = 'gnk.experimental-inspector.client-source-id.v0'
+const CLIENT_SOURCE_LOCK_PREFIX = 'gnk.experimental-inspector.client-source:'
 
 /** Owns one browser realm's stable source id across transport reconnects. */
 export class ClientRealmSource {

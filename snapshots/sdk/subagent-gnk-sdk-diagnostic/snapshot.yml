@@ -1,0 +1,8 @@
+version: 1
+scenario: subagent-gnk-sdk-diagnostic
+profile: sdk
+composition: sdk-gnk-sdk-diagnostic
+recording: live
+header:
+  class: sdk-gnk-sdk-diagnostic
+  pin: true

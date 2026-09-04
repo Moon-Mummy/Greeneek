@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md
-2026-08-28-omit-unneeded-invariant-companions.md: d4ab138d62a67c2c6666ae7998028fedb3a53580
-2026-08-28-omit-unneeded-invariant-companions.zh.md: 1fe8df52c45bc39ec006626acddc71d3048ff729
+2026-08-28-omit-unneeded-invariant-companions.md: 9f1f3e5b3ca195d25f20885d68966626c480a5a4
+2026-08-28-omit-unneeded-invariant-companions.zh.md: d78388c1233721f9dd483d3c64d2ae81a01f0733

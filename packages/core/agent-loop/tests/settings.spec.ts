@@ -1,17 +1,17 @@
 /** The `agent-loop` settings section layered over the composition entry. */
 
 import { describe, expect, it } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import type { Fiber } from '@deepseek-ai/cordis'
-import LlmRuntime from '@deepseek-ai/dsh-llm'
-import SessionStore from '@deepseek-ai/dsh-session'
-import SystemPrompt from '@deepseek-ai/dsh-system-prompt'
-import ToolRuntime from '@deepseek-ai/dsh-tools'
-import AgentRegistry from '@deepseek-ai/dsh-agent'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import { SettingsProvider } from '@deepseek-ai/dsh-settings'
-import type { SettingsNamespace } from '@deepseek-ai/dsh-settings'
-import AgentLoop, { AGENT_LOOP_SETTINGS_NAMESPACE } from '@deepseek-ai/dsh-agent-loop'
+import { Context } from '@greeneek/cordis'
+import type { Fiber } from '@greeneek/cordis'
+import LlmRuntime from '@greeneek/gnk-llm'
+import SessionStore from '@greeneek/gnk-session'
+import SystemPrompt from '@greeneek/gnk-system-prompt'
+import ToolRuntime from '@greeneek/gnk-tools'
+import AgentRegistry from '@greeneek/gnk-agent'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import { SettingsProvider } from '@greeneek/gnk-settings'
+import type { SettingsNamespace } from '@greeneek/gnk-settings'
+import AgentLoop, { AGENT_LOOP_SETTINGS_NAMESPACE } from '@greeneek/gnk-agent-loop'
 
 /** The smallest real provider: one in-memory document, always writable. */
 class MemorySettings extends SettingsProvider {

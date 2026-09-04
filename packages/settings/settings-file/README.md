@@ -3,13 +3,13 @@ description: "The file-backed settings provider for users and maintainers choosi
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-settings-file
+# @greeneek/gnk-settings-file
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-settings-file` keeps every namespace's user settings in one YAML or JSON document, by default `settings.yaml` under the harness home: users can edit the document directly — changes take effect live — or write through the service, which merges concurrent edits safely. YAML writes preserve comments, anchors, and formatting on every untouched node, and a section owned by a plugin that is not loaded is never dropped. Boot fails loud on an invalid document; a live reload that fails keeps the last good sections and warns rather than taking the process down.
+`gnk-settings-file` keeps every namespace's user settings in one YAML or JSON document, by default `settings.yaml` under the harness home: users can edit the document directly — changes take effect live — or write through the service, which merges concurrent edits safely. YAML writes preserve comments, anchors, and formatting on every untouched node, and a section owned by a plugin that is not loaded is never dropped. Boot fails loud on an invalid document; a live reload that fails keeps the last good sections and warns rather than taking the process down.
 
 ## Table of Contents
 
@@ -34,7 +34,7 @@ Choose it as the default user-settings store: one human-readable document that u
 ### Minimal configuration
 
 ```yaml
-- name: '@deepseek-ai/dsh-settings-file'
+- name: '@greeneek/gnk-settings-file'
   config:
     path: /absolute/path/to/settings.yaml
 ```
@@ -42,11 +42,11 @@ Choose it as the default user-settings store: one human-readable document that u
 | Field | Default | Meaning |
 |---|---|---|
 | `path` | `<harness home>/settings.yaml` | Settings document path; the extension picks the format (`.yaml`, `.yml`, or `.json`) |
-| `dshHome` | `$DSH_HOME` or `~/.dsh` | Harness home used when `path` is omitted |
+| `gnkHome` | `$GNK_HOME` or `~/.gnk` | Harness home used when `path` is omitted |
 | `watch` | `true` | Watch the document and hot-publish external edits |
 | `debounceMs` | `100` | Watcher write-settle window, in milliseconds |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-settings-file) is the exhaustive source for every accepted field and its JSDoc.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-settings-file) is the exhaustive source for every accepted field and its JSDoc.
 
 ### Editing the document
 
@@ -90,7 +90,7 @@ This section explains the design decisions behind the provider and points at the
 | File | Role |
 |---|---|
 | [`src/index.ts`](src/index.ts) | Provider: spec resolution, load/parse, read-modify-write under the writer lock, watcher lifecycle, YAML/JSON rendering |
-| — | No runtime invariant companion is published; this provider's contracts are file round-trip, watcher timing, and atomic-write behavior — IO effects proven by package tests; the in-process commit relation is owned by `@deepseek-ai/dsh-settings`. |
+| — | No runtime invariant companion is published; this provider's contracts are file round-trip, watcher timing, and atomic-write behavior — IO effects proven by package tests; the in-process commit relation is owned by `@greeneek/gnk-settings`. |
 
 ### Document lifecycle
 
@@ -113,8 +113,8 @@ Read these pages when the provider-level contract is not enough. They move from 
 - [Settings subsystem reference](../../../docs/subsystems/settings.md) — namespaces, resolution order, descriptors, and change commits.
 - [Settings package map](../README.md) — the two packages of the user-settings capability.
 - [Atomic write](../../util/atomic-write/README.md) — the writer lock and atomic replacement every write uses.
-- [Home paths](../../util/home-paths/README.md) — `$DSH_HOME` resolution and canonical watch paths.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-settings-file) — every accepted config field and its source declaration.
+- [Home paths](../../util/home-paths/README.md) — `$GNK_HOME` resolution and canonical watch paths.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-settings-file) — every accepted config field and its source declaration.
 
 -----
 

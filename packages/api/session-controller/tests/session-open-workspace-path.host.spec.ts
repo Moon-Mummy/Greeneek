@@ -1,6 +1,6 @@
-import { Context } from '@deepseek-ai/cordis'
-import AgentRegistry from '@deepseek-ai/dsh-agent'
-import SessionStore from '@deepseek-ai/dsh-session'
+import { Context } from '@greeneek/cordis'
+import AgentRegistry from '@greeneek/gnk-agent'
+import SessionStore from '@greeneek/gnk-session'
 import { describe, expect, it, vi } from 'vitest'
 import {
   createSessionTestController,

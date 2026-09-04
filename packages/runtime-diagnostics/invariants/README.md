@@ -3,13 +3,13 @@ description: "Runtime invariant checks for live compositions: the registry servi
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-invariants
+# @greeneek/gnk-invariants
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-invariants` runs package-owned runtime checks — invariants — inside a DeepSeek Harness composition: any package can ship a `./invariant` companion that verifies its own durable relationships (authoritative event streams and mutable snapshots) while the composition runs. Checks run automatically, and a failed check reports an `InvariantError` attributed to the package that owns the violated relationship. Choose it for compositions that want self-checking diagnostics with a global switch and package-name filters; the standard agent composition already mounts it with the four core companions, and loading the service alone installs no checks.
+`gnk-invariants` runs package-owned runtime checks — invariants — inside a Greeneek Harness composition: any package can ship a `./invariant` companion that verifies its own durable relationships (authoritative event streams and mutable snapshots) while the composition runs. Checks run automatically, and a failed check reports an `InvariantError` attributed to the package that owns the violated relationship. Choose it for compositions that want self-checking diagnostics with a global switch and package-name filters; the standard agent composition already mounts it with the four core companions, and loading the service alone installs no checks.
 
 ## Table of Contents
 
@@ -29,18 +29,18 @@ Mount the registry when a composition should verify its own runtime contracts, t
 
 ### When to use it
 
-Use the registry for compositions that want live diagnostics. [`dsh-sdk-minimal`](../../bundle/sdk-minimal/README.md) mounts it with the four core stateful companions — `dsh-session`, `dsh-agent`, `dsh-scope`, and `dsh-agent-loop`; `dsh-base` deliberately omits runtime diagnostics. Custom compositions mount the registry and add companions for any other loaded package whose contracts they want checked. Loading the registry alone installs no checks: it ships no product checks of its own, so a composition that never mounts a companion observes no diagnostic behavior.
+Use the registry for compositions that want live diagnostics. [`gnk-sdk-minimal`](../../bundle/sdk-minimal/README.md) mounts it with the four core stateful companions — `gnk-session`, `gnk-agent`, `gnk-scope`, and `gnk-agent-loop`; `gnk-base` deliberately omits runtime diagnostics. Custom compositions mount the registry and add companions for any other loaded package whose contracts they want checked. Loading the registry alone installs no checks: it ships no product checks of its own, so a composition that never mounts a companion observes no diagnostic behavior.
 
 ### Enabling checks and selecting packages
 
 The registry is enabled by default and checks every registered package unless filters say otherwise. Use `enabled` as a global switch, `package_allowlist` to admit only named packages, and `package_blocklist` to exclude packages after allowlist matching — a blocklist match overrides an allowlist match. Patterns are case-sensitive JavaScript regular-expression sources (unanchored unless they supply `^` and `$`), and an invalid, blank, or duplicate entry fails service startup instead of being skipped.
 
 ```yaml
-- name: '@deepseek-ai/dsh-invariants'
+- name: '@greeneek/gnk-invariants'
   config:
     enabled: true
     package_allowlist:
-      - '^@deepseek-ai/dsh-'
+      - '^@greeneek/gnk-'
 ```
 
 | Field | Default | Meaning |
@@ -49,7 +49,7 @@ The registry is enabled by default and checks every registered package unless fi
 | `package_allowlist` | `[]` | Regex sources admitting package names; empty admits all |
 | `package_blocklist` | `[]` | Regex sources excluding package names after allowlist matching |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-invariants) is the exhaustive source for every accepted field and its JSDoc.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-invariants) is the exhaustive source for every accepted field and its JSDoc.
 
 ### Which checks run
 
@@ -57,16 +57,16 @@ Each companion protects relationships its package owns, and a companion installs
 
 | Companion | Checks |
 |---|---|
-| `dsh-session`, `dsh-agent`, `dsh-scope`, `dsh-agent-loop` | Session log enclosure and call/result trace, agent-status transitions, scope-filtered dispatch subjects, loop-built request reconstruction |
-| `dsh-llm`, `dsh-llm-retry`, `dsh-tools`, `dsh-system-prompt` | LLM stream grammar, retry-failure shape, tool-pipeline stage pairing and frozen results, prompt-assembly section names |
-| `dsh-compaction`, `dsh-hook-protocol`, `dsh-sandbox-policy` | Compaction stream pairing, hook invocation/result pairing, sandbox mode values |
-| `dsh-fs`, `dsh-subagent`, `dsh-workflow`, `dsh-tool-workflow` | Filesystem event identity, subagent provider and start/end pairing, workflow lifecycle identity, workflow record shape |
-| `dsh-goal`, `dsh-goal-round-driver` | Durable goal-stream folds and reconstructed continuation prompts |
-| `dsh-permission-presets`, `dsh-user-approval`, `dsh-commands` | Preset references to live presets, approval asked/decided pairing, command run/done pairing |
-| `dsh-jobs`, `dsh-tool-todo`, `dsh-time-context` | Job snapshot field relationships, whole-list todo shape, durable clock readings |
-| `dsh-credentials`, `dsh-settings`, `dsh-storage-domain`, `dsh-workspace` | Commit events against the live service or memory state, entity-cache mirroring |
-| `dsh-agent-presets`, `dsh-session-title`, `dsh-plan-mode`, `dsh-schedule` | Preset mount placement, title source citation, plan-mode payload, schedule stream |
-| `dsh-client-hmr`, `dsh-client-modules`, `dsh-client-runtime` | Browser/node-half stat-watcher lifecycle, boot entry graph, slot mutation versioning |
+| `gnk-session`, `gnk-agent`, `gnk-scope`, `gnk-agent-loop` | Session log enclosure and call/result trace, agent-status transitions, scope-filtered dispatch subjects, loop-built request reconstruction |
+| `gnk-llm`, `gnk-llm-retry`, `gnk-tools`, `gnk-system-prompt` | LLM stream grammar, retry-failure shape, tool-pipeline stage pairing and frozen results, prompt-assembly section names |
+| `gnk-compaction`, `gnk-hook-protocol`, `gnk-sandbox-policy` | Compaction stream pairing, hook invocation/result pairing, sandbox mode values |
+| `gnk-fs`, `gnk-subagent`, `gnk-workflow`, `gnk-tool-workflow` | Filesystem event identity, subagent provider and start/end pairing, workflow lifecycle identity, workflow record shape |
+| `gnk-goal`, `gnk-goal-round-driver` | Durable goal-stream folds and reconstructed continuation prompts |
+| `gnk-permission-presets`, `gnk-user-approval`, `gnk-commands` | Preset references to live presets, approval asked/decided pairing, command run/done pairing |
+| `gnk-jobs`, `gnk-tool-todo`, `gnk-time-context` | Job snapshot field relationships, whole-list todo shape, durable clock readings |
+| `gnk-credentials`, `gnk-settings`, `gnk-storage-domain`, `gnk-workspace` | Commit events against the live service or memory state, entity-cache mirroring |
+| `gnk-agent-presets`, `gnk-session-title`, `gnk-plan-mode`, `gnk-schedule` | Preset mount placement, title source citation, plan-mode payload, schedule stream |
+| `gnk-client-hmr`, `gnk-client-modules`, `gnk-client-runtime` | Browser/node-half stat-watcher lifecycle, boot entry graph, slot mutation versioning |
 
 Every other workspace package omits the companion and states the package-specific reason in its README.
 
@@ -75,9 +75,9 @@ Every other workspace package omits the companion and states the package-specifi
 A companion is a normal plugin you mount beside the registry. It declares any services it needs and registers under its package's exact npm name; the registry joins its setup before the registration completes.
 
 ```ts
-import type { Context } from '@deepseek-ai/cordis'
-import InvariantRegistry from '@deepseek-ai/dsh-invariants'
-import * as SessionInvariant from '@deepseek-ai/dsh-session/invariant'
+import type { Context } from '@greeneek/cordis'
+import InvariantRegistry from '@greeneek/gnk-invariants'
+import * as SessionInvariant from '@greeneek/gnk-session/invariant'
 
 declare const ctx: Context
 
@@ -127,7 +127,7 @@ This section explains the design behind the registry; the observable behavior is
 Read these pages when the package-level contract is not enough. They move from the generated service reference to the decision evidence and the group map.
 
 - [Runtime invariants subsystem](../../../docs/subsystems/invariants.md) — the generated reference for `Config`, the installer, the service, and the companion contract.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-invariants) — every accepted config field and its source declaration.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-invariants) — every accepted config field and its source declaration.
 - [Package-owned invariant service Agent Note](../../../.agents/notes/implemented/architecture/2026-07-19-package-owned-invariant-service.md) — why checks live beside their owners and the registry owns selection and lifecycle.
 - [Invariant runtime contracts Agent Note](../../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md) — what a runtime invariant may assert and the mechanical gate that enforces companion wiring.
 - [Runtime-diagnostics group map](../../README.md) — adjacent diagnostics packages.
@@ -152,7 +152,7 @@ These limits define when the registry is a poor fit or needs operational care. T
 
 - **Filters are fixed for the service lifetime** — `enabled`, `package_allowlist`, and `package_blocklist` are compiled once at startup; changing them requires a Cordis plugin reload.
 - **Live-only companions miss pre-reload operations** — a companion that only observes live operations cannot reconstruct operations that began before its own reload; session-backed companions rebuild their baseline from durable events.
-- **Request reconstruction covers loop-built requests only** — the `dsh-agent-loop` companion reconstructs requests explicitly built by the loop; direct one-shot LLM calls remain outside that contract even when callers freeze them or attach a session id.
+- **Request reconstruction covers loop-built requests only** — the `gnk-agent-loop` companion reconstructs requests explicitly built by the loop; direct one-shot LLM calls remain outside that contract even when callers freeze them or attach a session id.
 - **No checks without a companion** — the registry ships no product checks; a composition that mounts the service alone observes nothing.
 
 <a id="dev-note"></a>

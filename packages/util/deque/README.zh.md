@@ -3,13 +3,13 @@ description: "供 Host 和浏览器包使用的环形双端队列，提供摊销
 kind: "package-library"
 ---
 
-# @deepseek-ai/dsh-deque
+# @greeneek/gnk-deque
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-deque` 让 Host 和浏览器包可以排空长期存在的进程内队列，而无需在每次移除后移动所有剩余条目。调用方可以追加或前插条目，并以摊销常数时间从前端移除。双端队列负责条目顺序和后备存储释放；唤醒、失败、取消、容量和过载行为仍由各消费方负责。
+`gnk-deque` 让 Host 和浏览器包可以排空长期存在的进程内队列，而无需在每次移除后移动所有剩余条目。调用方可以追加或前插条目，并以摊销常数时间从前端移除。双端队列负责条目顺序和后备存储释放；唤醒、失败、取消、容量和过载行为仍由各消费方负责。
 
 ## 目录
 
@@ -34,7 +34,7 @@ kind: "package-library"
 导入双端队列，在尾部追加条目；当条目类型可能包含 `undefined` 时，在移除前检查 `size`：
 
 ```ts
-import { Deque } from '@deepseek-ai/dsh-deque'
+import { Deque } from '@greeneek/gnk-deque'
 
 const frames = new Deque<string>()
 frames.pushBack('first')

@@ -6,10 +6,10 @@ import { realpath } from 'node:fs/promises'
 import { execFile } from 'node:child_process'
 import { pathToFileURL } from 'node:url'
 import { promisify } from 'node:util'
-import { Context } from '@deepseek-ai/cordis'
-import LocalFileSystem from '@deepseek-ai/dsh-fs-local'
-import { deadline } from '@deepseek-ai/dsh-timeout'
-import { canonicalizeWorkspace, readHostSource } from '@deepseek-ai/dsh-lsp-stdio'
+import { Context } from '@greeneek/cordis'
+import LocalFileSystem from '@greeneek/gnk-fs-local'
+import { deadline } from '@greeneek/gnk-timeout'
+import { canonicalizeWorkspace, readHostSource } from '@greeneek/gnk-lsp-stdio'
 
 const execFileAsync = promisify(execFile)
 

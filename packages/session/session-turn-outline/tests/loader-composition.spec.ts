@@ -10,13 +10,13 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { afterEach, describe, expect, it } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import Loader from '@deepseek-ai/cordis-plugin-loader'
-import Include from '@deepseek-ai/cordis-plugin-include'
-import { createAssistantMessage, createUserMessage } from '@deepseek-ai/dsh-llm'
-import SessionStore, { SessionId } from '@deepseek-ai/dsh-session'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import * as SessionTurnOutlinePlugin from '@deepseek-ai/dsh-session-turn-outline'
+import { Context } from '@greeneek/cordis'
+import Loader from '@greeneek/cordis-plugin-loader'
+import Include from '@greeneek/cordis-plugin-include'
+import { createAssistantMessage, createUserMessage } from '@greeneek/gnk-llm'
+import SessionStore, { SessionId } from '@greeneek/gnk-session'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import * as SessionTurnOutlinePlugin from '@greeneek/gnk-session-turn-outline'
 
 let root: string | undefined
 let context: Context | undefined
@@ -29,7 +29,7 @@ afterEach(async () => {
 })
 
 async function loadYaml(lines: readonly string[]): Promise<Context> {
-  root = await mkdtemp(join(tmpdir(), 'dsh-session-turn-outline-loader-'))
+  root = await mkdtemp(join(tmpdir(), 'gnk-session-turn-outline-loader-'))
   const configPath = join(root, 'cordis.yml')
   await writeFile(configPath, [...lines, ''].join('\n'))
 
@@ -38,9 +38,9 @@ async function loadYaml(lines: readonly string[]): Promise<Context> {
   await context.plugin(Loader)
   context.loader.builtins.include = Include
   const modules = new Map<string, unknown>([
-    ['@deepseek-ai/dsh-session', SessionStore],
-    ['@deepseek-ai/dsh-session-projection', SessionProjectionRegistry],
-    ['@deepseek-ai/dsh-session-turn-outline', SessionTurnOutlinePlugin],
+    ['@greeneek/gnk-session', SessionStore],
+    ['@greeneek/gnk-session-projection', SessionProjectionRegistry],
+    ['@greeneek/gnk-session-turn-outline', SessionTurnOutlinePlugin],
   ])
   context.loader.internal = {
     version: 'v2',
@@ -60,9 +60,9 @@ async function loadYaml(lines: readonly string[]): Promise<Context> {
 describe('real Loader composition', () => {
   it('loads the shipped session-turn-outline YAML shape and serves the outline', async () => {
     const loaded = await loadYaml([
-      "- name: '@deepseek-ai/dsh-session'",
-      "- name: '@deepseek-ai/dsh-session-projection'",
-      "- name: '@deepseek-ai/dsh-session-turn-outline'",
+      "- name: '@greeneek/gnk-session'",
+      "- name: '@greeneek/gnk-session-projection'",
+      "- name: '@greeneek/gnk-session-turn-outline'",
     ])
 
     const unloaded = [...loaded.loader.entries()]
@@ -81,7 +81,7 @@ describe('real Loader composition', () => {
       step: 1,
       message: createAssistantMessage({
         content: [{ type: 'text', text: 'composed answer' }],
-        source: { provider: 'deepseek-official', model: 'deepseek-v4-flash' },
+        source: { provider: 'greeneek-official', model: 'greeneek-v4-flash' },
       }),
     }, { surfaceOp: 'append' })
     session.append('turn/end', { turn: 1, reason: { kind: 'completed' } })

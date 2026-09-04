@@ -3,15 +3,15 @@ import { findUnavailableRepositoryReferences } from './verify-public-repository-
 
 describe('repository link policy', () => {
   it('rejects encoded and case-varied references to the unavailable repository', () => {
-    const unavailableOwner = ['deepseek', 'ai'].join('-')
-    const unavailableName = ['deepseek', 'harness', 'sdk'].join('-')
+    const unavailableOwner = ['greeneek', 'ai'].join('-')
+    const unavailableName = ['greeneek', 'harness', 'sdk'].join('-')
     const unavailableRepository = `${unavailableOwner}/${unavailableName}`
     const encodedRepository = unavailableRepository.replaceAll('-', '%2D').replace('/', '%2F')
     const htmlEncodedRepository = unavailableRepository.replace('/', '&#x2f;')
     const jsonEscapedRepository = unavailableRepository.replace('/', '\\/')
     const unicodeEscapedRepository = unavailableRepository.replace('/', String.raw`\u002f`)
     const source = [
-      'https://github.com/deepseek-ai/deepseek-harness',
+      'https://github.com/greeneek/greeneek-harness',
       `https://github.com/${unavailableRepository.toUpperCase()}/issues/1`,
       `https://github.com/${encodedRepository}/issues/2`,
       `https://github.com/${htmlEncodedRepository}/issues/3`,
@@ -31,7 +31,7 @@ describe('repository link policy', () => {
   })
 
   it('preserves frozen archived Agent Notes', () => {
-    const unavailableRepository = ['deepseek-ai', 'deepseek-harness-sdk'].join('/')
+    const unavailableRepository = ['greeneek', 'greeneek-harness-sdk'].join('/')
 
     expect(findUnavailableRepositoryReferences(
       '.agents/notes/archived/process/historical-record.md',

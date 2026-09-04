@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-code-runtime-worker-thread",
-  "description": "Worker-thread implementation of the DeepSeek Harness code-execution seam",
+  "name": "@greeneek/gnk-code-runtime-worker-thread",
+  "description": "Worker-thread implementation of the Greeneek Harness code-execution seam",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/code-runtime/code-runtime-worker-thread"
   },
   "type": "module",
@@ -31,19 +31,19 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-code-runtime": "workspace:^",
-    "@deepseek-ai/dsh-session": "workspace:^",
-    "@deepseek-ai/dsh-timeout": "workspace:^"
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-code-runtime": "workspace:^",
+    "@greeneek/gnk-session": "workspace:^",
+    "@greeneek/gnk-timeout": "workspace:^"
   },
   "dependencies": {
-    "@deepseek-ai/dsh-util-values": "workspace:^",
-    "@deepseek-ai/schemastery": "workspace:^"
+    "@greeneek/gnk-util-values": "workspace:^",
+    "@greeneek/schemastery": "workspace:^"
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "workspace:^",
-    "@deepseek-ai/dsh-code-runtime": "workspace:^",
-    "@deepseek-ai/dsh-session": "workspace:^",
-    "@deepseek-ai/dsh-timeout": "workspace:^"
+    "@greeneek/cordis": "workspace:^",
+    "@greeneek/gnk-code-runtime": "workspace:^",
+    "@greeneek/gnk-session": "workspace:^",
+    "@greeneek/gnk-timeout": "workspace:^"
   }
 }

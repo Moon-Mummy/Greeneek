@@ -6,13 +6,13 @@ English | [中文](2026-08-28-linear-stream-queue-drain.zh.md)
 
 ## Problem
 
-Long-lived stream queues can accumulate thousands of frames while their consumers are busy. Removing each frame with `Array.prototype.shift()` moves the remaining array range on the observed V8 path, so draining `N` queued frames performs quadratic reference movement and delays unrelated work on the same event loop. [Issue #3270](https://github.com/deepseek-harness/deepseek-harness/issues/3270) records the production sample that identified `ArrayShift`, `MoveRange`, and `memmove` as the dominant stack.
+Long-lived stream queues can accumulate thousands of frames while their consumers are busy. Removing each frame with `Array.prototype.shift()` moves the remaining array range on the observed V8 path, so draining `N` queued frames performs quadratic reference movement and delays unrelated work on the same event loop. [Issue #3270](https://github.com/greeneek/greeneek-harness/issues/3270) records the production sample that identified `ArrayShift`, `MoveRange`, and `memmove` as the dominant stack.
 
 The affected streams have different wake-up, failure, cancellation, and disposal behavior. Their shared requirement is storage that preserves FIFO order without making those lifecycle decisions.
 
 ## Decision
 
-`@deepseek-ai/dsh-deque` owns one zero-dependency circular array for Host and browser consumers. `pushBack()`, `pushFront()`, and `popFront()` change indices instead of moving the live range. A removal clears its slot immediately. The backing array doubles when full and halves when a non-empty deque reaches one quarter of capacity, so growth and compaction copy work remains amortized constant time and vacant storage stays bounded over interleaved queue use.
+`@greeneek/gnk-deque` owns one zero-dependency circular array for Host and browser consumers. `pushBack()`, `pushFront()`, and `popFront()` change indices instead of moving the live range. A removal clears its slot immediately. The backing array doubles when full and halves when a non-empty deque reaches one quarter of capacity, so growth and compaction copy work remains amortized constant time and vacant storage stays bounded over interleaved queue use.
 
 The package has no singleton state, symbols, or class identity shared between consumers. Each consumer constructs and confines its own deque, so duplicate npm copies preserve runtime behavior and the published dependency policy treats `Deque` as a safe Host export. The Client bundle purity rule also treats the package as an inline-safe library. The Gateway browser artifact carries its deque implementation without introducing a module-table entry or a Cordis service.
 

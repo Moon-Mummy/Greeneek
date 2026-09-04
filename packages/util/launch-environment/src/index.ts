@@ -3,10 +3,10 @@
  * supplied each value. Harness consumers resolve through it instead of a flattened
  * `process.env`; launchers may still materialize accepted values for config
  * expressions and third-party libraries.
- * @module @deepseek-ai/dsh-launch-environment
+ * @module @greeneek/gnk-launch-environment
  */
 
-import type { Context } from '@deepseek-ai/cordis'
+import type { Context } from '@greeneek/cordis'
 
 /**
  * Which layer supplied a value, from most to least trusted: the environment
@@ -96,14 +96,40 @@ export function createLaunchEnvironmentSnapshot(layers: readonly LaunchEnvironme
     }
     return undefined
   }
+  /**
+   * Pre-rebrand environment names remain readable for one release cycle.
+ * `GNK_*` falls through to `DSH_*` and `GREENEEK_*` to `DEEPSEEK_*`; the // rebrand:keep
+   * legacy spelling is consulted only after every layer misses the canonical
+   * name, so it can never shadow a current variable — only rescue an install
+   * that has not moved yet. Each legacy variable warns once per process.
+   * Support for the old prefixes ends in v1.0.
+   */
+  const legacyAlias = (name: string): string | undefined => // rebrand:keep
+    name.startsWith('GNK_') ? 'DSH_' + name.slice(4) /* rebrand:keep */
+      : name.startsWith('GREENEEK_') ? 'DEEPSEEK_' + name.slice(9) /* rebrand:keep */
+      : undefined
+  const warned = new Set<string>()
+  const getWithLegacy = (name: string, sources: readonly LaunchEnvironmentSource[]): LaunchEnvironmentEntry | undefined => {
+    const direct = getFrom(name, sources)
+    if (direct !== undefined) return direct
+    const alias = legacyAlias(name)
+    if (alias === undefined) return undefined
+    const legacy = getFrom(alias, sources)
+    if (legacy === undefined) return undefined
+    if (!warned.has(alias)) {
+      warned.add(alias)
+      console.warn(`${alias} is deprecated; set ${name} instead (support for the old name ends in v1.0)`)
+    }
+    return legacy
+  }
   return {
-    get: name => getFrom(name, SOURCE_ORDER),
-    getFrom,
+    get: name => getWithLegacy(name, SOURCE_ORDER),
+    getFrom: getWithLegacy,
   }
 }
 
 /** Context slot the launcher fills with this run's snapshot before any config entry mounts. */
-export const DSH_LAUNCH_ENVIRONMENT_KEY = 'launchEnvironment'
+export const GNK_LAUNCH_ENVIRONMENT_KEY = 'launchEnvironment'
 
 /**
  * Return the launcher's snapshot, or the inherited environment as the sole
@@ -112,11 +138,11 @@ export const DSH_LAUNCH_ENVIRONMENT_KEY = 'launchEnvironment'
  * @returns the snapshot to resolve user-facing values against.
  */
 export function launchEnvironmentOf(ctx: Context): LaunchEnvironmentSnapshot {
-  return ctx.get(DSH_LAUNCH_ENVIRONMENT_KEY)
+  return ctx.get(GNK_LAUNCH_ENVIRONMENT_KEY)
     ?? createLaunchEnvironmentSnapshot([{ source: 'process', values: process.env as Record<string, string> }])
 }
 
-declare module '@deepseek-ai/cordis' {
+declare module '@greeneek/cordis' {
   interface Context {
     /** Launcher-owned snapshot of this run's environment; absent in compositions the product CLI did not boot. */
     launchEnvironment?: LaunchEnvironmentSnapshot

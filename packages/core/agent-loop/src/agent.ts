@@ -1,7 +1,7 @@
 /**
  * Default Agent driver over queued turns and step-boundary input. Every request
  * is derived from the session log.
- * @module dsh-agent-loop/agent
+ * @module gnk-agent-loop/agent
  */
 
 import type {
@@ -14,25 +14,25 @@ import type {
   InboxTarget,
   PreStepDecision,
   RequestErrorAction,
-} from '@deepseek-ai/dsh-agent'
-import { Inbox, agentEvents, assembleContextFor } from '@deepseek-ai/dsh-agent'
-import type { GenerateOptions, LlmCallConfig, Message, PreparedLlmCall } from '@deepseek-ai/dsh-llm'
+} from '@greeneek/gnk-agent'
+import { Inbox, agentEvents, assembleContextFor } from '@greeneek/gnk-agent'
+import type { GenerateOptions, LlmCallConfig, Message, PreparedLlmCall } from '@greeneek/gnk-llm'
 import {
   BlockAssembler,
   LlmError,
   createAssistantMessage,
   errorChain,
   markAgentLoopRequest,
-} from '@deepseek-ai/dsh-llm'
-import { deepFreeze } from '@deepseek-ai/dsh-util-values'
-import type { Scope } from '@deepseek-ai/dsh-scope'
-import { createScope } from '@deepseek-ai/dsh-scope'
-import type { EpochHeader, RequestContext, Session, SessionId, SessionSeq, TurnEndReason, UserMessage } from '@deepseek-ai/dsh-session'
-import { canonicalHeader, headerEquals } from '@deepseek-ai/dsh-session'
-import { joinContextSections, renderContextSections, renderPrompt } from '@deepseek-ai/dsh-system-prompt'
-import type { PromptAssembly } from '@deepseek-ai/dsh-system-prompt'
-import type {} from '@deepseek-ai/dsh-session-projection'
-import type { Context } from '@deepseek-ai/cordis'
+} from '@greeneek/gnk-llm'
+import { deepFreeze } from '@greeneek/gnk-util-values'
+import type { Scope } from '@greeneek/gnk-scope'
+import { createScope } from '@greeneek/gnk-scope'
+import type { EpochHeader, RequestContext, Session, SessionId, SessionSeq, TurnEndReason, UserMessage } from '@greeneek/gnk-session'
+import { canonicalHeader, headerEquals } from '@greeneek/gnk-session'
+import { joinContextSections, renderContextSections, renderPrompt } from '@greeneek/gnk-system-prompt'
+import type { PromptAssembly } from '@greeneek/gnk-system-prompt'
+import type {} from '@greeneek/gnk-session-projection'
+import type { Context } from '@greeneek/cordis'
 import { RuntimeContextProjection } from './runtime-context.ts'
 import { executeToolCalls } from './tool-calls.ts'
 

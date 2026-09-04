@@ -3,13 +3,13 @@ description: "面向模型的 glob 与 grep 发现工具：供组合或排查 ag
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tool-fs-search
+# @greeneek/gnk-tool-fs-search
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-tool-fs-search` 提供面向模型的文件系统发现工具——`glob` 与 `grep`——由打包的 ripgrep 二进制支持，因此既不需要宿主 `rg` 安装，也不需要文件系统后端。每次调用都由 ripgrep 自身以固定参数集执行，并返回相对于工作目录的结果；由于每种载体都打包 ripgrep，工具始终可用。结果受可配置上限约束，达到上限的结果会在挂载可选 spill 存储时完整保存。当模型需要按模式发现文件或搜索文件内容时选择本包；文本文件的读取、写入与编辑是同级 `dsh-tool-fs` 包的职责。
+`gnk-tool-fs-search` 提供面向模型的文件系统发现工具——`glob` 与 `grep`——由打包的 ripgrep 二进制支持，因此既不需要宿主 `rg` 安装，也不需要文件系统后端。每次调用都由 ripgrep 自身以固定参数集执行，并返回相对于工作目录的结果；由于每种载体都打包 ripgrep，工具始终可用。结果受可配置上限约束，达到上限的结果会在挂载可选 spill 存储时完整保存。当模型需要按模式发现文件或搜索文件内容时选择本包；文本文件的读取、写入与编辑是同级 `gnk-tool-fs` 包的职责。
 
 ## 目录
 
@@ -32,11 +32,11 @@ kind: "package-reference"
 一个子进程后端，然后是工具；spill 后端为可选，使达到上限的结果可完整恢复。
 
 ```yaml
-- name: '@deepseek-ai/dsh-subprocess-local'
-- name: '@deepseek-ai/dsh-tool-fs-search'
+- name: '@greeneek/gnk-subprocess-local'
+- name: '@greeneek/gnk-tool-fs-search'
   config:
     sampleOverCapGlobResults: false
-- name: '@deepseek-ai/dsh-spill-local'
+- name: '@greeneek/gnk-spill-local'
 ```
 
 `sampleOverCapGlobResults` 是必填项且没有回退值：部署必须显式选择超过上限时的排序约定。格式化 spill 成功时，两种模式都会在 spill 产物中保留完整排序列表。
@@ -66,7 +66,7 @@ kind: "package-reference"
 | `stderrMaxBytes` | `65536` | `rg` stderr 的诊断尾部预算 |
 | `searchMetaMaxBytes` | `65536` | 一次搜索序列化 `presentationMeta` 的字节上限；超出部分丢弃尾部的组/路径 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-fs-search)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-tool-fs-search)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### 部署要求
 
@@ -123,7 +123,7 @@ Node 部署在受支持的 macOS、Linux 与 Windows 目标上获得 `@vscode/ri
 - [子进程能力](../../../docs/subsystems/subprocess.zh.md)——这些工具执行所经由的 spawn seam。
 - [Spill 存储](../../spill/spill/README.zh.md)——使达到上限结果可完整恢复的可选后端。
 - [超时工具](../../util/timeout/README.zh.md)——终止宽限期的 `MAX_TIMER_DELAY_MS` 上限。
-- [生成工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-fs-search)——本包注册的穷尽式 schema。
+- [生成工具目录](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-fs-search)——本包注册的穷尽式 schema。
 
 -----
 
@@ -166,7 +166,7 @@ Use the grep tool — not shell grep or rg — to search file contents. Use read
 
 #### 模型看到的内容
 
-glob 描述声明了配置的超过上限排序方式。生成的 [`glob` 和 `grep` schema](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-fs-search) 使用 `sampleOverCapGlobResults: true`；工具无条件注册。
+glob 描述声明了配置的超过上限排序方式。生成的 [`glob` 和 `grep` schema](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-fs-search) 使用 `sampleOverCapGlobResults: true`；工具无条件注册。
 
 #### Token 影响
 

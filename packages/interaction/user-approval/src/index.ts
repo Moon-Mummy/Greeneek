@@ -1,26 +1,26 @@
 /**
  * Service Definition for the approval capability seam, covering requests, cancellation, audit, and per-session policy. Missing
  * answerers fail closed; grants apply only to the requested action.
- * @module @deepseek-ai/dsh-user-approval
+ * @module @greeneek/gnk-user-approval
  */
 
 import { randomUUID } from 'node:crypto'
-import { Context, Service } from '@deepseek-ai/cordis'
-import z from '@deepseek-ai/schemastery'
-import type { Agent } from '@deepseek-ai/dsh-agent'
-import { createUserMessage, type ToolCallId } from '@deepseek-ai/dsh-llm'
-import { scopeTarget } from '@deepseek-ai/dsh-scope'
-import type { Session } from '@deepseek-ai/dsh-session'
-import { SessionSeq } from '@deepseek-ai/dsh-session'
-import type {} from '@deepseek-ai/dsh-system-prompt'
+import { Context, Service } from '@greeneek/cordis'
+import z from '@greeneek/schemastery'
+import type { Agent } from '@greeneek/gnk-agent'
+import { createUserMessage, type ToolCallId } from '@greeneek/gnk-llm'
+import { scopeTarget } from '@greeneek/gnk-scope'
+import type { Session } from '@greeneek/gnk-session'
+import { SessionSeq } from '@greeneek/gnk-session'
+import type {} from '@greeneek/gnk-system-prompt'
 
-declare module '@deepseek-ai/cordis' {
+declare module '@greeneek/cordis' {
   interface Context {
     approval: ApprovalService
   }
 }
 
-declare module '@deepseek-ai/dsh-session/types' {
+declare module '@greeneek/gnk-session/types' {
   interface SessionEventMap {
     /**
      * The session's approval policy was switched — log-only, durable,

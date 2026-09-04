@@ -3,13 +3,13 @@ description: "领域数据形式（ctx.storageDomain）：面向在存储后端�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-storage-domain
+# @greeneek/gnk-storage-domain
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-storage-domain` 是使用存储家族的类型化方式：由所属包声明一次领域——其名称、格式版本与 zod 记录 schema——宿主消费方在已路由后端上打开它，并通过 `ctx.storageDomain` 读写记录。读取同步取自具有最终决定权的内存状态；每次写入在 resolve 前都已持久，并发出 `domain/changed` 事件，因此读取永远不会与已存介质分叉。它是后端约定的唯一消费方——产品包绝不直接触碰后端。本层只面向宿主侧：它不注册工具、不注入提示词，也不追加会话事件，因此模型与 agent loop（智能体循环）永远不会看到它。
+`gnk-storage-domain` 是使用存储家族的类型化方式：由所属包声明一次领域——其名称、格式版本与 zod 记录 schema——宿主消费方在已路由后端上打开它，并通过 `ctx.storageDomain` 读写记录。读取同步取自具有最终决定权的内存状态；每次写入在 resolve 前都已持久，并发出 `domain/changed` 事件，因此读取永远不会与已存介质分叉。它是后端约定的唯一消费方——产品包绝不直接触碰后端。本层只面向宿主侧：它不注册工具、不注入提示词，也不追加会话事件，因此模型与 agent loop（智能体循环）永远不会看到它。
 
 ## 目录
 
@@ -66,7 +66,7 @@ domain.table('workspaces').update(id, (r) => ({ ...r, path: newPath }))
 | `backend` | 必填 | 未显式路由的每个领域的默认后端名称 |
 | `routes` | `{}` | 逐领域覆盖：领域名称 → 后端名称 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-storage-domain)是每个受支持字段及其 JSDoc 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-storage-domain)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### 可观察行为与失败
 

@@ -167,8 +167,8 @@
         "seq": 68,
         "val": {
           "lastUsed": {
-            "provider": "deepseek-official",
-            "model": "deepseek-v4-flash",
+            "provider": "greeneek-official",
+            "model": "greeneek-v4-flash",
             "reasoningEffort": "high"
           },
           "pending": null

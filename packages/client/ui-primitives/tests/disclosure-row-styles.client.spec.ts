@@ -21,18 +21,18 @@ function declarations(selector: string): string[] {
 describe('DisclosureRow.module.css font-size axis', () => {
   it('sizes the title from the secondary content tier on the shared row line', () => {
     expect(declarations('.title')).toEqual(expect.arrayContaining([
-      'font-size: var(--dsh-content-font-size-secondary, 13px)',
-      'line-height: calc(24px + var(--dsh-content-font-delta, 0px))',
+      'font-size: var(--gnk-content-font-size-secondary, 13px)',
+      'line-height: calc(24px + var(--gnk-content-font-delta, 0px))',
     ]))
   })
 
   it('moves the row height and leading box by the same delta', () => {
     expect(declarations('.row')).toEqual(expect.arrayContaining([
-      'height: calc(24px + var(--dsh-content-font-delta, 0px))',
+      'height: calc(24px + var(--gnk-content-font-delta, 0px))',
     ]))
     expect(declarations('.leading')).toEqual(expect.arrayContaining([
-      'width: calc(16px + var(--dsh-content-font-delta, 0px))',
-      'height: calc(16px + var(--dsh-content-font-delta, 0px))',
+      'width: calc(16px + var(--gnk-content-font-delta, 0px))',
+      'height: calc(16px + var(--gnk-content-font-delta, 0px))',
     ]))
   })
 
@@ -40,8 +40,8 @@ describe('DisclosureRow.module.css font-size axis', () => {
     // StateDot marks itself with data-state; the :not filter keeps the status
     // mark at its fixed figma size while text-furniture icons follow the text.
     expect(declarations('.leading svg:not([data-state])')).toEqual(expect.arrayContaining([
-      'width: calc(14px + var(--dsh-content-font-delta, 0px))',
-      'height: calc(14px + var(--dsh-content-font-delta, 0px))',
+      'width: calc(14px + var(--gnk-content-font-delta, 0px))',
+      'height: calc(14px + var(--gnk-content-font-delta, 0px))',
     ]))
   })
 })

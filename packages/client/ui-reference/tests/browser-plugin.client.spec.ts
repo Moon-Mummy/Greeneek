@@ -3,16 +3,16 @@
  * deterministic ordering and labels, quoted-path suppression, pick projections, codec
  * round-trip, and registration lifecycle.
  */
-import { Context, Service } from '@deepseek-ai/cordis'
+import { Context, Service } from '@greeneek/cordis'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { LocaleRuntime } from '@deepseek-ai/dsh-client-locale/client'
-import type { SessionId } from '@deepseek-ai/dsh-session/types'
-import { RemoteError } from '@deepseek-ai/dsh-client-test-runtime'
+import { LocaleRuntime } from '@greeneek/gnk-client-locale/client'
+import type { SessionId } from '@greeneek/gnk-session/types'
+import { RemoteError } from '@greeneek/gnk-client-test-runtime'
 import type {
   CandidateRequest, ClientSessionContext, InputTriggerCandidate, InputTriggerSource,
-} from '@deepseek-ai/dsh-client-ui-input-trigger/client'
-import type { FileReferenceCandidate } from '@deepseek-ai/dsh-file-reference/types'
-import type { SessionReferenceMentionCandidate } from '@deepseek-ai/dsh-session-reference/types'
+} from '@greeneek/gnk-client-ui-input-trigger/client'
+import type { FileReferenceCandidate } from '@greeneek/gnk-file-reference/types'
+import type { SessionReferenceMentionCandidate } from '@greeneek/gnk-session-reference/types'
 import { apply, inject } from '../src/client/index.ts'
 import { apply as nodeApply } from '../src/index.ts'
 
@@ -71,7 +71,7 @@ async function bench(
       cwd: `${HOME}/project`,
       sameWorkspace: false,
       createdAt: CREATED_AT,
-      mention: '@[Research](dsh-session:InNvdXJjZSI)',
+      mention: '@[Research](gnk-session:InNvdXJjZSI)',
     }],
   })),
   listed: Record<string, { updatedAt: number }> = {},
@@ -180,7 +180,7 @@ describe('candidates', () => {
             cwd: `${HOME}/project`,
             sameWorkspace: false,
             createdAt: CREATED_AT,
-            mention: '@[Research](dsh-session:InNvdXJjZSI)',
+            mention: '@[Research](gnk-session:InNvdXJjZSI)',
           }],
         })
       }
@@ -232,7 +232,7 @@ describe('candidates', () => {
         cwd: `${HOME}/project`,
         sameWorkspace: false,
         createdAt: CREATED_AT,
-        mention: '@[Research](dsh-session:InNvdXJjZSI)',
+        mention: '@[Research](gnk-session:InNvdXJjZSI)',
       }],
     }))
     const { source } = await bench(files, sessions)
@@ -296,7 +296,7 @@ describe('candidates', () => {
         label: 'same',
         sameWorkspace: false,
         createdAt: CREATED_AT,
-        mention: '@[same](dsh-session:InNhbWUi)',
+        mention: '@[same](gnk-session:InNhbWUi)',
       }],
     }))
     const { source } = await bench(files, sessions)
@@ -318,7 +318,7 @@ describe('candidates', () => {
         cwd: `${HOME}/project`,
         sameWorkspace: true,
         createdAt: CREATED_AT,
-        mention: '@[Unlisted run](dsh-session:InVubGlzdGVkIg)',
+        mention: '@[Unlisted run](gnk-session:InVubGlzdGVkIg)',
       }],
     }))
     // A row absent from the list has no durable activity time to read.
@@ -338,7 +338,7 @@ describe('candidates', () => {
         cwd: `${HOME}/project`,
         sameWorkspace: true,
         createdAt: NOW - 1_000,
-        mention: '@[Just now](dsh-session:Imp1c3Qtbm93Ig)',
+        mention: '@[Just now](gnk-session:Imp1c3Qtbm93Ig)',
       }],
     }))
     const { source } = await bench(files, sessions, { 'just-now': { updatedAt: NOW - 1_000 } })
@@ -357,7 +357,7 @@ describe('candidates', () => {
         cwd: `${HOME}/project`,
         sameWorkspace: true,
         createdAt: CREATED_AT,
-        mention: '@[Sibling run](dsh-session:InNpYmxpbmdyIg)',
+        mention: '@[Sibling run](gnk-session:InNpYmxpbmdyIg)',
       }],
     }))
     const { source } = await bench(files, sessions)
@@ -484,7 +484,7 @@ describe('pick and codec', () => {
     const { source } = await bench()
     const candidates = await source.candidates(session, request(''))
     const candidate = candidates.find(item => item.name === 'Research')!
-    const mention = '@[Research](dsh-session:InNvdXJjZSI)'
+    const mention = '@[Research](gnk-session:InNvdXJjZSI)'
     expect(pick(source, candidate)).toEqual({
       insert: {
         source: 'reference',

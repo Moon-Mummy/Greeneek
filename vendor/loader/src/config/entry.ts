@@ -1,5 +1,5 @@
-import { Context, Fiber, Inject } from '@deepseek-ai/cordis'
-import { deepEqual, isNullable } from '@deepseek-ai/cosmokit'
+import { Context, Fiber, Inject } from '@greeneek/cordis'
+import { deepEqual, isNullable } from '@greeneek/cosmokit'
 import { Loader } from '../index.ts'
 import { EntryGroup } from './group.ts'
 import { EntryTree } from './tree.ts'

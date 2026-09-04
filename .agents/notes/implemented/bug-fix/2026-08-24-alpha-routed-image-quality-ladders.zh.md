@@ -6,11 +6,11 @@ Status: implemented
 
 ## 问题
 
-`@deepseek-ai/dsh-attachment-local` 的图片规范化和请求版本编码此前按 5-bit 色数采样选择编码器：128×128 最近邻采样量化后不超过 256 色的图片先走 palette PNG（libimagequant）再退 WebP，其他透明图片走 WebP，其他不透明图片走 JPEG。高频摄影类 JPEG 的量化采样经常落在阈值以下，issue #2885 的 8000×8000 复现图片采样色数为 175 和 184，实际色数为 2145 和 4077，而 palette PNG 是管线里最慢的编码器，在这类内容上产物还比 JPEG 大约 4 倍（2048px master 尺寸实测 2657ms/3.95MiB 对 26ms/0.95MiB）。采样本身因 `fastShrinkOnLoad: false` 必须全尺寸解码，64MP 源图上每张都要付出 86 至 192ms。当所有候选都超过字节上限时，两个编码器还会进入按比例缩图重试的循环，最终以 `IMAGE_TOO_LARGE` 报错，而实测最坏输入（均匀噪声）在默认预算下第一档质量就能装下。
+`@greeneek/gnk-attachment-local` 的图片规范化和请求版本编码此前按 5-bit 色数采样选择编码器：128×128 最近邻采样量化后不超过 256 色的图片先走 palette PNG（libimagequant）再退 WebP，其他透明图片走 WebP，其他不透明图片走 JPEG。高频摄影类 JPEG 的量化采样经常落在阈值以下，issue #2885 的 8000×8000 复现图片采样色数为 175 和 184，实际色数为 2145 和 4077，而 palette PNG 是管线里最慢的编码器，在这类内容上产物还比 JPEG 大约 4 倍（2048px master 尺寸实测 2657ms/3.95MiB 对 26ms/0.95MiB）。采样本身因 `fastShrinkOnLoad: false` 必须全尺寸解码，64MP 源图上每张都要付出 86 至 192ms。当所有候选都超过字节上限时，两个编码器还会进入按比例缩图重试的循环，最终以 `IMAGE_TOO_LARGE` 报错，而实测最坏输入（均匀噪声）在默认预算下第一档质量就能装下。
 
 ## 决定
 
-两个编码器只按一个解码事实路由：带 alpha 通道的源图编码为 effort 0 的有损 WebP，不透明源图编码为 JPEG（libjpeg-turbo），共用质量阶梯 85、75、60（`encoding.ts` 的 `IMAGE_ENCODING_QUALITIES` / `WEBP_ENCODING_EFFORT` / `encodingLadder`）。色数分类器和 palette PNG 分支被删除而不是修复，误判这一 bug 类别因此不可能复发，也不再有图片付出分类解码成本。`normalizedImageMaxBytes` 和路由 `maxBytes` 的语义从上限改为阶梯目标：阶梯仍在第一个装得下的质量档停下，但全部档位都超过目标时保留最小产物，缩图重试循环被删除。提供方字节硬限制（DeepSeek 单图 32MiB、inline 预算）仍在传输字节的位置执行。master 尺寸规则从长边上限改为总像素预算：`normalizedImageMaxPixels`（默认 2048×2048）按比例缩放，`normalizedImageMaxDimension`（默认 8192，与准入单边上限一致）随后夹住长边，因此长页面截图这类极端长宽比保留短边分辨率（2000×20000 的源图短边保留约 647px 而不是 204px），正方形源图的规范化结果与之前完全一致。请求变换版本升到 `request-image-v5`，已有变体缓存按身份自然重建；内容寻址的 master 无需迁移，继续有效。请求缓存读取不再拒绝超过字节目标的条目，因为阶梯耗尽的产物就是该 variant id 的确定性结果。
+两个编码器只按一个解码事实路由：带 alpha 通道的源图编码为 effort 0 的有损 WebP，不透明源图编码为 JPEG（libjpeg-turbo），共用质量阶梯 85、75、60（`encoding.ts` 的 `IMAGE_ENCODING_QUALITIES` / `WEBP_ENCODING_EFFORT` / `encodingLadder`）。色数分类器和 palette PNG 分支被删除而不是修复，误判这一 bug 类别因此不可能复发，也不再有图片付出分类解码成本。`normalizedImageMaxBytes` 和路由 `maxBytes` 的语义从上限改为阶梯目标：阶梯仍在第一个装得下的质量档停下，但全部档位都超过目标时保留最小产物，缩图重试循环被删除。提供方字节硬限制（Greeneek 单图 32MiB、inline 预算）仍在传输字节的位置执行。master 尺寸规则从长边上限改为总像素预算：`normalizedImageMaxPixels`（默认 2048×2048）按比例缩放，`normalizedImageMaxDimension`（默认 8192，与准入单边上限一致）随后夹住长边，因此长页面截图这类极端长宽比保留短边分辨率（2000×20000 的源图短边保留约 647px 而不是 204px），正方形源图的规范化结果与之前完全一致。请求变换版本升到 `request-image-v5`，已有变体缓存按身份自然重建；内容寻址的 master 无需迁移，继续有效。请求缓存读取不再拒绝超过字节目标的条目，因为阶梯耗尽的产物就是该 variant id 的确定性结果。
 
 对 issue #2885 复现集的 Pareto 实测（PR #2989 附录）支撑这个选择：摄影类内容上 JPEG 比其余所有编码器快 1 至 2 个数量级，effort 0 的 WebP 在图形类内容上体积与 palette PNG 相当且不会被误判；均匀噪声最坏输入在不透明链的 q85 一档即落入默认 4MiB/1MiB 目标，只有对抗性的随机 alpha 平面会耗尽 WebP 阶梯（约 6.3MiB，距提供方上限还有 5 倍）。
 

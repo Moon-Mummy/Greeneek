@@ -2,14 +2,14 @@
  * Watch-build for the web dev loop: rebuilds every artifact the browser reads
  * from a source edit. Reload signaling is not this script's business — the host
  * webserver stat-polls the bundles it serves and broadcasts `rebuilt` frames
- * itself (`dsh web`), so any process that rewrites `lib/client.js` files
+ * itself (`gnk web`), so any process that rewrites `lib/client.js` files
  * triggers reloads; this script is merely the convenient way to keep them all
  * rebuilt on source change.
  *
  * Three stages, because the compile shell links built lib products rather than
  * sources: `tsc -b tsconfig.client.json` emits `lib/types` (the tsdown lib
  * entries are that emit, not `src`), tsdown bundles `lib/index.js` and
- * `lib/client.js`, and `vite build` rewrites `apps/web/dist`, which `dsh web`
+ * `lib/client.js`, and `vite build` rewrites `apps/web/dist`, which `gnk web`
  * serves. A missing stage does not fail — it silently shows the previous
  * artifact, so an edit appears to do nothing.
  *
@@ -45,8 +45,8 @@ const repoRoot = fileURLToPath(new URL('..', import.meta.url))
 /** Client-face type emit feeding every tsdown lib entry in the watch set. */
 const CLIENT_TYPE_PROGRAM = 'tsconfig.client.json'
 
-/** Compile-shell workspace whose dist `dsh web` serves. */
-const SHELL_PACKAGE = '@deepseek-ai/dsh-web-frontend'
+/** Compile-shell workspace whose dist `gnk web` serves. */
+const SHELL_PACKAGE = '@greeneek/gnk-web-frontend'
 
 /**
  * Test infrastructure builds through the client preset but never enters the
@@ -69,7 +69,7 @@ export function devWebBuildEnvironment(
 
 /**
  * Discover the watch workspace by declaration: every packages/<group>/<name>
- * whose package.json carries `dsh.client` with platform "web" is a client
+ * whose package.json carries `gnk.client` with platform "web" is a client
  * plugin bundle emitter. Scanned once at startup — a package added while
  * watching means restarting this script.
  * @param root - repository root containing the grouped package directories.
@@ -79,9 +79,9 @@ export function discoverPluginDirs(root = repoRoot): string[] {
   const dirs: string[] = []
   for (const manifestPath of globSync('packages/*/*/package.json', { cwd: root }).sort()) {
     const manifest = JSON.parse(readFileSync(join(root, manifestPath), 'utf8')) as {
-      dsh?: { client?: { platform?: unknown } }
+      gnk?: { client?: { platform?: unknown } }
     }
-    if (manifest.dsh?.client?.platform === 'web') dirs.push(dirname(manifestPath).split(sep).join('/'))
+    if (manifest.gnk?.client?.platform === 'web') dirs.push(dirname(manifestPath).split(sep).join('/'))
   }
   return dirs
 }
@@ -89,7 +89,7 @@ export function discoverPluginDirs(root = repoRoot): string[] {
 /**
  * Discover the statically linked library packages: the other half of the same
  * partition {@link discoverPluginDirs} takes. A package that builds through the
- * client preset without declaring `dsh.client` has no loader-delivered browser
+ * client preset without declaring `gnk.client` has no loader-delivered browser
  * half, so the compile shell links its `lib/index.js` instead — and an edit to
  * its source reaches the browser only once that bundle is rewritten. Deriving
  * the set from the build preset rather than a hand list keeps it correct when
@@ -105,9 +105,9 @@ export function discoverLibraryDirs(root = repoRoot): string[] {
     if (dir.startsWith(TEST_INFRASTRUCTURE_PREFIX)) continue
     if (!readFileSync(join(root, configPath), 'utf8').includes('tsdown.client.ts')) continue
     const manifest = JSON.parse(readFileSync(join(root, dir, 'package.json'), 'utf8')) as {
-      dsh?: { client?: unknown }
+      gnk?: { client?: unknown }
     }
-    if (manifest.dsh?.client === undefined) dirs.push(dir)
+    if (manifest.gnk?.client === undefined) dirs.push(dir)
   }
   return dirs
 }
@@ -195,18 +195,18 @@ const isMain = invokedPath !== undefined && import.meta.url === pathToFileURL(re
 if (isMain) {
   const buildEnvironment = devWebBuildEnvironment(repoRoot, process.env)
   for (const name of Object.keys(process.env)) {
-    if (name === CLIENT_BUILD_PROFILE_SELECTOR || name.startsWith('DSH_CLIENT_')) {
+    if (name === CLIENT_BUILD_PROFILE_SELECTOR || name.startsWith('GNK_CLIENT_')) {
       Reflect.deleteProperty(process.env, name)
     }
   }
   for (const [name, value] of Object.entries(buildEnvironment)) {
-    if (name.startsWith('DSH_CLIENT_') && value !== undefined) process.env[name] = value
+    if (name.startsWith('GNK_CLIENT_') && value !== undefined) process.env[name] = value
   }
 
   const pluginDirs = discoverPluginDirs()
   const libraryDirs = discoverLibraryDirs()
   if (pluginDirs.length === 0) {
-    console.error('dev-web: no dsh.client (platform "web") packages found under packages/')
+    console.error('dev-web: no gnk.client (platform "web") packages found under packages/')
     process.exit(1)
   }
   if (libraryDirs.length === 0) {
@@ -257,7 +257,7 @@ if (isMain) {
   spawnStage('vite build --watch', 'pnpm', ['--filter', SHELL_PACKAGE, 'run', 'watch'], false)
 
   console.log(
-    `dev-web: watching ${String(pluginDirs.length)} dsh.client plugin packages`
+    `dev-web: watching ${String(pluginDirs.length)} gnk.client plugin packages`
     + ` and ${String(libraryDirs.length)} statically linked library packages`
     + (pollInterval !== undefined ? ` (polling ${String(pollInterval)}ms)` : '')
     + `, plus tsc -b ${CLIENT_TYPE_PROGRAM} and the ${SHELL_PACKAGE} dist build:\n  `

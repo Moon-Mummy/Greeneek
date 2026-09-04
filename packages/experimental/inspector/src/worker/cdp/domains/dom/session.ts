@@ -279,7 +279,7 @@ export class CordisDomSession {
       localName: document ? '' : node.name,
       nodeValue: '',
       ...(parentId === 0 ? {} : { parentId }),
-      ...(document ? { documentURL: 'dsh://cordis', baseURL: 'dsh://cordis' } : {}),
+      ...(document ? { documentURL: 'gnk://cordis', baseURL: 'gnk://cordis' } : {}),
       childNodeCount: node.children.length,
       ...(withChildren ? { children: node.children.map(child => this.serialize(child, nodeId, remaining - 1, delivery)) } : {}),
       attributes: node.attributes.flat(),

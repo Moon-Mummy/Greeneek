@@ -3,13 +3,13 @@ description: "The user-settings service for plugin authors and maintainers regis
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-settings
+# @greeneek/gnk-settings
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-settings` lets plugins expose configuration that users can change at runtime: a plugin registers a namespace with a schema, and the resolved value honors schema defaults, the deployment's own composition `base`, and the user-edited document section — with user overrides winning. Consumers read a snapshot of the resolved value and are notified of every committed change; configuration surfaces get one descriptor per namespace — schema, current value, which layer each field came from, effect timing — without touching storage directly. Writes change only the user overrides, run one at a time per namespace, and can carry an expected revision so a stale writer is refused instead of silently overwriting a newer one. A provider must be mounted to store the document; without one, nothing changes and configuration stays exactly as composed.
+`gnk-settings` lets plugins expose configuration that users can change at runtime: a plugin registers a namespace with a schema, and the resolved value honors schema defaults, the deployment's own composition `base`, and the user-edited document section — with user overrides winning. Consumers read a snapshot of the resolved value and are notified of every committed change; configuration surfaces get one descriptor per namespace — schema, current value, which layer each field came from, effect timing — without touching storage directly. Writes change only the user overrides, run one at a time per namespace, and can carry an expected revision so a stale writer is refused instead of silently overwriting a newer one. A provider must be mounted to store the document; without one, nothing changes and configuration stays exactly as composed.
 
 ## Table of Contents
 
@@ -36,12 +36,12 @@ Choose settings when a plugin's configuration should be changeable at runtime �
 The service stores nothing by itself; mount a provider such as the shipped file-backed one:
 
 ```yaml
-- name: '@deepseek-ai/dsh-settings-file'
+- name: '@greeneek/gnk-settings-file'
   config:
     path: /absolute/path/to/settings.yaml
 ```
 
-`ctx.settings` appears once the provider is live. The provider README owns the full configuration surface; the generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-settings-file) lists every accepted field.
+`ctx.settings` appears once the provider is live. The provider README owns the full configuration surface; the generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-settings-file) lists every accepted field.
 
 ### Registering a namespace
 

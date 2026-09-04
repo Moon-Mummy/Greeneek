@@ -3,13 +3,13 @@ description: "The stdio language-server provider for ctx.lsp: configured server 
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-lsp-stdio
+# @greeneek/gnk-lsp-stdio
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-lsp-stdio` turns configured local language-server commands into providers on `ctx.lsp`: give it a table of server commands and extension-to-language mappings, and agents get semantic code navigation over the files in those languages — definitions, references, implementations, and hover — served by real language servers. One plugin instance registers one isolated provider per configured server; each provider lazily starts one server process per workspace and opens the queried document transiently, so no document state accumulates between queries. Servers and sources always live in the mounted filesystem and subprocess execution world. It is a generic host, not a language-server catalog or installer — deployments configure commands explicitly. This package trusts its configured servers and adds no sandbox of its own.
+`gnk-lsp-stdio` turns configured local language-server commands into providers on `ctx.lsp`: give it a table of server commands and extension-to-language mappings, and agents get semantic code navigation over the files in those languages — definitions, references, implementations, and hover — served by real language servers. One plugin instance registers one isolated provider per configured server; each provider lazily starts one server process per workspace and opens the queried document transiently, so no document state accumulates between queries. Servers and sources always live in the mounted filesystem and subprocess execution world. It is a generic host, not a language-server catalog or installer — deployments configure commands explicitly. This package trusts its configured servers and adds no sandbox of its own.
 
 ## Table of Contents
 
@@ -25,17 +25,17 @@ English | [中文](README.zh.md)
 <a id="use-this-package"></a>
 ## Use this package
 
-Mount this provider when a deployment has local language servers — for example `typescript-language-server` — and wants the harness to navigate code through them. It needs filesystem and subprocess providers for the same execution world, plus the `dsh-lsp` seam and, for model access, `dsh-tool-lsp`.
+Mount this provider when a deployment has local language servers — for example `typescript-language-server` — and wants the harness to navigate code through them. It needs filesystem and subprocess providers for the same execution world, plus the `gnk-lsp` seam and, for model access, `gnk-tool-lsp`.
 
 ### Minimal configuration
 
 The `servers` record maps each stable provider id to one server command. The provider resolves every executable at load after credential scrubbing, so a bad entry prevents every provider from registering; processes launch lazily on the first matching query.
 
 ```yaml
-- name: '@deepseek-ai/dsh-fs-local'
-- name: '@deepseek-ai/dsh-subprocess-local'
-- name: '@deepseek-ai/dsh-lsp'
-- name: '@deepseek-ai/dsh-lsp-stdio'
+- name: '@greeneek/gnk-fs-local'
+- name: '@greeneek/gnk-subprocess-local'
+- name: '@greeneek/gnk-lsp'
+- name: '@greeneek/gnk-lsp-stdio'
   config:
     servers:
       typescript:
@@ -43,7 +43,7 @@ The `servers` record maps each stable provider id to one server command. The pro
         args: ['--stdio']
         extensionToLanguage:
           '.ts': typescript
-- name: '@deepseek-ai/dsh-tool-lsp'
+- name: '@greeneek/gnk-tool-lsp'
 ```
 
 | Field | Default | Meaning |
@@ -51,7 +51,7 @@ The `servers` record maps each stable provider id to one server command. The pro
 | `command` | required | Executable to spawn — absolute, or resolved on the child PATH at load; launched without a shell |
 | `extensionToLanguage` | required | Lowercase leading-dot extension → LSP language id (e.g. `{ '.ts': 'typescript' }`) |
 | `args` | `[]` | Arguments passed to the executable |
-| `env` | `{}` | Extra env merged over the credential-scrubbed ambient env; variables matching `KEY`/`PASSWORD`/`SECRET`/`TOKEN` and all `DSH_*` names are not forwarded |
+| `env` | `{}` | Extra env merged over the credential-scrubbed ambient env; variables matching `KEY`/`PASSWORD`/`SECRET`/`TOKEN` and all `GNK_*` names are not forwarded |
 | `initializationOptions` | `null` | Static `initialize` options forwarded to the server |
 | `configuration` | `null` | Static answer to every `workspace/configuration` item |
 | `maxMessageBytes` | `16000000` | Largest single framed message accepted from the server |
@@ -60,7 +60,7 @@ The `servers` record maps each stable provider id to one server command. The pro
 | `shutdownTimeoutMs` | `5000` | Graceful `shutdown`/`exit` budget before escalation |
 | `killGraceMs` | `2000` | Request-cancel and SIGTERM→SIGKILL escalation grace |
 
-`servers` must contain at least one entry with non-empty ids; timer budgets must be positive integers within Node's timer range, and byte caps must be positive. The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-lsp-stdio) is the exhaustive source for every accepted field.
+`servers` must contain at least one entry with non-empty ids; timer budgets must be positive integers within Node's timer range, and byte caps must be positive. The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-lsp-stdio) is the exhaustive source for every accepted field.
 
 ### What a query does
 
@@ -123,8 +123,8 @@ Read these pages when the package-level contract is not enough. They move from t
 
 - [LSP navigation subsystem](../../../docs/subsystems/lsp.md) — operations, coordinates, requests and results, and `LspError` codes.
 - [LSP capability seam Agent Note](../../../.agents/notes/implemented/architecture/2026-07-15-lsp-capability-seam.md) — design rationale, alternatives, and deliberately deferred API.
-- [dsh-lsp](../lsp/README.md) — the seam this provider registers against.
-- [dsh-tool-lsp](../tool-lsp/README.md) — the model-facing tool over the seam.
+- [gnk-lsp](../lsp/README.md) — the seam this provider registers against.
+- [gnk-tool-lsp](../tool-lsp/README.md) — the model-facing tool over the seam.
 - [lsp group map](../README.md) — the three-package family and its related documentation.
 
 -----
@@ -132,11 +132,11 @@ Read these pages when the package-level contract is not enough. They move from t
 <a id="model-experience"></a>
 ## Model Experience
 
-Indirectly, through `dsh-tool-lsp`, which surfaces this provider's normalized results while this host contributes no prompt or schema itself.
+Indirectly, through `gnk-tool-lsp`, which surfaces this provider's normalized results while this host contributes no prompt or schema itself.
 
 #### KV Cache effect
 
-No direct invalidation; `dsh-tool-lsp` owns request-prefix changes.
+No direct invalidation; `gnk-tool-lsp` owns request-prefix changes.
 
 ## Known Limitations and Deferred Work
 

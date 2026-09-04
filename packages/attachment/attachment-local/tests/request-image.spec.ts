@@ -1,7 +1,7 @@
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { Context } from '@deepseek-ai/cordis'
+import { Context } from '@greeneek/cordis'
 import sharp from 'sharp'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { CompressionLimiter } from '../src/compression-limiter.ts'
@@ -10,9 +10,9 @@ import LocalAttachmentStore from '../src/index.ts'
 const homes: string[] = []
 
 async function store(): Promise<LocalAttachmentStore> {
-  const dshHome = await mkdtemp(join(tmpdir(), 'dsh-request-image-'))
-  homes.push(dshHome)
-  return new LocalAttachmentStore(new Context(), { dshHome })
+  const gnkHome = await mkdtemp(join(tmpdir(), 'gnk-request-image-'))
+  homes.push(gnkHome)
+  return new LocalAttachmentStore(new Context(), { gnkHome })
 }
 
 async function image(width: number, height: number): Promise<Uint8Array> {

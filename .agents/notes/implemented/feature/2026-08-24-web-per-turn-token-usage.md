@@ -10,7 +10,7 @@ Web Chat exposes cumulative session token usage near the composer, but that valu
 
 ## Decision
 
-The shared `TokenUsage` value carries optional `totalTokens` for one model call. Adapters publish it only from an exact provider total or authoritative aggregate prompt and output counters. DeepSeek checks its prompt-plus-completion aggregate against any wire total, and pi-ai preserves its provided total.
+The shared `TokenUsage` value carries optional `totalTokens` for one model call. Adapters publish it only from an exact provider total or authoritative aggregate prompt and output counters. Greeneek checks its prompt-plus-completion aggregate against any wire total, and pi-ai preserves its provided total.
 
 Token-meter owns a browser-safe pure Turn-local fold over durable session events, shared with its retry-aware cumulative usage projection. `step/start` and `llm/retry-started` open actual attempts; a final assistant message replaces the same attempt's streaming sample; terminal failures, retries, and step boundaries close attempts without double counting. Every started attempt must close with safe non-negative integer usage and an exact total. Optional cache, reasoning, and route aggregates appear only when every contributing attempt reports them, and reasoning remains a subset of output.
 

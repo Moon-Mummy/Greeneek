@@ -1,13 +1,13 @@
 {
-  "name": "@deepseek-ai/dsh-attachment-local",
-  "description": "Private content-addressed DSH_HOME attachment storage",
+  "name": "@greeneek/gnk-attachment-local",
+  "description": "Private content-addressed GNK_HOME attachment storage",
   "version": "0.1.2-alpha.5",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "url": "git+https://github.com/greeneek/greeneek-harness.git",
     "directory": "packages/attachment/attachment-local"
   },
   "type": "module",
@@ -21,17 +21,17 @@
   "files": ["lib/index.js", "lib/types/**/*.d.ts"],
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/dsh-attachment": "workspace:^",
-    "@deepseek-ai/dsh-home-paths": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-attachment": "workspace:^",
+    "@greeneek/gnk-home-paths": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   },
   "dependencies": {
-    "@deepseek-ai/schemastery": "workspace:^",
+    "@greeneek/schemastery": "workspace:^",
     "sharp": "^0.35.3"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-attachment": "workspace:^",
-    "@deepseek-ai/dsh-home-paths": "workspace:^",
-    "@deepseek-ai/cordis": "workspace:^"
+    "@greeneek/gnk-attachment": "workspace:^",
+    "@greeneek/gnk-home-paths": "workspace:^",
+    "@greeneek/cordis": "workspace:^"
   }
 }

@@ -12,7 +12,7 @@ import {
 } from './dev-web.ts'
 
 it('samples one local environment at startup without validating watcher outputs', async () => {
-  const root = await mkdtemp(join(tmpdir(), 'dsh-dev-web-environment-'))
+  const root = await mkdtemp(join(tmpdir(), 'gnk-dev-web-environment-'))
   try {
     await mkdir(join(root, 'apps/web/dist'), { recursive: true })
     await mkdir(join(root, 'packages/client/example/lib'), { recursive: true })
@@ -20,36 +20,36 @@ it('samples one local environment at startup without validating watcher outputs'
     await writeFile(join(root, 'apps/web/dist/index.html'), '<main></main>')
     await writeFile(join(root, 'packages/client/example/lib/client.js'), 'module.exports = {}\n')
     writeClientBuildRecord(root, {
-      DSH_CLIENT_BUILD_PROFILE: 'official',
-      DSH_CLIENT_COMMIT_HASH: 'fffffff',
-      DSH_CLIENT_TITLE: 'DeepSeek Harness',
-      DSH_CLIENT_VERSION: '1.2.2',
+      GNK_CLIENT_BUILD_PROFILE: 'official',
+      GNK_CLIENT_COMMIT_HASH: 'fffffff',
+      GNK_CLIENT_TITLE: 'Greeneek Harness',
+      GNK_CLIENT_VERSION: '1.2.2',
     })
     await writeFile(join(root, 'packages/client/example/lib/client.js'), 'module.exports = { changed: true }\n')
 
     expect(devWebBuildEnvironment(root, {
       PATH: '/bin',
-      DSH_BUILD_CLIENT_PROFILE: 'official',
-      DSH_CLIENT_COMMIT_HASH: 'abc1234',
-      DSH_CLIENT_EXTRA: 'launch-value',
+      GNK_BUILD_CLIENT_PROFILE: 'official',
+      GNK_CLIENT_COMMIT_HASH: 'abc1234',
+      GNK_CLIENT_EXTRA: 'launch-value',
     })).toEqual({
       PATH: '/bin',
-      DSH_CLIENT_COMMIT_HASH: 'abc1234',
-      DSH_CLIENT_EXTRA: 'launch-value',
-      DSH_CLIENT_VERSION: '1.2.3',
+      GNK_CLIENT_COMMIT_HASH: 'abc1234',
+      GNK_CLIENT_EXTRA: 'launch-value',
+      GNK_CLIENT_VERSION: '1.2.3',
     })
   } finally {
     await rm(root, { recursive: true, force: true })
   }
 })
 
-it('discovers dsh.client packages with sibling roles', async () => {
-  const root = await mkdtemp(join(tmpdir(), 'dsh-dev-web-discovery-'))
+it('discovers gnk.client packages with sibling roles', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'gnk-dev-web-discovery-'))
   try {
     const current = join(root, 'packages', 'client', 'current')
     await mkdir(current, { recursive: true })
     await writeFile(join(current, 'package.json'), JSON.stringify({
-      dsh: {
+      gnk: {
         bundle: { patch: './cordis.patch.yml' },
         client: { platform: 'web' },
         profile: { bundles: [] },
@@ -63,7 +63,7 @@ it('discovers dsh.client packages with sibling roles', async () => {
 })
 
 it('discovers client-preset packages the shell links, excluding loader-delivered and test infrastructure', async () => {
-  const root = await mkdtemp(join(tmpdir(), 'dsh-dev-web-library-'))
+  const root = await mkdtemp(join(tmpdir(), 'gnk-dev-web-library-'))
   try {
     const write = async (dir: string, manifest: unknown, config: string): Promise<void> => {
       await mkdir(join(root, dir), { recursive: true })
@@ -75,7 +75,7 @@ it('discovers client-preset packages the shell links, excluding loader-delivered
     // Linked by the compile shell: client preset, no loader-delivered half.
     await write('packages/client/linked', {}, clientPreset)
     // Loader-delivered: discoverPluginDirs owns it, so it must not appear twice.
-    await write('packages/client/delivered', { dsh: { client: { platform: 'web' } } }, clientPreset)
+    await write('packages/client/delivered', { gnk: { client: { platform: 'web' } } }, clientPreset)
     // Test infrastructure builds through the preset but never enters the shell graph.
     await write('packages/test-support/harness', {}, clientPreset)
     // Host package with its own config: not a client-face build at all.
@@ -88,11 +88,11 @@ it('discovers client-preset packages the shell links, excluding loader-delivered
 })
 
 it('rebuilds a client-plugin bundle after its source changes', async () => {
-  const root = await mkdtemp(join(tmpdir(), 'dsh-dev-web-watch-'))
+  const root = await mkdtemp(join(tmpdir(), 'gnk-dev-web-watch-'))
   let bundles: TsdownBundle[] = []
   try {
     await symlink(join(import.meta.dirname, '..', 'node_modules'), join(root, 'node_modules'), 'dir')
-    await writeFile(join(root, 'package.json'), JSON.stringify({ name: '@dsh-test/dev-web-watch', private: true, type: 'module' }))
+    await writeFile(join(root, 'package.json'), JSON.stringify({ name: '@gnk-test/dev-web-watch', private: true, type: 'module' }))
     await writeFile(join(root, 'tsdown.config.ts'), `
 import { defineConfig } from 'tsdown'
 export default defineConfig({

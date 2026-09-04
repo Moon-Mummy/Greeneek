@@ -3,13 +3,13 @@ description: "Model-facing Cordis runtime tools for agents and maintainers choos
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tool-cordis
+# @greeneek/gnk-tool-cordis
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-tool-cordis` gives the model seven tools over the live Cordis runtime of the current DSH process: inspect what is loaded and what a dynamic package may use, define a package with a host half, a browser half, or both, run it, stop it, and remove it. Packages are versioned — a plugin holds immutable package versions, and the model can append a corrected package and update to it after a failure. Definitions live only in process memory and vanish on DSH restart; nothing here writes repository files, installs packages, or changes `cordis.yml`. It also adds a system-prompt section that teaches the workflow; compose it with `@deepseek-ai/dsh-cordis-host-runner`, the package that runs the sandbox and the run round trip.
+`gnk-tool-cordis` gives the model seven tools over the live Cordis runtime of the current GNK process: inspect what is loaded and what a dynamic package may use, define a package with a host half, a browser half, or both, run it, stop it, and remove it. Packages are versioned — a plugin holds immutable package versions, and the model can append a corrected package and update to it after a failure. Definitions live only in process memory and vanish on GNK restart; nothing here writes repository files, installs packages, or changes `cordis.yml`. It also adds a system-prompt section that teaches the workflow; compose it with `@greeneek/gnk-cordis-host-runner`, the package that runs the sandbox and the run round trip.
 
 ## Table of Contents
 
@@ -30,10 +30,10 @@ Mount this plugin when a session should be able to extend its own runtime tempor
 ### Minimal composition
 
 ```yaml
-- name: '@deepseek-ai/dsh-cordis-host-runner'
+- name: '@greeneek/gnk-cordis-host-runner'
   config:
     vmTimeoutMs: 5000
-- name: '@deepseek-ai/dsh-tool-cordis'
+- name: '@greeneek/gnk-tool-cordis'
 ```
 
 The CLI example [`apps/cli/config/examples/cordis/cordis.yml`](../../../apps/cli/config/examples/cordis/cordis.yml) composes both. A package with a browser half additionally needs the browser runner and the UI package in the client composition; a host-only package needs none of them.
@@ -56,7 +56,7 @@ Inspect before writing, then define, then run: `cordis_inspect_query` reads the 
 
 ### Boundaries to plan around
 
-Definitions are session-scoped and process-local: a package is visible and controllable only in the session that defined it, stays active across later turns, and can affect other sessions in the same process while running. Stopping, removing, unloading the toolset, or restarting DSH clears it. The sandbox isolates globals but is not a security boundary — treat a dynamic package like bash access, and load this plugin as deliberately as you would grant one.
+Definitions are session-scoped and process-local: a package is visible and controllable only in the session that defined it, stays active across later turns, and can affect other sessions in the same process while running. Stopping, removing, unloading the toolset, or restarting GNK clears it. The sandbox isolates globals but is not a security boundary — treat a dynamic package like bash access, and load this plugin as deliberately as you would grant one.
 
 -----
 
@@ -99,7 +99,7 @@ Read these pages when the package-level contract is not enough. They move from t
 - [Host runner](../cordis-host-runner/README.md) — the registry, sandbox, and run round trip these tools delegate to.
 - [Client runner](../cordis-client-runner/README.md) — the browser half that answers run requests and loads browser-half code.
 - [UI package](../ui-cordis/README.md) — the panel and tool cards users operate definitions with.
-- [Generated tool catalog](../../../docs/tool-catalog.md#deepseek-aidsh-tool-cordis) — the exact schemas the model receives.
+- [Generated tool catalog](../../../docs/tool-catalog.md#greeneekgnk-tool-cordis) — the exact schemas the model receives.
 - [Extensions subsystem](../../../docs/subsystems/extensions.md) — the generated `ctx.cordisInspect` and `ctx.dynamicCordisRunner` API.
 - [Self-referential Cordis toolset Agent Note](../../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md) — design home: sandbox semantics, dynamic-package lifecycle, and composition.
 
@@ -112,7 +112,7 @@ Read these pages when the package-level contract is not enough. They move from t
 
 #### What the model sees
 
-The conversation model sees the generated [`cordis_inspect_list`, `cordis_inspect_query`, `cordis_inspect_self`, `cordis_define`, `cordis_run`, `cordis_stop`, and `cordis_undefine` schemas](../../../docs/tool-catalog.md#deepseek-aidsh-tool-cordis) whenever this plugin is visible.
+The conversation model sees the generated [`cordis_inspect_list`, `cordis_inspect_query`, `cordis_inspect_self`, `cordis_define`, `cordis_run`, `cordis_stop`, and `cordis_undefine` schemas](../../../docs/tool-catalog.md#greeneekgnk-tool-cordis) whenever this plugin is visible.
 
 #### Token effect
 
@@ -133,7 +133,7 @@ This package registers one system-prompt section (`tool:cordis`, order 115) teac
 ```markdown
 # Dynamic Cordis Plugins
 
-Dynamic Cordis plugins temporarily extend the current DSH process. A Plugin uses apply(ctx) to consume Services, listen to Events, provide Services, register model Tools, or register browser UI in Slots.
+Dynamic Cordis plugins temporarily extend the current GNK process. A Plugin uses apply(ctx) to consume Services, listen to Events, provide Services, register model Tools, or register browser UI in Slots.
 ```
 
 #### Token effect

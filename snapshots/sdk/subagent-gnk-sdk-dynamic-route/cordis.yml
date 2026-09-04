@@ -1,0 +1,61 @@
+# SDK-profile patch for a deterministic parent model that selects a route for
+# a separate SDK child runtime. Both runtimes persist their request headers.
+
+- id: llm-greeneek
+  name: '@greeneek/gnk-llm-greeneek'
+  disabled: true
+
+- id: tool-subagent
+  name: '@greeneek/gnk-tool-subagent'
+  disabled: true
+
+- id: sdk-jsonrpc-server
+  name: '@greeneek/gnk-sdk-jsonrpc-server'
+  disabled: true
+
+- id: session-persistence-jsonl
+  name: '@greeneek/gnk-session-persistence-jsonl'
+  config:
+    root: !!js gnkHomePath('sessions')
+    compression: none
+
+- insert:
+    - id: mock-llm
+      name: '../../../packages/subagent/subagent-gnk-sdk/tests/fixtures/loader/mock-delegating-llm.ts'
+      disabled: !!js process.env.GNK_SNAPSHOT !== 'record'
+
+    - id: subagent-gnk-sdk
+      name: '@greeneek/gnk-subagent-gnk-sdk'
+      config:
+        profile: sdk
+        patches: !!js JSON.parse(process.env.GNK_TEST_CHILD_PATCHES ?? '[]')
+        gnkHome: !!js process.env.GNK_TEST_CHILD_HOME
+        provider: mock
+        model: mock-routed
+        env:
+          GNK_TELEMETRY_DISABLED: '1'
+
+    - id: subagent-model-selection-settings
+      name: '@greeneek/gnk-tool-subagent/model-selection-settings'
+      config:
+        enabled: true
+        allowedModels:
+          - provider: mock
+            model: mock-routed
+
+    - id: tool-subagent-gnk-sdk
+      name: '../../../packages/subagent/subagent-gnk-sdk/tests/fixtures/loader/scoped-tool-subagent.ts'
+      config:
+        provider: gnk-sdk
+        toolName: subagent
+        enableRunInBackground: false
+        agentOptions:
+          maxTokens: 777
+        maxDepth: 'provider-managed'
+
+    - id: sdk-jsonrpc-server-dynamic-live
+      name: '@greeneek/gnk-sdk-jsonrpc-server'
+      inject: [sdkAppStartup, loader]
+      disabled: !!js process.env.GNK_SNAPSHOT !== 'record'
+      config:
+        maxTokensAsSuccess: true

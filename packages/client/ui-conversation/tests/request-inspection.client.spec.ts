@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { SessionSeq } from '@deepseek-ai/dsh-session/types'
-import type { SessionEvent } from '@deepseek-ai/dsh-session/types'
+import { SessionSeq } from '@greeneek/gnk-session/types'
+import type { SessionEvent } from '@greeneek/gnk-session/types'
 import { inspectRequestPrompt } from '../src/client/contract/request-inspection.ts'
 
 const CONFIG = { provider: 'test', model: 'test' }

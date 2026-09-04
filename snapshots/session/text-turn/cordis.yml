@@ -2,39 +2,39 @@
 # The shipped profile owns application startup; this patch fixes only the
 # deterministic test composition and raw persistence needed for recording.
 
-- id: llm-deepseek
-  name: '@deepseek-ai/dsh-llm-deepseek'
+- id: llm-greeneek
+  name: '@greeneek/gnk-llm-greeneek'
   config:
     thinking: enabled
     reasoningEffort: max
     models:
-      - id: deepseek-v4-flash
-      - id: deepseek-v4-pro
-      - id: deepseek-v4-flash-vision-exp
+      - id: greeneek-v4-flash
+      - id: greeneek-v4-pro
+      - id: greeneek-v4-flash-vision-exp
         inputModalities: [text, image]
 
 - id: sandbox-policy
-  name: '@deepseek-ai/dsh-sandbox-policy'
+  name: '@greeneek/gnk-sandbox-policy'
   config:
-    mode: !!js "process.env.DSH_PERMISSION_MODE ?? (process.env.DSH_SNAPSHOT === undefined ? 'workspace-write' : 'danger-full-access')"
+    mode: !!js "process.env.GNK_PERMISSION_MODE ?? (process.env.GNK_SNAPSHOT === undefined ? 'workspace-write' : 'danger-full-access')"
     workspaceRoot: !!js process.cwd()
 
 - id: approval
-  name: '@deepseek-ai/dsh-user-approval'
+  name: '@greeneek/gnk-user-approval'
   config:
-    policy: !!js "(process.env.DSH_PERMISSION_MODE ?? (process.env.DSH_SNAPSHOT === undefined ? 'workspace-write' : 'danger-full-access')) === 'danger-full-access' ? 'never' : 'ask'"
+    policy: !!js "(process.env.GNK_PERMISSION_MODE ?? (process.env.GNK_SNAPSHOT === undefined ? 'workspace-write' : 'danger-full-access')) === 'danger-full-access' ? 'never' : 'ask'"
 
 - id: session-persistence-jsonl
-  name: '@deepseek-ai/dsh-session-persistence-jsonl'
+  name: '@greeneek/gnk-session-persistence-jsonl'
   config:
-    root: !!js dshHomePath('sessions')
+    root: !!js gnkHomePath('sessions')
     compression: none
 
 - id: session-title-llm
   disabled: true
 
 - id: system-prompt
-  name: '@deepseek-ai/dsh-system-prompt'
+  name: '@greeneek/gnk-system-prompt'
   config:
     persona: |
       You are a coding assistant powered by the {{model}} model. Your working directory is {{cwd}}. Your bash tool runs under a file sandbox — a `[sandbox: file access denied …]` result is policy, not a command bug.
@@ -42,12 +42,12 @@
       Verify your work by running the code or tests. Keep answers brief and factual.
 
 - id: agent-instructions
-  name: '@deepseek-ai/dsh-agent-instructions'
+  name: '@greeneek/gnk-agent-instructions'
   config:
     maxBytes: 65536
 
 - id: tool-subagent
-  name: '@deepseek-ai/dsh-tool-subagent'
+  name: '@greeneek/gnk-tool-subagent'
   config:
     provider: spawn
     toolName: subagent
@@ -55,7 +55,7 @@
     maxDepth: 1
 
 - id: tool-subagent-fork
-  name: '@deepseek-ai/dsh-tool-subagent'
+  name: '@greeneek/gnk-tool-subagent'
   config:
     provider: fork
     toolName: subagent_fork
@@ -64,17 +64,17 @@
     maxDepth: 1
 
 - id: fs-sandbox
-  name: '@deepseek-ai/dsh-fs-sandbox'
+  name: '@greeneek/gnk-fs-sandbox'
   config:
     cwd: !!js process.cwd()
 
 - insert:
     - id: hooks-claude-code
-      name: '@deepseek-ai/dsh-hooks-claude-code'
+      name: '@greeneek/gnk-hooks-claude-code'
       config:
         configPath: ./hooks.json
 
     - id: hooks-codex
-      name: '@deepseek-ai/dsh-hooks-codex'
+      name: '@greeneek/gnk-hooks-codex'
       config:
         configPath: ./codex-hooks.json

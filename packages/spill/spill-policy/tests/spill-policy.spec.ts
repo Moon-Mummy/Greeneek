@@ -9,19 +9,19 @@
  */
 
 import { describe, expect, it, vi } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import Loader from '@deepseek-ai/cordis-plugin-loader'
-import { createUserMessage, ToolCallId } from '@deepseek-ai/dsh-llm'
-import type { ContentBlock } from '@deepseek-ai/dsh-llm'
-import { SessionId } from '@deepseek-ai/dsh-session'
-import SystemPrompt from '@deepseek-ai/dsh-system-prompt'
-import ToolRuntime, { defineContentToolFixture } from '@deepseek-ai/dsh-tools'
-import type { ToolDefinition } from '@deepseek-ai/dsh-tools'
-import type { PostToolDecision, ToolExecution, ToolExecutionToken } from '@deepseek-ai/dsh-tools'
-import { SpillLocator, SpillStore } from '@deepseek-ai/dsh-spill'
-import type { SaveTextSpill, SpillRef } from '@deepseek-ai/dsh-spill'
-import * as SpillPolicy from '@deepseek-ai/dsh-spill-policy'
-import { WorkerThreadCodeRuntime } from '@deepseek-ai/dsh-code-runtime-worker-thread'
+import { Context } from '@greeneek/cordis'
+import Loader from '@greeneek/cordis-plugin-loader'
+import { createUserMessage, ToolCallId } from '@greeneek/gnk-llm'
+import type { ContentBlock } from '@greeneek/gnk-llm'
+import { SessionId } from '@greeneek/gnk-session'
+import SystemPrompt from '@greeneek/gnk-system-prompt'
+import ToolRuntime, { defineContentToolFixture } from '@greeneek/gnk-tools'
+import type { ToolDefinition } from '@greeneek/gnk-tools'
+import type { PostToolDecision, ToolExecution, ToolExecutionToken } from '@greeneek/gnk-tools'
+import { SpillLocator, SpillStore } from '@greeneek/gnk-spill'
+import type { SaveTextSpill, SpillRef } from '@greeneek/gnk-spill'
+import * as SpillPolicy from '@greeneek/gnk-spill-policy'
+import { WorkerThreadCodeRuntime } from '@greeneek/gnk-code-runtime-worker-thread'
 
 const testToolSignal = new AbortController().signal
 

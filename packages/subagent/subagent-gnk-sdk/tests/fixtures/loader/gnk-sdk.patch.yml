@@ -1,0 +1,57 @@
+# Test-only SDK provider patch over the shipped headless profile. The child
+# is a complete sdk profile; the parent omits `cwd` to exercise inheritance.
+- id: headless-startup
+  disabled: true
+
+- id: headless-runner
+  disabled: true
+
+- id: agent-loop
+  config:
+    agents:
+      - id: main
+        provider: mock
+        model: mock-delegate
+        cwd: !!js process.cwd()
+
+- id: session-persistence-jsonl
+  config:
+    root: './.sessions'
+    compression: none
+
+- id: tool-subagent
+  disabled: true
+
+- insert:
+    - id: mock-llm
+      name: './mock-delegating-llm.ts'
+
+    - id: subagent-model-selection-settings
+      name: '@greeneek/gnk-tool-subagent/model-selection-settings'
+      config:
+        enabled: true
+        allowedModels:
+          - provider: mock
+            model: mock-routed
+
+    - id: test-tool-subagent
+      name: './scoped-tool-subagent.ts'
+      config:
+        provider: gnk-sdk
+        toolName: subagent
+        agentOptions:
+          maxTokens: 777
+        maxDepth: 'provider-managed'
+
+    # providerName is omitted to exercise the shipped `gnk-sdk` default.
+    - id: subagent-gnk-sdk
+      name: '@greeneek/gnk-subagent-gnk-sdk'
+      config:
+        profile: sdk
+        patches: !!js JSON.parse(process.env.GNK_TEST_CHILD_PATCHES ?? '[]')
+        gnkHome: !!js process.env.GNK_TEST_CHILD_HOME
+        provider: mock
+        model: mock-routed
+        env:
+          GNK_TELEMETRY_DISABLED: '1'
+          GNK_TEST_CHILD_FAILURE: !!js String(process.env.GNK_TEST_CHILD_FAILURE ?? '')

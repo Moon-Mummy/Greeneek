@@ -3,13 +3,13 @@ description: "为配合取消的工具调用设置协作式时间上限，并在
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tool-call-timeout-policy
+# @greeneek/gnk-tool-call-timeout-policy
 
 [English](README.md) | 中文
 
 ## 概述
 
-工具调用可能会长时间挂起——缓慢的网页抓取、永不返回的搜索——没有上限时模型会无限期等待，拖住整个会话。`dsh-tool-call-timeout-policy` 为声明了限时的调用设置协作式截止时间：它通过 `exec.signal` 请求工具停止，再把已经完成的取消映射为清晰的 `Error: tool call timed out after <ms>ms` 结果。忽略或缓慢处理取消的工具会让调用方继续等待，直到自身完成；本插件绝不会硬性停止下游工作。限时来自每个工具自身的配置，因此插件本身零配置，并随 `dsh` base 组合默认启用。
+工具调用可能会长时间挂起——缓慢的网页抓取、永不返回的搜索——没有上限时模型会无限期等待，拖住整个会话。`gnk-tool-call-timeout-policy` 为声明了限时的调用设置协作式截止时间：它通过 `exec.signal` 请求工具停止，再把已经完成的取消映射为清晰的 `Error: tool call timed out after <ms>ms` 结果。忽略或缓慢处理取消的工具会让调用方继续等待，直到自身完成；本插件绝不会硬性停止下游工作。限时来自每个工具自身的配置，因此插件本身零配置，并随 `gnk` base 组合默认启用。
 
 ## 目录
 
@@ -25,7 +25,7 @@ kind: "package-reference"
 <a id="use-this-package"></a>
 ## 使用本包
 
-常用路径只有一行：把插件加入组合——`dsh` base 组合已经包含它。配置了限时的工具会被自动保护；其余工具完全不受影响。
+常用路径只有一行：把插件加入组合——`gnk` base 组合已经包含它。配置了限时的工具会被自动保护；其余工具完全不受影响。
 
 ### 何时选择
 
@@ -36,10 +36,10 @@ kind: "package-reference"
 无需任何配置即可挂载插件：
 
 ```yaml
-- name: '@deepseek-ai/dsh-tool-call-timeout-policy'
+- name: '@greeneek/gnk-tool-call-timeout-policy'
 ```
 
-限时在配置工具的位置设置。例如，`dsh-tool-web` 的 `fetchTimeoutMs`／`searchTimeoutMs` 设置（默认 30,000 ms）把限时放到 `web_fetch` 与 `web_search` 上。没有限时的工具——随附的 `bash`、`read`、`write`、`edit`——绝不会被切断。生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-web)列出会产生限时的工具设置。
+限时在配置工具的位置设置。例如，`gnk-tool-web` 的 `fetchTimeoutMs`／`searchTimeoutMs` 设置（默认 30,000 ms）把限时放到 `web_fetch` 与 `web_search` 上。没有限时的工具——随附的 `bash`、`read`、`write`、`edit`——绝不会被切断。生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-tool-web)列出会产生限时的工具设置。
 
 ### 你会得到什么
 
@@ -59,7 +59,7 @@ kind: "package-reference"
 
 包装层建立在四项承诺之上：
 
-- **强制执行归属，而非库。** `dsh-timeout` 负责时序与分类（`deadline`、`timeoutOf`）；本插件负责 `tools/execute` 上的单次调用接线；各能力负责终止。该拆分记录在[超时截止时间库 Agent Note](../../../.agents/notes/implemented/architecture/2026-07-06-timeout-deadline-library.zh.md) 中。
+- **强制执行归属，而非库。** `gnk-timeout` 负责时序与分类（`deadline`、`timeoutOf`）；本插件负责 `tools/execute` 上的单次调用接线；各能力负责终止。该拆分记录在[超时截止时间库 Agent Note](../../../.agents/notes/implemented/architecture/2026-07-06-timeout-deadline-library.zh.md) 中。
 - **工具声明自己的预算。** `timeoutMs` 位于工具的 `ToolDefinition` 上，从注册表读取（`ctx.tools.get(exec.name, exec.agent)?.timeoutMs`），因此不可能拼错工具名，未声明工具原样委派。
 - **作用域分类。** `TOOL_TIMEOUT` 同时用作内部 `deadline` 分类码与结构化错误 `code`；把 `timeoutOf` 限定到它，可避免嵌套的外层截止时间（先触发的另一包装层计时器）被误读为本插件的超时——它读作普通的上游取消。
 - **先交换信号，再恢复。** Cordis `next()` 忽略传入参数，因此包装层原地修改共享 `exec`：分发时把派生的截止时间信号换到 `exec` 上，并在 `finally` 中恢复调用方信号，使 `tools/post-execute` 监听器永远看不到本插件可能已中止的信号。
@@ -90,7 +90,7 @@ kind: "package-reference"
 
 - [工具子系统参考](../../../docs/subsystems/tools.zh.md)——本包装层挂钩的 `tools/execute` waterfall 与决策形态。
 - [超时截止时间库 Agent Note](../../../.agents/notes/implemented/architecture/2026-07-06-timeout-deadline-library.zh.md)——时序／终止拆分以及截止时间为何只通知。
-- [生成配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-web)——策略所执行的 `dsh-tool-web` 的 `fetchTimeoutMs`／`searchTimeoutMs` 预算。
+- [生成配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-tool-web)——策略所执行的 `gnk-tool-web` 的 `fetchTimeoutMs`／`searchTimeoutMs` 预算。
 - [guard 组映射](../README.zh.md)——同组的 guard 包与循环卫生家族。
 
 -----
@@ -130,6 +130,6 @@ kind: "package-reference"
 
 本开发备注是维护者的工作上下文：开放问题与尚未决定的探索方向。它明确不具权威性——已交付的行为、限制与既定理由以上文、包代码和相关 Agent Note 为准。
 
-`src/index.ts` 中的 FIXME 要求确定 `@deepseek-ai/dsh-timeout-guard` 改名；[改名台账](../../../.agents/notes/implemented/architecture/2026-08-11-repository-naming-contract-and-rename-ledger.zh.md) 已把 `@deepseek-ai/dsh-tool-call-timeout-policy` 记录为既定名称，因此该 FIXME 已陈旧，待代码清理。
+`src/index.ts` 中的 FIXME 要求确定 `@greeneek/gnk-timeout-guard` 改名；[改名台账](../../../.agents/notes/implemented/architecture/2026-08-11-repository-naming-contract-and-rename-ledger.zh.md) 已把 `@greeneek/gnk-tool-call-timeout-policy` 记录为既定名称，因此该 FIXME 已陈旧，待代码清理。
 
 </details>

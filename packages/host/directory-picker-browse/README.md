@@ -3,13 +3,13 @@ description: "In-app browsing backend of the directory-picker seam: one-level di
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-host-directory-picker-browse
+# @greeneek/gnk-host-directory-picker-browse
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-Users who cannot reach an OS chooser still pick a workspace directory through `dsh-host-directory-picker-browse`: it provides one-level directory listing and child-directory creation over Node's standard library, and nothing renders on the host display — so it serves the remote clients the native backend cannot reach. Listings return directories only, name-sorted, with symlink-to-directory following and a host-owned `hidden` flag; creation is non-recursive and validates a single path segment. One composition row also fills the workspace flow's directory holes with the in-app **Select Workspace Directory** dialog.
+Users who cannot reach an OS chooser still pick a workspace directory through `gnk-host-directory-picker-browse`: it provides one-level directory listing and child-directory creation over Node's standard library, and nothing renders on the host display — so it serves the remote clients the native backend cannot reach. Listings return directories only, name-sorted, with symlink-to-directory following and a host-owned `hidden` flag; creation is non-recursive and validates a single path segment. One composition row also fills the workspace flow's directory holes with the in-app **Select Workspace Directory** dialog.
 
 ## Table of Contents
 
@@ -45,7 +45,7 @@ Both primitives refuse a path that is not fully qualified — relative forms, an
 |---|---|---|
 | `maxEntries` | `1,000` | Complete-result bound of one listing level; hidden rows count toward it |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-host-directory-picker-browse) is the exhaustive source for every accepted field and its JSDoc.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-host-directory-picker-browse) is the exhaustive source for every accepted field and its JSDoc.
 
 -----
 
@@ -87,7 +87,7 @@ Read these when the backend contract is not enough: the seam definition first, t
 - [Directory-picker capability seam decision](../../../.agents/notes/implemented/architecture/2026-07-28-directory-picker-capability-seam.md) — the policy decisions behind listing and creation.
 - [Native backend](../directory-picker-native/README.md) — the OS-chooser alternative for local operators.
 - [Adaptive chooser](../directory-picker-auto/README.md) — boot-time resolution between the two backends.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-host-directory-picker-browse) — every accepted config field and its source declaration.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-host-directory-picker-browse) — every accepted config field and its source declaration.
 
 -----
 

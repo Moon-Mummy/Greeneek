@@ -11,7 +11,7 @@
  * and undercount cancelled steps (aborted before the message assembles).
  *
  * The wall-time folds mirror the client window fold field by field
- * (`deriveStats` in dsh-client-ui-conversation, that fold's whole-window
+ * (`deriveStats` in gnk-client-ui-conversation, that fold's whole-window
  * fallback role): model time is `step/start` → `assistant/message`, first
  * token is the first non-empty delta chunk and survives an in-step
  * `llm/retry`, decode spans first token → assembled message on steps that
@@ -20,12 +20,12 @@
  * time stays uncounted in every time figure — matching the window, which
  * renders it as an untimed interrupted node.
  *
- * @module @deepseek-ai/dsh-session-stats/projection
+ * @module @greeneek/gnk-session-stats/projection
  */
 
 import { z } from 'zod'
-import type { StreamChunk } from '@deepseek-ai/dsh-llm/types'
-import type { ProjectionDefinition } from '@deepseek-ai/dsh-session-projection'
+import type { StreamChunk } from '@greeneek/gnk-llm/types'
+import type { ProjectionDefinition } from '@greeneek/gnk-session-projection'
 
 /* jscpd:ignore-start -- Session Stats owns its whole-log timing projection independently. */
 
@@ -79,7 +79,7 @@ interface SessionStatsState extends SessionStatsTotals {
   pendingCalls: Record<string, number>
 }
 
-declare module '@deepseek-ai/dsh-session-projection/types' {
+declare module '@greeneek/gnk-session-projection/types' {
   interface SessionProjectionStateMap {
     sessionStats: SessionStatsState
   }

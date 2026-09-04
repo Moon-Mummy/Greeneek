@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-08-12-plugin-owned-settings-surface.md
-2026-08-12-plugin-owned-settings-surface.md: f1c9b48abd3459ed58e3e10fbdd95558884c9a22
-2026-08-12-plugin-owned-settings-surface.zh.md: ff9f37290a8dd8f1ab9ef1bfef3790a3ef20086b
+2026-08-12-plugin-owned-settings-surface.md: 2c4757a8a030a88e5ae92ea627bbcc9c21ab2bc4
+2026-08-12-plugin-owned-settings-surface.zh.md: 17ab6ace0961ad13cb47d9ca1f80a53f9c03742f

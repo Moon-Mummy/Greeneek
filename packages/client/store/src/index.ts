@@ -135,6 +135,60 @@ export function createSnapshotStore<T>(
   }
 }
 
+/** Prefix every current persisted key starts with. */
+const CURRENT_STORAGE_PREFIX = 'gnk.'
+/**
+ * Pre-rebrand key prefix. The brand move renamed every persisted key from
+ * `dsh.*` to `gnk.*`; a browser that still only holds legacy entries would // rebrand:keep
+ * otherwise silently lose its theme, locale, layout, and drafts. Reads fall
+ * through to the legacy key once and publish the value under the current key,
+ * so the next load is a direct hit. The legacy entry is deliberately kept —
+ * rolling back to an old build must still find its state.
+ */
+const LEGACY_STORAGE_PREFIX = 'dsh.' // rebrand:keep
+
+/**
+ * Resolve one persisted localStorage value with the pre-rebrand key as a
+ * read-through fallback for current-prefixed keys.
+ * @param key - storage key the caller wants.
+ * @returns the stored string, or `null` when neither key holds a value.
+ */
+export function readPersistedKey(key: string): string | null {
+  if (typeof localStorage === 'undefined') return null
+  const raw = localStorage.getItem(key)
+  if (raw !== null) return raw
+  if (!key.startsWith(CURRENT_STORAGE_PREFIX)) return null
+  const legacyRaw = localStorage.getItem(LEGACY_STORAGE_PREFIX + key.slice(CURRENT_STORAGE_PREFIX.length))
+  if (legacyRaw !== null) {
+    try {
+      localStorage.setItem(key, legacyRaw)
+    } catch {
+      /* v8 ignore next -- a quota/private-mode write failure only skips migration; this read still succeeded */
+      // Persistence disabled for the migration write, not for the read.
+    }
+  }
+  return legacyRaw
+}
+
+/**
+ * Delete a persisted key and, for current-prefixed keys, its pre-rebrand
+ * alias — otherwise a cleared value would resurrect from the legacy entry on
+ * the next read-through.
+ * @param key - storage key the caller wants gone.
+ */
+export function clearPersistedKey(key: string): void {
+  if (typeof localStorage === 'undefined') return
+  try {
+    localStorage.removeItem(key)
+    if (key.startsWith(CURRENT_STORAGE_PREFIX)) {
+      localStorage.removeItem(LEGACY_STORAGE_PREFIX + key.slice(CURRENT_STORAGE_PREFIX.length))
+    }
+  } catch {
+    // Storage failures (private mode, quota teardown races) only skip
+    // cleanup — the same non-fatal contract as attachPersistence.
+  }
+}
+
 /**
  * Whole-value JSON persistence to localStorage. Hand-rolled instead of the
  * zustand persist middleware: its write path spreads state into an object
@@ -149,7 +203,7 @@ function attachPersistence<T>(api: StoreApi<T>, name: string): void {
   // the per-store console noise a ReferenceError would produce.
   if (typeof localStorage === 'undefined') return
   try {
-    const raw = localStorage.getItem(name)
+    const raw = readPersistedKey(name)
     if (raw !== null) {
       api.setState(devFreeze(JSON.parse(raw) as T), true)
     }
@@ -237,12 +291,7 @@ export function defineStore<T, A extends ActionsDecl<T>>(
         store,
         clearPersisted: () => {
           if (persistKey === undefined || typeof localStorage === 'undefined') return
-          try {
-            localStorage.removeItem(persistKey)
-          } catch {
-            // Storage failures (private mode, quota teardown races) only skip
-            // cleanup — the same non-fatal contract as attachPersistence.
-          }
+          clearPersistedKey(persistKey)
         },
       }
     },

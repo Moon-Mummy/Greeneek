@@ -6,7 +6,7 @@ Status: implemented
 
 ## Problem
 
-Trajectory 不展示会话图片。持久化的 `{ type: 'image', attachment: ImageAttachmentRef }` 块在详情面板里渲染成格式化 JSON，纯图片的用户消息在记录表中是一个空行。Trajectory 唯一认识的图片路径是对内联 wire 字段（`url`、`image_url`、base64 `data`）的 `imageSrc` 嗅探，而生产事件从不携带这些字段：每个生产方都在事件追加前提交持久化的 `ImageAttachmentRef`。用户无法从执行记录确认模型看到了哪张图（[issue #2986](https://github.com/deepseek-harness/deepseek-harness/issues/2986)），而 Chat 已经能展示同样的附件。
+Trajectory 不展示会话图片。持久化的 `{ type: 'image', attachment: ImageAttachmentRef }` 块在详情面板里渲染成格式化 JSON，纯图片的用户消息在记录表中是一个空行。Trajectory 唯一认识的图片路径是对内联 wire 字段（`url`、`image_url`、base64 `data`）的 `imageSrc` 嗅探，而生产事件从不携带这些字段：每个生产方都在事件追加前提交持久化的 `ImageAttachmentRef`。用户无法从执行记录确认模型看到了哪张图（[issue #2986](https://github.com/greeneek/greeneek-harness/issues/2986)），而 Chat 已经能展示同样的附件。
 
 ## Decision
 
@@ -29,5 +29,5 @@ Trajectory 不展示会话图片。持久化的 `{ type: 'image', attachment: Im
 ## Consequences
 
 - 两个视图共用一个画廊实现，图片行为（尺寸、重试、灯箱、文案）不会在 Chat 与 Trajectory 之间漂移，且无论多少个视图展示，一个会话附件只读取一次。
-- `TrajectoryTable` 需要把必填的 `renderImages` prop 逐层传入详情组件；`ui-trajectory` 新增对 `dsh-attachment` 的仅类型依赖，`ui-attachment` 为新的 SlotMap 行新增对 `ui-trajectory` 的仅类型依赖。
+- `TrajectoryTable` 需要把必填的 `renderImages` prop 逐层传入详情组件；`ui-trajectory` 新增对 `gnk-attachment` 的仅类型依赖，`ui-attachment` 为新的 SlotMap 行新增对 `ui-trajectory` 的仅类型依赖。
 - keyless 组装快照 `apps/web/tests/trajectory-image-display.snapshot.ts` 直接钉住共享缓存这一事实：详情面板中的图片 URL 与 Chat 画廊对同一 fixture 附件的 URL 字符串相同。

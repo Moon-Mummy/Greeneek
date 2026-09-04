@@ -1,12 +1,13 @@
+/* rebrand:ignore-start -- pi-ai adapter specs exercise upstream catalog ids (B4, decisions.md D16); the rebrand rules must never rewrite them */
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { Context } from '@deepseek-ai/cordis'
-import AuthorizationService from '@deepseek-ai/dsh-authorization'
-import type { AuthorizationInteraction, AuthorizationNotice, AuthorizationPrompt } from '@deepseek-ai/dsh-authorization'
-import LocalCredentialProvider from '@deepseek-ai/dsh-credentials-local'
-import type { CredentialKey } from '@deepseek-ai/dsh-credentials'
+import { Context } from '@greeneek/cordis'
+import AuthorizationService from '@greeneek/gnk-authorization'
+import type { AuthorizationInteraction, AuthorizationNotice, AuthorizationPrompt } from '@greeneek/gnk-authorization'
+import LocalCredentialProvider from '@greeneek/gnk-credentials-local'
+import type { CredentialKey } from '@greeneek/gnk-credentials'
 import type { AuthEvent, AuthInteraction, AuthPrompt, AuthType, Credential } from '@earendil-works/pi-ai'
 
 const login = vi.hoisted(() => vi.fn())
@@ -27,7 +28,7 @@ const dirs: string[] = []
 
 /** A context with the record store, the seam, and every pi-ai login flow. */
 async function harness(): Promise<Context> {
-  const dir = await mkdtemp(join(tmpdir(), 'dsh-pi-login-'))
+  const dir = await mkdtemp(join(tmpdir(), 'gnk-pi-login-'))
   dirs.push(dir)
   const ctx = new Context()
   await ctx.plugin(LocalCredentialProvider, { path: join(dir, '.credentials.yaml'), watch: false })
@@ -196,3 +197,4 @@ describe('pi-ai login flows', () => {
     expect(seen?.aborted).toBe(true)
   })
 })
+/* rebrand:ignore-end */

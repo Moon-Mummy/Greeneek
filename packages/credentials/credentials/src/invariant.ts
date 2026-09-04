@@ -1,12 +1,12 @@
 /**
- * Package-owned invariant companion for `@deepseek-ai/dsh-credentials`.
- * @module @deepseek-ai/dsh-credentials/invariant
+ * Package-owned invariant companion for `@greeneek/gnk-credentials`.
+ * @module @greeneek/gnk-credentials/invariant
  */
 
-import type { Context } from '@deepseek-ai/cordis'
-import type { InvariantFailure, InvariantInstaller } from '@deepseek-ai/dsh-invariants'
+import type { Context } from '@greeneek/cordis'
+import type { InvariantFailure, InvariantInstaller } from '@greeneek/gnk-invariants'
 
-const PACKAGE_NAME = '@deepseek-ai/dsh-credentials'
+const PACKAGE_NAME = '@greeneek/gnk-credentials'
 
 /** Cordis companion plugin name. */
 export const name = 'credentials-invariant'

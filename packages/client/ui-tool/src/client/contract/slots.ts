@@ -1,13 +1,13 @@
 /** Tool UI slot declarations and their composed component props. */
 import type {
   HostObservable, InjectFace, PropsLocale, PropsRenderSlots, PropsRuntime,
-} from '@deepseek-ai/dsh-client-ui-slots'
-import type { RemoteHostFacts } from '@deepseek-ai/dsh-api-remotes/client'
-import type { ToolCallBlock } from '@deepseek-ai/dsh-client-ui-chat/client'
-import type { MessageImageLoader, MessageImageSource } from '@deepseek-ai/dsh-client-ui-conversation/client'
-import type {} from '@deepseek-ai/dsh-client-locale/client'
+} from '@greeneek/gnk-client-ui-slots'
+import type { RemoteHostFacts } from '@greeneek/gnk-api-remotes/client'
+import type { ToolCallBlock } from '@greeneek/gnk-client-ui-chat/client'
+import type { MessageImageLoader, MessageImageSource } from '@greeneek/gnk-client-ui-conversation/client'
+import type {} from '@greeneek/gnk-client-locale/client'
 
-declare module '@deepseek-ai/dsh-client-ui-slots' {
+declare module '@greeneek/gnk-client-ui-slots' {
   interface SlotMap {
     /**
      * Keyed atomic Tool call view, dispatched by the wire Tool name. Register

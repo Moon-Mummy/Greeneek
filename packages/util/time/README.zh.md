@@ -3,7 +3,7 @@ description: "面向在协议边界接收调用方所报时区的维护者，说
 kind: "package-library"
 ---
 
-# dsh-util-time
+# gnk-util-time
 
 [English](README.md) | 中文
 
@@ -36,7 +36,7 @@ kind: "package-library"
 ## API
 
 ```ts
-import { canonicalClientTimeZone } from '@deepseek-ai/dsh-util-time'
+import { canonicalClientTimeZone } from '@greeneek/gnk-util-time'
 ```
 
 | 导出 | 职责 |
@@ -46,7 +46,7 @@ import { canonicalClientTimeZone } from '@deepseek-ai/dsh-util-time'
 <a id="model-experience"></a>
 ## Model Experience
 
-间接影响，取决于把规范时区记到持久消息上的那个消费方——`dsh-time-context` 据此渲染该轮模型可见的时区指令与时间戳。
+间接影响，取决于把规范时区记到持久消息上的那个消费方——`gnk-time-context` 据此渲染该轮模型可见的时区指令与时间戳。
 
 #### KV Cache effect
 

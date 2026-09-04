@@ -3,13 +3,13 @@ description: "SQLite storage backend for hosts and maintainers choosing, configu
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-storage-sqlite
+# @greeneek/gnk-storage-sqlite
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-storage-sqlite` is a storage backend that hosts every routed unit in one SQLite database file, storing each record as one JSON document per row, registered as backend `sqlite`. A single record update touches exactly one row, which is what makes this the right medium for high-frequency, point-sized writes. Choose it when a domain's data changes often or the deployment prefers one queryable database; choose the JSON backend when the data should be readable as plain files. The backend is host-side only: it contributes no prompt, tool, or schema, so the model and the agent loop never see it.
+`gnk-storage-sqlite` is a storage backend that hosts every routed unit in one SQLite database file, storing each record as one JSON document per row, registered as backend `sqlite`. A single record update touches exactly one row, which is what makes this the right medium for high-frequency, point-sized writes. Choose it when a domain's data changes often or the deployment prefers one queryable database; choose the JSON backend when the data should be readable as plain files. The backend is host-side only: it contributes no prompt, tool, or schema, so the model and the agent loop never see it.
 
 ## Table of Contents
 
@@ -36,11 +36,11 @@ Choose it when writes are frequent and point-sized — each key maps to exactly 
 Two fields: the database path and the journal mode. `:memory:` opens an in-process database whose contents disappear with the process.
 
 ```yaml
-- name: '@deepseek-ai/dsh-storage'
-- name: '@deepseek-ai/dsh-storage-sqlite'
+- name: '@greeneek/gnk-storage'
+- name: '@greeneek/gnk-storage-sqlite'
   config:
-    path: /var/lib/dsh/data.db
-- name: '@deepseek-ai/dsh-storage-domain'
+    path: /var/lib/gnk/data.db
+- name: '@greeneek/gnk-storage-domain'
   config:
     backend: sqlite
 ```
@@ -50,7 +50,7 @@ Two fields: the database path and the journal mode. `:memory:` opens an in-proce
 | `path` | required | SQLite database file path, or `:memory:` |
 | `journalMode` | `wal` | Journal mode: `wal`, `delete`, `truncate`, or `persist` |
 
-`wal` suits local disks; a rollback-journal mode (`delete`/`truncate`/`persist`) fits filesystems where WAL's shared-memory files do not work, such as network mounts. The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-storage-sqlite) is the exhaustive source for every accepted field and its JSDoc.
+`wal` suits local disks; a rollback-journal mode (`delete`/`truncate`/`persist`) fits filesystems where WAL's shared-memory files do not work, such as network mounts. The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-storage-sqlite) is the exhaustive source for every accepted field and its JSDoc.
 
 ### Observable behavior
 

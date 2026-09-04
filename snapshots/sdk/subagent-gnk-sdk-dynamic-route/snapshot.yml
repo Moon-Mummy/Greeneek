@@ -1,0 +1,10 @@
+version: 1
+scenario: subagent-gnk-sdk-dynamic-route
+profile: sdk
+composition: sdk-gnk-sdk-dynamic-route
+recording: authored
+header:
+  class: sdk-gnk-sdk-dynamic-route
+  pin: true
+  childSystemPrompts: [1]
+  childToolSchemas: [1]

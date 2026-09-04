@@ -1,9 +1,9 @@
 import { createHmac } from 'node:crypto'
 import { createServer, request as httpRequest, type IncomingMessage, type Server, type ServerResponse } from 'node:http'
 import type { AddressInfo } from 'node:net'
-import type { Context } from '@deepseek-ai/cordis'
+import type { Context } from '@greeneek/cordis'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { credentialRef } from '@deepseek-ai/dsh-credentials'
+import { credentialRef } from '@greeneek/gnk-credentials'
 import { createGitHubWebhookHandler } from '../src/handler.ts'
 
 const servers: Server[] = []
@@ -40,7 +40,7 @@ function fakeContext(secret = 'fixture-secret'): {
 async function serve(ctx: Context, maxBodyBytes = 1024): Promise<string> {
   const handler = createGitHubWebhookHandler(ctx, {
     source: 'primary',
-    secretEnv: credentialRef('DSH_GITHUB_WEBHOOK_SECRET'),
+    secretEnv: credentialRef('GNK_GITHUB_WEBHOOK_SECRET'),
     maxBodyBytes,
   })
   const server = createServer((request, response) => { void handler(request, response) })
@@ -163,7 +163,7 @@ describe('GitHub webhook HTTP handler', () => {
     const fake = fakeContext()
     const handler = createGitHubWebhookHandler(fake.ctx, {
       source: 'primary',
-      secretEnv: credentialRef('DSH_GITHUB_WEBHOOK_SECRET'),
+      secretEnv: credentialRef('GNK_GITHUB_WEBHOOK_SECRET'),
       maxBodyBytes: 1024,
     })
     const request = { method: 'POST', headers: {}, headersDistinct: {} } as unknown as IncomingMessage
@@ -178,7 +178,7 @@ describe('GitHub webhook HTTP handler', () => {
     const fake = fakeContext()
     const handler = createGitHubWebhookHandler(fake.ctx, {
       source: 'primary',
-      secretEnv: credentialRef('DSH_GITHUB_WEBHOOK_SECRET'),
+      secretEnv: credentialRef('GNK_GITHUB_WEBHOOK_SECRET'),
       maxBodyBytes: 1024,
     })
     const request = {

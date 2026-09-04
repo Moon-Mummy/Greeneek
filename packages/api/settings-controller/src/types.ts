@@ -1,13 +1,13 @@
 /**
  * Browser-safe failure vocabulary of the configuration surfaces this package
  * serves. The redacted views themselves live with their seam in
- * `@deepseek-ai/dsh-settings/types`, whose Cordis event declarations already
+ * `@greeneek/gnk-settings/types`, whose Cordis event declarations already
  * register that file for the Client compilation face.
  *
- * @module @deepseek-ai/dsh-api-settings-controller/types
+ * @module @greeneek/gnk-api-settings-controller/types
  */
 
-declare module '@deepseek-ai/dsh-typert-protocol' {
+declare module '@greeneek/gnk-typert-protocol' {
   interface RemoteErrorDetailsMap {
     /**
      * Every seam refusal that is not a stale write: an unregistered or malformed

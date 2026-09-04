@@ -3,13 +3,13 @@ description: "面向客户端与维护者的全日志会话计数与墙钟时间
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-session-stats
+# @greeneek/gnk-session-stats
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-session-stats` 提供全日志会话数字——轮/步计数以及 LLM、工具、首 token、解码墙钟时间——以 `sessionStats` 投影单元的形式对外提供。客户端从注册表的快照与变更流中读取数字，且由于它们从完整持久日志折叠而来，分页或压缩都无法改变它们。在已挂载投影注册表的组合中选择它，例如 Web 聊天包（其统计条是参考消费者）；没有注册表的装配不受影响，其消费者回退到窗口口径计数。设置与字段语义在前；折叠内部细节放在下方可折叠的开发者章节中。
+`gnk-session-stats` 提供全日志会话数字——轮/步计数以及 LLM、工具、首 token、解码墙钟时间——以 `sessionStats` 投影单元的形式对外提供。客户端从注册表的快照与变更流中读取数字，且由于它们从完整持久日志折叠而来，分页或压缩都无法改变它们。在已挂载投影注册表的组合中选择它，例如 Web 聊天包（其统计条是参考消费者）；没有注册表的装配不受影响，其消费者回退到窗口口径计数。设置与字段语义在前；折叠内部细节放在下方可折叠的开发者章节中。
 
 ## 目录
 
@@ -30,9 +30,9 @@ kind: "package-reference"
 ### 组合
 
 ```yaml
-- name: '@deepseek-ai/dsh-session'
-- name: '@deepseek-ai/dsh-session-projection'
-- name: '@deepseek-ai/dsh-session-stats'
+- name: '@greeneek/gnk-session'
+- name: '@greeneek/gnk-session-projection'
+- name: '@greeneek/gnk-session-stats'
 ```
 
 ### 各字段含义

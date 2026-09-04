@@ -8,7 +8,7 @@ Status: implemented
 
 一个含有 HTTP header value 无法承载的字符的 API Key，曾被每个配置入口接受，直到构造请求时才失败——离引发它的那个字段已经很远。
 
-把含 emoji、中日韩文字或全角标点的 Key 粘进 Web 模型设置页，保存会报成功。首个轮次随即失败，报错为 `Cannot convert argument to a ByteString because the character at index 7 has a value of 55357 which is greater than 255`——其中的下标与码点是 UTF-16 内部细节，不附带任何可执行动作，却泄露了 Key 中某一个字符的码点。`llm-deepseek` 之所以产出这句，是因为 `fetch` 在 [adapter.ts](../../../../packages/llm/llm-deepseek/src/adapter.ts) 的 `try` 内部构造 `Bearer` header，而那个 `catch` 把一切失败都标为 `TRANSPORT`；该标签又在 `DEFAULT_RETRYABLE_CODES` 之中，于是一个永久且确定的故障还会被重试三次。
+把含 emoji、中日韩文字或全角标点的 Key 粘进 Web 模型设置页，保存会报成功。首个轮次随即失败，报错为 `Cannot convert argument to a ByteString because the character at index 7 has a value of 55357 which is greater than 255`——其中的下标与码点是 UTF-16 内部细节，不附带任何可执行动作，却泄露了 Key 中某一个字符的码点。`llm-greeneek` 之所以产出这句，是因为 `fetch` 在 [adapter.ts](../../../../packages/llm/llm-greeneek/src/adapter.ts) 的 `try` 内部构造 `Bearer` header，而那个 `catch` 把一切失败都标为 `TRANSPORT`；该标签又在 `DEFAULT_RETRYABLE_CODES` 之中，于是一个永久且确定的故障还会被重试三次。
 
 同样的输入在 `llm-pi-ai` 上更糟。它的探测路径在 [discovery.ts](../../../../packages/llm/llm-pi-ai/src/discovery.ts) 里用裸 `fetch` 构造同一个 header，并把一切失败包装成 `could not reach <url>`，于是一个本地的 Key 故障被报成网络不可达。这条探测在保存之前就够得着：`ProviderEditor` 把用户输入的 `keyDraft` 直接放进探测请求，所以「获取模型列表」按钮会在任何东西落盘之前就把非法 Key 发出去。
 
@@ -42,23 +42,23 @@ Status: implemented
 
 ### 规则住在哪里
 
-`normalizeApiKey` 是 `dsh-llm` Service Definition 的一个模块，与已经承担共享 header 事务的 [attribution.ts](../../../../packages/llm/llm/src/attribution.ts) 并列。两个适配器都依赖该 seam 且都需要这条规则，因此它拥有两个当前消费方而非一个预设消费方。它返回 trim 后的值，或一个原因（`empty`、`illegalCharacters`）。
+`normalizeApiKey` 是 `gnk-llm` Service Definition 的一个模块，与已经承担共享 header 事务的 [attribution.ts](../../../../packages/llm/llm/src/attribution.ts) 并列。两个适配器都依赖该 seam 且都需要这条规则，因此它拥有两个当前消费方而非一个预设消费方。它返回 trim 后的值，或一个原因（`empty`、`illegalCharacters`）。
 
 两个适配器同样都需要那句完全相同的「拒绝一个已存储凭据」的诊断，差别仅在包名前缀。`LlmError` 声明在 Service Definition 的 `index.ts` 中，因此 `assertUsableApiKey(raw, pkg, ref)` 就住在它旁边，两个适配器都不再各留一份。断言模块本身保持零依赖：把 `LlmError` 引入 `api-key.ts` 会与 `index.ts` 对它的再导出成环。
 
-客户端无法引入其中任何一个：client 包只 reference client 包，因此 `packages/client/ui-settings-models` 在自己的 `apiKey.ts` 中镜像这个断言并持有本地化文案，正如 `validateDeepSeekModels` 镜像 host 侧的 `catalogModel` schema。两侧在注释中互相指名。
+客户端无法引入其中任何一个：client 包只 reference client 包，因此 `packages/client/ui-settings-models` 在自己的 `apiKey.ts` 中镜像这个断言并持有本地化文案，正如 `validateGreeneekModels` 镜像 host 侧的 `catalogModel` schema。两侧在注释中互相指名。
 
 ### 各处分别做什么
 
 | 位置 | 行为 |
 |---|---|
-| `dsh-llm` | 拥有 `normalizeApiKey`、`assertUsableApiKey` 与 `INVALID_CREDENTIAL_CODE`，后者刻意不进 `DEFAULT_RETRYABLE_CODES`。 |
-| `llm-deepseek` `resolveApiKey` | 归一化凭据 seam 或环境返回的值，以 `INVALID_CREDENTIAL` 拒绝，消息指明模型设置页，绝不回显 Key。 |
+| `gnk-llm` | 拥有 `normalizeApiKey`、`assertUsableApiKey` 与 `INVALID_CREDENTIAL_CODE`，后者刻意不进 `DEFAULT_RETRYABLE_CODES`。 |
+| `llm-greeneek` `resolveApiKey` | 归一化凭据 seam 或环境返回的值，以 `INVALID_CREDENTIAL` 拒绝，消息指明模型设置页，绝不回显 Key。 |
 | `llm-pi-ai` `resolveApiKey` | 归一化凭据与环境路径。不指定任何凭据的 profile 仍返回 `undefined`，ambient 与 OAuth 路由不受影响。 |
 | `llm-pi-ai` `discoverModels` | 在构造 header 之前归一化，使非法 Key 成为凭据故障而非端点不可达。不带 Key 的探测保持未鉴权。 |
 | `ui-settings-models` | 镜像字符集规则，加入形状启发式，在探测与 `credentials.set` 之前 trim `keyDraft`，并修正 `stringAt` 的空值判断。留空的输入框仍是可以提交的空操作；只含空白的输入框则是字段级失败。提交**与端点探测**同时受拦截，因此被拒绝的密钥不会白花一次往返去换取字段上已经写明的答案；失败呈现在字段上，与既有的 `modelFailure` 模式一致。 |
 
-`ProviderEditor` 同时服务 DeepSeek 与 pi-ai 两种布局，因此一处客户端改动覆盖两个提供方。`CustomProviderCard` 为手工声明的路由承载同一套判定。
+`ProviderEditor` 同时服务 Greeneek 与 pi-ai 两种布局，因此一处客户端改动覆盖两个提供方。`CustomProviderCard` 为手工声明的路由承载同一套判定。
 
 `credentials-local` 刻意不动。它存储各类凭据，而可打印 ASCII 是 HTTP header 的约束而非凭据存储的约束；它既有的、拒绝任何 dotenv 样式都无法表示的值的行为保持原样。
 
@@ -66,7 +66,7 @@ Status: implemented
 
 **由 client 与 host 共享一个校验模块。** 被 source plane 布局否决：client 包只 reference client 包外加 `vendor/cordis` 与 `runtime-diagnostics/invariants`，把它放宽到够得着 host 包会撞上这一分割本就要隔开的两份 `Context` 合并。在两侧各镜像一行断言并各配一份测试，是此处的既定形态。
 
-**在 `llm-deepseek` 与 `llm-pi-ai` 中各留一个抛错 helper。** 最初的计划正是各留一份，差别仅在消息中的包名前缀，并配一个重复检测豁免来放行这一对。在实现之前即被否决：`LlmError` 声明在 Service Definition 中，因此该包完全可以自己拥有这句诊断，而那里的一个豁免恰恰会掩盖它本要遮掩的重复。
+**在 `llm-greeneek` 与 `llm-pi-ai` 中各留一个抛错 helper。** 最初的计划正是各留一份，差别仅在消息中的包名前缀，并配一个重复检测豁免来放行这一对。在实现之前即被否决：`LlmError` 声明在 Service Definition 中，因此该包完全可以自己拥有这句诊断，而那里的一个豁免恰恰会掩盖它本要遮掩的重复。
 
 **在适配器的 `catch` 中嗅探 `TypeError`。** 这只是事后归类 ByteString 失败，header 构造本身仍无防护。它依赖 Node 错误消息的措辞，因而会随运行时版本静默失效；它也帮不到 `llm-pi-ai`——后者的请求 header 构造在 pi-ai SDK 内部。在交出 Key 之前就拒绝，则对两个适配器与探测路径同时有效。
 
@@ -74,7 +74,7 @@ Status: implemented
 
 **让形状启发式也在 resolver 中运行。** 更对称，且能拦住直接写进 `.env` 的整行环境变量。因上文所述的锁死风险而否决：resolver 中的一次误判会让用户无路可走，浏览器中的一次误判则仍留有环境变量这条路。
 
-**在保存时探测提供方以证明 Key 可用。** 它能关掉最初报告的那件事——保存报成功、首个轮次才失败。因超出范围而否决，且在当时的代码上无法建成：对 pi-ai 恰好自带 catalog 的那些提供方，`discoverModels` 会在任何网络调用之前短路到内置 catalog，因而对 Key 什么都验证不了；而 DeepSeek 卡片根本没有探测。验证器的价值在于分清「Key 被拒」与「无法连通」，而这正是本次改动让其变得可靠的区分；先建验证器只会得到一个分不清自身结果的验证器。同类产品也不在保存时验证，因此保存时的阻断式网络调用会是一个意外行为，而非一处缺失。
+**在保存时探测提供方以证明 Key 可用。** 它能关掉最初报告的那件事——保存报成功、首个轮次才失败。因超出范围而否决，且在当时的代码上无法建成：对 pi-ai 恰好自带 catalog 的那些提供方，`discoverModels` 会在任何网络调用之前短路到内置 catalog，因而对 Key 什么都验证不了；而 Greeneek 卡片根本没有探测。验证器的价值在于分清「Key 被拒」与「无法连通」，而这正是本次改动让其变得可靠的区分；先建验证器只会得到一个分不清自身结果的验证器。同类产品也不在保存时验证，因此保存时的阻断式网络调用会是一个意外行为，而非一处缺失。
 
 ## 后果
 
@@ -94,7 +94,7 @@ Status: implemented
 
 `packages/llm/llm/tests/api-key.spec.ts` 以整张输入表驱动 `normalizeApiKey` 与 `assertUsableApiKey`——空值、纯空白、带首尾空白、含中间空格、C0 控制字符、emoji、中日韩文字、全角、latin-1，以及可打印 ASCII 的边界字符——并钉住一次拒绝携带 `INVALID_CREDENTIAL` 且不含 Key 的任何部分。
 
-`packages/llm/llm-deepseek/tests/` 在 `dynamic-config.spec.ts` 中经真实凭据 seam（而非 stub）端到端覆盖已存储凭据路径。`packages/llm/llm-pi-ai/tests/` 覆盖探测路径，包括不带 Key 的探测不会发出 `authorization` 标头。
+`packages/llm/llm-greeneek/tests/` 在 `dynamic-config.spec.ts` 中经真实凭据 seam（而非 stub）端到端覆盖已存储凭据路径。`packages/llm/llm-pi-ai/tests/` 覆盖探测路径，包括不带 Key 的探测不会发出 `authorization` 标头。
 
 `packages/client/ui-settings-models/tests/` 以同一张表加上形状用例钉住 `apiKeyFailure`，并驱动两张卡片：留空的输入框可提交且不写入凭据、只含空白的输入框在字段上失败、非法或被包裹的 Key 同时拦截提交与探测、带首尾空白的 Key 在 `credentials.set` 与探测之前被 trim，以及手工声明的路由可以完全不带 Key 创建。
 

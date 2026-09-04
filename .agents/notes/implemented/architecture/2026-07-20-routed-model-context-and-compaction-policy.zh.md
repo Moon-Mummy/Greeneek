@@ -16,11 +16,11 @@ Status: implemented
 
 `LlmAdapter.resolveModel(provider, model, signal?)` 返回一条精确路由的聚合元数据，其中可选的 `LlmModelContext` 位于 `context` 字段下。`LlmRuntime.resolveModelInfo()` 选择已注册的路由所属方，验证 `contextWindow` 为正整数，并返回与适配器内部状态分离的元数据。该查询独立于 `listModels()`：不在目录中的动态模型也可以拥有容量元数据，而缺少 `context` 只表示适配器无法描述容量。
 
-手写 DeepSeek 适配器允许每个已配置模型提供可选 `contextWindow`，并支持适配器级 `defaultContextWindow`。精确模型容量优先；未提供容量的模型项与未列出的透传 id 会继承适配器默认值，若默认值也不存在则省略 `context`。两个内置模型项都公开精确的 256,000 token 容量。pi-ai 适配器从同一个目录描述符解析容量，该描述符也用于权威解析请求模型。
+手写 Greeneek 适配器允许每个已配置模型提供可选 `contextWindow`，并支持适配器级 `defaultContextWindow`。精确模型容量优先；未提供容量的模型项与未列出的透传 id 会继承适配器默认值，若默认值也不存在则省略 `context`。两个内置模型项都公开精确的 256,000 token 容量。pi-ai 适配器从同一个目录描述符解析容量，该描述符也用于权威解析请求模型。
 
 ### Token 计量保持模型无关
 
-`dsh-token-meter` 没有配置，也没有模型 profile。它拥有一个固定回放折叠，并返回绝对估算 token 压力，以及按位置排列的表层节点 token 估值。移除全局容量后，未加载 compaction-basic 时仍可复用计量，同时避免让回放核算变成另一套模型注册表。
+`gnk-token-meter` 没有配置，也没有模型 profile。它拥有一个固定回放折叠，并返回绝对估算 token 压力，以及按位置排列的表层节点 token 估值。移除全局容量后，未加载 compaction-basic 时仍可复用计量，同时避免让回放核算变成另一套模型注册表。
 
 ### Compact-basic 解析目标规格
 
@@ -36,7 +36,7 @@ Compact-basic 拥有消费方策略。顶层字段定义默认值；`modelPolici
 
 ## 测试
 
-服务测试覆盖与适配器内部状态分离的上下文元数据、无效适配器输出、目录独立性与默认缺失行为。适配器测试覆盖 DeepSeek 的精确容量、默认容量、未列出模型解析及无效容量，以及 pi-ai 的精确描述符解析。压缩测试覆盖比例缩放、精确提供方/模型覆盖、加载期拒绝无效合并比例、运行时校验绝对预算、相同模型 id 的提供方切换、目标专用警告抑制与不依赖容量的溢出恢复。Loader fixture（测试前置数据）会拒绝已经移除的 token-meter 容量设置，示例则在适配器上配置容量。
+服务测试覆盖与适配器内部状态分离的上下文元数据、无效适配器输出、目录独立性与默认缺失行为。适配器测试覆盖 Greeneek 的精确容量、默认容量、未列出模型解析及无效容量，以及 pi-ai 的精确描述符解析。压缩测试覆盖比例缩放、精确提供方/模型覆盖、加载期拒绝无效合并比例、运行时校验绝对预算、相同模型 id 的提供方切换、目标专用警告抑制与不依赖容量的溢出恢复。Loader fixture（测试前置数据）会拒绝已经移除的 token-meter 容量设置，示例则在适配器上配置容量。
 
 ## 考虑过的替代方案
 
@@ -51,7 +51,7 @@ Compact-basic 拥有消费方策略。顶层字段定义默认值；`modelPolici
 - 容量在提供方约定上拥有唯一权威归属方，而压缩策略留在可选消费插件中。
 - 同一个 compaction-basic 实例无需查询发现元数据，就能安全处理不同窗口、提供方切换，以及不同提供方下的相同模型 id。
 - 仅 LLM 与仅 meter 的组合仍然有效；加载 compaction-basic 不会让适配器产生反向依赖。
-- DeepSeek 部署可以设置精确的逐模型容量，也可以让未提供容量的模型项与未列出的透传 id 使用 `defaultContextWindow`。
+- Greeneek 部署可以设置精确的逐模型容量，也可以让未提供容量的模型项与未列出的透传 id 使用 `defaultContextWindow`。
 - 比例默认值会随模型自然缩放，同时仍可按精确目标使用绝对保留值，以满足部署专用行为。
 
 本记录取代[回放式 token 计量服务 Agent Note](2026-07-15-replay-token-meter-service.zh.md) 中的全局容量与无模型策略部分，单折叠计量决策保持不变。

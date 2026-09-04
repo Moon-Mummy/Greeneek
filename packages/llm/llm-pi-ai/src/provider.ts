@@ -16,7 +16,7 @@
  * over as a stream option, which `Models` presents to `resolve()` as the
  * credential key.
  *
- * @module dsh-llm-pi-ai/provider
+ * @module gnk-llm-pi-ai/provider
  */
 
 import { createProvider } from '@earendil-works/pi-ai'
@@ -24,6 +24,7 @@ import type { Api, ApiKeyAuth, Model, Provider, ProviderStreams } from '@earendi
 import { anthropicMessagesApi } from '@earendil-works/pi-ai/api/anthropic-messages.lazy'
 import { openAICompletionsApi } from '@earendil-works/pi-ai/api/openai-completions.lazy'
 import { openAIResponsesApi } from '@earendil-works/pi-ai/api/openai-responses.lazy'
+import { assertEgressAllowed } from '@greeneek/gnk-egress'
 import { catalogProvider } from './catalog.ts'
 
 /**
@@ -165,6 +166,13 @@ function reuseCatalogProvider(base: Provider, spec: ProviderSpec): Provider {
  * @throws Error when the route names a wire protocol this build cannot serve.
  */
 export function buildProvider(spec: ProviderSpec): Provider {
+  // The retired pre-rebrand provider must stay unreachable through this
+  // generic route as well: guard the route endpoint and every materialized
+  // model URL (model resolution applies endpoint overrides per model).
+  if (spec.baseURL !== undefined && spec.baseURL.length > 0) assertEgressAllowed(spec.baseURL)
+  for (const model of spec.models) {
+    if (model.baseUrl !== undefined && model.baseUrl.length > 0) assertEgressAllowed(model.baseUrl)
+  }
   const catalog = catalogProvider(spec.provider)
   // A catalog route keeping its catalog protocol reuses the catalog provider;
   // an explicit protocol means the deployment is repointing the route at a

@@ -10,7 +10,7 @@ Web Chat 在编辑框附近显示会话累计 token 用量，但该值无法解�
 
 ## Decision
 
-共享 `TokenUsage` 值为一次模型调用携带可选的 `totalTokens`。适配器只从提供方精确总量，或权威的提示词与输出聚合计数发布该字段。DeepSeek 会将提示词加输出的聚合值与协议提供的总量核对，pi-ai 则保留其提供的总量。
+共享 `TokenUsage` 值为一次模型调用携带可选的 `totalTokens`。适配器只从提供方精确总量，或权威的提示词与输出聚合计数发布该字段。Greeneek 会将提示词加输出的聚合值与协议提供的总量核对，pi-ai 则保留其提供的总量。
 
 token-meter 拥有一份可安全用于浏览器的纯轮次局部 fold，并与其具备重试感知能力的累计用量投影共享记账所有权。`step/start` 与 `llm/retry-started` 打开真实 attempt；最终 assistant 消息替换同一 attempt 的流式样本；终止失败、重试与步骤边界关闭 attempt，且不会重复计数。每个已开始的 attempt 都必须以安全的非负整数用量和精确总量关闭。只有每个参与聚合的 attempt 都报告时，才会显示可选的 cache、推理与路由聚合值；推理仍是输出的子集。
 

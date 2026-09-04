@@ -1,4 +1,4 @@
-# The SDK application over dsh-base. Stdout belongs exclusively to JSON-RPC.
+# The SDK application over gnk-base. Stdout belongs exclusively to JSON-RPC.
 
 - id: system-prompt
   config:
@@ -10,12 +10,12 @@
 
 - insert:
     - id: sdk-app-startup
-      name: '@deepseek-ai/dsh-sdk-app'
+      name: '@greeneek/gnk-sdk-app'
       config:
         profile: sdk
 
     - id: sdk-jsonrpc-server
-      name: '@deepseek-ai/dsh-sdk-jsonrpc-server'
+      name: '@greeneek/gnk-sdk-jsonrpc-server'
       inject: [sdkAppStartup, loader]
       config:
-        maxTokensAsSuccess: !!js "process.env.DSH_MAX_TOKENS_AS_SUCCESS === undefined ? true : JSON.parse(process.env.DSH_MAX_TOKENS_AS_SUCCESS)"
+        maxTokensAsSuccess: !!js "process.env.GNK_MAX_TOKENS_AS_SUCCESS === undefined ? true : JSON.parse(process.env.GNK_MAX_TOKENS_AS_SUCCESS)"

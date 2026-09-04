@@ -108,7 +108,7 @@ unknown-binding 回复用 `JSON.stringify` 对完整的限幅 target（`global` 
 
 ## Testing
 
-- `tests/runtime.spec.ts` 在加载期拒绝缺失、不可执行、非 CPython、低于 3.10 或无响应的解释器配置；在激活后更改 `PATH`，证明已解析的可执行文件保持固定；在激活后删除该文件，保留迟到的 `worker-exit` 路径；并断言运行中的程序能看到 `TMPDIR`，但看不到 `PATH`、`HOME` 或 `DEEPSEEK_API_KEY`。原生输出用例分别固定每个来源流内的顺序，而不要求独立通道之间存在总顺序；Darwin 资源限制用例明确说明或跳过平台特有的 `RLIMIT_AS` 行为。
+- `tests/runtime.spec.ts` 在加载期拒绝缺失、不可执行、非 CPython、低于 3.10 或无响应的解释器配置；在激活后更改 `PATH`，证明已解析的可执行文件保持固定；在激活后删除该文件，保留迟到的 `worker-exit` 路径；并断言运行中的程序能看到 `TMPDIR`，但看不到 `PATH`、`HOME` 或 `GREENEEK_API_KEY`。原生输出用例分别固定每个来源流内的顺序，而不要求独立通道之间存在总顺序；Darwin 资源限制用例明确说明或跳过平台特有的 `RLIMIT_AS` 行为。
 - `snapshots/session/ptc-python-turn` 通过真实 Loader 把 headless PTC worker 提供方替换为私有 Python 提供方，经真实 bash binding 重放一个 Python `run_code` 程序，并固定 Python SDK prompt、tool schema、dispatch event、捕获日志与完成值。
 - `tests/boot-write-failure.spec.ts` 对 `spawn` 做 mock，使 fd-3 管道在引导写入时抛出异常（这是真实子进程无法被迫进入的唯一路径），并断言 `run()` resolve 出一个 `worker-exit` 而非 reject。一个同级用例让被 mock 的 `spawn` 同步抛出，并断言 `run()` 仍然 resolve 出一个 `worker-exit`，且会移除它的暂存目录——以被 mock 的 `spawn` 在其 argv 中收到的确切引导路径为准，因此一个同级 worker 的并发暂存不会让它变得不稳定。两者都被隔离在这个 spec 中，因此真实子进程测试套件不受影响。
 - `tests/residual-detach.spec.ts` 对 `detachResidual` 做单元测试：向前传递的副本与残余数据相等、拥有一个大小与其自身长度一致的底层存储（fixture 保持在 Node 的 Buffer 池阈值之上），并且不与源帧的 `ArrayBuffer` 共享。

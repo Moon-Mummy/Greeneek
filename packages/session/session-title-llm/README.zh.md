@@ -3,13 +3,13 @@ description: "面向用户与维护者的共享模型标题生成策略说明，
 kind: "package-library"
 ---
 
-# @deepseek-ai/dsh-session-title-llm
+# @greeneek/gnk-session-title-llm
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-session-title-llm` 让模型支持的标题生成都经过同一份共享策略：它解析辅助路由，把精确选中的用户消息封装为 JSON，强制执行输入与输出预算，组合超时与调用方取消，并在标题被接受前校验模型输出。它是普通库而非 Cordis 插件——随附提供方插件以各自的节奏与消息选择器调用 `registerSessionTitleLlmProvider()`，该辅助函数验证共享配置并把每次修订委托给同一条生成路径，因此注册、路由、提示词、取消与校验行为不会在它们之间漂移。部署方通过要求所有上限的提供方插件来配置它。路由、失败与配置约定在前；请求内部细节放在下方可折叠的开发者章节中。
+`gnk-session-title-llm` 让模型支持的标题生成都经过同一份共享策略：它解析辅助路由，把精确选中的用户消息封装为 JSON，强制执行输入与输出预算，组合超时与调用方取消，并在标题被接受前校验模型输出。它是普通库而非 Cordis 插件——随附提供方插件以各自的节奏与消息选择器调用 `registerSessionTitleLlmProvider()`，该辅助函数验证共享配置并把每次修订委托给同一条生成路径，因此注册、路由、提示词、取消与校验行为不会在它们之间漂移。部署方通过要求所有上限的提供方插件来配置它。路由、失败与配置约定在前；请求内部细节放在下方可折叠的开发者章节中。
 
 ## 目录
 
@@ -72,7 +72,7 @@ kind: "package-library"
 
 ### 请求流程
 
-生成在注册时校验一次配置；每次修订把选中的消息封装为 JSON，依据 `maxInputBytes` 检查封装提示词的 UTF-8 字节数，解析路由（显式对或已记录 `request/header`），追加一条携带确切可分发请求的仅日志 `session/title-llm-request` 事件，然后在组合的超时与取消截止时间内通过 `ctx.llm` 流式生成。分发的封套携带 `purpose: 'session-title'`，且有意不包含 agent loop 的进程本地请求身份；DeepSeek 适配器根据该用途禁用思考，使少量输出预算全部用于可见标题文本，其他适配器负责自身用途专用行为。输出只组装为文本块；工具调用、格式错误或空输出与非 stop 结束原因都会拒绝，后续模型失败会保留请求记录。
+生成在注册时校验一次配置；每次修订把选中的消息封装为 JSON，依据 `maxInputBytes` 检查封装提示词的 UTF-8 字节数，解析路由（显式对或已记录 `request/header`），追加一条携带确切可分发请求的仅日志 `session/title-llm-request` 事件，然后在组合的超时与取消截止时间内通过 `ctx.llm` 流式生成。分发的封套携带 `purpose: 'session-title'`，且有意不包含 agent loop 的进程本地请求身份；Greeneek 适配器根据该用途禁用思考，使少量输出预算全部用于可见标题文本，其他适配器负责自身用途专用行为。输出只组装为文本块；工具调用、格式错误或空输出与非 stop 结束原因都会拒绝，后续模型失败会保留请求记录。
 
 </details>
 
@@ -102,7 +102,7 @@ kind: "package-library"
 
 #### Token 影响
 
-辅助请求根据所选输入大小与 `maxOutputTokens` 消耗 token。它与主 agent 请求相互独立，不会向 agent 历史增加标题文本或封装内容。DeepSeek 标题调用会关闭思考；主对话保留自身配置的思考模式。
+辅助请求根据所选输入大小与 `maxOutputTokens` 消耗 token。它与主 agent 请求相互独立，不会向 agent 历史增加标题文本或封装内容。Greeneek 标题调用会关闭思考；主对话保留自身配置的思考模式。
 
 #### KV Cache 影响
 

@@ -3,7 +3,7 @@
  * session-scoped directory selection, safe-name derivation, path-traversal
  * protection, and the exclusive owner-only write.
  *
- * @module @deepseek-ai/dsh-spill-local/store
+ * @module @greeneek/gnk-spill-local/store
  */
 
 import { createHash, randomBytes } from 'node:crypto'
@@ -13,7 +13,7 @@ import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 
 /** Prefix shared by default-root creation and startup discovery. */
-export const DEFAULT_ROOT_PREFIX = 'dsh-spill-'
+export const DEFAULT_ROOT_PREFIX = 'gnk-spill-'
 
 /**
  * Test a caught value for a Node system error code.

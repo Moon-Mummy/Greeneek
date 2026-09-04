@@ -1,5 +1,5 @@
 /**
- * Profile machinery of `dsh-app-boot`: directory resolution and init,
+ * Profile machinery of `gnk-app-boot`: directory resolution and init,
  * manifest round-trips, two-anchor bundle resolution, patch-layer loading,
  * empty-root composition, and the installation module-fallback healing.
  */
@@ -10,7 +10,7 @@ import {
 } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { withFileLock } from '@deepseek-ai/dsh-atomic-write'
+import { withFileLock } from '@greeneek/gnk-atomic-write'
 import { describe, expect, it } from 'vitest'
 import {
   composeEntries,
@@ -26,12 +26,12 @@ import {
   type Profile,
 } from '../src/index.ts'
 
-const tmp = (): string => mkdtempSync(join(tmpdir(), 'dsh-profile-'))
+const tmp = (): string => mkdtempSync(join(tmpdir(), 'gnk-profile-'))
 
 /** Stage a fake installed app: package.json with deps and a node_modules holding bundles. */
 function stageInstallation(
   bundles: Record<string, { patch?: string; deps?: Record<string, string> }>,
-  appName = 'dsh-app',
+  appName = 'gnk-app',
 ): string {
   const root = tmp()
   const appDir = join(root, 'app')
@@ -47,7 +47,7 @@ function stageInstallation(
       type: 'module',
       main: './index.js',
       dependencies: spec.deps ?? {},
-      ...spec.patch === undefined ? {} : { dsh: { bundle: { patch: './cordis.patch.yml' } } },
+      ...spec.patch === undefined ? {} : { gnk: { bundle: { patch: './cordis.patch.yml' } } },
     }))
     writeFileSync(join(dir, 'index.js'), `export const packageName = ${JSON.stringify(name)}\n`)
     if (spec.patch !== undefined) writeFileSync(join(dir, 'cordis.patch.yml'), spec.patch)
@@ -93,17 +93,17 @@ describe('initProfile', () => {
   it('creates manifest, user patch layer, and pnpm workspace once, never overwriting', () => {
     const home = tmp()
     const dir = resolveProfileDir('tui', home)
-    initProfile(dir, ['@deepseek-ai/dsh-base'])
+    initProfile(dir, ['@greeneek/gnk-base'])
     const manifest = readProfileManifest('t', dir)
-    expect(manifest.dsh?.profile?.bundles).toEqual(['@deepseek-ai/dsh-base'])
-    expect(manifest.dsh?.profile?.patchReload).toBe('live')
+    expect(manifest.gnk?.profile?.bundles).toEqual(['@greeneek/gnk-base'])
+    expect(manifest.gnk?.profile?.patchReload).toBe('live')
     expect(readFileSync(join(dir, PROFILE_PATCH_FILENAME), 'utf8')).toContain('[]')
     expect(readFileSync(join(dir, 'pnpm-workspace.yaml'), 'utf8')).toContain('nodeLinker: hoisted')
     // Re-init keeps user edits.
     writeFileSync(join(dir, PROFILE_PATCH_FILENAME), '- id: x\n  config: {}\n')
     initProfile(dir, ['other'], 'startup')
-    expect(readProfileManifest('t', dir).dsh?.profile?.bundles).toEqual(['@deepseek-ai/dsh-base'])
-    expect(readProfileManifest('t', dir).dsh?.profile?.patchReload).toBe('live')
+    expect(readProfileManifest('t', dir).gnk?.profile?.bundles).toEqual(['@greeneek/gnk-base'])
+    expect(readProfileManifest('t', dir).gnk?.profile?.patchReload).toBe('live')
     expect(readFileSync(join(dir, PROFILE_PATCH_FILENAME), 'utf8')).toContain('- id: x')
   })
 })
@@ -111,8 +111,8 @@ describe('initProfile', () => {
 describe('manifest round-trip', () => {
   it('writes and reads back, and fails loud on a broken manifest', () => {
     const dir = tmp()
-    writeProfileManifest(dir, { name: 'p', dsh: { profile: { bundles: ['a'] } } })
-    expect(readProfileManifest('t', dir).dsh?.profile?.bundles).toEqual(['a'])
+    writeProfileManifest(dir, { name: 'p', gnk: { profile: { bundles: ['a'] } } })
+    expect(readProfileManifest('t', dir).gnk?.profile?.bundles).toEqual(['a'])
     writeFileSync(join(dir, 'package.json'), '[]')
     expect(() => readProfileManifest('t', dir)).toThrow('must hold a JSON object')
     expect(() => readProfileManifest('t', join(dir, 'nope'))).toThrow('failed to read profile manifest')
@@ -145,7 +145,7 @@ describe('resolveBundleDir', () => {
       name: 'sealed-bundle',
       version: '0.0.0',
       exports: { '.': './index.js' },
-      dsh: { bundle: { patch: './cordis.patch.yml' } },
+      gnk: { bundle: { patch: './cordis.patch.yml' } },
     }))
     writeFileSync(join(dir, 'index.js'), '')
     writeFileSync(join(dir, 'cordis.patch.yml'), '[]\n')
@@ -154,7 +154,7 @@ describe('resolveBundleDir', () => {
 })
 
 describe('loadProfile', () => {
-  it('resolves each dsh.profile.bundles entry to its patch layer in order, plus the user layer', () => {
+  it('resolves each gnk.profile.bundles entry to its patch layer in order, plus the user layer', () => {
     const anchor = stageInstallation({
       'bundle-a': { patch: '- insert:\n    - id: a\n      name: pkg-a\n' },
       'bundle-b': { patch: '- id: a\n  config:\n    v: 2\n' },
@@ -172,7 +172,7 @@ describe('loadProfile', () => {
       profile.patches,
     ])
     expect(entries).toEqual([{ id: 'a', name: 'pkg-a', config: { v: 3 } }])
-    // A hand-made profile without the user layer file or dsh section: empty layers, no throw.
+    // A hand-made profile without the user layer file or gnk section: empty layers, no throw.
     rmSync(join(dir, PROFILE_PATCH_FILENAME))
     expect(loadProfile('t', 'demo', anchor, home).patches).toEqual([])
     writeProfileManifest(dir, { name: 'bare' })
@@ -188,20 +188,20 @@ describe('loadProfile', () => {
       .toThrow('profile "custom" does not exist')
     // The web template auto-initializes on first load. Bundle resolution
     // cannot be asserted to fail here: the source-plane test runner resolves
-    // @deepseek-ai/* through tsconfig paths regardless of the staged anchor.
-    expect(PROFILE_TEMPLATES.web?.bundles).toContain('@deepseek-ai/dsh-base')
+    // @greeneek/* through tsconfig paths regardless of the staged anchor.
+    expect(PROFILE_TEMPLATES.web?.bundles).toContain('@greeneek/gnk-base')
     expect(PROFILE_TEMPLATES.web?.patchReload).toBe('live')
     expect(PROFILE_TEMPLATES.headless?.patchReload).toBe('startup')
     expect(PROFILE_TEMPLATES.acp).toEqual({
-      bundles: ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-acp-app'],
+      bundles: ['@greeneek/gnk-base', '@greeneek/gnk-acp-app'],
       patchReload: 'startup',
     })
     expect(PROFILE_TEMPLATES.sdk).toEqual({
-      bundles: ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-sdk-app'],
+      bundles: ['@greeneek/gnk-base', '@greeneek/gnk-sdk-app'],
       patchReload: 'startup',
     })
     expect(PROFILE_TEMPLATES['sdk-minimal']).toEqual({
-      bundles: ['@deepseek-ai/dsh-sdk-minimal'],
+      bundles: ['@greeneek/gnk-sdk-minimal'],
       patchReload: 'startup',
     })
     try {
@@ -209,57 +209,57 @@ describe('loadProfile', () => {
     } catch {
       // Resolution failure is the plain-Node outcome for this empty anchor.
     }
-    expect(readProfileManifest('t', resolveProfileDir('web', home)).dsh?.profile?.bundles)
+    expect(readProfileManifest('t', resolveProfileDir('web', home)).gnk?.profile?.bundles)
       .toEqual([...PROFILE_TEMPLATES.web?.bundles ?? []])
-    expect(readProfileManifest('t', resolveProfileDir('web', home)).dsh?.profile?.patchReload)
+    expect(readProfileManifest('t', resolveProfileDir('web', home)).gnk?.profile?.patchReload)
       .toBe('live')
   })
 
   it('normalizes only the exact installation-owned headless bundle tuple', () => {
     const anchor = stageInstallation({
-      '@deepseek-ai/dsh-base': { patch: '[]\n' },
-      '@deepseek-ai/dsh-web-app': { patch: '[]\n' },
-      '@deepseek-ai/dsh-headless': { patch: '[]\n' },
+      '@greeneek/gnk-base': { patch: '[]\n' },
+      '@greeneek/gnk-web-app': { patch: '[]\n' },
+      '@greeneek/gnk-headless': { patch: '[]\n' },
       'custom-bundle': { patch: '[]\n' },
     })
     const home = tmp()
     const stock = resolveProfileDir('headless', home)
     initProfile(stock, [
-      '@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app', '@deepseek-ai/dsh-headless',
+      '@greeneek/gnk-base', '@greeneek/gnk-web-app', '@greeneek/gnk-headless',
     ])
     const retiredManifest = readProfileManifest('t', stock)
-    delete retiredManifest.dsh!.profile!.patchReload
+    delete retiredManifest.gnk!.profile!.patchReload
     writeProfileManifest(stock, retiredManifest)
     loadProfile('t', 'headless', anchor, home)
-    expect(readProfileManifest('t', stock).dsh?.profile).toEqual({
-      bundles: ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-headless'],
+    expect(readProfileManifest('t', stock).gnk?.profile).toEqual({
+      bundles: ['@greeneek/gnk-base', '@greeneek/gnk-headless'],
       patchReload: 'startup',
     })
 
     const customHome = tmp()
     const custom = resolveProfileDir('headless', customHome)
     initProfile(custom, [
-      '@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app', '@deepseek-ai/dsh-headless', 'custom-bundle',
+      '@greeneek/gnk-base', '@greeneek/gnk-web-app', '@greeneek/gnk-headless', 'custom-bundle',
     ])
     loadProfile('t', 'headless', anchor, customHome)
-    expect(readProfileManifest('t', custom).dsh?.profile?.bundles).toEqual([
-      '@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app', '@deepseek-ai/dsh-headless', 'custom-bundle',
+    expect(readProfileManifest('t', custom).gnk?.profile?.bundles).toEqual([
+      '@greeneek/gnk-base', '@greeneek/gnk-web-app', '@greeneek/gnk-headless', 'custom-bundle',
     ])
   })
 
   it('adds a shipped reload default only to an exact stock tuple and preserves explicit choices', () => {
     const anchor = stageInstallation({
-      '@deepseek-ai/dsh-base': { patch: '[]\n' },
-      '@deepseek-ai/dsh-web-app': { patch: '[]\n' },
+      '@greeneek/gnk-base': { patch: '[]\n' },
+      '@greeneek/gnk-web-app': { patch: '[]\n' },
     })
     const stockHome = tmp()
     const stock = resolveProfileDir('web', stockHome)
     initProfile(stock, PROFILE_TEMPLATES.web?.bundles ?? [])
     const stockManifest = readProfileManifest('t', stock)
-    delete stockManifest.dsh!.profile!.patchReload
+    delete stockManifest.gnk!.profile!.patchReload
     writeProfileManifest(stock, stockManifest)
     expect(loadProfile('t', 'web', anchor, stockHome).patchReload).toBe('live')
-    expect(readProfileManifest('t', stock).dsh?.profile?.patchReload).toBe('live')
+    expect(readProfileManifest('t', stock).gnk?.profile?.patchReload).toBe('live')
 
     const explicitHome = tmp()
     const explicit = resolveProfileDir('web', explicitHome)
@@ -273,18 +273,18 @@ describe('loadProfile', () => {
     const dir = resolveProfileDir('demo', home)
     initProfile(dir, [])
     const manifest = readProfileManifest('t', dir)
-    const rawProfile = manifest.dsh!.profile as { patchReload?: string }
+    const rawProfile = manifest.gnk!.profile as { patchReload?: string }
     rawProfile.patchReload = 'sometimes'
     writeProfileManifest(dir, manifest)
     expect(() => loadProfile('t', 'demo', anchor, home)).toThrow('patchReload must be "live" or "startup"')
   })
 
-  it('fails loud when a listed bundle declares no dsh.bundle', () => {
+  it('fails loud when a listed bundle declares no gnk.bundle', () => {
     const anchor = stageInstallation({ 'not-a-bundle': {} })
     const home = tmp()
     const dir = resolveProfileDir('demo', home)
     initProfile(dir, ['not-a-bundle'])
-    expect(() => loadProfile('t', 'demo', anchor, home)).toThrow('declares no dsh.bundle')
+    expect(() => loadProfile('t', 'demo', anchor, home)).toThrow('declares no gnk.bundle')
   })
 })
 
@@ -321,7 +321,7 @@ describe('healProfilesModuleFallback', () => {
     const fallback = join(home, 'profiles', 'node_modules')
     // App deps, the bundle's own deps, and the bundle itself are linked; the
     // plain library is linked as an app dep (harmless), the app itself too.
-    for (const name of ['bundle-a', 'plain-lib', 'dep-of-a', 'dsh-app']) {
+    for (const name of ['bundle-a', 'plain-lib', 'dep-of-a', 'gnk-app']) {
       expect(lstatSync(join(fallback, name)).isSymbolicLink(), name).toBe(true)
     }
     // Idempotent, and a moved target is re-pointed.
@@ -334,7 +334,7 @@ describe('healProfilesModuleFallback', () => {
     const anchor = stageInstallation({})
     for (const kind of ['file', 'directory']) {
       const home = tmp()
-      const entry = join(home, 'profiles', 'node_modules', 'dsh-app')
+      const entry = join(home, 'profiles', 'node_modules', 'gnk-app')
       mkdirSync(join(entry, '..'), { recursive: true })
       if (kind === 'directory') mkdirSync(entry)
       else writeFileSync(entry, '')
@@ -353,8 +353,8 @@ describe('healProfilesModuleFallback', () => {
     await healProfilesModuleFallback({ installAnchor: installationAnchor, profile: profileA, home })
     await healProfilesModuleFallback({ installAnchor: installationAnchor, profile: profileB, home })
     const sharedFallback = join(home, 'profiles', 'node_modules')
-    const ownedA = join(profileA.dir, '.dsh-module-fallback', 'node_modules', '@scope', 'bundle-only')
-    const ownedB = join(profileB.dir, '.dsh-module-fallback', 'node_modules', '@scope', 'bundle-only')
+    const ownedA = join(profileA.dir, '.gnk-module-fallback', 'node_modules', '@scope', 'bundle-only')
+    const ownedB = join(profileB.dir, '.gnk-module-fallback', 'node_modules', '@scope', 'bundle-only')
 
     expect(realpathSync.native(readlinkSync(join(sharedFallback, 'shared'))))
       .toBe(realpathSync.native(join(installationAnchor, '..', 'node_modules', 'shared')))
@@ -427,7 +427,7 @@ describe('healProfilesModuleFallback', () => {
 
     await healProfilesModuleFallback({ installAnchor: installationAnchor, profile, home })
 
-    expect(readlinkSync(join(dir, '.dsh-module-fallback', 'node_modules', 'bundle-only')))
+    expect(readlinkSync(join(dir, '.gnk-module-fallback', 'node_modules', 'bundle-only')))
       .toBe(realpathSync.native(realDependency))
   })
 
@@ -472,7 +472,7 @@ describe('healProfilesModuleFallback', () => {
 
     await healProfilesModuleFallback({ installAnchor: installationAnchor, profile, home })
 
-    const ownedModules = join(dir, '.dsh-module-fallback', 'node_modules')
+    const ownedModules = join(dir, '.gnk-module-fallback', 'node_modules')
     expect(readlinkSync(join(ownedModules, 'nested-only'))).toBe(realpathSync.native(nestedOnly))
     expect(readlinkSync(join(ownedModules, 'explicit-only'))).toBe(realpathSync.native(explicitOnly))
   })
@@ -513,7 +513,7 @@ describe('healProfilesModuleFallback', () => {
     await healProfilesModuleFallback({ installAnchor: installationAnchor, profile, home })
     await healProfilesModuleFallback({ installAnchor: installationAnchor, profile, home })
 
-    const owned = join(dir, '.dsh-module-fallback', 'node_modules', 'bundle-only')
+    const owned = join(dir, '.gnk-module-fallback', 'node_modules', 'bundle-only')
     expect(readlinkSync(owned)).toBe(realpathSync.native(nested))
     expect(JSON.parse(readFileSync(join(profileModules, 'bundle-only', 'package.json'), 'utf8')))
       .toMatchObject({ name: 'bundle-only' })
@@ -525,7 +525,7 @@ describe('healProfilesModuleFallback', () => {
     const home = tmp()
     const profile = stageProfile(home, 'managed', bundleAnchor)
     await healProfilesModuleFallback({ installAnchor: installationAnchor, profile, home })
-    const ownedModules = join(profile.dir, '.dsh-module-fallback', 'node_modules')
+    const ownedModules = join(profile.dir, '.gnk-module-fallback', 'node_modules')
     const profileModules = join(profile.dir, 'node_modules')
     const foreignTarget = tmp()
     unlinkSync(join(profileModules, 'managed-dir'))
@@ -559,7 +559,7 @@ describe('healProfilesModuleFallback', () => {
     const profile = stageProfile(home, 'canonical', bundleAnchor)
     await healProfilesModuleFallback({ installAnchor: installationAnchor, profile, home })
     const profileLink = join(profile.dir, 'node_modules', 'fallback')
-    const ownedModules = join(profile.dir, '.dsh-module-fallback', 'node_modules')
+    const ownedModules = join(profile.dir, '.gnk-module-fallback', 'node_modules')
     unlinkSync(profileLink)
     symlinkSync(join(realpathSync(ownedModules), 'fallback'), profileLink, 'junction')
 
@@ -578,9 +578,9 @@ describe('healProfilesModuleFallback', () => {
     const home = tmp()
     const fallback = join(home, 'profiles', 'node_modules')
     mkdirSync(fallback, { recursive: true })
-    symlinkSync(tmp(), join(fallback, 'dsh-app'), 'junction')
+    symlinkSync(tmp(), join(fallback, 'gnk-app'), 'junction')
     await healProfilesModuleFallback({ installAnchor: anchor, home })
-    expect(readlinkSync(join(fallback, 'dsh-app'))).toContain('app')
+    expect(readlinkSync(join(fallback, 'gnk-app'))).toContain('app')
   })
 
   it('retains current links while repairing a missing sibling', async () => {
@@ -588,12 +588,12 @@ describe('healProfilesModuleFallback', () => {
     const home = tmp()
     const fallback = join(home, 'profiles', 'node_modules')
     await healProfilesModuleFallback({ installAnchor: anchor, home })
-    const appTarget = readlinkSync(join(fallback, 'dsh-app'))
+    const appTarget = readlinkSync(join(fallback, 'gnk-app'))
     unlinkSync(join(fallback, 'bundle-a'))
 
     await healProfilesModuleFallback({ installAnchor: anchor, home })
 
-    expect(readlinkSync(join(fallback, 'dsh-app'))).toBe(appTarget)
+    expect(readlinkSync(join(fallback, 'gnk-app'))).toBe(appTarget)
     expect(lstatSync(join(fallback, 'bundle-a')).isSymbolicLink()).toBe(true)
   })
 
@@ -605,7 +605,7 @@ describe('healProfilesModuleFallback', () => {
       healProfilesModuleFallback({ installAnchor: anchor, home }),
     ])
     const fallback = join(home, 'profiles', 'node_modules')
-    expect(lstatSync(join(fallback, 'dsh-app')).isSymbolicLink()).toBe(true)
+    expect(lstatSync(join(fallback, 'gnk-app')).isSymbolicLink()).toBe(true)
   })
 
   it('does not acquire the writer lock for a complete generation', async () => {
@@ -650,10 +650,10 @@ describe('healProfilesModuleFallback', () => {
 
     const healer = healProfilesModuleFallback({ installAnchor: anchor, home })
     await new Promise(resolve => setTimeout(resolve, 20))
-    expect(existsSync(join(modules, 'dsh-app'))).toBe(false)
+    expect(existsSync(join(modules, 'gnk-app'))).toBe(false)
     releaseLock?.()
     await Promise.all([holder, healer])
-    expect(lstatSync(join(modules, 'dsh-app')).isSymbolicLink()).toBe(true)
+    expect(lstatSync(join(modules, 'gnk-app')).isSymbolicLink()).toBe(true)
   })
 
   it('writes real ESM proxies for a packaged executable', async () => {
@@ -678,13 +678,13 @@ describe('healProfilesModuleFallback', () => {
       const proxyManifest = JSON.parse(readFileSync(join(proxy, 'package.json'), 'utf8')) as {
         version: unknown
         exports: unknown
-        dsh: { moduleFallback: { targets: Record<string, unknown> } }
+        gnk: { moduleFallback: { targets: Record<string, unknown> } }
       }
       expect(proxyManifest).toMatchObject({
         version: '0.0.0',
         exports: { '.': './entry-0.js', './feature': './entry-1.js' },
       })
-      expect(proxyManifest.dsh.moduleFallback.targets['.']).toEqual(expect.stringContaining('/bundle-a/index.js'))
+      expect(proxyManifest.gnk.moduleFallback.targets['.']).toEqual(expect.stringContaining('/bundle-a/index.js'))
       await expect(import(join(proxy, 'entry-0.js'))).resolves.toMatchObject({ packageName: 'bundle-a' })
       await expect(import(join(proxy, 'entry-1.js'))).resolves.toMatchObject({ feature: 'proxied' })
       await healProfilesModuleFallback({ installAnchor: anchor, home })
@@ -770,8 +770,8 @@ describe('healProfilesModuleFallback', () => {
       const proxyManifest = JSON.parse(readFileSync(
         join(home, 'profiles', 'node_modules', 'linked-esm', 'package.json'),
         'utf8',
-      )) as { dsh: { moduleFallback: { targets: Record<string, string> } } }
-      expect(proxyManifest.dsh.moduleFallback.targets['.']).toContain('/app/node_modules/linked-esm/index.js')
+      )) as { gnk: { moduleFallback: { targets: Record<string, string> } } }
+      expect(proxyManifest.gnk.moduleFallback.targets['.']).toContain('/app/node_modules/linked-esm/index.js')
     } finally {
       delete (process as NodeJS.Process & { pkg?: unknown }).pkg
     }
@@ -816,7 +816,7 @@ describe('healProfilesModuleFallback', () => {
       const anchor = stageInstallation({ 'bundle-a': { patch: '[]\n' } })
       const manifest = JSON.parse(readFileSync(anchor, 'utf8')) as Record<string, unknown>
       delete manifest.main
-      manifest[marker] = marker === 'bin' ? { dsh: './lib/bin.js' } : './index.d.ts'
+      manifest[marker] = marker === 'bin' ? { gnk: './lib/bin.js' } : './index.d.ts'
       if (marker === 'types') manifest.main = ''
       writeFileSync(anchor, JSON.stringify(manifest))
       rmSync(join(anchor, '..', 'index.js'))
@@ -825,7 +825,7 @@ describe('healProfilesModuleFallback', () => {
         const home = tmp()
         await healProfilesModuleFallback({ installAnchor: anchor, home })
         const fallback = join(home, 'profiles', 'node_modules')
-        expect(existsSync(join(fallback, 'dsh-app'))).toBe(false)
+        expect(existsSync(join(fallback, 'gnk-app'))).toBe(false)
         expect(existsSync(join(fallback, 'bundle-a', 'entry-0.js'))).toBe(true)
       } finally {
         delete (process as NodeJS.Process & { pkg?: unknown }).pkg
@@ -948,7 +948,7 @@ describe('healProfilesModuleFallback', () => {
         mkdirSync(proxy, { recursive: true })
         writeFileSync(join(proxy, 'package.json'), metadata)
         await expect(healProfilesModuleFallback({ installAnchor: anchor, home })).rejects.toThrow(
-          'exists and is not a dsh-managed module proxy',
+          'exists and is not a gnk-managed module proxy',
         )
       }
     } finally {

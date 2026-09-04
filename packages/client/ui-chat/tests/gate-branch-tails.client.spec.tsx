@@ -2,20 +2,20 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render } from '@testing-library/react'
-import { bindSnapshotSelector, makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
-import { createSnapshotStore } from '@deepseek-ai/dsh-client-store'
+import { bindSnapshotSelector, makeTranslate } from '@greeneek/gnk-client-test-runtime'
+import { createSnapshotStore } from '@greeneek/gnk-client-store'
 import type {
   SessionListState, SessionSnapshot,
-} from '@deepseek-ai/dsh-api-session-controller/client'
-import type { WorkspaceSnapshot } from '@deepseek-ai/dsh-api-workspace-controller/client'
-import type { SessionId } from '@deepseek-ai/dsh-session/types'
-import type { SessionProviderComponent } from '@deepseek-ai/dsh-client-ui-slots'
-import type { SessionPendingInteractionSnapshot } from '@deepseek-ai/dsh-client-ui-session/client'
-import { EMPTY_CONVERSATION_SNAPSHOT } from '@deepseek-ai/dsh-client-ui-conversation/client'
+} from '@greeneek/gnk-api-session-controller/client'
+import type { WorkspaceSnapshot } from '@greeneek/gnk-api-workspace-controller/client'
+import type { SessionId } from '@greeneek/gnk-session/types'
+import type { SessionProviderComponent } from '@greeneek/gnk-client-ui-slots'
+import type { SessionPendingInteractionSnapshot } from '@greeneek/gnk-client-ui-session/client'
+import { EMPTY_CONVERSATION_SNAPSHOT } from '@greeneek/gnk-client-ui-conversation/client'
 import type {
   DetailsSlotProps, DetailsToolOwnerProps, RunningToolCall, SelectionTarget,
-} from '@deepseek-ai/dsh-client-ui-chat/client'
-import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts'
+} from '@greeneek/gnk-client-ui-chat/client'
+import { zh as commonZh } from '@greeneek/gnk-client-locale/src/locales/zh.ts'
 import { createChatStore } from '../src/client/stores.ts'
 import { AssistantMarkdown, type AssistantMarkdownProps } from '../src/client/chat/AssistantMarkdown.tsx'
 import { StatsLine } from '../src/client/chat/StatsLine.tsx'

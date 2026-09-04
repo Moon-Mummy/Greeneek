@@ -4,17 +4,17 @@
  * version this controller last observed, and a `version-conflict` reply carries
  * the authoritative item, so a lost race reconciles from the reply itself
  * instead of refetching the whole Session.
- * @module @deepseek-ai/dsh-client-ui-message-feedback/client/controller
+ * @module @greeneek/gnk-client-ui-message-feedback/client/controller
  */
 
-import type { Context as ClientContext } from '@deepseek-ai/cordis'
-import type { HostObservable } from '@deepseek-ai/dsh-client-ui-slots'
-import type { MessageId } from '@deepseek-ai/dsh-api-remotes/client'
-import type { SessionId } from '@deepseek-ai/dsh-session/types'
+import type { Context as ClientContext } from '@greeneek/cordis'
+import type { HostObservable } from '@greeneek/gnk-client-ui-slots'
+import type { MessageId } from '@greeneek/gnk-api-remotes/client'
+import type { SessionId } from '@greeneek/gnk-session/types'
 import type {
   MessageFeedbackItem,
   MessageFeedbackRating,
-} from '@deepseek-ai/dsh-message-feedback/types'
+} from '@greeneek/gnk-message-feedback/types'
 
 /** Load state of the one list read that seeds every per-message control. */
 export type MessageFeedbackStatus = 'cold' | 'loading' | 'ready' | 'error'

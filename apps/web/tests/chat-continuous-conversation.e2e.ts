@@ -9,9 +9,9 @@ import { join } from 'node:path'
 import type { Browser, Page } from 'playwright'
 import { chromium } from 'playwright'
 import { afterAll, beforeAll, describe, expect, it, onTestFailed } from 'vitest'
-import { ToolCallId, type StreamChunk } from '@deepseek-ai/dsh-llm'
-import type { ReplayEntry, ReplayOverrideDoc } from '@deepseek-ai/dsh-llm-replay'
-import type { SessionEvent, SessionId } from '@deepseek-ai/dsh-session'
+import { ToolCallId, type StreamChunk } from '@greeneek/gnk-llm'
+import type { ReplayEntry, ReplayOverrideDoc } from '@greeneek/gnk-llm-replay'
+import type { SessionEvent, SessionId } from '@greeneek/gnk-session'
 import {
   launchWebScaffold,
   watchConsole,
@@ -181,7 +181,7 @@ describe('web e2e: continuous conversation grown through the composer', () => {
   const specs = Array.from({ length: TURN_COUNT }, (_, offset) => turnSpec(offset + 1))
 
   beforeAll(async () => {
-    replayDir = await mkdtemp(join(tmpdir(), 'dsh-continuous-chat-replay-'))
+    replayDir = await mkdtemp(join(tmpdir(), 'gnk-continuous-chat-replay-'))
     const replayOverride = join(replayDir, 'replay.override.json')
     await writeFile(replayOverride, JSON.stringify(replayScript(specs)))
     scaffold = await launchWebScaffold({

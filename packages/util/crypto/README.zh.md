@@ -3,7 +3,7 @@ description: "面向替换仅安全上下文可用的 crypto.randomUUID 调用�
 kind: "package-library"
 ---
 
-# dsh-util-crypto
+# gnk-util-crypto
 
 [English](README.md) | 中文
 
@@ -32,7 +32,7 @@ kind: "package-library"
 ## API
 
 ```ts
-import { bytesToBase64, randomUUID, type Uuid } from '@deepseek-ai/dsh-util-crypto'
+import { bytesToBase64, randomUUID, type Uuid } from '@greeneek/gnk-util-crypto'
 ```
 
 | 导出 | 角色 |

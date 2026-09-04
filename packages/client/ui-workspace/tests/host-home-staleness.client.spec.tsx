@@ -8,11 +8,11 @@
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, cleanup, fireEvent, screen } from '@testing-library/react'
-import type { WorkspaceId } from '@deepseek-ai/dsh-api-workspace-controller/client'
-import type { PropsRenderSlots } from '@deepseek-ai/dsh-client-ui-slots'
-import { SlotTestRuntime, TestRemote, usePinnedBrowserLanguages } from '@deepseek-ai/dsh-client-test-runtime'
-import { LocaleRuntime } from '@deepseek-ai/dsh-client-locale/client'
-import { apply, inject } from '@deepseek-ai/dsh-client-ui-workspace/client'
+import type { WorkspaceId } from '@greeneek/gnk-api-workspace-controller/client'
+import type { PropsRenderSlots } from '@greeneek/gnk-client-ui-slots'
+import { SlotTestRuntime, TestRemote, usePinnedBrowserLanguages } from '@greeneek/gnk-client-test-runtime'
+import { LocaleRuntime } from '@greeneek/gnk-client-locale/client'
+import { apply, inject } from '@greeneek/gnk-client-ui-workspace/client'
 
 usePinnedBrowserLanguages('zh-CN')
 

@@ -9,7 +9,7 @@
  * than at request time: an unserviceable route fails while its configuration is
  * being resolved, which is the earliest point that can name the offending key.
  *
- * @module dsh-llm-pi-ai/catalog
+ * @module gnk-llm-pi-ai/catalog
  */
 
 import { builtinProviders, getBuiltinModels, getBuiltinProviders } from '@earendil-works/pi-ai/providers/all'
@@ -98,7 +98,7 @@ export type PiAiThinkingFormat = NonNullable<OpenAICompletionsCompat['thinkingFo
  */
 const THINKING_FORMAT_GATE: Record<PiAiThinkingFormat, true> = {
   'openai': true,
-  'deepseek': true,
+  'deepseek': true, // rebrand:keep (B4: pi-ai thinkingFormat wire value; D16)
   'openrouter': true,
   'together': true,
   'baseten': true,
@@ -790,7 +790,7 @@ export interface RouteCatalog {
  * Materialize one route's catalog by merging the installed catalog defaults
  * under the configured entries. A route with no configured `models` serves the
  * installed catalog unchanged, which is what keeps an existing
- * `providers: { deepseek: { apiKeyEnv: … } }` profile working untouched.
+ * `providers: { deepseek: { apiKeyEnv: … } }` profile working untouched. // rebrand:keep (B4: pi-ai built-in catalog id; D16)
  * @param request - the route-level catalog facts.
  * @returns the materialized models and the explicitly configured request caps.
  */

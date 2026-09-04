@@ -11,7 +11,7 @@ import { join } from 'node:path'
 import type { Browser, Page } from 'playwright'
 import { chromium } from 'playwright'
 import { afterAll, beforeAll, describe, expect, it, onTestFailed } from 'vitest'
-import type { ReplayOverrideDoc } from '@deepseek-ai/dsh-llm-replay'
+import type { ReplayOverrideDoc } from '@greeneek/gnk-llm-replay'
 import {
   assertFixtureInventory,
   captureExpandedTurnProcessAria,
@@ -67,7 +67,7 @@ describe.skipIf(MODE === 'record')('web e2e: user-explicit skill invocation thro
   let tripwire: ReturnType<typeof watchConsole>
 
   beforeAll(async () => {
-    replayDir = await mkdtemp(join(tmpdir(), 'dsh-skill-user-invoke-replay-'))
+    replayDir = await mkdtemp(join(tmpdir(), 'gnk-skill-user-invoke-replay-'))
     const replayOverride = join(replayDir, 'replay.override.json')
     await writeFile(replayOverride, JSON.stringify(REPLAY))
     scaffold = await launchWebScaffold({

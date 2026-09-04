@@ -6,13 +6,13 @@ English | [中文](2026-08-28-ci-test-reliability-skill.zh.md)
 
 ## Problem
 
-DeepSeek Harness runs tests across concurrent Vitest files, worker processes, repository gates, and Actions jobs. Process isolation does not isolate host ports, predictable paths, external namespaces, or inherited children, while process-global mutations and incomplete teardown can contaminate later tests. A test can select the correct tier and still pass only when it runs alone.
+Greeneek Harness runs tests across concurrent Vitest files, worker processes, repository gates, and Actions jobs. Process isolation does not isolate host ports, predictable paths, external namespaces, or inherited children, while process-global mutations and incomplete teardown can contaminate later tests. A test can select the correct tier and still pass only when it runs alone.
 
 The testing policy owns test tiers, defensive patterns own runtime lifecycle rules, pre-push guidance selects commands, and code review evaluates completed diffs. None of them gives an agent a focused workflow for designing resource-owning tests against the real CI topology or classifying an existing probabilistic failure before changing code.
 
 ## Decision
 
-[dsh-ci-test-reliability](../../../skills/dsh-ci-test-reliability/SKILL.md) owns test isolation and CI-flake diagnosis guidance. It applies when tests or fixtures acquire host resources, mutate process-global state, depend on asynchronous readiness, own subprocesses or network listeners, or exhibit probabilistic CI failures.
+[gnk-ci-test-reliability](../../../skills/gnk-ci-test-reliability/SKILL.md) owns test isolation and CI-flake diagnosis guidance. It applies when tests or fixtures acquire host resources, mutate process-global state, depend on asynchronous readiness, own subprocesses or network listeners, or exhibit probabilistic CI failures.
 
 The skill requires agents to model concurrency beyond one Vitest process, allocate live resources atomically, separate stable fixture identities from ephemeral transport addresses, synchronize on observable state, restore global mutations exactly, and await teardown to quiescence. Regression evidence matches the owned risk: negative controls for guards, deterministic barriers for races, concurrent independent processes for host-resource isolation, and external observations instead of component self-reports.
 
@@ -20,15 +20,15 @@ Two rules cover the failures the repository has actually paid for. A value the o
 
 The diagnosis-only workflow lives in a separate reference so ordinary authoring does not load Actions triage procedure. It compares passing and failing evidence before classifying host collisions, incomplete lifecycle, global contamination, load-sensitive synchronization, platform or entry-path failures, product races, provider transience, or runner infrastructure.
 
-[dsh-pre-push-checks](../../../skills/dsh-pre-push-checks/SKILL.md) conditionally consults the reliability skill before selecting commands, while [dsh-code-review](../../../skills/dsh-code-review/SKILL.md) applies it when reviewing risky tests. Command selection and general PR review remain with those existing skills.
+[gnk-pre-push-checks](../../../skills/gnk-pre-push-checks/SKILL.md) conditionally consults the reliability skill before selecting commands, while [gnk-code-review](../../../skills/gnk-code-review/SKILL.md) applies it when reviewing risky tests. Command selection and general PR review remain with those existing skills.
 
 This decision partially overlaps the [deterministic and stress testing proposal](../../proposed/testing/2026-06-11-deterministic-and-stress-testing.md). The skill ships authoring and diagnosis guidance; it does not implement that proposal's lint rule, universal replay fixture, or nightly stress job, so the proposal remains active.
 
 ## Alternatives considered
 
-**Expand dsh-pre-push-checks.** Pre-push guidance runs after test design and owns evidence selection. Making it also own resource allocation, synchronization, teardown, and CI diagnosis would mix two different decisions and load reliability procedure for ordinary pushes.
+**Expand gnk-pre-push-checks.** Pre-push guidance runs after test design and owns evidence selection. Making it also own resource allocation, synchronization, teardown, and CI diagnosis would mix two different decisions and load reliability procedure for ordinary pushes.
 
-**Expand dsh-code-review.** Review guidance can detect unreliable tests after a diff exists, but it cannot guide the agent while the fixture is being designed or while a failure is being diagnosed without a PR.
+**Expand gnk-code-review.** Review guidance can detect unreliable tests after a diff exists, but it cannot guide the agent while the fixture is being designed or while a failure is being diagnosed without a PR.
 
 **Put the complete workflow in the standing testing policy.** The testing policy must remain the concise authority for tiers and placement. Loading detailed Actions diagnosis and resource-specific procedure for every test task would duplicate situational guidance and make that policy harder to scan.
 

@@ -1,4 +1,4 @@
-# Agent Note: Port tool-owned render into current DSH APIs
+# Agent Note: Port tool-owned render into current GNK APIs
 
 Status: proposed
 
@@ -6,14 +6,14 @@ English | [中文](2026-08-27-port-tool-owned-render.zh.md)
 
 ## Problem
 
-The `dsh-tool-owned-render` prototype (`Chinesezjc/dsh-tool-owned-render`) ships tool-owned render registrants for `read`, `bash`, `write`/`edit`, `grep`/`glob`, and `web_search`/`web_fetch`, written against an older API where `ToolCallBlock` exposed `callView` / `resultView` and the client received host `presentResult` output. Current master derives client cards from raw `block.call` / `block.content` / `block.meta`, and `ctx.slots` requires the `@deepseek-ai/dsh-client-ui-renderer/client` module augmentation. A direct merge of the prototype does not typecheck, so its registrants cannot ship without a port.
+The `gnk-tool-owned-render` prototype (`Chinesezjc/gnk-tool-owned-render`) ships tool-owned render registrants for `read`, `bash`, `write`/`edit`, `grep`/`glob`, and `web_search`/`web_fetch`, written against an older API where `ToolCallBlock` exposed `callView` / `resultView` and the client received host `presentResult` output. Current master derives client cards from raw `block.call` / `block.content` / `block.meta`, and `ctx.slots` requires the `@greeneek/gnk-client-ui-renderer/client` module augmentation. A direct merge of the prototype does not typecheck, so its registrants cannot ship without a port.
 
 ## Proposal
 
 - Add `packages/client/tool-owned-render` as a workspace package.
 - Port the `read`, `bash`, `write`/`edit`, `grep`/`glob`, and `web_search`/`web_fetch` registrants to derive from current `ToolCallBlock` fields.
 - Add a `read_image` registrant using the same ToolCard/Segment primitives.
-- Wire `ctx.slots` type augmentation through `dsh-client-ui-renderer`.
+- Wire `ctx.slots` type augmentation through `gnk-client-ui-renderer`.
 - Keep PR #2828 mergeable while this port proceeds separately.
 
 ## Alternatives considered
@@ -26,7 +26,7 @@ The `dsh-tool-owned-render` prototype (`Chinesezjc/dsh-tool-owned-render`) ships
 - `packages/client/tool-owned-render` exists as a workspace package.
 - The ported registrants derive card state from current `ToolCallBlock` fields and typecheck on master.
 - A `read_image` registrant renders through the same primitives as `read`.
-- The `ctx.slots` type augmentation resolves through `dsh-client-ui-renderer`.
+- The `ctx.slots` type augmentation resolves through `gnk-client-ui-renderer`.
 - PR #2828 merges independently of this port.
 
 ## Risks

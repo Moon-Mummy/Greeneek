@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-01-streamed-tool-call-identity.md
-2026-09-01-streamed-tool-call-identity.md: c52f39b735199270d65ed30a388333a217003237
-2026-09-01-streamed-tool-call-identity.zh.md: 9a7ffb6343870a08e06507408e007ad94fbad178
+2026-09-01-streamed-tool-call-identity.md: e1608786ce0f790529782431f901d8f0481d2f28
+2026-09-01-streamed-tool-call-identity.zh.md: a2727ddfb8f8ee8b52e219cd77f7e3463f2b3554

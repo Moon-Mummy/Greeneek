@@ -11,25 +11,25 @@ import { describe, expect, it, vi } from 'vitest'
 import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { Context } from '@deepseek-ai/cordis'
+import { Context } from '@greeneek/cordis'
 import { z } from 'zod'
-import AgentRegistry, { Inbox } from '@deepseek-ai/dsh-agent'
-import { AttachmentStore } from '@deepseek-ai/dsh-attachment'
-import { agentPresetProjectionDefinition } from '@deepseek-ai/dsh-agent-presets'
-import type { Agent } from '@deepseek-ai/dsh-agent'
-import { createUserMessage } from '@deepseek-ai/dsh-llm'
-import SessionStore, { SessionId, SessionSeq } from '@deepseek-ai/dsh-session'
-import type { Session } from '@deepseek-ai/dsh-session'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import type { ProjectionDefinition } from '@deepseek-ai/dsh-session-projection'
-import SessionProjectionCache, { projectionCacheDomainSpec } from '@deepseek-ai/dsh-session-projection-cache'
-import Storage from '@deepseek-ai/dsh-storage'
-import * as StorageDomain from '@deepseek-ai/dsh-storage-domain'
-import * as StorageJson from '@deepseek-ai/dsh-storage-json'
-import type { SessionControlFrame, SessionFollowFrame } from '@deepseek-ai/dsh-api-session-controller/types'
+import AgentRegistry, { Inbox } from '@greeneek/gnk-agent'
+import { AttachmentStore } from '@greeneek/gnk-attachment'
+import { agentPresetProjectionDefinition } from '@greeneek/gnk-agent-presets'
+import type { Agent } from '@greeneek/gnk-agent'
+import { createUserMessage } from '@greeneek/gnk-llm'
+import SessionStore, { SessionId, SessionSeq } from '@greeneek/gnk-session'
+import type { Session } from '@greeneek/gnk-session'
+import SessionProjectionRegistry from '@greeneek/gnk-session-projection'
+import type { ProjectionDefinition } from '@greeneek/gnk-session-projection'
+import SessionProjectionCache, { projectionCacheDomainSpec } from '@greeneek/gnk-session-projection-cache'
+import Storage from '@greeneek/gnk-storage'
+import * as StorageDomain from '@greeneek/gnk-storage-domain'
+import * as StorageJson from '@greeneek/gnk-storage-json'
+import type { SessionControlFrame, SessionFollowFrame } from '@greeneek/gnk-api-session-controller/types'
 import { createSessionTestRemote, testSessionPersistence, type TestSessionRemote } from './test-remote.ts'
 
-declare module '@deepseek-ai/dsh-session-projection/types' {
+declare module '@greeneek/gnk-session-projection/types' {
   interface SessionProjectionStateMap {
     'test/last-user': LastUserState
     'test/internal-count': number
@@ -468,7 +468,7 @@ describe('session.list projections column', () => {
   })
 
   it('keeps persisted host-only state out of a cold session.list response', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'dsh-api-projcache-'))
+    const root = await mkdtemp(join(tmpdir(), 'gnk-api-projcache-'))
     const ctx = new Context()
     try {
       await ctx.plugin(Storage)

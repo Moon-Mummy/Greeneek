@@ -3,13 +3,13 @@ description: "One shared remote Linux sandbox for E2B-backed file and command wo
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-e2b
+# @greeneek/gnk-e2b
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-e2b` provides one shared remote Linux sandbox for the E2B provider family: the agent's file operations, shell commands, and terminals all run inside this sandbox instead of on your machine. The sandbox is created when the family starts and deleted automatically when the configured lifetime expires or the app shuts down — anything it held disappears with it. You configure three things: an API key, a remote working directory, and the sandbox lifetime. Use it together with `dsh-fs-e2b` and `dsh-subprocess-e2b`; on its own it adds no user-visible features. Nothing here reaches the model, and no shipped composition enables this family by default.
+`gnk-e2b` provides one shared remote Linux sandbox for the E2B provider family: the agent's file operations, shell commands, and terminals all run inside this sandbox instead of on your machine. The sandbox is created when the family starts and deleted automatically when the configured lifetime expires or the app shuts down — anything it held disappears with it. You configure three things: an API key, a remote working directory, and the sandbox lifetime. Use it together with `gnk-fs-e2b` and `gnk-subprocess-e2b`; on its own it adds no user-visible features. Nothing here reaches the model, and no shipped composition enables this family by default.
 
 ## Table of Contents
 
@@ -36,14 +36,14 @@ Choose the E2B family when work should be isolated from the host machine — for
 Three settings matter: an API key (or the `E2B_API_KEY` environment variable), an absolute remote working directory, and the sandbox lifetime. A bad key, a relative working directory, or an invalid lifetime rejects startup before any remote work happens.
 
 ```yaml
-- name: '@deepseek-ai/dsh-e2b'
+- name: '@greeneek/gnk-e2b'
   config:
     apiKey: <E2B API key>
     cwd: /home/user/workspace
     timeoutMs: 300000
 
-- name: '@deepseek-ai/dsh-subprocess-e2b'
-- name: '@deepseek-ai/dsh-fs-e2b'
+- name: '@greeneek/gnk-subprocess-e2b'
+- name: '@greeneek/gnk-fs-e2b'
 ```
 
 | Field | Default | Meaning |
@@ -52,7 +52,7 @@ Three settings matter: an API key (or the `E2B_API_KEY` environment variable), a
 | `cwd` | `/home/user/workspace` | Remote working directory the family shares; absolute POSIX path |
 | `timeoutMs` | `300,000` | Sandbox lifetime in milliseconds; the sandbox is deleted when it expires |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-e2b) is the exhaustive source for every accepted field and its JSDoc.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-e2b) is the exhaustive source for every accepted field and its JSDoc.
 
 ### What you get
 
@@ -105,7 +105,7 @@ Read these pages when the package-level contract is not enough. They move from t
 - [E2B provider family map](../README.md) — the three packages and the opt-in composition.
 - [Subprocess subsystem](../../../docs/subsystems/subprocess.md) — the subprocess seam contract and the generated Cordis surface, including `ctx.e2b`.
 - [Portable execution-world decision](../../../.agents/notes/implemented/architecture/2026-07-28-portable-execution-world-consumers.md) — why consumers delegate to `ctx.fs` and `ctx.subprocess`, and what stays in the host.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-e2b) — every accepted config field and its source declaration.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-e2b) — every accepted config field and its source declaration.
 
 -----
 

@@ -2,13 +2,13 @@
  * The SDK profile's command-line and stdin-lifetime provider. A successful
  * parse publishes {@link SDK_APP_STARTUP_SERVICE}; the JSON-RPC server waits
  * for that service, so help starts no transport.
- * @module @deepseek-ai/dsh-sdk-app
+ * @module @greeneek/gnk-sdk-app
  */
 
 import { Command } from 'commander'
-import type { Context } from '@deepseek-ai/cordis'
-import z from '@deepseek-ai/schemastery'
-import { exitOnStdinEnd, parseCmdline } from '@deepseek-ai/dsh-cmdline'
+import type { Context } from '@greeneek/cordis'
+import z from '@greeneek/schemastery'
+import { exitOnStdinEnd, parseCmdline } from '@greeneek/gnk-cmdline'
 
 /** Stable Cordis plugin name. */
 export const name = 'sdk-app-startup'
@@ -37,12 +37,12 @@ export const Config: z<Config> = z.object({
  */
 function sdkCommand(profile: string): Command {
   return new Command()
-    .name(`dsh --profile ${profile}`)
+    .name(`gnk --profile ${profile}`)
     .description('Serve Greeneek SDK clients over stdio JSON-RPC.')
     .helpOption('-h, --help', 'show this help')
     .addHelpText('after', `
 Example:
-  dsh --profile ${profile}     serve one SDK runtime until its client disconnects
+  gnk --profile ${profile}     serve one SDK runtime until its client disconnects
 `)
 }
 

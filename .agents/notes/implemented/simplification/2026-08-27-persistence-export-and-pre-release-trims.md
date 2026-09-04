@@ -14,7 +14,7 @@ The session-persistence seam is moving to a handle-based API with cross-process 
 
 **No consumer-facing path query.** `locate` is not a service method. `SessionLocation` survives only as refusal diagnostics: the JSONL backend derives the artifact path internally so `SessionFormatUnsupportedError` can point at the raw log a build refused. The three consumer features built on `locate` are removed or degraded, not ported:
 
-- `DSH_SESSION_JSONL` no longer exists; shell-env registers no persistence contributor. The variable was only honest with `compression: 'none'` — the default `.jsonl.zstd` artifact is unreadable from bash.
+- `GNK_SESSION_JSONL` no longer exists; shell-env registers no persistence contributor. The variable was only honest with `compression: 'none'` — the default `.jsonl.zstd` artifact is unreadable from bash.
 - The Claude Code / Codex hook bridges keep `transcript_path` in the wire payload for protocol shape but always send `''` / `null`. Hook scripts could not parse the compressed artifact either.
 - The `locate`-based size gate for the session-controller cold blank probe is deleted. The probe itself runs on stat metadata: the [handle-based seam](../architecture/2026-08-27-handle-based-session-persistence.md)'s `stat()`/`list()` snapshots carry optional `eventCount`/`sizeBytes`, and session-controller bounds the probe with `coldBlankProbeMaxEvents`/`coldBlankProbeMaxBytes`; a cold session past both thresholds, or on a backend offering neither hint, reports `blank: false` (unknown).
 
@@ -43,4 +43,4 @@ The seam ahead of the handle refactor is smaller: one export method, no path que
 - [Retain ignorable external session events](../architecture/2026-08-30-retain-ignorable-external-session-events.md) — owns the read-side-only unknown-type gate this change leans on.
 - [Session persistence as an abstract service](../architecture/2026-06-14-session-persistence.md) — owns the seam these trims shrink.
 - [Zstandard JSONL session logs](../architecture/2026-07-19-zstandard-jsonl-session-logs.md) — owns the frame container these reads and appends flow through.
-- [Session identity and log location](../feature/2026-07-10-agent-session-identity-and-log-location.md) — partially superseded: its `DSH_SESSION_ID` and shell-env registry decisions stand; its `locate`/`DSH_SESSION_JSONL`/`transcript_path` decisions are removed here.
+- [Session identity and log location](../feature/2026-07-10-agent-session-identity-and-log-location.md) — partially superseded: its `GNK_SESSION_ID` and shell-env registry decisions stand; its `locate`/`GNK_SESSION_JSONL`/`transcript_path` decisions are removed here.

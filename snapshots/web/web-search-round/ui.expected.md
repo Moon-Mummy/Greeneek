@@ -13,20 +13,20 @@
   - img
   - img
   - text: System prompt
-- text: Use web_search once with queries ["DeepSeek Harness snapshot search","DeepSeek Harness multi-query search"]. Then reply exactly SEARCH_DONE and stop. {{clock}}
+- text: Use web_search once with queries ["Greeneek Harness snapshot search","Greeneek Harness multi-query search"]. Then reply exactly SEARCH_DONE and stop. {{clock}}
 - button "Copy":
   - img
 - button "1 tool call" [expanded]:
   - text: 1 tool call
   - img
-- button "Context injection @deepseek-ai/dsh-system-prompt":
+- button "Context injection @greeneek/gnk-system-prompt":
   - img
   - img
-  - text: Context injection @deepseek-ai/dsh-system-prompt
-- button "Search DeepSeek Harness snapshot search, DeepSeek Harness multi-query search":
+  - text: Context injection @greeneek/gnk-system-prompt
+- button "Search Greeneek Harness snapshot search, Greeneek Harness multi-query search":
   - img
   - img
-  - text: Search DeepSeek Harness snapshot search, DeepSeek Harness multi-query search
+  - text: Search Greeneek Harness snapshot search, Greeneek Harness multi-query search
 - paragraph: SEARCH_DONE
 - button "Copy":
   - img
@@ -44,8 +44,8 @@
 - button "Commands":
   - img
 - 'button "Access mode, current: Workspace Write"': Workspace Write
-- button "Select model, current DeepSeek-V4-Flash":
-  - text: DeepSeek-V4-Flash
+- button "Select model, current Greeneek-V4-Flash":
+  - text: Greeneek-V4-Flash
   - img
 - button "0% of context used"
 - button "Send message" [disabled]

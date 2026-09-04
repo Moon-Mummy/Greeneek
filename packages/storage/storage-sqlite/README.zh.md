@@ -3,13 +3,13 @@ description: "SQLite 存储后端：面向在单个数据库文件中选择、�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-storage-sqlite
+# @greeneek/gnk-storage-sqlite
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-storage-sqlite` 是一个存储后端：把每个已路由单元托管在同一个 SQLite 数据库文件中，每条记录按行存储一份 JSON 文档，注册为后端 `sqlite`。单条记录更新恰好触碰一行，这正是它适合高频定点写入的原因。当领域数据变动频繁、或部署偏好单一可查询数据库时选择它；当数据需要以纯文本文件形式可读时选择 JSON 后端。本后端只面向宿主侧：它不贡献提示词、工具或 schema，因此模型与 agent loop（智能体循环）永远不会看到它。
+`gnk-storage-sqlite` 是一个存储后端：把每个已路由单元托管在同一个 SQLite 数据库文件中，每条记录按行存储一份 JSON 文档，注册为后端 `sqlite`。单条记录更新恰好触碰一行，这正是它适合高频定点写入的原因。当领域数据变动频繁、或部署偏好单一可查询数据库时选择它；当数据需要以纯文本文件形式可读时选择 JSON 后端。本后端只面向宿主侧：它不贡献提示词、工具或 schema，因此模型与 agent loop（智能体循环）永远不会看到它。
 
 ## 目录
 
@@ -36,11 +36,11 @@ kind: "package-reference"
 两个字段：数据库路径与 journal mode。`:memory:` 打开一个进程内数据库，其内容随进程消失。
 
 ```yaml
-- name: '@deepseek-ai/dsh-storage'
-- name: '@deepseek-ai/dsh-storage-sqlite'
+- name: '@greeneek/gnk-storage'
+- name: '@greeneek/gnk-storage-sqlite'
   config:
-    path: /var/lib/dsh/data.db
-- name: '@deepseek-ai/dsh-storage-domain'
+    path: /var/lib/gnk/data.db
+- name: '@greeneek/gnk-storage-domain'
   config:
     backend: sqlite
 ```
@@ -50,7 +50,7 @@ kind: "package-reference"
 | `path` | 必填 | SQLite 数据库文件路径，或 `:memory:` |
 | `journalMode` | `wal` | Journal mode：`wal`、`delete`、`truncate` 或 `persist` |
 
-`wal` 适合本地磁盘；回滚日志模式（`delete`／`truncate`／`persist`）适合 WAL 共享内存文件不可用的文件系统，例如网络挂载。生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-storage-sqlite)是每个受支持字段及其 JSDoc 的穷尽式真源。
+`wal` 适合本地磁盘；回滚日志模式（`delete`／`truncate`／`persist`）适合 WAL 共享内存文件不可用的文件系统，例如网络挂载。生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-storage-sqlite)是每个受支持字段及其 JSDoc 的穷尽式真源。
 
 ### 可观察行为
 

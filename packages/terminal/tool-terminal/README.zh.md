@@ -3,13 +3,13 @@ description: "面向需要跨调用终端状态的 agent 的 6 个持久终端�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-tool-terminal
+# @greeneek/gnk-tool-terminal
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-tool-terminal` 基于持久终端会话为模型提供 6 个工具：`terminal_open`、`terminal_send`、`terminal_read`、`terminal_signal`、`terminal_close` 与 `terminal_list`。每次调用都被限制在打开该会话的那个确切 agent（智能体）内，因此即使模型获知另一个 agent 的 id，也无法操作其终端。发送可以前台运行（返回带等待原因的有界输出），也可以通过任务服务后台运行（返回 job id，用 `job_output` 收集、用 `job_kill` 停止）。结果受 `maxResultBytes` 限制，并保留在会话历史中直到压缩（compaction）。一段简短指引会告诉模型：除非确实需要终端的持久状态或交互式 stdin，否则优先使用单次工具。
+`gnk-tool-terminal` 基于持久终端会话为模型提供 6 个工具：`terminal_open`、`terminal_send`、`terminal_read`、`terminal_signal`、`terminal_close` 与 `terminal_list`。每次调用都被限制在打开该会话的那个确切 agent（智能体）内，因此即使模型获知另一个 agent 的 id，也无法操作其终端。发送可以前台运行（返回带等待原因的有界输出），也可以通过任务服务后台运行（返回 job id，用 `job_output` 收集、用 `job_kill` 停止）。结果受 `maxResultBytes` 限制，并保留在会话历史中直到压缩（compaction）。一段简短指引会告诉模型：除非确实需要终端的持久状态或交互式 stdin，否则优先使用单次工具。
 
 ## 目录
 
@@ -41,12 +41,12 @@ kind: "package-reference"
 ### 组合方式
 
 ```yaml
-- name: '@deepseek-ai/dsh-terminal'
-- name: '@deepseek-ai/dsh-terminal-bash'
-- name: '@deepseek-ai/dsh-tool-terminal'
+- name: '@greeneek/gnk-terminal'
+- name: '@greeneek/gnk-terminal-bash'
+- name: '@greeneek/gnk-tool-terminal'
 ```
 
-工具需要 `ctx.terminals`——必须挂载一个后端——以及用于指引章节的系统提示词服务。后台发送还额外要求任务服务及其面向模型的控制器（`@deepseek-ai/dsh-tool-jobs`）。
+工具需要 `ctx.terminals`——必须挂载一个后端——以及用于指引章节的系统提示词服务。后台发送还额外要求任务服务及其面向模型的控制器（`@greeneek/gnk-tool-jobs`）。
 
 ### 配置
 
@@ -55,7 +55,7 @@ kind: "package-reference"
 | `enableRunInBackground` | `true` | 公开并接受 `run_in_background`；设为 `false` 时移除 schema 字段并拒绝该参数 |
 | `maxResultBytes` | `262144` | 每个完整终端结果的 UTF-8 上限（最小值 `64`）；在等待、会话、分页、截断与任务状态元数据全部加入后计算 |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-terminal)与[工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-terminal)是配置字段与 schema 的穷尽式真源。
+生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-tool-terminal)与[工具目录](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-terminal)是配置字段与 schema 的穷尽式真源。
 
 ### 后台发送
 
@@ -103,7 +103,7 @@ kind: "package-reference"
 
 当包级约定不够用时阅读以下页面。它们从生成的 schema 进入服务约定、后端与后台任务接口面。
 
-- [工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-terminal)——6 个生成的 schema 与结果形态。
+- [工具目录](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-terminal)——6 个生成的 schema 与结果形态。
 - [终端子系统参考](../../../docs/subsystems/terminal.zh.md)——工具背后的服务约定与共享类型。
 - [terminal 服务](../terminal/README.zh.md)——会话操作、所有者限制与清理语义。
 - [terminal-bash 后端](../terminal-bash/README.zh.md)——提供会话的随附 shell 后端。
@@ -139,7 +139,7 @@ Use a terminal session only when work needs persistent terminal state or interac
 
 #### 模型看到什么
 
-6 个生成的 schema 列在 [`dsh-tool-terminal` 目录章节](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-terminal)中。此插件活跃时，请求中会包含它们的固定 schema token；按 agent 范围过滤工具时可能隐藏这些 schema。
+6 个生成的 schema 列在 [`gnk-tool-terminal` 目录章节](../../../docs/tool-catalog.zh.md#greeneekgnk-tool-terminal)中。此插件活跃时，请求中会包含它们的固定 schema token；按 agent 范围过滤工具时可能隐藏这些 schema。
 
 #### Token 影响
 
@@ -171,7 +171,7 @@ spawn 返回 id 与有界启动输出。发送与读取返回有界终端文本�
 这些限制说明缺失的面向模型接口面。它们是当前包约束，不是任务积压。
 
 - **没有 TUI 或按键序列接口面**——具名按键序列、全屏 TUI 交互、BEL、调整大小与自动启动均未出现在任何 schema 中。
-- **后台模式要求任务接口面**——`run_in_background` 同时需要 `@deepseek-ai/dsh-jobs` 及其面向模型的控制器（`@deepseek-ai/dsh-tool-jobs`）；缺少时会拒绝该参数。
+- **后台模式要求任务接口面**——`run_in_background` 同时需要 `@greeneek/gnk-jobs` 及其面向模型的控制器（`@greeneek/gnk-tool-jobs`）；缺少时会拒绝该参数。
 
 <a id="dev-note"></a>
 ### 开发备注

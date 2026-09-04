@@ -7,7 +7,7 @@ Archived: 2026-08-19
 
 ## 问题
 
-`ImageBlock`（`packages/llm/llm/src/types.ts`）没有任何生产环境的生产者，而每条路径上的每个消费方都将其丢弃：DeepSeek 适配器的序列化器跳过 image 块（这是文档中注明的 MVP 限制）；pi-ai 转换器因无法表示而跳过；压缩（compaction）估算器为其按固定常量计入 token 用量，并将其渲染为 `[image]`。ACP（Agent Client Protocol）独立地拒绝图像提示词内容。此时构造的 `ImageBlock` 会从提供方协议格式（wire format）中静默消失——词汇宣告了一种没有任何路径兑现的能力，这正是 AGENTS.md 防御性模式所警告的静默数据丢失形态。唯一的构造调用出现在测试中，用于覆盖 skip/drop/estimate 分支。
+`ImageBlock`（`packages/llm/llm/src/types.ts`）没有任何生产环境的生产者，而每条路径上的每个消费方都将其丢弃：Greeneek 适配器的序列化器跳过 image 块（这是文档中注明的 MVP 限制）；pi-ai 转换器因无法表示而跳过；压缩（compaction）估算器为其按固定常量计入 token 用量，并将其渲染为 `[image]`。ACP（Agent Client Protocol）独立地拒绝图像提示词内容。此时构造的 `ImageBlock` 会从提供方协议格式（wire format）中静默消失——词汇宣告了一种没有任何路径兑现的能力，这正是 AGENTS.md 防御性模式所警告的静默数据丢失形态。唯一的构造调用出现在测试中，用于覆盖 skip/drop/estimate 分支。
 
 ## 决策
 

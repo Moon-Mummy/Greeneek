@@ -6,7 +6,7 @@ import type {
   SessionId, SessionSearchItem,
   SubagentCatalog, SubagentInterruptReceipt, SubagentPromptReceipt,
   WorkspaceId, WorkspaceView,
-} from '@deepseek-ai/dsh-api-remotes/client'
+} from '@greeneek/gnk-api-remotes/client'
 import type {
   SessionAddress,
   SessionControlBaseline,
@@ -18,14 +18,14 @@ import type {
   SessionProjectionBaseline,
   SessionSelectModelRequest,
   SessionSelectModelValue,
-} from '@deepseek-ai/dsh-api-session-controller/types'
-import type { WorkspaceRemote } from '@deepseek-ai/dsh-api-workspace-controller/client'
-import type { WorkspaceFollowFrame } from '@deepseek-ai/dsh-api-workspace-controller/types'
-import type { RemoteFailure, RemoteResult } from '@deepseek-ai/dsh-typert-protocol'
+} from '@greeneek/gnk-api-session-controller/types'
+import type { WorkspaceRemote } from '@greeneek/gnk-api-workspace-controller/client'
+import type { WorkspaceFollowFrame } from '@greeneek/gnk-api-workspace-controller/types'
+import type { RemoteFailure, RemoteResult } from '@greeneek/gnk-typert-protocol'
 import {
   RemoteStream,
   type RemoteStreamOptions,
-} from '@deepseek-ai/dsh-api-gateway/client'
+} from '@greeneek/gnk-api-gateway/client'
 import type { SessionRemotes } from '../src/client/sessions/remotes.ts'
 import { historyRecordLastSeq } from '../src/client/sessions/history-records.ts'
 

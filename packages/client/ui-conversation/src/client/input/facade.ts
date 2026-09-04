@@ -8,10 +8,10 @@
  * Package-private; the hub alone constructs it and wires the scoped event
  * listeners onto it.
  */
-import type { Context } from '@deepseek-ai/cordis'
+import type { Context } from '@greeneek/cordis'
 import {
   createSnapshotStore, type ObservableSnapshot, type SnapshotStore,
-} from '@deepseek-ai/dsh-client-store'
+} from '@greeneek/gnk-client-store'
 import type { LexicalEditor, NodeKey } from 'lexical'
 import {
   $addUpdateTag, $createParagraphNode, $createTextNode, $getRoot, $getSelection, $isRangeSelection,
@@ -172,7 +172,7 @@ export class SessionInputShell implements SessionInput {
 
   constructor(private readonly deps: SessionInputDeps) {
     this.editor = createEditor({
-      namespace: 'dsh-composer',
+      namespace: 'gnk-composer',
       nodes: [ReferenceChipNode, TextRefNode],
       onError: (error) => { throw error },
     })

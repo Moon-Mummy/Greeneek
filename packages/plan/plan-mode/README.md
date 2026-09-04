@@ -3,13 +3,13 @@ description: "Plan mode for users and maintainers choosing, configuring, or debu
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-plan-mode
+# @greeneek/gnk-plan-mode
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-plan-mode` adds plan mode to the agent: while it is active, the agent explores and designs before executing, guided by instructions the deployment writes, and presents the finished plan for your approval before carrying it out. You enter plan mode with `/plan` (optionally with a message or images) and leave it with `/plan off`; the finished plan arrives as a review where you can approve it or send the agent back to keep planning. Plan mode is guidance, not enforcement: every tool stays available, so sandbox mode and approval prompts remain the way to impose limits. Choose it when the agent should think before acting, and plan mode carries over when a session resumes or forks.
+`gnk-plan-mode` adds plan mode to the agent: while it is active, the agent explores and designs before executing, guided by instructions the deployment writes, and presents the finished plan for your approval before carrying it out. You enter plan mode with `/plan` (optionally with a message or images) and leave it with `/plan off`; the finished plan arrives as a review where you can approve it or send the agent back to keep planning. Plan mode is guidance, not enforcement: every tool stays available, so sandbox mode and approval prompts remain the way to impose limits. Choose it when the agent should think before acting, and plan mode carries over when a session resumes or forks.
 
 ## Table of Contents
 
@@ -36,7 +36,7 @@ Choose plan mode when the agent should explore and design before executing and y
 The only required configuration is the guidance text the agent follows while planning; anything else you add fails at load.
 
 ```yaml
-- name: '@deepseek-ai/dsh-plan-mode'
+- name: '@greeneek/gnk-plan-mode'
   config:
     section: |
       You are in plan mode. Explore and design before presenting the complete
@@ -47,7 +47,7 @@ The only required configuration is the guidance text the agent follows while pla
 |---|---|---|
 | `section` | required | Guidance rendered as the `plan:policy` prompt section while plan mode is active |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-plan-mode) is the exhaustive source for every accepted field and its JSDoc.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-plan-mode) is the exhaustive source for every accepted field and its JSDoc.
 
 <a id="model-and-human-interactions"></a>
 ### Entering and leaving plan mode
@@ -116,8 +116,8 @@ Read these pages when the package-level contract is not enough. They move from t
 
 - [Plan mode subsystem reference](../../../docs/subsystems/plan.md) — how plan mode behaves, its configuration, and the exit tool's contract.
 - [plan/ package map](../README.md) — the group and its single package.
-- [exit_plan_mode tool catalog entry](../../../docs/tool-catalog.md#deepseek-aidsh-plan-mode) — the exact schema the model receives.
-- [Generated configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-plan-mode) — every accepted config field and its meaning.
+- [exit_plan_mode tool catalog entry](../../../docs/tool-catalog.md#greeneekgnk-plan-mode) — the exact schema the model receives.
+- [Generated configuration catalog](../../../docs/config-catalog.md#greeneekgnk-plan-mode) — every accepted config field and its meaning.
 - [Plan-specific collaboration state](../../../.agents/notes/implemented/simplification/2026-07-22-plan-specific-collaboration-state.md) — the design decision behind plan mode.
 
 -----
@@ -163,7 +163,7 @@ The user block is append-only conversation growth. Entering or leaving plan mode
 
 #### What the model sees
 
-The [`exit_plan_mode` schema](../../../docs/tool-catalog.md#deepseek-aidsh-plan-mode) remains available in both states; execution outside plan mode fails, while an approved in-mode review returns the canonical `{ approved: true }` value and renders the existing confirmation text. Rejection remains a failed call carrying review feedback, and a dismissed review a failed call naming the user's takeover.
+The [`exit_plan_mode` schema](../../../docs/tool-catalog.md#greeneekgnk-plan-mode) remains available in both states; execution outside plan mode fails, while an approved in-mode review returns the canonical `{ approved: true }` value and renders the existing confirmation text. Rejection remains a failed call carrying review feedback, and a dismissed review a failed call naming the user's takeover.
 
 #### Token effect
 

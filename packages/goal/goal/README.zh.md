@@ -3,13 +3,13 @@ description: "面向选择、配置或排查同会话持久 goal 服务的用户
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-goal
+# @greeneek/gnk-goal
 
 [English](README.md) | 中文
 
 ## 概述
 
-`dsh-goal` 为每个 agent 会话保留一个持久的完成目标：目标的文本、phase、Round 数量与 revision 历史都保存在会话日志中，因此会话 resume（恢复）、fork 与进程重启后依然存在。你可以 create、edit、pause、resume、complete、block 和 clear 一个 goal，且每次变更都是比较并设置，陈旧的视图不会覆盖更新的状态。goal 带有 Round 上限（默认 256）以约束自动续行，被阻塞的 goal 会保留稳定的策略代码和面向人的说明。它是状态而非调度器：服务不决定工作何时继续，续行权限是进程本地的且绝不持久化。当单个长期目标需要横跨多轮时选择它；常规单轮工作不要使用。
+`gnk-goal` 为每个 agent 会话保留一个持久的完成目标：目标的文本、phase、Round 数量与 revision 历史都保存在会话日志中，因此会话 resume（恢复）、fork 与进程重启后依然存在。你可以 create、edit、pause、resume、complete、block 和 clear 一个 goal，且每次变更都是比较并设置，陈旧的视图不会覆盖更新的状态。goal 带有 Round 上限（默认 256）以约束自动续行，被阻塞的 goal 会保留稳定的策略代码和面向人的说明。它是状态而非调度器：服务不决定工作何时继续，续行权限是进程本地的且绝不持久化。当单个长期目标需要横跨多轮时选择它；常规单轮工作不要使用。
 
 ## 目录
 
@@ -25,7 +25,7 @@ kind: "package-reference"
 <a id="use-this-package"></a>
 ## 使用本包
 
-当会话需要在多轮与多次重启之间记住一个长期完成目标时，挂载 `dsh-goal`。本包是服务：模型工具、`/goal` 命令与续行驱动器都是消费同一 goal 状态的独立包，因此只挂载本包只会存储和提供 goal，不会启动任何工作。
+当会话需要在多轮与多次重启之间记住一个长期完成目标时，挂载 `gnk-goal`。本包是服务：模型工具、`/goal` 命令与续行驱动器都是消费同一 goal 状态的独立包，因此只挂载本包只会存储和提供 goal，不会启动任何工作。
 
 ### 何时使用
 
@@ -36,7 +36,7 @@ goal 适合一个需要跨自动 Goal Round 持续的长期完成目标——例
 通过组合配置项加载本包；唯一的部署选择是默认 Round 上限，应用于未自行指定上限的 create。
 
 ```yaml
-- name: '@deepseek-ai/dsh-goal'
+- name: '@greeneek/gnk-goal'
   config:
     defaultMaxGoalRounds: 256
 ```
@@ -45,11 +45,11 @@ goal 适合一个需要跨自动 Goal Round 持续的长期完成目标——例
 |---|---|---|
 | `defaultMaxGoalRounds` | `256` | 当 create 请求省略上限时应用的 Round 上限 |
 
-`defaultMaxGoalRounds` 必须是正的安全整数；指定了自身上限的 create 请求会覆盖它。生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-goal)是每个受支持字段的穷尽式真源。
+`defaultMaxGoalRounds` 必须是正的安全整数；指定了自身上限的 create 请求会覆盖它。生成的[配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-goal)是每个受支持字段的穷尽式真源。
 
 ### 会话投影
 
-`GoalService` 要求组合提供 `ctx.sessionProjections`（[`@deepseek-ai/dsh-session-projection`](../../session/session-projection/README.zh.md)），并在启动时注册 `goal` 投影单元；未组合投影注册表的组合无法激活 `ctx.goals`。该单元版本为 6，其宿主状态保留最新的有效当前 goal、所有曾使用的 goal id，以及第一次严格回放失败。客户端 view 提供当前 goal；首次 create 前与 clear tombstone 后为 `null`。该 key 同时合并到 `SessionProjectionStateMap` 与 `SessionProjectionMap`；载体通过历史尾页和 `session/projection` 推送帧提供客户端值。
+`GoalService` 要求组合提供 `ctx.sessionProjections`（[`@greeneek/gnk-session-projection`](../../session/session-projection/README.zh.md)），并在启动时注册 `goal` 投影单元；未组合投影注册表的组合无法激活 `ctx.goals`。该单元版本为 6，其宿主状态保留最新的有效当前 goal、所有曾使用的 goal id，以及第一次严格回放失败。客户端 view 提供当前 goal；首次 create 前与 clear tombstone 后为 `null`。该 key 同时合并到 `SessionProjectionStateMap` 与 `SessionProjectionMap`；载体通过历史尾页和 `session/projection` 推送帧提供客户端值。
 
 ### 驱动生命周期
 
@@ -126,7 +126,7 @@ view.activation                        // 'armed' | 'disarmed' — not persisted
 
 - [goal 子系统](../../../docs/subsystems/goal.zh.md)——goal 类型、持久的变更载荷与生成的服务 API。
 - [goal 组地图](../README.zh.md)——goal 各包及其组合方式。
-- [生成的配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-goal)——每个受支持配置字段及其源声明。
+- [生成的配置目录](../../../docs/config-catalog.zh.md#greeneekgnk-goal)——每个受支持配置字段及其源声明。
 - [goal 领域 Agent Note](../../../.agents/notes/implemented/feature/2026-07-19-persisted-same-session-goal-domain.zh.md)——领域设计、备选方案与决策。
 
 -----
@@ -155,7 +155,7 @@ Goal 变更事件本身不增加模型 token。工具结果与续行调度提示
 
 这些限制说明 goal 服务何时不合适或需要特别注意。它们是当前包约束，不是任务积压。
 
-- **只负责状态，不负责任务调度**——本包不决定已启用续行的 goal 何时继续，不重试异常失败，也不取消活跃轮次；这些策略属于 `dsh-goal-round-driver` 等消费方包。
+- **只负责状态，不负责任务调度**——本包不决定已启用续行的 goal 何时继续，不重试异常失败，也不取消活跃轮次；这些策略属于 `gnk-goal-round-driver` 等消费方包。
 - **只有 Round 数量预算**——`maxGoalRounds` 不计量 token、货币、挂钟时间或提供方配额。
 - **没有独立评估器**——记录完成或阻塞的调用方拥有最终决定权；由评估器支持的认证暂缓到独立策略层。
 - **只有一个当前 goal**——系统有意不支持并行目标或独立 goal 数据库；替换或清除后，历史仍可在会话日志中读取。

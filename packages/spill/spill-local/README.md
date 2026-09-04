@@ -3,13 +3,13 @@ description: "The local filesystem spill backend: how spilled tool output is sav
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-spill-local
+# @greeneek/gnk-spill-local
 
 English | [中文](README.zh.md)
 
 ## Summary
 
-`dsh-spill-local` saves a tool's oversized text to a private, session-scoped file on the host filesystem and returns that file's path as the locator, with retrieval guidance telling the model to read or grep it. Mount it whenever a composition needs spill storage on the same machine the agent runs on. Files are private to the current user, names are unpredictable, and each session's files group under a stable directory, so a shared root cannot leak output or be redirected by a planted symlink. Configuration selects the root and the startup-cleanup retention period; previews and spill decisions live in other packages.
+`gnk-spill-local` saves a tool's oversized text to a private, session-scoped file on the host filesystem and returns that file's path as the locator, with retrieval guidance telling the model to read or grep it. Mount it whenever a composition needs spill storage on the same machine the agent runs on. Files are private to the current user, names are unpredictable, and each session's files group under a stable directory, so a shared root cannot leak output or be redirected by a planted symlink. Configuration selects the root and the startup-cleanup retention period; previews and spill decisions live in other packages.
 
 ## Table of Contents
 
@@ -25,14 +25,14 @@ English | [中文](README.zh.md)
 <a id="use-this-package"></a>
 ## Use this package
 
-Mount this backend in a composition that spills tool output to the local filesystem. It registers as the `ctx.spillStore` service that the `dsh-spill-policy` plugin and other callers use.
+Mount this backend in a composition that spills tool output to the local filesystem. It registers as the `ctx.spillStore` service that the `gnk-spill-policy` plugin and other callers use.
 
 ### Minimal configuration
 
 Loading the plugin with no config is safe: files land in a lazily-created private (0700) per-process directory under the OS temp directory. Set `root` when the files must live under a known location.
 
 ```yaml
-- name: '@deepseek-ai/dsh-spill-local'
+- name: '@greeneek/gnk-spill-local'
   config:
     root: /absolute/path/to/spill
     cleanupPeriodDays: 30
@@ -43,7 +43,7 @@ Loading the plugin with no config is safe: files land in a lazily-created privat
 | `root` | private 0700 temp dir | Root directory for spill files; set to keep them under a known location |
 | `cleanupPeriodDays` | `30` | File age in days before the one-shot startup cleanup may delete it; `0` disables cleanup |
 
-The generated [configuration catalog](../../../docs/config-catalog.md#deepseek-aidsh-spill-local) is the exhaustive source for every accepted field.
+The generated [configuration catalog](../../../docs/config-catalog.md#greeneekgnk-spill-local) is the exhaustive source for every accepted field.
 
 ### What you get back
 
@@ -55,7 +55,7 @@ Files are stored at `<root>/session-<hash>/<random>-<safeName>`, where `session-
 
 ### Startup cleanup
 
-One best-effort sweep starts after activation without delaying service availability. It scans the configured root and prior default `dsh-spill-*` roots under the OS temp directory, deletes regular files whose modification time is strictly older than the configured cutoff, prunes empty session directories, and removes only empty prior-default roots. A long-lived process does not sweep again until restart. Disposal waits for the sweep, and a concurrent write recreates a session directory if cleanup removes it.
+One best-effort sweep starts after activation without delaying service availability. It scans the configured root and prior default `gnk-spill-*` roots under the OS temp directory, deletes regular files whose modification time is strictly older than the configured cutoff, prunes empty session directories, and removes only empty prior-default roots. A long-lived process does not sweep again until restart. Disposal waits for the sweep, and a concurrent write recreates a session directory if cleanup removes it.
 
 The sweep resolves filesystem identities, never follows or deletes symlinks, and skips unrelated entries. On POSIX it admits only roots and session directories owned by the current user, not writable by group or others, and protected from replacement through their ancestor path; writable sticky temporary directories such as `/tmp` are permitted. Unsafe paths produce a warning and remain untouched. Filesystem and warning-sink failures are contained, so cleanup cannot fail activation or a concurrent spill write.
 
@@ -101,7 +101,7 @@ Read these pages when the package-level contract is not enough.
 
 - [Spill storage service](../spill/README.md) — the `saveText` contract and vocabulary this backend implements.
 - [Spill package map](../README.md) — the three-package family and each role.
-- [dsh-spill-policy](../spill-policy/README.md) — the policy that calls this backend when a result is too large.
+- [gnk-spill-policy](../spill-policy/README.md) — the policy that calls this backend when a result is too large.
 - [Spill subsystem](../../../docs/subsystems/spill.md) — the exhaustive vocabulary and ownership.
 - [Tool output spill decision](../../../.agents/notes/implemented/architecture/2026-07-08-tool-output-spill-files.md) — the capability boundary and design rationale.
 - [Local spill startup cleanup](../../../.agents/notes/implemented/architecture/2026-07-17-local-spill-startup-cleanup.md) — retention, race handling, and safe deletion rules.

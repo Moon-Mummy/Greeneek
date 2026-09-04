@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url'
 import type { Browser, Page } from 'playwright'
 import { chromium } from 'playwright'
 import { afterAll, beforeAll, describe, expect, it, onTestFailed } from 'vitest'
-import { SessionId } from '@deepseek-ai/dsh-session'
+import { SessionId } from '@greeneek/gnk-session'
 import {
   assertFixtureInventory, captureStableAria, compareOrRefreshGolden, fixtureUserPrompts,
   launchWebScaffold, parseSeedFixture, renderSeedFixture, seedSession, watchConsole, webSnapshotMode, type WebScaffold,
@@ -68,7 +68,7 @@ function completedTailFixture(raw: string): string {
     at({ type: 'turn/start', data: { turn: 2 } }),
     at({ type: 'user/message', data: { id: '00000000-0000-4000-9000-000000000201', role: 'user', content: [{ type: 'text', text: SECOND_PROMPT }], source: { kind: 'user', rpcId: '{{rpcId}}' } }, surfaceOp: 'append' }),
     at({ type: 'step/start', data: { turn: 2, step: 1 } }),
-    at({ type: 'assistant/message', data: { turn: 2, step: 1, message: { id: '00000000-0000-4000-9000-000000000202', role: 'assistant', content: [{ type: 'text', text: 'DONE' }], source: { kind: 'model', provider: 'deepseek-official', model: 'deepseek-v4-flash' } } }, sourceEventSeqs: [], surfaceOp: 'append' }),
+    at({ type: 'assistant/message', data: { turn: 2, step: 1, message: { id: '00000000-0000-4000-9000-000000000202', role: 'assistant', content: [{ type: 'text', text: 'DONE' }], source: { kind: 'model', provider: 'greeneek-official', model: 'greeneek-v4-flash' } } }, sourceEventSeqs: [], surfaceOp: 'append' }),
     at({ type: 'step/end', data: { turn: 2, step: 1 } }),
     at({ type: 'turn/end', data: { turn: 2, reason: { kind: 'completed' } } }),
   ]

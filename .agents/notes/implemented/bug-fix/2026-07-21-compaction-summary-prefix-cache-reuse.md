@@ -18,7 +18,7 @@ The summarization directive moves from the **front** of the request (a fresh `sy
 
 ### The instruction is a trailing user message
 
-`COMPACTION_INSTRUCTION` opens "You are now acting as a compaction engine…" and directs the model to condense *the conversation ABOVE*. It keeps the prior checkpoint's structured headings and adds two rules the front-loaded system prompt did not need in its new position: do not mention the summarization request, and output only the checkpoint text without calling a tool. The shadowed region always ends on a tool-pairing-balanced boundary, so appending a `user` message after it is a valid message ordering for OpenAI-compatible and DeepSeek adapters.
+`COMPACTION_INSTRUCTION` opens "You are now acting as a compaction engine…" and directs the model to condense *the conversation ABOVE*. It keeps the prior checkpoint's structured headings and adds two rules the front-loaded system prompt did not need in its new position: do not mention the summarization request, and output only the checkpoint text without calling a tool. The shadowed region always ends on a tool-pairing-balanced boundary, so appending a `user` message after it is a valid message ordering for OpenAI-compatible and Greeneek adapters.
 
 ### Cache reuse is best-effort, correctness is not
 
@@ -33,9 +33,9 @@ Auto-compaction always anchors at the surface head, so the shadowed region is th
 
 ## Consequences
 
-- **`dsh-compaction-basic`** owns `SummarizationInput`; the protected `summarize(input, agent, signal?)` hook signature changed (acceptable pre-release), and `region.ts` gained `buildSummarizationInput` folding `deriveEventMessage` over the shadowed seqs behind the header prefix.
-- **Dead render surface removed.** The old flattening path (`renderTranscript` / `renderContentBlocks` and its spec in `dsh-compaction`) had no remaining consumer and was deleted with its export.
-- **README model experience** for `dsh-compaction-basic` now documents the auxiliary request as the replayed prefix plus a trailing compaction-instruction message, and its KV-cache effect as reuse of the warm conversation prefix.
+- **`gnk-compaction-basic`** owns `SummarizationInput`; the protected `summarize(input, agent, signal?)` hook signature changed (acceptable pre-release), and `region.ts` gained `buildSummarizationInput` folding `deriveEventMessage` over the shadowed seqs behind the header prefix.
+- **Dead render surface removed.** The old flattening path (`renderTranscript` / `renderContentBlocks` and its spec in `gnk-compaction`) had no remaining consumer and was deleted with its export.
+- **README model experience** for `gnk-compaction-basic` now documents the auxiliary request as the replayed prefix plus a trailing compaction-instruction message, and its KV-cache effect as reuse of the warm conversation prefix.
 - **The framed checkpoint output is unchanged**, so the landed `user/message` and every conversation-request snapshot are unaffected; only the auxiliary request's shape changed.
 
 ## Testing
