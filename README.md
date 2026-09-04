@@ -27,15 +27,7 @@ It is built on an **everything-is-a-plugin** architecture and powered by [Cordis
 
 Documentation: see the in-repository [user guide](docs/user/guide/index.md) and [development guide](docs/development.md).
 
-## Branding and models
 
-- App branding stays **Greeneek**.
-- Logo stays **Greeneek**.
-- Green theme stays **Greeneek green**.
-- Models are **yours, not ours**: this project operates no inference service and ships
-  no provider of its own. Every model route is one your own API key activates.
-  Add a key under **Settings → Models** (or set the matching environment variable,
-  such as `OPENAI_API_KEY`), and that provider becomes selectable everywhere.
 
 ## Developer preview
 
