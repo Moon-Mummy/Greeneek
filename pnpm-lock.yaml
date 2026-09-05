@@ -9,7 +9,7 @@ overrides:
   '@greeneek/schemastery': link:vendor/schemastery
 
 patchedDependencies:
-  node-pty@1.2.0-beta.15: 488253f9a95667a23b317f71851171700fa0035ab208d9e4d32eff8d751391b8
+  node-pty@1.2.0-beta.15: 364ae803771666e483941a6ae04262bb824d0ca8a8b1733fc90fbffbf1293942
 
 importers:
 
@@ -8708,7 +8708,7 @@ importers:
         version: 3.1.1
       node-pty:
         specifier: 1.2.0-beta.15
-        version: 1.2.0-beta.15(patch_hash=488253f9a95667a23b317f71851171700fa0035ab208d9e4d32eff8d751391b8)
+        version: 1.2.0-beta.15(patch_hash=364ae803771666e483941a6ae04262bb824d0ca8a8b1733fc90fbffbf1293942)
     devDependencies:
       '@greeneek/cordis':
         specifier: workspace:^
@@ -20457,7 +20457,7 @@ snapshots:
       fetch-blob: 3.2.0
       formdata-polyfill: 4.0.10
 
-  node-pty@1.2.0-beta.15(patch_hash=488253f9a95667a23b317f71851171700fa0035ab208d9e4d32eff8d751391b8):
+  node-pty@1.2.0-beta.15(patch_hash=364ae803771666e483941a6ae04262bb824d0ca8a8b1733fc90fbffbf1293942):
     dependencies:
       node-addon-api: 7.1.1
 
