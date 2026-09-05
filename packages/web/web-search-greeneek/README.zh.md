@@ -1,5 +1,5 @@
 ---
-description: "ctx.web 的 Greeneek 搜索提供方：部署方如何通过 Anthropic 兼容 Messages API 挂载 Greeneek 原生 web 搜索，并逐次解析凭据。"
+description: "ctx.web 的 Greeneek 协议搜索提供方：部署方如何通过自己运营的 Anthropic 兼容 Messages API 端点挂载原生风格 web 搜索，并逐次解析凭据。"
 kind: "package-reference"
 ---
 
@@ -9,7 +9,7 @@ kind: "package-reference"
 
 ## 概述
 
-有了 `gnk-web-search-greeneek`，harness 可以通过 Greeneek 原生搜索检索 web，使用部署已有的 `GREENEEK_API_KEY`。当部署希望使用 Greeneek 原生搜索、并接受一次搜索在延迟与 token 上消耗一个完整模型轮次时选择它，因为 Greeneek 不提供专用搜索端点。结果来自 Greeneek 返回的结构化搜索块，绝不会从回复文本中抓取。凭据缺失时调用以结构化错误失败；响应缺少搜索结果块时会响亮地失败，而非降级。面向模型的 `web_search` 工具位于 `gnk-tool-web`。
+有了 `gnk-web-search-greeneek`，harness 可以通过部署自己运营的 Greeneek 协议端点检索 web，使用部署自己的 `GREENEEK_API_KEY`。当部署运营此类端点、并接受一次搜索在延迟与 token 上消耗一个完整模型轮次时选择它，因为该协议不提供专用搜索端点。harness 不提供任何托管搜索端点（仅 BYOK）。结果来自端点返回的结构化搜索块，绝不会从回复文本中抓取。凭据缺失时调用以结构化错误失败；响应缺少搜索结果块时会响亮地失败，而非降级。面向模型的 `web_search` 工具位于 `gnk-tool-web`。
 
 ## 目录
 
@@ -29,11 +29,11 @@ kind: "package-reference"
 
 ### 何时选择
 
-当部署希望使用 Greeneek 原生服务端 web 搜索、且已持有 `GREENEEK_API_KEY` 时选择此后端——提供方复用该凭据引用。一次搜索比专用检索端点更重：Greeneek 在完整模型轮次内执行搜索，因此每次搜索都要预期一次 Messages 调用的延迟与生成 token，每次请求最多 `maxUses` 次服务端搜索。当单次搜索的成本或延迟占主导时避免使用它。
+当部署运营 Greeneek 协议搜索端点、且已持有该端点的 `GREENEEK_API_KEY` 时选择此后端——提供方复用该凭据引用。一次搜索比专用检索端点更重：端点在完整模型轮次内执行搜索，因此每次搜索都要预期一次 Messages 调用的延迟与生成 token，每次请求最多 `maxUses` 次服务端搜索。当单次搜索的成本或延迟占主导时避免使用它。
 
 ### 最小配置
 
-加载 web 服务与本提供方；密钥在已挂载 `ctx.credentials` 服务时从其解析，否则从进程环境解析。搜索端点使用 Anthropic 兼容基址（`https://api.greeneek.dev/anthropic/v1`），不同于 LLM（大语言模型）适配器使用的 chat-completions 基址——绝不复用 `$GREENEEK_BASE_URL`。
+加载 web 服务与本提供方；密钥在已挂载 `ctx.credentials` 服务时从其解析，否则从进程环境解析。请显式配置 Anthropic 兼容基址——内置默认值不指向本仓库运营的任何主机，务必覆盖它。它不同于 LLM（大语言模型）适配器使用的 chat-completions 基址——绝不复用 `$GREENEEK_BASE_URL`。
 
 ```yaml
 - name: '@greeneek/gnk-web'
@@ -47,7 +47,7 @@ kind: "package-reference"
 |---|---|---|
 | `apiKey` | 未设置 | Greeneek API 密钥字面值；优先使用 `apiKeyEnv`，避免密钥进入配置。非空字面值优先 |
 | `apiKeyEnv` | `GREENEEK_API_KEY` | 每次搜索通过 `ctx.credentials` 解析的凭据引用；没有该服务时从进程环境解析。值缺失时调用以 `WEB_PROVIDER_CREDENTIAL_MISSING` 失败 |
-| `baseURL` | `https://api.greeneek.dev/anthropic/v1` | Anthropic 兼容端点基址；追加 `/messages`。缺省时回退到 `$GREENEEK_SEARCH_BASE_URL`；无法解析时提供方不可用 |
+| `baseURL` | 仅占位 | Anthropic 兼容端点基址；追加 `/messages`。缺省时回退到 `$GREENEEK_SEARCH_BASE_URL`；内置默认值不指向本仓库运营的任何主机——务必配置可达端点。无法解析时提供方不可用 |
 | `model` | `greeneek-v4-flash` | Anthropic 格式模型名称 |
 | `apiVersion` | `2023-06-01` | `anthropic-version` 标头值 |
 | `maxTokens` | `4096` | Messages 请求生成 token 的正整数上限 |

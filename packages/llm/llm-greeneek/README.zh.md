@@ -9,7 +9,7 @@ kind: "package-reference"
 
 ## 概述
 
-`@greeneek/gnk-llm-greeneek` 是 harness LLM 服务的 Greeneek 直连适配器：它拥有 `greeneek-official` 提供方路由，并把 Greeneek 的 chat-completions 协议格式翻译为 harness 的流式分片协议。借助它，组合可以流式调用 Greeneek 模型，支持可配置的 thinking 与推理（reasoning）强度、向视觉模型发送图片，并浏览一份建议性模型目录。连接事实——端点、目录、密钥、thinking 策略——按请求解析，因此编辑用户设置文档即可改变下一个请求，无需重启。它是 Greeneek 的两个结构不同适配器之一：pi-ai 孪生通过库与更多提供方服务自己的路由名，两者可以并排挂载。
+`@greeneek/gnk-llm-greeneek` 是 harness LLM 服务的 Greeneek 协议 chat-completions 适配器：它拥有 `greeneek-official` 提供方路由，并把 Greeneek chat-completions 协议格式翻译为 harness 的流式分片协议。借助它，组合可以通过部署自己运营的端点流式调用模型，支持可配置的 thinking 与推理强度、向视觉模型发送图片，并浏览一份建议性模型目录。harness 不提供任何托管端点，也不运营模型服务——请自带密钥与端点（仅 BYOK）。连接事实——端点、目录、密钥、thinking 策略——按请求解析，因此编辑用户设置文档即可改变下一个请求，无需重启。它是 Greeneek 协议流量的两个结构不同适配器之一：pi-ai 孪生通过库与更多提供方服务自己的路由名，两者可以并排挂载。
 
 ## 目录
 
@@ -25,11 +25,11 @@ kind: "package-reference"
 <a id="use-this-package"></a>
 ## 使用本包
 
-当组合需要通过 harness LLM 服务流式调用 Greeneek 模型时挂载本插件。它注册唯一的 `greeneek-official` 路由，并按请求解析连接事实，因此组合条目加可选用户设置分节即可驱动整个适配器。
+当组合需要通过部署自己运营的 Greeneek 协议端点流式调用模型时挂载本插件。它注册唯一的 `greeneek-official` 路由，并按请求解析连接事实，因此组合条目加可选用户设置分节即可驱动整个适配器。随附 profile 不挂载它：没有配置端点就没有可提供的路由，模型缺失按缺失报告，而不是以占位符代替。
 
 ### 何时选择
 
-当部署面向 Greeneek 官方 API（可选地通过 `baseURL` 指向的 OpenAI 兼容网关）时选择本适配器。当同一组合还要通过 pi-ai 目录路由其他提供方或手工声明的网关时，选择 `gnk-llm-pi-ai`；两个适配器可以同时挂载，因为它们的路由名不冲突。为 `greeneek-official` 注册任何其他适配器会以 `DUPLICATE_ADAPTER` 失败。
+当部署运营自己的 Greeneek 协议端点、并用 `baseURL`（或 `$GREENEEK_BASE_URL`）指定它时选择本适配器。当同一组合还要通过 pi-ai 目录路由其他提供方或手工声明的网关时，选择 `gnk-llm-pi-ai`；两个适配器可以同时挂载，因为它们的路由名不冲突。为 `greeneek-official` 注册任何其他适配器会以 `DUPLICATE_ADAPTER` 失败。
 
 ### 最小配置
 
@@ -37,7 +37,7 @@ kind: "package-reference"
 - name: '@greeneek/gnk-llm-greeneek'
   config:
     apiKeyEnv: GREENEEK_API_KEY  # credential reference, resolved per request
-    baseURL: https://api.greeneek.dev # optional; $GREENEEK_BASE_URL then this default
+    baseURL: https://gateway.internal # your endpoint; $GREENEEK_BASE_URL then config (the built-in default names no operated service — always override it)
     reasoningEffort: high        # optional; off | low | high | max
     maxTokens: 256000            # optional per-request output cap
     maxRequestFilesBytes: 134217728
@@ -51,7 +51,7 @@ kind: "package-reference"
 | 字段 | 默认值 | 含义 |
 |---|---|---|
 | `apiKeyEnv` | `GREENEEK_API_KEY` | 按请求解析的凭据引用：先经凭据 seam，再到环境变量 |
-| `baseURL` | `https://api.greeneek.dev` | 端点基址；设置了 `$GREENEEK_BASE_URL` 时优先 |
+| `baseURL` | 仅占位 | 端点基址；设置了 `$GREENEEK_BASE_URL` 时优先，其次是配置。内置默认值不指向本仓库运营的任何主机——务必配置可达端点 |
 | `thinking` | `enabled` | 部署策略；`disabled` 把所有请求锁定为 `off` |
 | `reasoningEffort` | `high` | 默认强度：`off`、`low`、`high` 或 `max` |
 | `maxTokens` | `256,000` | 单次请求输出上限；模型自身上限与显式请求值优先 |
@@ -88,7 +88,7 @@ Files 模式通过 `maxRequestFilesBytes` 与 `maxImagesPerRequest` 限制保留
 
 ### 提供方专用请求字段
 
-存在 `ctx.greeneekLlmApiExtensions` 时，适配器会在 `fetch` 前根据确切序列化基础请求准备已注册顶层字段。准备或字段冲突在 HTTP 前失败；2xx 响应后，适配器会在消费 SSE 前接受每项已捕获贡献。传输与非 2xx 失败不会接受它们。随产品交付的组合用它提供可选增量 `gnk_session_log` 字段和默认启用的活跃 `gnk_plugin_packages` 清单；两者都留在模型输入之外。
+存在 `ctx.greeneekLlmApiExtensions` 时，适配器会在 `fetch` 前根据确切序列化基础请求准备已注册顶层字段。准备或字段冲突在 HTTP 前失败；2xx 响应后，适配器会在消费 SSE 前接受每项已捕获贡献。传输与非 2xx 失败不会接受它们。挂载了会话日志或包清单贡献的部署用它提供可选 `gnk_session_log` 字段和 `gnk_plugin_packages` 清单；两者都留在模型输入之外。随附 profile 两者都不挂载。
 
 ### 失败与恢复
 
@@ -139,7 +139,7 @@ Files 模式通过 `maxRequestFilesBytes` 与 `maxImagesPerRequest` 限制保留
 - [llm-retry](../llm-retry/README.zh.md)——应用本适配器 `retryPolicy` 的重试执行器。
 - [Greeneek 请求扩展](../greeneek-llm-api-extensions/README.zh.md)——提供方专用顶层字段的生命周期与接受语义。
 - [会话日志上传](../../session/session-log-greeneek/README.zh.md)——可选的增量 `gnk_session_log` 贡献。
-- [插件包清单](../plugin-package-inventory-greeneek/README.zh.md)——默认启用的 `gnk_plugin_packages` 贡献。
+- [插件包清单](../plugin-package-inventory-greeneek/README.zh.md)——可选的 `gnk_plugin_packages` 贡献。
 - [孪生 LLM 适配器](../../../.agents/notes/implemented/architecture/2026-06-13-twin-llm-adapters.zh.md)——为什么 Greeneek 交付两个结构不同的适配器。
 - [强制应用归因标头](../../../.agents/notes/implemented/architecture/2026-06-21-mandatory-app-attribution-headers.zh.md)——每个提供方请求携带的身份。
 

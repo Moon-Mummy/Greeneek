@@ -29,8 +29,6 @@ describe('gnk-sdk-minimal bundle', () => {
       ['sdk-app-startup', '@greeneek/gnk-sdk-app'],
       ['sdk-jsonrpc-server', '@greeneek/gnk-sdk-jsonrpc-server'],
       ['greeneek-llm-api-extensions', '@greeneek/gnk-greeneek-llm-api-extensions'],
-      ['session-log-greeneek', '@greeneek/gnk-session-log-greeneek'],
-      ['plugin-package-inventory-greeneek', '@greeneek/gnk-plugin-package-inventory-greeneek'],
       ['llm-pi-ai', '@greeneek/gnk-llm-pi-ai'],
       ['sandbox', '@greeneek/gnk-sandbox-local'],
       ['session-projection', '@greeneek/gnk-session-projection'],

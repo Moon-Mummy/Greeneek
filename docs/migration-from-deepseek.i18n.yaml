@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/migration-from-deepseek.md
-migration-from-deepseek.md: 5bcb70dad3fc0c497602dba720a6a89c4f2a3286
-migration-from-deepseek.zh.md: 34fc12093ab93135f700ef2759ced162be25db9c
+migration-from-deepseek.md: 35cb4e83ba5fd815d220b92245ce49711ad01b38
+migration-from-deepseek.zh.md: bd2058a1ff8f6c5d133520f3ede86601fc56d96f

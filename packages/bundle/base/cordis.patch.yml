@@ -33,8 +33,15 @@
     - id: session
       name: '@greeneek/gnk-session'
 
-    - id: session-log-greeneek
-      name: '@greeneek/gnk-session-log-greeneek'
+    # The session-log upload is NOT mounted here. It contributes request
+    # fields only to the official Greeneek API, which no deployment of this
+    # repository operates; shipping it would attach inert bytes to every
+    # request. A deployment that runs its own Greeneek-protocol endpoint
+    # mounts it itself:
+    #
+    #   - insert:
+    #       - id: session-log-greeneek
+    #         name: '@greeneek/gnk-session-log-greeneek'
 
     - id: typert
       name: '@greeneek/gnk-typert-registry'
@@ -67,8 +74,15 @@
     - id: agent
       name: '@greeneek/gnk-agent'
 
-    - id: plugin-package-inventory-greeneek
-      name: '@greeneek/gnk-plugin-package-inventory-greeneek'
+    # The package-inventory contribution is NOT mounted here. It reports to
+    # the official Greeneek API, which no deployment of this repository
+    # operates; shipping it would attach inert bytes to every request.
+    # A deployment that runs its own Greeneek-protocol endpoint mounts it
+    # itself:
+    #
+    #   - insert:
+    #       - id: plugin-package-inventory-greeneek
+    #         name: '@greeneek/gnk-plugin-package-inventory-greeneek'
 
     # The transport-independent default for Agents created by entry points.
     # Settings may supply a saved selection; consumers read it at creation time.

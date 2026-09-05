@@ -9,7 +9,7 @@ English | [中文](README.zh.md)
 
 ## Summary
 
-`@greeneek/gnk-llm-greeneek` is the direct Greeneek adapter for the harness LLM service: it owns the `greeneek-official` provider route and translates Greeneek's chat-completions wire format into the harness stream-chunk protocol. With it a composition can stream Greeneek models with configurable thinking and reasoning effort, send images to vision models, and browse an advisory model catalog. Connection facts — endpoint, catalog, key, thinking policy — resolve per request, so editing the user settings document changes the next request without a restart. It is one of two structurally different adapters for Greeneek: the pi-ai twin serves its own route names through a library and additional providers, and both can be mounted side by side.
+`@greeneek/gnk-llm-greeneek` is the Greeneek-protocol chat-completions adapter for the harness LLM service: it owns the `greeneek-official` provider route and translates the Greeneek chat-completions wire format into the harness stream-chunk protocol. With it a composition can stream models through an endpoint the deployment operates itself, with configurable thinking and reasoning effort, images to vision models, and an advisory model catalog. The harness ships no hosted endpoint and operates no model service — bring your own key and your own endpoint (BYOK-only). Connection facts — endpoint, catalog, key, thinking policy — resolve per request, so editing the user settings document changes the next request without a restart. It is one of two structurally different adapters for Greeneek-protocol traffic: the pi-ai twin serves its own route names through a library and additional providers, and both can be mounted side by side.
 
 ## Table of Contents
 
@@ -25,11 +25,11 @@ English | [中文](README.zh.md)
 <a id="use-this-package"></a>
 ## Use this package
 
-Mount this plugin when a composition streams Greeneek models through the harness LLM service. It registers the single `greeneek-official` route and resolves connection facts per request, so a composition entry plus an optional user settings section drive the whole adapter.
+Mount this plugin when a composition streams models through a Greeneek-protocol endpoint the deployment operates. It registers the single `greeneek-official` route and resolves connection facts per request, so a composition entry plus an optional user settings section drive the whole adapter. Shipped profiles do not mount it: with no endpoint configured there is no route to offer, and model absence is reported as absence rather than as a placeholder.
 
 ### When to choose it
 
-Choose this adapter when the deployment targets Greeneek's official API, optionally behind an OpenAI-compatible gateway named by `baseURL`. Choose `gnk-llm-pi-ai` when the same composition also routes other providers or hand-declared gateways through pi-ai's catalogs; the two adapters can be mounted together because their route names do not collide. Registering any other adapter for `greeneek-official` fails with `DUPLICATE_ADAPTER`.
+Choose this adapter when the deployment operates its own Greeneek-protocol endpoint and names it with `baseURL` (or `$GREENEEK_BASE_URL`). Choose `gnk-llm-pi-ai` when the same composition also routes other providers or hand-declared gateways through pi-ai's catalogs; the two adapters can be mounted together because their route names do not collide. Registering any other adapter for `greeneek-official` fails with `DUPLICATE_ADAPTER`.
 
 ### Minimal configuration
 
@@ -37,7 +37,7 @@ Choose this adapter when the deployment targets Greeneek's official API, optiona
 - name: '@greeneek/gnk-llm-greeneek'
   config:
     apiKeyEnv: GREENEEK_API_KEY  # credential reference, resolved per request
-    baseURL: https://api.greeneek.dev # optional; $GREENEEK_BASE_URL then this default
+    baseURL: https://gateway.internal # your endpoint; $GREENEEK_BASE_URL then config (the built-in default names no operated service — always override it)
     reasoningEffort: high        # optional; off | low | high | max
     maxTokens: 256000            # optional per-request output cap
     maxRequestFilesBytes: 134217728
@@ -51,7 +51,7 @@ A request selects the route with `provider: greeneek-official`; the model id pas
 | Field | Default | Meaning |
 |---|---|---|
 | `apiKeyEnv` | `GREENEEK_API_KEY` | Credential reference resolved per request through the credentials seam, then the environment |
-| `baseURL` | `https://api.greeneek.dev` | Endpoint base; `$GREENEEK_BASE_URL` wins when set |
+| `baseURL` | placeholder only | Endpoint base; `$GREENEEK_BASE_URL` wins when set, then config. The built-in default names a host this repository does not operate — always configure a reachable endpoint |
 | `thinking` | `enabled` | Deployment policy; `disabled` locks every request to `off` |
 | `reasoningEffort` | `high` | Default effort: `off`, `low`, `high`, or `max` |
 | `maxTokens` | `256,000` | Per-request output cap; a model's own cap and explicit request values win |
@@ -88,7 +88,7 @@ Connection facts are re-read once per operation through the optional settings an
 
 ### Provider-specific request fields
 
-When `ctx.greeneekLlmApiExtensions` is present, the adapter prepares its registered top-level fields from the exact serialized base request before `fetch`. Preparation or field collisions fail before HTTP; after a 2xx response, the adapter accepts every captured contribution before consuming SSE. Transport and non-2xx failures do not accept them. Shipped compositions use this for the optional incremental `gnk_session_log` field and the default-on active `gnk_plugin_packages` inventory; both stay outside model input.
+When `ctx.greeneekLlmApiExtensions` is present, the adapter prepares its registered top-level fields from the exact serialized base request before `fetch`. Preparation or field collisions fail before HTTP; after a 2xx response, the adapter accepts every captured contribution before consuming SSE. Transport and non-2xx failures do not accept them. Deployments that mount the session-log or package-inventory contributions use this for the opt-in `gnk_session_log` field and the `gnk_plugin_packages` inventory; both stay outside model input. Shipped profiles mount neither.
 
 ### Failures and recovery
 
@@ -139,7 +139,7 @@ Read these pages when the package-level contract is not enough. They move from t
 - [llm-retry](../llm-retry/README.md) — the retry executor that applies this adapter's `retryPolicy`.
 - [Greeneek request extensions](../greeneek-llm-api-extensions/README.md) — lifecycle and acceptance semantics for provider-specific top-level fields.
 - [Session-log upload](../../session/session-log-greeneek/README.md) — the opt-in incremental `gnk_session_log` contribution.
-- [Plugin package inventory](../plugin-package-inventory-greeneek/README.md) — the default-on `gnk_plugin_packages` contribution.
+- [Plugin package inventory](../plugin-package-inventory-greeneek/README.md) — the opt-in `gnk_plugin_packages` contribution.
 - [Twin LLM adapters](../../../.agents/notes/implemented/architecture/2026-06-13-twin-llm-adapters.md) — why Greeneek ships two structurally different adapters.
 - [Mandatory app attribution headers](../../../.agents/notes/implemented/architecture/2026-06-21-mandatory-app-attribution-headers.md) — the identity every provider request carries.
 

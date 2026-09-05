@@ -9,8 +9,7 @@ import { describe, expect, it } from 'vitest'
 import { BLOCKED_HOSTS, EgressBlockedError, STRICT_ALLOWED_HOSTS, assertEgressAllowed } from '../src/index.ts'
 
 describe('assertEgressAllowed', () => {
-  it('accepts the Greeneek gateway and unrelated hosts by default', () => {
-    expect(() => assertEgressAllowed('https://api.greeneek.dev/v1/chat/completions', {})).not.toThrow()
+  it('blocks nothing except the retired provider by default', () => {
     expect(() => assertEgressAllowed('https://example.org/anything', {})).not.toThrow()
   })
 
@@ -23,7 +22,7 @@ describe('assertEgressAllowed', () => {
     'https://www.deepseek.com',
     'https://sub.api.deepseek.cn/v1',
     'https://api.deepseek.ai/anything',
-  ])('refuses every retired-provider endpoint: %s', url => {
+  ])('refuses every retired-provider endpoint: %s', (url) => {
     expect(() => assertEgressAllowed(url, {})).toThrow(EgressBlockedError)
     expect(() => assertEgressAllowed(url, {})).toThrow(/never contacted/)
   })
@@ -32,8 +31,8 @@ describe('assertEgressAllowed', () => {
     // The allow-list never applies to a blocked host: ordering is absolute.
     expect(() => assertEgressAllowed('https://api.deepseek.com/v1', { GNK_STRICT_EGRESS: '1' }))
       .toThrow(/never contacted/)
-    expect(() => assertEgressAllowed('https://api.greeneek.dev/v1', { GNK_STRICT_EGRESS: '1' })).not.toThrow()
     expect(() => assertEgressAllowed('https://example.org', { GNK_STRICT_EGRESS: '1' })).toThrow(/allows only/)
+    expect(() => assertEgressAllowed('https://api.greeneek.dev/v1', { GNK_STRICT_EGRESS: '1' })).toThrow(/allows only/)
   })
 
   it('wraps unparseable endpoints into the one error class', () => {
@@ -51,8 +50,8 @@ describe('assertEgressAllowed', () => {
     }
   })
 
-  it('keeps the blocklist free of Greeneek hosts', () => {
-    expect(STRICT_ALLOWED_HOSTS.has('api.greeneek.dev')).toBe(true)
+  it('ships no built-in allow-list entries: every strict host is user-configured', () => {
+    expect(STRICT_ALLOWED_HOSTS.size).toBe(0)
     for (const pattern of BLOCKED_HOSTS) expect(pattern.test('api.greeneek.dev')).toBe(false)
   })
 })

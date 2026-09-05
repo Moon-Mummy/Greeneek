@@ -43,7 +43,7 @@ assertEgressAllowed(baseURL)
 GNK_STRICT_EGRESS=1 gnk ...
 ```
 
-开启该变量后，只有 `STRICT_ALLOWED_HOSTS`（Greeneek 网关族）上的主机通过；其余一切以同样的 `EgressBlockedError` 失败。
+开启该变量后，只有 `STRICT_ALLOWED_HOSTS` 上的主机通过——harness 不预置任何条目，因此每个端点都由用户配置；其余一切以同样的 `EgressBlockedError` 失败。
 
 <a id="understand-the-implementation"></a>
 ## 理解实现

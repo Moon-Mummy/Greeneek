@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/session/session-log-greeneek/README.md
-README.md: 58fe2a1252c3d51ca8a1d3679abde3cbfe3cf857
-README.zh.md: 472bb27c7e0dde86b1c73f1b40397c9ee858f2b7
+README.md: 8d7f516140505c5980611c1f11a0ea80ba555a19
+README.zh.md: 898cf8d444861d5c005d055b7dbc61de27a3347b

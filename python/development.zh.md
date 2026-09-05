@@ -36,7 +36,7 @@ uv run --project python/sdk python scripts/smoke-python-runtime.py \
 
 其中三个场景会比对 `scripts/snapshots/python-sdk-single-exe/` 下已提交的期望输出。`minimal/model-visible.json` 固定 Linux／macOS `sdk-minimal` profile 所组装的系统提示词、对外公布的工具 schema 与模型可见消息；`minimal/win-x64/model-visible.json` 固定对应的 PowerShell 版本。因此，插件一旦贡献出计划外的系统分段或 user 消息，该任务即失败，且该 profile 发出的每条消息都会参与比对。`advanced/` 跨所有目标固定一个复杂进程的 SDK 结果及父／子会话日志。`restart/` 针对同一持久化根目录启动两个完整 SDK 运行时进程，并跨所有目标固定其彼此隔离的模型历史、高层结果与独立持久日志。重新运行对应场景时加上 `--update-snapshots`，并在提交前审阅该差异。
 
-可信拉取请求还会在每个原生目标上运行 `--scenario sdk-live --installed-wheel`。该场景面向 `https://api.greeneek.dev` 执行两个使用工具的轮次，从外部验证已创建文件，并在仓库密钥缺失时失败而不是自行 skip。Fork 与 Dependabot 拉取请求会运行完整的 keyless 安装后 wheel 路径，但不会获得密钥。
+可信拉取请求还会在每个原生目标上运行 `--scenario sdk-live --installed-wheel`。该场景面向 `GREENEEK_BASE_URL` 指定的 Greeneek 协议端点执行两个使用工具的轮次——本仓库不运营此类端点，因此 keyed 运行必须指向运行方自己提供的端点——从外部验证已创建文件，并在 `GREENEEK_API_KEY` 缺失时自行 skip 而不是失败。Fork 与 Dependabot 拉取请求会运行完整的 keyless 安装后 wheel 路径，但不会获得密钥。
 
 交互式冒烟测试需要环境变量或仓库根目录 `.env` 中存在 `GREENEEK_API_KEY`：
 

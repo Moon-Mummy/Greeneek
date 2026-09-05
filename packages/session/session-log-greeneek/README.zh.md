@@ -1,5 +1,5 @@
 ---
-description: "面向启用官方 Greeneek 请求元数据的部署，说明规范会话日志的增量上传。"
+description: "面向为自己的 Greeneek 协议请求附加会话元数据的部署，说明规范会话日志的增量上传。"
 kind: "package-reference"
 ---
 
@@ -9,7 +9,7 @@ kind: "package-reference"
 
 ## 概述
 
-用于 Greeneek 官方 LLM API 请求的增量权威会话日志上传。该函数插件注入 `ctx.sessions` 与 `ctx.greeneekLlmApiExtensions`，并拥有 `gnk_session_log` 请求字段以及用于派生接受水位的持久 `session-log-greeneek/delivery-accepted` 事件。仅当官方 API 需要接收 Session 日志后缀时才启用它。
+用于部署自己运营的 Greeneek 协议 LLM API 请求的增量权威会话日志上传。该函数插件注入 `ctx.sessions` 与 `ctx.greeneekLlmApiExtensions`，并拥有 `gnk_session_log` 请求字段以及用于派生接受水位的持久 `session-log-greeneek/delivery-accepted` 事件。仅当部署自己的端点需要接收 Session 日志后缀时才启用它。随附 profile 不挂载它。
 
 ## 目录
 

@@ -17,11 +17,17 @@
     - id: greeneek-llm-api-extensions
       name: '@greeneek/gnk-greeneek-llm-api-extensions'
 
-    - id: session-log-greeneek
-      name: '@greeneek/gnk-session-log-greeneek'
-
-    - id: plugin-package-inventory-greeneek
-      name: '@greeneek/gnk-plugin-package-inventory-greeneek'
+    # The session-log upload and package inventory are NOT mounted here.
+    # Both contribute request fields only to the official Greeneek API,
+    # which no deployment of this repository operates; shipping them would
+    # attach inert bytes to every request. A deployment that runs its own
+    # Greeneek-protocol endpoint mounts them itself:
+    #
+    #   - insert:
+    #       - id: session-log-greeneek
+    #         name: '@greeneek/gnk-session-log-greeneek'
+    #       - id: plugin-package-inventory-greeneek
+    #         name: '@greeneek/gnk-plugin-package-inventory-greeneek'
 
     # This profile mounts no settings or credential provider, so its routes are
     # composition rather than a document the user edits: each names the

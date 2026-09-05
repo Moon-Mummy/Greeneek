@@ -1,5 +1,5 @@
 ---
-description: "Active Loader package inventory metadata for deployments sending official Greeneek requests."
+description: "Active Loader package inventory metadata for deployments that attach package metadata to their own Greeneek-protocol requests."
 kind: "package-reference"
 ---
 
@@ -9,7 +9,7 @@ English | [中文](README.zh.md)
 
 ## Summary
 
-Complete active Loader-backed plugin package inventory for official Greeneek LLM API requests. This function plugin injects the Loader, live Agent registry, and `ctx.greeneekLlmApiExtensions`, then owns the `gnk_plugin_packages` field. Enable it when the official API needs the active package list for request diagnostics.
+Complete active Loader-backed plugin package inventory for Greeneek-protocol LLM API requests the deployment operates. This function plugin injects the Loader, live Agent registry, and `ctx.greeneekLlmApiExtensions`, then owns the `gnk_plugin_packages` field. Enable it when the deployment's own endpoint needs the active package list for request diagnostics.
 
 ## Table of Contents
 
@@ -28,7 +28,7 @@ Complete active Loader-backed plugin package inventory for official Greeneek LLM
 |---|---:|---|
 | `enabled` | `true` | Register the `gnk_plugin_packages` contribution. Set it to `false` to omit package metadata. |
 
-Shipped profiles use the default, so every official Greeneek request carries the package inventory when preparation succeeds.
+With the default on, every request through a mounted adapter carries the package inventory when preparation succeeds. Shipped profiles do not mount it.
 
 <a id="collection"></a>
 ## Collection

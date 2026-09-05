@@ -36,8 +36,8 @@ All fallbacks are removed in **v1.0**.
 | Project marker | `.dsh-project` | `.gnk-project` |
 | Provider route id | `deepseek-official` | `greeneek-official` |
 | Model ids | `deepseek-chat`, `deepseek-reasoner`, `deepseek-v4-flash`, `deepseek-v4-pro`, `deepseek-v4-flash-vision-exp` | `greeneek-chat`, `greeneek-reasoner`, `greeneek-v4-flash`, `greeneek-v4-pro`, `greeneek-v4-flash-vision-exp` |
-| Gateway endpoint | `https://api.deepseek.com` (chat), `https://api.deepseek.com/anthropic/v1` (search) | `https://api.greeneek.dev` — the retired provider is refused at runtime by `@greeneek/gnk-egress`; no configuration can re-enable it |
-| Docs site | `docs.deepseek.com` | `docs.greeneek.dev` |
+| Gateway endpoint | `https://api.deepseek.com` (chat), `https://api.deepseek.com/anthropic/v1` (search) | No hosted gateway — bring your own Greeneek-protocol endpoint and key (BYOK-only). Point `GREENEEK_BASE_URL` / `GREENEEK_SEARCH_BASE_URL` at an endpoint the deployment operates; shipped profiles mount no official provider |
+| Docs site | `docs.deepseek.com` | No hosted docs site — read the docs in this repository (`docs/`, package READMEs) |
 | Settings section keys | `llm-deepseek`, `web-search-deepseek`, … | `llm-greeneek`, `web-search-greeneek`, … |
 | Python SDK | `deepseek-harness-sdk` (`deepseek_harness`) | `greeneek-harness-sdk` (`greeneek_harness`) |
 | Python runtime | `deepseek-harness-runtime-bin` (`deepseek_harness_runtime`) | `greeneek-harness-runtime-bin` (`greeneek_harness_runtime`) |
@@ -60,4 +60,4 @@ sed -i 's/^DSH_/GNK_/; s/DEEPSEEK_/GREENEEK_/' ~/.gnk/.env    # if you keep a .e
 
 - Every command, flag, subcommand, tool, setting key family, and theme (parity is machine-checked: `pnpm rebrand:parity`).
 - The MIT license and third-party attributions (`LICENSE`, `THIRD_PARTY_NOTICES.md`, vendored `LICENSE` files).
-- Wire protocol shape: the adapter remains OpenAI-compatible chat-completions (plus the files API and the Anthropic-compatible search endpoint) — only its canonical host and catalog ids are Greeneek's.
+- Wire protocol shape: the adapter remains OpenAI-compatible chat-completions (plus the files API and the Anthropic-compatible search endpoint) — only its canonical host placeholder and catalog ids are Greeneek's. The placeholder host names no operated service: always configure a reachable endpoint.

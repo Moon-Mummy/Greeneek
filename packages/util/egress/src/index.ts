@@ -44,14 +44,13 @@ export const BLOCKED_HOSTS: readonly RegExp[] = [
 ]
 
 /**
- * Allow-list consulted only under `$GNK_STRICT_EGRESS=1`. It holds the
- * Greeneek gateway; package-registry and release hosts are added by the
- * update/installer seams themselves when strict mode is tightened further.
+ * Allow-list consulted only under `$GNK_STRICT_EGRESS=1`. The harness ships
+ * no first-party service, so this holds no built-in hosts: every endpoint a
+ * strict deployment dials is user-configured, and package-registry and
+ * release hosts are added by the update/installer seams themselves when
+ * strict mode is tightened further.
  */
-export const STRICT_ALLOWED_HOSTS: ReadonlySet<string> = new Set([
-  'api.greeneek.dev',
-  'greeneek.dev',
-])
+export const STRICT_ALLOWED_HOSTS: ReadonlySet<string> = new Set([])
 
 /**
  * Refuse URLs whose host is banned (and, under strict mode, not allow-listed).
@@ -74,9 +73,9 @@ export function assertEgressAllowed(
   hostname = hostname.toLowerCase()
   if (BLOCKED_HOSTS.some(re => re.test(hostname))) {
     throw new EgressBlockedError(hostname,
-      'the retired pre-rebrand provider is never contacted; point GREENEEK_BASE_URL at the Greeneek gateway')
+      'the retired pre-rebrand provider is never contacted; point GREENEEK_BASE_URL at a trusted Greeneek-protocol endpoint')
   }
   if (env.GNK_STRICT_EGRESS === '1' && !STRICT_ALLOWED_HOSTS.has(hostname)) {
-    throw new EgressBlockedError(hostname, 'GNK_STRICT_EGRESS=1 allows only the built-in host list')
+    throw new EgressBlockedError(hostname, 'GNK_STRICT_EGRESS=1 allows only allow-listed hosts')
   }
 }

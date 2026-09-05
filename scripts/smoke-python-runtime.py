@@ -738,8 +738,8 @@ def main() -> None:
         parser.error(f"runtime executable does not exist: {args.exe}")
 
     if args.scenario == "sdk-live":
-        smoke_sdk_live()
-        print("smoke-python-runtime: sdk-live passed")
+        live_ran = smoke_sdk_live()
+        print(f"smoke-python-runtime: sdk-live {'passed' if live_ran else 'skipped'}")
         return
 
     with MockModel() as model:
@@ -824,14 +824,22 @@ def assert_installed_wheel_environment() -> Path:
     return executable
 
 
-def smoke_sdk_live() -> None:
-    """Run a real-model, tool-using two-turn task through installed wheels."""
+def smoke_sdk_live() -> bool:
+    """Run a real-model, tool-using two-turn task through installed wheels.
+
+    Returns True when the live scenario ran, False when it self-skipped:
+    without GREENEEK_API_KEY there is no key to run against, so absence of
+    the repository secret skips (exit 0) instead of failing the job. An
+    explicit run that sets a key but no endpoint is still a configuration
+    error and raises.
+    """
     from greeneek_harness import GreeneekHarness
 
     api_key = os.environ.get("GREENEEK_API_KEY")
     base_url = os.environ.get("GREENEEK_BASE_URL")
     if not api_key:
-        raise AssertionError("sdk-live requires GREENEEK_API_KEY")
+        print("smoke-python-runtime: sdk-live skipped (GREENEEK_API_KEY is absent)")
+        return False
     if not base_url:
         raise AssertionError("sdk-live requires an explicit GREENEEK_BASE_URL")
 
@@ -890,6 +898,7 @@ def smoke_sdk_live() -> None:
         if marker.read_text(encoding="utf-8").splitlines() != [LIVE_API_SENTINEL]:
             raise AssertionError(f"real-model tool turn wrote unexpected text to {marker}")
         assert_zstd_session_log(sessions)
+    return True
 
 
 def safe_turn_end(value: object) -> object:

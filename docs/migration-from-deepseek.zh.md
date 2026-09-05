@@ -36,8 +36,8 @@
 | 项目标记 | `.dsh-project` | `.gnk-project` |
 | 提供方路由 id | `deepseek-official` | `greeneek-official` |
 | 模型 id | `deepseek-chat`、`deepseek-reasoner`、`deepseek-v4-flash`、`deepseek-v4-pro`、`deepseek-v4-flash-vision-exp` | `greeneek-chat`、`greeneek-reasoner`、`greeneek-v4-flash`、`greeneek-v4-pro`、`greeneek-v4-flash-vision-exp` |
-| 网关端点 | `https://api.deepseek.com`（chat）、`https://api.deepseek.com/anthropic/v1`（search） | `https://api.greeneek.dev`——退役提供方在运行时被 `@greeneek/gnk-egress` 拒绝；任何配置都无法重新启用 |
-| 文档站 | `docs.deepseek.com` | `docs.greeneek.dev` |
+| 网关端点 | `https://api.deepseek.com`（chat）、`https://api.deepseek.com/anthropic/v1`（search） | 无托管网关——自带 Greeneek 协议端点与密钥（仅 BYOK）。将 `GREENEEK_BASE_URL` / `GREENEEK_SEARCH_BASE_URL` 指向部署自己运营的端点；随附 profile 不挂载任何官方提供方 |
+| 文档站 | `docs.deepseek.com` | 无托管文档站——请阅读本仓库内的文档（`docs/`、各包 README） |
 | 设置段键 | `llm-deepseek`、`web-search-deepseek`、… | `llm-greeneek`、`web-search-greeneek`、… |
 | Python SDK | `deepseek-harness-sdk`（`deepseek_harness`） | `greeneek-harness-sdk`（`greeneek_harness`） |
 | Python 运行时 | `deepseek-harness-runtime-bin`（`deepseek_harness_runtime`） | `greeneek-harness-runtime-bin`（`greeneek_harness_runtime`） |
@@ -60,4 +60,4 @@ sed -i 's/^DSH_/GNK_/; s/DEEPSEEK_/GREENEEK_/' ~/.gnk/.env    # if you keep a .e
 
 - 每一条命令、选项、子命令、工具、设置键族与主题（奇偶性由机器校验：`pnpm rebrand:parity`）。
 - MIT 许可证与第三方署名（`LICENSE`、`THIRD_PARTY_NOTICES.md`、vendored `LICENSE` 文件）。
-- 线协议形态：适配器仍是 OpenAI 兼容的 chat-completions（外加 files API 与 Anthropic 兼容的 search 端点）——只有其规范主机与目录 id 归属 Greeneek。
+- 线协议形态：适配器仍是 OpenAI 兼容的 chat-completions（外加 files API 与 Anthropic 兼容的 search 端点）——只有其规范主机占位符与目录 id 归属 Greeneek。该占位主机不指向任何运营中的服务：务必配置可达端点。

@@ -43,7 +43,7 @@ assertEgressAllowed(baseURL)
 GNK_STRICT_EGRESS=1 gnk ...
 ```
 
-With the flag set, only hosts on `STRICT_ALLOWED_HOSTS` (the Greeneek gateway family) pass; everything else fails with the same `EgressBlockedError`.
+With the flag set, only hosts on `STRICT_ALLOWED_HOSTS` pass — the harness ships no built-in entries, so every endpoint is user-configured; everything else fails with the same `EgressBlockedError`.
 
 ## Understand the implementation
 

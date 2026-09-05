@@ -1,5 +1,5 @@
 ---
-description: "The Greeneek-backed search provider for ctx.web: how deployments mount native Greeneek web search through the Anthropic-compatible Messages API, with per-search credential resolution."
+description: "A Greeneek-protocol search provider for ctx.web: how deployments mount native-style web search through an Anthropic-compatible Messages API endpoint they operate, with per-search credential resolution."
 kind: "package-reference"
 ---
 
@@ -9,7 +9,7 @@ English | [中文](README.zh.md)
 
 ## Summary
 
-With `gnk-web-search-greeneek`, the harness searches the web through Greeneek's native search using an existing `GREENEEK_API_KEY`. Choose it when a deployment wants Greeneek native search and accepts that one search costs a full model turn in latency and tokens, because Greeneek exposes no dedicated search endpoint. Results come from the structured search blocks Greeneek returns, never from scraping text out of a reply. A missing credential fails the call with a structured error; a response without a search-result block fails loudly rather than degrading. The model-facing `web_search` tool lives in `gnk-tool-web`.
+With `gnk-web-search-greeneek`, the harness searches the web through a Greeneek-protocol endpoint the deployment operates, using its own `GREENEEK_API_KEY`. Choose it when a deployment operates such an endpoint and accepts that one search costs a full model turn in latency and tokens, because the protocol exposes no dedicated search endpoint. The harness ships no hosted search endpoint (BYOK-only). Results come from the structured search blocks the endpoint returns, never from scraping text out of a reply. A missing credential fails the call with a structured error; a response without a search-result block fails loudly rather than degrading. The model-facing `web_search` tool lives in `gnk-tool-web`.
 
 ## Table of Contents
 
@@ -29,11 +29,11 @@ Mount the provider in a composition that already loads the web service; it regis
 
 ### When to choose it
 
-Choose this backend when a deployment wants Greeneek's native server-side web search and already holds a `GREENEEK_API_KEY` — the provider reuses that credential reference. One search is heavier than a dedicated retrieval endpoint: Greeneek runs the search inside a full model turn, so expect one Messages call's latency and generated tokens per search, with up to `maxUses` server-side searches per request. Avoid it when per-search cost or latency dominates.
+Choose this backend when a deployment operates a Greeneek-protocol search endpoint and already holds a `GREENEEK_API_KEY` for it — the provider reuses that credential reference. One search is heavier than a dedicated retrieval endpoint: the endpoint runs the search inside a full model turn, so expect one Messages call's latency and generated tokens per search, with up to `maxUses` server-side searches per request. Avoid it when per-search cost or latency dominates.
 
 ### Minimal configuration
 
-Load the web service and the provider; the key resolves from `ctx.credentials` when that service is mounted, otherwise from the process environment. The search endpoint uses the Anthropic-compatible base (`https://api.greeneek.dev/anthropic/v1`), distinct from the chat-completions base the LLM adapter uses — never reuse `$GREENEEK_BASE_URL`.
+Load the web service and the provider; the key resolves from `ctx.credentials` when that service is mounted, otherwise from the process environment. Configure the Anthropic-compatible base explicitly — the built-in default names a host this repository does not operate, so always override it. It is distinct from the chat-completions base the LLM adapter uses — never reuse `$GREENEEK_BASE_URL`.
 
 ```yaml
 - name: '@greeneek/gnk-web'
@@ -47,7 +47,7 @@ Load the web service and the provider; the key resolves from `ctx.credentials` w
 |---|---|---|
 | `apiKey` | omitted | Literal Greeneek API key; prefer `apiKeyEnv` so no secret enters configuration. A non-empty literal wins |
 | `apiKeyEnv` | `GREENEEK_API_KEY` | Credential reference resolved for each search through `ctx.credentials`, or from the process environment when that service is absent. A missing value fails the call as `WEB_PROVIDER_CREDENTIAL_MISSING` |
-| `baseURL` | `https://api.greeneek.dev/anthropic/v1` | Anthropic-compatible endpoint base; `/messages` is appended. Falls back to `$GREENEEK_SEARCH_BASE_URL`; an unparseable value makes the provider unavailable |
+| `baseURL` | placeholder only | Anthropic-compatible endpoint base; `/messages` is appended. Falls back to `$GREENEEK_SEARCH_BASE_URL`; the built-in default names a host this repository does not operate — always configure a reachable endpoint. An unparseable value makes the provider unavailable |
 | `model` | `greeneek-v4-flash` | Anthropic-format model name |
 | `apiVersion` | `2023-06-01` | `anthropic-version` header value |
 | `maxTokens` | `4096` | Positive-integer upper bound on generated tokens for the Messages request |

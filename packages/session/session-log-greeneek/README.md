@@ -1,5 +1,5 @@
 ---
-description: "Incremental canonical session-log upload for deployments enabling official Greeneek request metadata."
+description: "Incremental canonical session-log upload for deployments that attach session metadata to their own Greeneek-protocol requests."
 kind: "package-reference"
 ---
 
@@ -9,7 +9,7 @@ English | [中文](README.zh.md)
 
 ## Summary
 
-Incremental canonical session-log upload for official Greeneek LLM API requests. This function plugin injects `ctx.sessions` and `ctx.greeneekLlmApiExtensions`, then owns the `gnk_session_log` request field and the durable `session-log-greeneek/delivery-accepted` event from which it derives the acceptance watermark. Enable it only when the official API should receive a Session-log suffix.
+Incremental canonical session-log upload for Greeneek-protocol LLM API requests the deployment operates. This function plugin injects `ctx.sessions` and `ctx.greeneekLlmApiExtensions`, then owns the `gnk_session_log` request field and the durable `session-log-greeneek/delivery-accepted` event from which it derives the acceptance watermark. Enable it only when the deployment's own endpoint should receive a Session-log suffix. Shipped profiles do not mount it.
 
 ## Table of Contents
 
@@ -29,7 +29,7 @@ Incremental canonical session-log upload for official Greeneek LLM API requests.
 |---|---:|---|
 | `enabled` | `false` | Register the `gnk_session_log` contribution. Set it to `true` to opt into Session-log upload. |
 
-Shipped profiles mount the plugin so an overlay can enable it, but the default configuration registers no request field and appends no acceptance watermark.
+A composition mounts the plugin so an overlay can enable it, but the default configuration registers no request field and appends no acceptance watermark. Shipped profiles do not mount it.
 
 <a id="request-field"></a>
 ## Request field

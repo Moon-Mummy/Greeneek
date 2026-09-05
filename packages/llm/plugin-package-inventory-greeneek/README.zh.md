@@ -1,5 +1,5 @@
 ---
-description: "面向发送官方 Greeneek 请求的部署，说明活跃 Loader 包清单元数据。"
+description: "面向为自己的 Greeneek 协议请求附加包元数据的部署，说明活跃 Loader 包清单元数据。"
 kind: "package-reference"
 ---
 
@@ -9,7 +9,7 @@ kind: "package-reference"
 
 ## 概述
 
-用于 Greeneek 官方 LLM API 请求的完整存活 Loader 插件包清单。该函数插件注入 Loader、存活 Agent 注册表与 `ctx.greeneekLlmApiExtensions`，并拥有 `gnk_plugin_packages` 字段。当官方 API 需要活动包清单进行请求诊断时，请启用它。
+用于部署自己运营的 Greeneek 协议 LLM API 请求的完整存活 Loader 插件包清单。该函数插件注入 Loader、存活 Agent 注册表与 `ctx.greeneekLlmApiExtensions`，并拥有 `gnk_plugin_packages` 字段。当部署自己的端点需要活动包清单进行请求诊断时，请启用它。
 
 ## 目录
 
@@ -28,7 +28,7 @@ kind: "package-reference"
 |---|---:|---|
 | `enabled` | `true` | 注册 `gnk_plugin_packages` 贡献。将其设为 `false` 可省略包元数据。 |
 
-随附 profile 使用该默认值，因此只要准备成功，每个 Greeneek 官方请求都会携带包清单。
+在默认值开启的情况下，只要准备成功，经由已挂载适配器的每个请求都会携带包清单。随附 profile 不挂载它。
 
 <a id="collection"></a>
 ## 收集

@@ -1382,9 +1382,6 @@ importers:
       '@greeneek/gnk-llm-retry':
         specifier: workspace:^
         version: link:../../llm/llm-retry
-      '@greeneek/gnk-plugin-package-inventory-greeneek':
-        specifier: workspace:^
-        version: link:../../llm/plugin-package-inventory-greeneek
       '@greeneek/gnk-sandbox-local':
         specifier: workspace:^
         version: link:../../sandbox/sandbox-local
@@ -1403,9 +1400,6 @@ importers:
       '@greeneek/gnk-session':
         specifier: workspace:^
         version: link:../../core/session
-      '@greeneek/gnk-session-log-greeneek':
-        specifier: workspace:^
-        version: link:../../session/session-log-greeneek
       '@greeneek/gnk-session-persistence-jsonl':
         specifier: workspace:^
         version: link:../../session/session-persistence-jsonl
