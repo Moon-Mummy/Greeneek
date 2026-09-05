@@ -9,14 +9,13 @@
 <p align="center"><strong>AI 智能体的外科手术工具包。一切皆插件。</strong></p>
 
 <p align="center">
-  <a href="https://github.com/Moon-Mummy/Greeneek/actions"><img src="https://img.shields.io/badge/CI-passing-067a52" alt="CI"></a>
+  <a href="https://github.com/Mostafa-Taher-git/Greeneek/actions"><img src="https://img.shields.io/badge/CI-passing-067a52" alt="CI"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-067a52" alt="MIT"></a>
-  <a href="https://github.com/greeneek/greeneek-harness"><img src="https://img.shields.io/badge/upstream-gnk%20(MIT)-34d399" alt="Upstream"></a>
 </p>
 
 ---
 
-Greeneek 是基于 MIT 许可的 [Greeneek Harness](https://github.com/greeneek/greeneek-harness)（`gnk`）代码库构建的开源 agent harness（智能体框架）。
+Greeneek 是开源 agent harness（智能体框架）（`gnk`）。
 
 它构建于**一切皆插件**的架构之上，由 [Cordis](https://github.com/cordiverse/cordis) 驱动，其设计参见论文 [_A Programming Paradigm for Spatiotemporal Composability_](https://arxiv.org/abs/2608.25512)。
 
@@ -63,7 +62,7 @@ npx @greeneek/gnk web
 如需从仓库源码运行：
 
 ```sh
-git clone https://github.com/Moon-Mummy/Greeneek.git
+git clone https://github.com/Mostafa-Taher-git/Greeneek.git
 cd Greeneek
 pnpm install
 pnpm run build
@@ -74,7 +73,7 @@ pnpm gnk web
 
 ## 社区与支持
 
-- 通过 [GitHub Issues](https://github.com/Moon-Mummy/Greeneek/issues) 提交反馈或 bug 报告。
+- 通过 [GitHub Issues](https://github.com/Mostafa-Taher-git/Greeneek/issues) 提交反馈或 bug 报告。
 - 为你的插件仓库添加 [`gnk-plugin`](https://github.com/topics/gnk-plugin) 话题，便于被发现。
 
 ## 参与贡献

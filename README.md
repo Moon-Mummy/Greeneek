@@ -9,14 +9,13 @@ English | [中文](README.zh.md)
 <p align="center"><strong>The surgeon's toolkit for AI agents. Everything is a plugin.</strong></p>
 
 <p align="center">
-  <a href="https://github.com/Moon-Mummy/Greeneek/actions"><img src="https://img.shields.io/badge/CI-passing-067a52" alt="CI"></a>
+  <a href="https://github.com/Mostafa-Taher-git/Greeneek/actions"><img src="https://img.shields.io/badge/CI-passing-067a52" alt="CI"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-067a52" alt="MIT"></a>
-  <a href="https://github.com/greeneek/greeneek-harness"><img src="https://img.shields.io/badge/upstream-gnk%20(MIT)-34d399" alt="Upstream"></a>
 </p>
 
 ---
 
-Greeneek is an open-source agent harness based on the MIT-licensed [Greeneek Harness](https://github.com/greeneek/greeneek-harness) (`gnk`) codebase.
+Greeneek is an open-source agent harness (`gnk`).
 
 It is built on an **everything-is-a-plugin** architecture and powered by [Cordis](https://github.com/cordiverse/cordis), whose design is described in [_A Programming Paradigm for Spatiotemporal Composability_](https://arxiv.org/abs/2608.25512).
 
@@ -63,7 +62,7 @@ pnpm gnk web
 
 ## Community and support
 
-- Submit feedback or bug reports through [GitHub Issues](https://github.com/Moon-Mummy/Greeneek/issues).
+- Submit feedback or bug reports through [GitHub Issues](https://github.com/Mostafa-Taher-git/Greeneek/issues).
 - Add the [`gnk-plugin`](https://github.com/topics/gnk-plugin) topic to your plugin repository for discoverability.
 
 ## Contributing
