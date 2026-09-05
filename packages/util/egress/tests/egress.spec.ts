@@ -10,7 +10,7 @@ import { BLOCKED_HOSTS, EgressBlockedError, STRICT_ALLOWED_HOSTS, assertEgressAl
 
 describe('assertEgressAllowed', () => {
   it('blocks nothing except the retired provider by default', () => {
-    expect(() => assertEgressAllowed('https://example.org/anything', {})).not.toThrow()
+    expect(() =>{  assertEgressAllowed('https://example.org/anything', {}) }).not.toThrow()
   })
 
   it.each([
@@ -23,21 +23,21 @@ describe('assertEgressAllowed', () => {
     'https://sub.api.deepseek.cn/v1',
     'https://api.deepseek.ai/anything',
   ])('refuses every retired-provider endpoint: %s', (url) => {
-    expect(() => assertEgressAllowed(url, {})).toThrow(EgressBlockedError)
-    expect(() => assertEgressAllowed(url, {})).toThrow(/never contacted/)
+    expect(() =>{  assertEgressAllowed(url, {}) }).toThrow(EgressBlockedError)
+    expect(() =>{  assertEgressAllowed(url, {}) }).toThrow(/never contacted/)
   })
 
   it('refuses blocked hosts even under strict-mode allow-listing', () => {
     // The allow-list never applies to a blocked host: ordering is absolute.
-    expect(() => assertEgressAllowed('https://api.deepseek.com/v1', { GNK_STRICT_EGRESS: '1' }))
+    expect(() =>{  assertEgressAllowed('https://api.deepseek.com/v1', { GNK_STRICT_EGRESS: '1' }) })
       .toThrow(/never contacted/)
-    expect(() => assertEgressAllowed('https://example.org', { GNK_STRICT_EGRESS: '1' })).toThrow(/allows only/)
-    expect(() => assertEgressAllowed('https://api.greeneek.dev/v1', { GNK_STRICT_EGRESS: '1' })).toThrow(/allows only/)
+    expect(() =>{  assertEgressAllowed('https://example.org', { GNK_STRICT_EGRESS: '1' }) }).toThrow(/allows only/)
+    expect(() =>{  assertEgressAllowed('https://api.greeneek.dev/v1', { GNK_STRICT_EGRESS: '1' }) }).toThrow(/allows only/)
   })
 
   it('wraps unparseable endpoints into the one error class', () => {
-    expect(() => assertEgressAllowed('not a url', {})).toThrow(EgressBlockedError)
-    expect(() => assertEgressAllowed('not a url', {})).toThrow(/not an absolute URL/)
+    expect(() =>{  assertEgressAllowed('not a url', {}) }).toThrow(EgressBlockedError)
+    expect(() =>{  assertEgressAllowed('not a url', {}) }).toThrow(/not an absolute URL/)
   })
 
   it('attaches the refused hostname', () => {

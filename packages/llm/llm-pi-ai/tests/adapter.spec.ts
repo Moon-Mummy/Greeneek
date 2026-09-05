@@ -1,4 +1,4 @@
-/* rebrand:ignore-start -- pi-ai adapter specs are upstream-catalog data (B4, decisions.md D16); the rebrand rules must never rewrite them */
+/* rebrand:ignore-start -- upstream-catalog data (B4, decisions.md D16); never rewrite */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { Context, Service } from '@greeneek/cordis'
 import { AttachmentId, AttachmentStore, ImageVariantId } from '@greeneek/gnk-attachment'

@@ -8,9 +8,9 @@ function fakeStorage(initial: Record<string, string> = {}): Storage {
     setItem: (key: string, value: string) => { map.set(key, value) },
     removeItem: (key: string) => { map.delete(key) },
     key: (index: number) => [...map.keys()][index] ?? null,
-    clear: () => map.clear(),
+    clear: () =>{  map.clear() },
     get length() { return map.size },
-  } as Storage
+  }
 }
 
 const entries = (storage: Storage): Record<string, string> =>
@@ -60,6 +60,6 @@ describe('persisted key compatibility (rebrand read-through, ends v1.0)', () => 
   it('tolerates missing storage entirely', () => {
     vi.unstubAllGlobals()
     expect(readPersistedKey('gnk.anything')).toBeNull()
-    expect(() => clearPersistedKey('gnk.anything')).not.toThrow()
+    expect(() =>{  clearPersistedKey('gnk.anything') }).not.toThrow()
   })
 })

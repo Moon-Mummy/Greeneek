@@ -107,7 +107,7 @@ export function createLaunchEnvironmentSnapshot(layers: readonly LaunchEnvironme
   const legacyAlias = (name: string): string | undefined => // rebrand:keep
     name.startsWith('GNK_') ? 'DSH_' + name.slice(4) /* rebrand:keep */
       : name.startsWith('GREENEEK_') ? 'DEEPSEEK_' + name.slice(9) /* rebrand:keep */
-      : undefined
+        : undefined
   const warned = new Set<string>()
   const getWithLegacy = (name: string, sources: readonly LaunchEnvironmentSource[]): LaunchEnvironmentEntry | undefined => {
     const direct = getFrom(name, sources)

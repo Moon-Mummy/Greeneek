@@ -19,7 +19,7 @@ import type {
  */
 export async function buildModelCatalog(
   ctx: Context,
-  defaultSelection?: ModelSelection | undefined,
+  defaultSelection?: ModelSelection  ,
 ): Promise<ModelCatalog> {
   const selection = defaultSelection ?? await ctx.agentDefaultModel.resolveSelection()
   const providers = ctx.llm.listProviders()

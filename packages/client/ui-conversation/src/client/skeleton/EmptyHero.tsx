@@ -85,7 +85,7 @@ function HeroLogo() {
  * @returns the centered hero element tree.
  */
 export function HeroShell({ t, renderSlot, children }: HeroShellProps) {
-    return (
+  return (
     <div className={css.root}>
       <div className={css.stack}>
         <div className={css.headline}>

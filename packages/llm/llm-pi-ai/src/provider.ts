@@ -171,7 +171,7 @@ export function buildProvider(spec: ProviderSpec): Provider {
   // model URL (model resolution applies endpoint overrides per model).
   if (spec.baseURL !== undefined && spec.baseURL.length > 0) assertEgressAllowed(spec.baseURL)
   for (const model of spec.models) {
-    if (model.baseUrl !== undefined && model.baseUrl.length > 0) assertEgressAllowed(model.baseUrl)
+    if (model.baseUrl.length > 0) assertEgressAllowed(model.baseUrl)
   }
   const catalog = catalogProvider(spec.provider)
   // A catalog route keeping its catalog protocol reuses the catalog provider;

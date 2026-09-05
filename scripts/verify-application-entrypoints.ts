@@ -25,7 +25,7 @@ interface DemoPolicy {
 
 /** Public product launcher plus the private build-only WebWorker packer. */
 const MANIFEST_BIN_ALLOWLIST = new Map<string, ManifestBin>([
-  // rebrand:keep The deprecated `dsh` bin is the one-release compatibility launcher (docs/migration-from-deepseek.md); remove with it in v1.0.
+  // rebrand:keep Deprecated `dsh` bin: one-release compat launcher (docs/migration-from-deepseek.md); remove in v1.0.
   ['apps/cli/package.json', { gnk: 'lib/bin.js', dsh: 'lib/bin-legacy.js' }], // rebrand:keep
   ['packages/experimental/webworker-packer/package.json', { 'gnk-pack-vfs-image': './bin.js' }],
 ])

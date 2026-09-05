@@ -15,13 +15,13 @@
  */
 /** Raised when a resolved endpoint violates the egress policy. */
 export declare class EgressBlockedError extends Error {
-    /** The hostname that caused the refusal. */
-    readonly hostname: string;
-    /**
+  /** The hostname that caused the refusal. */
+  readonly hostname: string
+  /**
      * @param hostname - the refused host.
      * @param reason - which policy arm refused it.
      */
-    constructor(hostname: string, reason: string);
+  constructor(hostname: string, reason: string)
 }
 /**
  * Hosts the harness will never talk to. Every pre-rebrand DeepSeek endpoint
@@ -29,13 +29,13 @@ export declare class EgressBlockedError extends Error {
  * the rebrand's contract is zero communication with the retired upstream.
  * Matched against the full hostname, so subdomains are covered too.
  */
-export declare const BLOCKED_HOSTS: readonly RegExp[];
+export declare const BLOCKED_HOSTS: readonly RegExp[]
 /**
  * Allow-list consulted only under `$GNK_STRICT_EGRESS=1`. It holds the
  * Greeneek gateway; package-registry and release hosts are added by the
  * update/installer seams themselves when strict mode is tightened further.
  */
-export declare const STRICT_ALLOWED_HOSTS: ReadonlySet<string>;
+export declare const STRICT_ALLOWED_HOSTS: ReadonlySet<string>
 /**
  * Refuse URLs whose host is banned (and, under strict mode, not allow-listed).
  * @param url - a resolved endpoint about to be used by a connection layer.
@@ -44,5 +44,5 @@ export declare const STRICT_ALLOWED_HOSTS: ReadonlySet<string>;
  * mode, absent from the allow-list; a `TypeError`-shaped failure for a URL
  * that cannot be parsed is wrapped so consumers see one error class.
  */
-export declare function assertEgressAllowed(url: string, env?: Record<string, string | undefined>): void;
+export declare function assertEgressAllowed(url: string, env?: Record<string, string | undefined>): void
 //# sourceMappingURL=index.d.ts.map

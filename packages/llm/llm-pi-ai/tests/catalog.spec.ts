@@ -1,4 +1,4 @@
-/* rebrand:ignore-start -- pi-ai adapter specs are upstream-catalog data (B4, decisions.md D16); the rebrand rules must never rewrite them */
+/* rebrand:ignore-start -- upstream-catalog data (B4, decisions.md D16); never rewrite */
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'

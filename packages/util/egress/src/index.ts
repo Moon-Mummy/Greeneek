@@ -68,7 +68,7 @@ export function assertEgressAllowed(
   try {
     hostname = new URL(url).hostname
   } catch {
-    throw new EgressBlockedError(String(url), 'not an absolute URL')
+    throw new EgressBlockedError(url, 'not an absolute URL')
   }
   hostname = hostname.toLowerCase()
   if (BLOCKED_HOSTS.some(re => re.test(hostname))) {

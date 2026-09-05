@@ -1,4 +1,4 @@
-/* rebrand:ignore-start -- pi-ai adapter specs exercise upstream catalog ids (B4, decisions.md D16); the rebrand rules must never rewrite them */
+/* rebrand:ignore-start -- upstream catalog ids (B4, decisions.md D16); never rewrite */
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Context } from '@greeneek/cordis'
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'

@@ -1,4 +1,4 @@
-/* rebrand:ignore-start -- pi-ai adapter specs exercise upstream catalog ids (B4, decisions.md D16); the rebrand rules must never rewrite them */
+/* rebrand:ignore-start -- upstream catalog ids (B4, decisions.md D16); never rewrite */
 /**
  * Real-composition guard for the dormant pi-ai posture: LlmRuntime,
  * settings-file, credentials-local, and a bare `llm-pi-ai` row boot from a

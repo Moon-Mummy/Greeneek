@@ -1,4 +1,4 @@
-/* rebrand:ignore-start -- pi-ai adapter specs exercise upstream catalog ids (B4, decisions.md D16); the rebrand rules must never rewrite them */
+/* rebrand:ignore-start -- upstream catalog ids (B4, decisions.md D16); never rewrite */
 import { describe, expect, it, vi } from 'vitest'
 import { AttachmentId, ImageVariantId } from '@greeneek/gnk-attachment'
 import type { AttachmentStore, ImageAttachmentRef, ImageRequestPolicy, RequestImageAttachment } from '@greeneek/gnk-attachment'

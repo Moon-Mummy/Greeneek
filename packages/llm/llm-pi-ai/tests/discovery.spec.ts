@@ -1,4 +1,4 @@
-/* rebrand:ignore-start -- pi-ai adapter specs are upstream-catalog data (B4, decisions.md D16); the rebrand rules must never rewrite them */
+/* rebrand:ignore-start -- upstream-catalog data (B4, decisions.md D16); never rewrite */
 import { createServer } from 'node:http'
 import type { IncomingMessage, Server, ServerResponse } from 'node:http'
 import { afterEach, describe, expect, it, vi } from 'vitest'

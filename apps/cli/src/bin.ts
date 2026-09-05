@@ -24,7 +24,7 @@ function readVersion(): string {
 
 const invocation = parseGnkArgs(process.argv.slice(2), readVersion())
 
-  // One-time home seeding from the pre-rebrand `~/.dsh` (copy, never move; // rebrand:keep
+// One-time home seeding from the pre-rebrand `~/.dsh` (copy, never move; // rebrand:keep
 // idempotent, silent when the Greeneek home already exists or the user pinned
 // $GNK_HOME). Runs before anything reads the home so a first boot finds the
 // migrated settings, credentials, and profiles instead of an empty directory.
